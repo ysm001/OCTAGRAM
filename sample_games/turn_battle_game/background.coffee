@@ -60,13 +60,14 @@ class Tile extends Sprite
         @y = y
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.TILE]
 
-    setSelected: () ->
+    setPlayerSelected: () ->
         @frame = 1
+
+    setEnemySelected: () ->
+        @frame = 2
 
     setNormal: () ->
         @frame = 0
-
-
 
 class Button extends Sprite
     @WIDTH = 120

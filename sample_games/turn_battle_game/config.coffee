@@ -7,6 +7,7 @@ class Config.R
     @RESOURCE_DIR : "resources"
     @CHAR :
         ROBOT : "#{R.RESOURCE_DIR}/robot/droid.png"
+        E_ROBOT : "#{R.RESOURCE_DIR}/robot/e_droid.png"
     @BACKGROUND_IMAGE :
         HEADER : "#{R.RESOURCE_DIR}/background/header.png"
         HP_YELLOW : "#{R.RESOURCE_DIR}/background/hp_yellow.png"
