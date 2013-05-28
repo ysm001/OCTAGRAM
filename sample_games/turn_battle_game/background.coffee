@@ -9,14 +9,48 @@ class Header extends Sprite
         @y = y
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.HEADER]
 
-class HeaderHp extends Sprite
-    @WIDTH = 130
-    @HEIGHT = 24
-    constructor: (x,y) ->
-        super HeaderHp.WIDTH, HeaderHp.HEIGHT
+
+class HpBar extends Bar
+    constructor: (x,y,resource=PlayerHp.YELLOW) ->
+        super x, y
+        @height = Header.HEIGHT
+        @value = Header.WIDTH / 2
+        @maxValue = Header.WIDTH / 2
+        switch resource
+            when PlayerHp.BLUE
+                @image = Game.instance.assets[R.BACKGROUND_IMAGE.HP_BULE]
+            when PlayerHp.YELLOW
+                @image = Game.instance.assets[R.BACKGROUND_IMAGE.HP_YELLOW]
+
+class HpUnderBar extends Sprite
+    @WIDTH = Header.WIDTH / 2
+    @HEIGHT = Header.HEIGHT
+    constructor: (x, y) ->
+        super HpUnderBar.WIDTH, HpUnderBar.HEIGHT
         @x = x
         @y = y
-        @image = Game.instance.assets[R.BACKGROUND_IMAGE.HEADER_HP]
+        @height = Header.HEIGHT
+        @image = Game.instance.assets[R.BACKGROUND_IMAGE.HEADER_UNDER_BAR]
+
+
+class PlayerHp extends Group
+    @YELLOW = 1
+    @BLUE = 2
+    @MAX_HP = 4
+    constructor: (x,y, resource) ->
+        super
+        @hp = new HpBar x, y, resource
+        @addChild @hp
+        @underBar = new HpUnderBar x, y
+        @addChild @underBar
+    direct: (direct) ->
+        @underBar.scale(-1, 1)
+        @hp.direction = direct
+        # TODO:
+        # doing by force !!
+        @hp.x = Header.WIDTH
+    reduce: () ->
+        @hp.value -= @hp.maxValue / PlayerHp.MAX_HP if @hp.value > 0
 
 class Tile extends Sprite
     @SIZE = 64
@@ -32,14 +66,6 @@ class Tile extends Sprite
     setNormal: () ->
         @frame = 0
 
-class MsgBox extends Sprite
-    @WIDTH = 500
-    @HEIGHT = 150
-    constructor: (x,y) ->
-        super MsgBox.WIDTH, MsgBox.HEIGHT
-        @x = x
-        @y = y
-        @image = Game.instance.assets[R.BACKGROUND_IMAGE.MSGBOX]
 
 
 class Button extends Sprite
@@ -111,6 +137,12 @@ class Map extends Group
         else
             return base / Map.UNIT_SIZE
         
-
-
+class MsgBox extends Sprite
+    @WIDTH = 500
+    @HEIGHT = 150
+    constructor: (x,y) ->
+        super MsgBox.WIDTH, MsgBox.HEIGHT
+        @x = x
+        @y = y
+        @image = Game.instance.assets[R.BACKGROUND_IMAGE.MSGBOX]
 

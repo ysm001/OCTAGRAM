@@ -1,8 +1,6 @@
- 
-R = Config.R
 
 class InstructionPool
-    constructor: () ->
+    constructor: ()->
         map = Map.instance
         @moveUp = new Instruction "moveUp", () ->
             @tl.moveBy 0, -Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME
@@ -23,10 +21,13 @@ class BackgroundGroup extends Group
         @addChild @map
         @msgbox = new MsgBox(5, @map.y + @map.height + 5)
         @addChild @msgbox
-        @msgbox = new MsgBox(5, @map.y + @map.height + 5)
-        @addChild @msgbox
         @nextBtn = new NextButton @msgbox.x + MsgBox.WIDTH + 8, @msgbox.y
         @addChild @nextBtn
+        @hp1 = new PlayerHp 0, 0, PlayerHp.YELLOW
+        @addChild @hp1
+        @hp2 = new PlayerHp Header.WIDTH/2, 0, PlayerHp.BLUE
+        @hp2.direct "left"
+        @addChild @hp2
         
     update: (robotGroup) ->
         player = robotGroup.player
@@ -56,11 +57,13 @@ class RobotGroup extends Group
 
     initialize: (bgGroup)->
         nextBtn = bgGroup.nextBtn
+        hp1 = bgGroup.hp1
         nextBtn.setOnClickEventListener =>
             if @player.isAnimated() is false
+                hp1.reduce()
                 @player.update()
 
-    update: (gbGroup)->
+    update: (bgGroup)->
 
 class RobotScene extends Scene
     constructor: (@game) ->
@@ -93,6 +96,9 @@ class RobotGame extends Game
             Debug.log "load image #{path}"
             @preload path
         for k,path of Config.R.BACKGROUND_IMAGE
+            Debug.log "load image #{path}"
+            @preload path
+        for k,path of Config.R.UI
             Debug.log "load image #{path}"
             @preload path
 
