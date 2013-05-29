@@ -42,6 +42,9 @@ class Robot extends Sprite
         unless @queue.empty()
             cmd = @queue.dequeue()
             cmd.eval @
+            return true
+        else
+            return false
 
 class PlayerRobot extends Robot
     @SIZE = 64

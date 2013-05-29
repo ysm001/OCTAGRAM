@@ -22,6 +22,7 @@ class CommandPool
                 @tl.moveBy Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME
         @moveRight = new Command moveRight
 
+
 class BackgroundGroup extends Group
 
     constructor: (@scene) ->
@@ -43,6 +44,16 @@ class BackgroundGroup extends Group
     update: (robotGroup) ->
         for i in robotGroup.robots
             i.onBackgoundUpdate(@)
+
+class TurnSwitcher
+    constructor: (@robots) ->
+        @i = 0
+
+    update: ->
+        if @robots[@i].isAnimated() is false
+            if @robots[@i].update()
+                @i++
+                @i = 0 if @i == @robots.length
 
 class RobotGroup extends Group
     constructor: (@scene) ->
@@ -101,16 +112,16 @@ class RobotGroup extends Group
         @addChild @enemy
         @robots.push @enemy
 
+        @swicher = new TurnSwitcher @robots
+
     initialize: (bgGroup)->
         nextBtn = bgGroup.nextBtn
         nextBtn.setOnClickEventListener =>
-            if @player.isAnimated() is false
-                @player.update()
+            #if @player.isAnimated() is false
+            #    @player.update()
 
     update: (bgGroup)->
-        for i in @robots
-            if i.isAnimated() is false
-                i.update()
+        @swicher.update()
 
 class RobotScene extends Scene
     constructor: (@game) ->
