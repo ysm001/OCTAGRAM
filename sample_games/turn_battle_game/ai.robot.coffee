@@ -12,8 +12,11 @@
     "EnchantAI/instruction.js",
     "config.js",
     "utility/debug.js",
+    "utility/util.js",
     "robot.js",
-    "background.js",
+    "view.js",
+    "effect.js",
+    "bullet.js",
     "main.js"
 )
 

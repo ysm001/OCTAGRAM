@@ -1,145 +1,210 @@
 
+R = Config.R
+
 class CommandPool
-    constructor: ()->
+
+    constructor: () ->
         map = Map.instance
-        moveUp = new Instruction "moveUp", () ->
-            if @y - Map.UNIT_SIZE >= 0
+        @game = Game.instance
+
+        end = new Instruction Instruction.END, () ->
+            return true
+        @end = new Command end
+
+        moveUp = new Instruction Instruction.MOVE_UP, () ->
+            ret = true
+            @frame = 1
+            y = @y - Map.UNIT_SIZE
+            if !@map.isIntersect(@x, y) and y >= 0
                 @tl.moveBy 0, -Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME
+                ret = @map.getPos(@x, @y - Map.UNIT_SIZE)
+            else
+                ret = false
+            return ret
         @moveUp = new Command moveUp
 
-        moveDown = new Instruction "moveDown", () ->
-            if @y + Map.UNIT_SIZE <= Map.UNIT_SIZE * Map.HEIGHT
+        moveDown = new Instruction Instruction.MOVE_DOWN, () ->
+            ret = true
+            @frame = 3
+            y = @y + Map.UNIT_SIZE
+            if !@map.isIntersect(@x, y) and y <= (Map.UNIT_SIZE * Map.HEIGHT)
                 @tl.moveBy 0, Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME
+                ret = @map.getPos(@x, @y + Map.UNIT_SIZE)
+            else
+                ret = false
+            return ret
         @moveDown = new Command moveDown
 
-        moveLeft = new Instruction "moveLeft", () ->
-            if @x - Map.UNIT_SIZE >= 0
+        moveLeft = new Instruction Instruction.MOVE_LEFT, () ->
+            ret = true
+            @frame = 2
+            x = @x - Map.UNIT_SIZE
+            if !@map.isIntersect(x, @y) and x >= 0
                 @tl.moveBy -Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME
+                ret = @map.getPos(@x - Map.UNIT_SIZE, @y)
+            else
+                ret = false
+            return ret
         @moveLeft = new Command moveLeft
 
-        moveRight = new Instruction "moveRight", () ->
-            if @x + Map.UNIT_SIZE <= Map.UNIT_SIZE * (Map.WIDTH - 1)
+        moveRight = new Instruction Instruction.MOVE_RIGHT, () ->
+            ret = true
+            @frame = 0
+            x = @x + Map.UNIT_SIZE
+            if !@map.isIntersect(x, @y) and x <= (Map.UNIT_SIZE * (Map.WIDTH - 1))
                 @tl.moveBy Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME
+                ret = @map.getPos(@x + Map.UNIT_SIZE, @y)
+            else
+                ret = false
+            return ret
         @moveRight = new Command moveRight
 
+        shot = new Instruction Instruction.SHOT, () ->
+            scene = Game.instance.scene
+            unless @bltQueue.empty()
+                for b in @bltQueue.dequeue()
+                    b.set(@x, @y, @getDirect())
+                    scene.world.bullets.push b
+                    scene.world.addChild b
+                return true
+            return false
+        @shot = new Command shot
 
-class BackgroundGroup extends Group
+        search = new Instruction Instruction.SEARCH, () ->
+            world = Game.instance.scene.world
+            robot = if @ == world.player then world.enemy else @
+            return new Point(@map.getPosX(robot.x - @x), @map.getPosY(robot.y - @y))
+
+        @search = new Command search
+
+        pickup = new Instruction Instruction.PICKUP, () ->
+            ret = @bltQueue.enqueue(new DroidBullet(@x, @y, DroidBullet.RIGHT))
+            return ret
+        @pickup = new Command pickup
+            
+class ViewGroup extends Group
 
     constructor: (@scene) ->
         super
+        @header = new Background 0, 0
+        @addChild @header
         @header = new Header 0, 0
         @addChild @header
         @map = new Map 0, 32
         @addChild @map
         @msgbox = new MsgBox(5, @map.y + @map.height + 5)
         @addChild @msgbox
-        @nextBtn = new NextButton @msgbox.x + MsgBox.WIDTH + 8, @msgbox.y
-        @addChild @nextBtn
+        #@nextBtn = new NextButton @msgbox.x + MsgBox.WIDTH + 8, @msgbox.y
+        #@addChild @nextBtn
         @playerHpBar = new PlayerHp 0, 0, PlayerHp.YELLOW
         @addChild @playerHpBar
         @enemyHpBar = new PlayerHp Header.WIDTH/2, 0, PlayerHp.BLUE
         @enemyHpBar.direct "left"
         @addChild @enemyHpBar
 
-    update: (robotGroup) ->
-        for i in robotGroup.robots
-            i.onBackgoundUpdate(@)
+    update: (world) ->
+        for i in world.robots
+            i.onViewUpdate(@)
 
 class TurnSwitcher
-    constructor: (@robots) ->
+    constructor: (@world) ->
         @i = 0
 
     update: ->
-        if @robots[@i].isAnimated() is false
-            if @robots[@i].update()
-                @i++
-                @i = 0 if @i == @robots.length
+        animated = bullet = false
+        for i in @world.bullets
+            bullet = i.enabled
+            break if bullet == true
+        for i in @world.robots
+            animated = i.isAnimated()
+            break if animated == true
 
-class RobotGroup extends Group
+        if bullet is false and animated is false
+            if @world.robots[@i].update()
+                @i++
+                @i = 0 if @i == @world.robots.length
+
+
+class RobotWorld extends Group
     constructor: (@scene) ->
         super
-        _cmdPool = new CommandPool
         @game = Game.instance
         @map = Map.instance
         @robots = []
+        @bullets = []
         @player = new PlayerRobot
         @player.x = @map.getX 3
         @player.y = @map.getY 4
-        @player.onBackgoundUpdate = (group) ->
-            map = group.map
-            prevTile = map.getTile @prevX, @prevY
-            prevTile.setNormal()
-            tile = map.getTile @x, @y
-            tile.setPlayerSelected()
-        @player.onHpReduce = (scene) ->
-            hpBar = scene.bgGroup.playerHpBar
-            hpBar.reduce()
-        @player.onKeyInput = (input) ->
-            if input.w == true
-                @queue.enqueue _cmdPool.moveUp
-            else if input.a == true
-                @queue.enqueue _cmdPool.moveLeft
-            else if input.x == true
-                @queue.enqueue _cmdPool.moveDown
-            else if input.d == true
-                @queue.enqueue _cmdPool.moveRight
-
         @addChild @player
         @robots.push @player
 
         @enemy = new EnemyRobot
         @enemy.x = @map.getX 8
         @enemy.y = @map.getY 4
-        @enemy.onBackgoundUpdate = (group) ->
-            map = group.map
-            prevTile = map.getTile @prevX, @prevY
-            prevTile.setNormal()
-            tile = map.getTile @x, @y
-            tile.setEnemySelected()
-        @enemy.onHpReduce = (scene) ->
-            hpBar = scene.bgGroup.enemyHpBar
-            hpBar.reduce()
-        @enemy.onKeyInput = (input) ->
-            if input.i == true
-                @queue.enqueue _cmdPool.moveUp
-            else if input.j == true
-                @queue.enqueue _cmdPool.moveLeft
-            else if input.m == true
-                @queue.enqueue _cmdPool.moveDown
-            else if input.l == true
-                @queue.enqueue _cmdPool.moveRight
-
         @addChild @enemy
         @robots.push @enemy
 
-        @swicher = new TurnSwitcher @robots
+        @swicher = new TurnSwitcher @
 
-    initialize: (bgGroup)->
-        nextBtn = bgGroup.nextBtn
-        nextBtn.setOnClickEventListener =>
-            #if @player.isAnimated() is false
-            #    @player.update()
+    initialize: (views)->
 
-    update: (bgGroup)->
-        @swicher.update()
+    collisionBullet: (bullet, robot) ->
+        #Debug.log "#{@map.getPosX(bullet.x)}, #{@map.getPosY(bullet.y)}"
+        #Debug.log "#{@map.getPosX(robot.x)}, #{@map.getPosY(robot.y)}"
+        return robot.within(bullet, 32)
+        @map.getPosX(bullet.x) == @map.getPosX(robot.x) and
+            @map.getPosY(bullet.y) == @map.getPosY(robot.y)
+
+
+    updateBullets: () ->
+        del = -1
+        for v,i in @bullets
+            if @collisionBullet(v, @enemy)
+                del = i
+                v.hit(@enemy)
+                @bullets[i] = false
+            else if v.enabled == false
+                del = i
+                @bullets[i] = false
+            v.update()
+        if del != -1
+            @bullets = _.compact(@bullets)
+
+    updateRobots: () ->
+        animated = bullet = false
+        for i in @bullets
+            bullet = i.enabled
+            break if bullet == true
+        for i in @robots
+            animated = i.isAnimated()
+            break if animated == true
+
+        if bullet is false and animated is false
+            for i in @robots
+                i.update()
+
+    update: (views)->
+        #@swicher.update()
+        @updateRobots()
+        @updateBullets()
 
 class RobotScene extends Scene
     constructor: (@game) ->
         super @
         @backgroundColor = "#c0c0c0"
-        @bgGroup = new BackgroundGroup @
-        @robotGroup = new RobotGroup @
-        @addChild @bgGroup
-        @addChild @robotGroup
+        @views = new ViewGroup @
+        @world = new RobotWorld @
+        @addChild @views
+        @addChild @world
 
-        @robotGroup.initialize @bgGroup
+        @world.initialize @views
 
     onenterframe: ->
         @update()
         
     update: ->
-        @robotGroup.update(@bgGroup)
-        @bgGroup.update(@robotGroup)
+        @world.update(@views)
+        @views.update(@world)
 
 class RobotGame extends Game
     constructor: (width, height) ->
@@ -150,6 +215,7 @@ class RobotGame extends Game
         @keybind(88, 'x')
         @keybind(68, 'd')
         @keybind(83, 's')
+        @keybind(81, 'q')
 
         @keybind(76, 'l')
         @keybind(77, 'm')
@@ -167,10 +233,16 @@ class RobotGame extends Game
         for k,path of Config.R.UI
             Debug.log "load image #{path}"
             @preload path
+        for k,path of Config.R.EFFECT
+            Debug.log "load image #{path}"
+            @preload path
+        for k,path of Config.R.BULLET
+            Debug.log "load image #{path}"
+            @preload path
 
     onload: ->
-        scene = new RobotScene @
-        @pushScene scene
+        @scene = new RobotScene @
+        @pushScene @scene
 
 
 
