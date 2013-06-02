@@ -86,14 +86,15 @@ class ViewGroup extends Group
 
     constructor: (@scene) ->
         super
-        @header = new Background 0, 0
-        @addChild @header
+        @background = new Background 0, 0
+        @addChild @background
         @header = new Header 0, 0
         @addChild @header
         @map = new Map 0, 32
         @addChild @map
-        @msgbox = new MsgBox(5, @map.y + @map.height + 5)
-        @addChild @msgbox
+        @footer = new Footer(5, @map.y + @map.height + 5)
+        @msgbox = @footer.msgbox
+        @addChild @footer
         #@nextBtn = new NextButton @msgbox.x + MsgBox.WIDTH + 8, @msgbox.y
         #@addChild @nextBtn
         @playerHpBar = new PlayerHp 0, 0, PlayerHp.YELLOW
@@ -152,9 +153,6 @@ class RobotWorld extends Group
         #Debug.log "#{@map.getPosX(bullet.x)}, #{@map.getPosY(bullet.y)}"
         #Debug.log "#{@map.getPosX(robot.x)}, #{@map.getPosY(robot.y)}"
         return robot.within(bullet, 32)
-        @map.getPosX(bullet.x) == @map.getPosX(robot.x) and
-            @map.getPosY(bullet.y) == @map.getPosY(robot.y)
-
 
     updateBullets: () ->
         del = -1

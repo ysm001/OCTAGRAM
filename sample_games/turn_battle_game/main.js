@@ -119,14 +119,15 @@ ViewGroup = (function(_super) {
   function ViewGroup(scene) {
     this.scene = scene;
     ViewGroup.__super__.constructor.apply(this, arguments);
-    this.header = new Background(0, 0);
-    this.addChild(this.header);
+    this.background = new Background(0, 0);
+    this.addChild(this.background);
     this.header = new Header(0, 0);
     this.addChild(this.header);
     this.map = new Map(0, 32);
     this.addChild(this.map);
-    this.msgbox = new MsgBox(5, this.map.y + this.map.height + 5);
-    this.addChild(this.msgbox);
+    this.footer = new Footer(5, this.map.y + this.map.height + 5);
+    this.msgbox = this.footer.msgbox;
+    this.addChild(this.footer);
     this.playerHpBar = new PlayerHp(0, 0, PlayerHp.YELLOW);
     this.addChild(this.playerHpBar);
     this.enemyHpBar = new PlayerHp(Header.WIDTH / 2, 0, PlayerHp.BLUE);
@@ -217,7 +218,6 @@ RobotWorld = (function(_super) {
 
   RobotWorld.prototype.collisionBullet = function(bullet, robot) {
     return robot.within(bullet, 32);
-    return this.map.getPosX(bullet.x) === this.map.getPosX(robot.x) && this.map.getPosY(bullet.y) === this.map.getPosY(robot.y);
   };
 
   RobotWorld.prototype.updateBullets = function() {

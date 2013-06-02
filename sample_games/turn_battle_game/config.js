@@ -30,6 +30,7 @@ Config.R = (function() {
     HEADER_UNDER_BAR: "" + R.RESOURCE_DIR + "/background/hp_under_bar.png",
     TILE: "" + R.RESOURCE_DIR + "/background/tile.png",
     MSGBOX: "" + R.RESOURCE_DIR + "/background/msgbox.png",
+    STATUS_BOX: "" + R.RESOURCE_DIR + "/background/status_box.png",
     NEXT_BUTTON: "" + R.RESOURCE_DIR + "/background/next_button.png"
   };
 

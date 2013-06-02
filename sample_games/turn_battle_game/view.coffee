@@ -164,7 +164,7 @@ class NextButton extends Button
 
 
 class MsgWindow extends Sprite
-    @WIDTH = 500
+    @WIDTH = 450
     @HEIGHT = 150
     constructor: (x,y) ->
         super MsgWindow.WIDTH, MsgWindow.HEIGHT
@@ -186,7 +186,47 @@ class MsgBox extends Group
         @label.x = 25
         @label.y = 25
         @addChild @label
-        @label.width = MsgWindow.WIDTH * 0.9
+        @label.width = MsgWindow.WIDTH * 0.85
+        @print "sassssssssssssssssssssssssssssssssssssssssssssssssss"
 
     print: (msg) ->
         @label.text = "#{msg}"
+
+class StatusWindow extends Sprite
+    @WIDTH = 180
+    @HEIGHT = 150
+    constructor: (x,y) ->
+        super StatusWindow.WIDTH, StatusWindow.HEIGHT
+        @x = x
+        @y = y
+        @image = Game.instance.assets[R.BACKGROUND_IMAGE.STATUS_BOX]
+
+class StatusBox extends Group
+
+    constructor: (x,y) ->
+        super StatusWindow.WIDTH, StatusWindow.HEIGHT
+        @x = x
+        @y = y
+        @window = new StatusWindow 0, 0
+        @addChild @window
+        @label = new Label
+        @label.font = "16px 'Meiryo UI'"
+        @label.color = '#FFF'
+        @label.x = 25
+        @label.y = 25
+        @addChild @label
+        @label.width = MsgWindow.WIDTH * 0.25
+
+    print: (msg) ->
+        @label.text = "#{msg}"
+
+class Footer extends Group
+    constructor: (x,y) ->
+        super
+        @x = x
+        @y = y
+        @msgbox = new MsgBox 0,0
+        @addChild @msgbox
+        @statusBox = new StatusBox x+MsgWindow.WIDTH-10,0
+        @addChild @statusBox
+
