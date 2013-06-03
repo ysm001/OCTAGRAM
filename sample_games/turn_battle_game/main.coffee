@@ -16,7 +16,7 @@ class CommandPool
             @frame = 1
             y = @y - Map.UNIT_SIZE
             if !@map.isIntersect(@x, y) and y >= 0
-                @tl.moveBy 0, -Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME
+                @tl.moveBy(0, -Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
                 ret = @map.getPos(@x, @y - Map.UNIT_SIZE)
             else
                 ret = false
@@ -28,7 +28,7 @@ class CommandPool
             @frame = 3
             y = @y + Map.UNIT_SIZE
             if !@map.isIntersect(@x, y) and y <= (Map.UNIT_SIZE * Map.HEIGHT)
-                @tl.moveBy 0, Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME
+                @tl.moveBy(0, Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
                 ret = @map.getPos(@x, @y + Map.UNIT_SIZE)
             else
                 ret = false
@@ -40,7 +40,7 @@ class CommandPool
             @frame = 2
             x = @x - Map.UNIT_SIZE
             if !@map.isIntersect(x, @y) and x >= 0
-                @tl.moveBy -Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME
+                @tl.moveBy(-Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
                 ret = @map.getPos(@x - Map.UNIT_SIZE, @y)
             else
                 ret = false
@@ -52,7 +52,7 @@ class CommandPool
             @frame = 0
             x = @x + Map.UNIT_SIZE
             if !@map.isIntersect(x, @y) and x <= (Map.UNIT_SIZE * (Map.WIDTH - 1))
-                @tl.moveBy Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME
+                @tl.moveBy(Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
                 ret = @map.getPos(@x + Map.UNIT_SIZE, @y)
             else
                 ret = false
@@ -66,6 +66,7 @@ class CommandPool
                     b.set(@x, @y, @getDirect())
                     scene.world.bullets.push b
                     scene.world.addChild b
+                    scene.views.footer.statusBox.remainingBullets.decrement()
                 return true
             return false
         @shot = new Command shot
@@ -78,9 +79,23 @@ class CommandPool
         @search = new Command search
 
         pickup = new Instruction Instruction.PICKUP, () ->
-            ret = @bltQueue.enqueue(new DroidBullet(@x, @y, DroidBullet.RIGHT))
+            ret = @bltQueue.enqueue(@createBullet())
+            if ret != false
+                scene = Game.instance.scene
+                item = new BulletItem(@x, @y)
+                scene.world.addChild item
+                scene.world.items.push item
+                scene.views.footer.statusBox.remainingBullets.increment()
             return ret
         @pickup = new Command pickup
+
+        getHp = new Instruction Instruction.GET_HP, () ->
+            return @hp
+        @getHp = new Command getHp
+
+        getBulletQueueSize = new Instruction Instruction.GET_BULLET_QUEUE_SIZE, () ->
+            return @bltQueue.size()
+        @getBulletQueueSize = Command getBulletQueueSize
             
 class ViewGroup extends Group
 
@@ -114,7 +129,7 @@ class TurnSwitcher
     update: ->
         animated = bullet = false
         for i in @world.bullets
-            bullet = i.enabled
+            bullet = i.animated
             break if bullet == true
         for i in @world.robots
             animated = i.isAnimated()
@@ -133,6 +148,7 @@ class RobotWorld extends Group
         @map = Map.instance
         @robots = []
         @bullets = []
+        @items = []
         @player = new PlayerRobot
         @player.x = @map.getX 3
         @player.y = @map.getY 4
@@ -154,6 +170,16 @@ class RobotWorld extends Group
         #Debug.log "#{@map.getPosX(robot.x)}, #{@map.getPosY(robot.y)}"
         return robot.within(bullet, 32)
 
+    updateItems: () ->
+        del = -1
+        for v,i in @items
+            if v.animated == false
+                del = i
+                @items[i] = false
+        if del != -1
+            @items = _.compact(@items)
+        
+
     updateBullets: () ->
         del = -1
         for v,i in @bullets
@@ -161,28 +187,33 @@ class RobotWorld extends Group
                 del = i
                 v.hit(@enemy)
                 @bullets[i] = false
-            else if v.enabled == false
+            else if v.animated == false
                 del = i
                 @bullets[i] = false
             v.update()
         if del != -1
             @bullets = _.compact(@bullets)
 
+    _isAnimated: (array, func) ->
+        animated = false
+        for i in array
+            animated = func(i)
+            break if animated == true
+        return animated
+
     updateRobots: () ->
-        animated = bullet = false
-        for i in @bullets
-            bullet = i.enabled
-            break if bullet == true
-        for i in @robots
-            animated = i.isAnimated()
+        animated = false
+        for i in [@bullets, @robots, @items]
+            animated = @_isAnimated(i, (x) -> x.animated)
             break if animated == true
 
-        if bullet is false and animated is false
+        if animated is false
             for i in @robots
                 i.update()
 
     update: (views)->
         #@swicher.update()
+        @updateItems()
         @updateRobots()
         @updateBullets()
 
@@ -222,27 +253,21 @@ class RobotGame extends Game
         @keybind(75, 'k')
 
     _assetPreload: ->
-        for k,path of Config.R.CHAR
-            Debug.log "load image #{path}"
-            @preload path
-        for k,path of Config.R.BACKGROUND_IMAGE
-            Debug.log "load image #{path}"
-            @preload path
-        for k,path of Config.R.UI
-            Debug.log "load image #{path}"
-            @preload path
-        for k,path of Config.R.EFFECT
-            Debug.log "load image #{path}"
-            @preload path
-        for k,path of Config.R.BULLET
-            Debug.log "load image #{path}"
-            @preload path
+        load = (hash) =>
+            for k,path of hash
+                Debug.log "load image #{path}"
+                @preload path
+
+        load R.CHAR
+        load R.BACKGROUND_IMAGE
+        load R.UI
+        load R.EFFECT
+        load R.BULLET
+        load R.ITEM
 
     onload: ->
         @scene = new RobotScene @
         @pushScene @scene
-
-
 
 window.onload = () ->
     game = new RobotGame Config.GAME_WIDTH, Config.GAME_WIDTH

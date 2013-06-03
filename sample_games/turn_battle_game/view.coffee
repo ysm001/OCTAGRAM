@@ -183,11 +183,10 @@ class MsgBox extends Group
         @label = new Label
         @label.font = "16px 'Meiryo UI'"
         @label.color = '#FFF'
-        @label.x = 25
-        @label.y = 25
+        @label.x = 30
+        @label.y = 30
         @addChild @label
         @label.width = MsgWindow.WIDTH * 0.85
-        @print "sassssssssssssssssssssssssssssssssssssssssssssssssss"
 
     print: (msg) ->
         @label.text = "#{msg}"
@@ -201,6 +200,37 @@ class StatusWindow extends Sprite
         @y = y
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.STATUS_BOX]
 
+
+class RemainingBullet extends Sprite
+    @SIZE = 24
+    constructor: (x, y) ->
+        super 24, 24
+        @x = x
+        @y = y
+        @image = Game.instance.assets[R.ITEM.STATUS_BULLET]
+
+class RemainingBullets extends Group
+
+    @HEIGHT = 100
+    @WIDTH = 120
+    constructor: (x, y) ->
+        super RemainingBullets.WIDTH, RemainingBullets.HEIGHT
+        @x = x
+        @y = y
+        @size = 0
+        @stack = new Stack 5
+
+    increment: () ->
+        b = new RemainingBullet(@size * RemainingBullet.SIZE ,0)
+        @stack.push b
+        @size++
+        @addChild b if b?
+
+    decrement: () ->
+        b = @stack.pop()
+        @size--
+        @removeChild b if b?
+
 class StatusBox extends Group
 
     constructor: (x,y) ->
@@ -209,16 +239,17 @@ class StatusBox extends Group
         @y = y
         @window = new StatusWindow 0, 0
         @addChild @window
-        @label = new Label
+        @label = new Label("弾:")
         @label.font = "16px 'Meiryo UI'"
         @label.color = '#FFF'
-        @label.x = 25
-        @label.y = 25
+        @label.x = 30
+        @label.y = 30
         @addChild @label
         @label.width = MsgWindow.WIDTH * 0.25
 
-    print: (msg) ->
-        @label.text = "#{msg}"
+        @remainingBullets = new RemainingBullets 30, 30
+        @addChild @remainingBullets
+
 
 class Footer extends Group
     constructor: (x,y) ->

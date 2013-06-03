@@ -20,6 +20,9 @@ class ItemQueue
     empty: () ->
         @collection.length == 0
 
+    size: () ->
+        @collection.length
+
 class Robot extends Sprite
     @MAX_HP = 4
     bit = 1
@@ -47,12 +50,18 @@ class Robot extends Sprite
 
     onKeyInput: (input) ->
 
+    createBullet: () ->
+
+    onAnimateComplete: () =>
+        @animated = false
+
     onCmdComplete: (id, ret) ->
         msgbox = @game.scene.views.msgbox
         switch id
             when Instruction.MOVE_UP, Instruction.MOVE_DOWN, Instruction.MOVE_LEFT, Instruction.MOVE_RIGHT
                 if ret != false
                     msgbox.print R.String.move(@name, ret.x+1, ret.y+1)
+                    @animated = true
                 else
                     msgbox.print R.String.CANNOTMOVE
             when Instruction.SHOT
@@ -125,6 +134,9 @@ class PlayerRobot extends Robot
         @image = @game.assets[R.CHAR.PLAYER]
         @cmdPool = new CommandPool
 
+    createBullet: () ->
+        new DroidBullet(@x, @y, DroidBullet.RIGHT)
+
     onViewUpdate: (views) ->
         map = views.map
         prevTile = map.getTile @prevX, @prevY
@@ -167,16 +179,8 @@ class EnemyRobot extends Robot
         @image = @game.assets[R.CHAR.ENEMY]
         @cmdPool = new CommandPool
 
-    getDirect: () ->
-        switch @frame
-            when 0
-                Robot.RIGHT
-            when 1
-                Robot.UP
-            when 2
-                Robot.LEFT
-            when 3
-                Robot.DOWN
+    createBullet: () ->
+        new DroidBullet(@x, @y, DroidBullet.RIGHT)
 
     onViewUpdate: (views) ->
         map = views.map

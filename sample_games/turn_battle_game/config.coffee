@@ -10,7 +10,7 @@ class Config.R
         PLAYER : "#{R.RESOURCE_DIR}/robot/player.png"
         ENEMY : "#{R.RESOURCE_DIR}/robot/enemy.png"
     @BACKGROUND_IMAGE :
-        SPACE : "#{R.RESOURCE_DIR}/background/statespace.png"
+        SPACE : "#{R.RESOURCE_DIR}/background/background_space.png"
         HEADER : "#{R.RESOURCE_DIR}/background/header.png"
         HP_YELLOW : "#{R.RESOURCE_DIR}/background/hp_yellow.png"
         HP_BULE : "#{R.RESOURCE_DIR}/background/hp_blue.png"
@@ -29,6 +29,9 @@ class Config.R
     @BULLET :
         ENEMY : "#{R.RESOURCE_DIR}/bullet/bullet1.png"
         DROID : "#{R.RESOURCE_DIR}/bullet/bullet2.png"
+    @ITEM :
+        BULLET : "#{R.RESOURCE_DIR}/item/bullet.png"
+        STATUS_BULLET : "#{R.RESOURCE_DIR}/item/status_bullet.png"
 
         #enchant.ui = { assets: [Config.R.PAD, Config.R.APAD, Config.R.FONT0, Config.R.ICON0] }
 class Config.R.String

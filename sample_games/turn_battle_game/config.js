@@ -23,7 +23,7 @@ Config.R = (function() {
   };
 
   R.BACKGROUND_IMAGE = {
-    SPACE: "" + R.RESOURCE_DIR + "/background/statespace.png",
+    SPACE: "" + R.RESOURCE_DIR + "/background/background_space.png",
     HEADER: "" + R.RESOURCE_DIR + "/background/header.png",
     HP_YELLOW: "" + R.RESOURCE_DIR + "/background/hp_yellow.png",
     HP_BULE: "" + R.RESOURCE_DIR + "/background/hp_blue.png",
@@ -48,6 +48,11 @@ Config.R = (function() {
   R.BULLET = {
     ENEMY: "" + R.RESOURCE_DIR + "/bullet/bullet1.png",
     DROID: "" + R.RESOURCE_DIR + "/bullet/bullet2.png"
+  };
+
+  R.ITEM = {
+    BULLET: "" + R.RESOURCE_DIR + "/item/bullet.png",
+    STATUS_BULLET: "" + R.RESOURCE_DIR + "/item/status_bullet.png"
   };
 
   return R;

@@ -6,6 +6,8 @@ class Instruction
     @SHOT = "shot"
     @PICKUP = "pickup"
     @SEARCH = "search"
+    @GET_HP = "getHp"
+    @GET_BULLET_QUEUE_SIZE = "getBulletQueueSize"
     @END = "end"
 
     constructor: (@id, @func)->

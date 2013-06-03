@@ -14,4 +14,16 @@ class Util
     @toDeg: (r) ->
         r * 180.0 / (Math.atan(1.0) * 4.0)
 
+class Stack
 
+    constructor: (@maxSize) ->
+        @s = []
+
+    push: (item) ->
+        @s.push item if @maxSize >= @s.length
+
+    pop: () ->
+        @s.pop() if @s.length > 0
+
+    size: () ->
+        @s.length

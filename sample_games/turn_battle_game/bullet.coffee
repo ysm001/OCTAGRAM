@@ -22,7 +22,7 @@ class Bullet extends Sprite
         @offsetX = @x
         @offsetY = @y
         @dstPoint = new Point 0, 0
-        @enabled = true
+        @animated = true
         if @_rorateDeg?
             @rotate -@_rorateDeg
         if (@direct & Bullet.UP) != 0
@@ -45,7 +45,7 @@ class Bullet extends Sprite
         robot.damege()
 
     update:() ->
-        if @enabled
+        if @animated
             #Debug.log "#{@x}, #{@y}"
             @x += parseInt(@dstPoint.x / Bullet.MAX_FRAME)
             @y += parseInt(@dstPoint.y / Bullet.MAX_FRAME)
@@ -54,8 +54,8 @@ class Bullet extends Sprite
                 @onDestroy()
 
     onDestroy: () ->
-        if @enabled
-            @enabled = false
+        if @animated
+            @animated = false
             @parentNode.removeChild @
 
 
@@ -73,3 +73,26 @@ class EnemyBullet extends Bullet
     constructor: (x, y, direct=DroidBullet.RIGHT) ->
         super x, y, EnemyBullet.WIDTH, EnemyBullet.HEIGHT, direct
         @image = Game.instance.assets[R.BULLET.ENEMY]
+
+
+class Item extends Sprite
+
+    constructor:(w, h) ->
+        super w, h
+        @animated = true
+
+    onComplete: () =>
+        @animated = false
+        @parentNode.removeChild @
+
+
+class BulletItem extends Item
+    @SIZE = 64
+    @FRAME = 20
+    constructor:(x, y) ->
+        super BulletItem.SIZE, BulletItem.SIZE
+        @x = x
+        @y = y-8
+        @image = Game.instance.assets[R.ITEM.BULLET]
+        @tl.fadeOut(BulletItem.FRAME).and().moveBy(0, -48, BulletItem.FRAME).then(() -> @onComplete())
+

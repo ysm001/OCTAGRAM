@@ -16,6 +16,10 @@ Instruction = (function() {
 
   Instruction.SEARCH = "search";
 
+  Instruction.GET_HP = "getHp";
+
+  Instruction.GET_BULLET_QUEUE_SIZE = "getBulletQueueSize";
+
   Instruction.END = "end";
 
   function Instruction(id, func) {
