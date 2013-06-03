@@ -57,13 +57,14 @@ class PlayerHp extends Group
     reduce: () ->
         @hp.value -= @hp.maxValue / PlayerHp.MAX_HP if @hp.value > 0
 
-class Tile extends Sprite
-    @SIZE = 64
-    constructor: (x,y) ->
-        super Tile.SIZE, Tile.SIZE
+class Plate extends Sprite
+    @HEIGHT = 74
+    @WIDTH = 64
+    constructor: (x, y, @ix, @iy) ->
+        super Plate.WIDTH, Plate.HEIGHT
         @x = x
         @y = y
-        @image = Game.instance.assets[R.BACKGROUND_IMAGE.TILE]
+        @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE]
 
     setPlayerSelected: () ->
         @frame = 1
@@ -78,68 +79,85 @@ class Tile extends Sprite
     setNormal: () ->
         @frame = 0
 
+    getAbsolutePos: () ->
+        i = @parentNode
+        offsetX = offsetY = 0
+        while i?
+            offsetX += i.x
+            offsetY += i.y
+            i = i.parentNode
+
+        new Point(@x + offsetX, @y + offsetY)
+
 class Map extends Group
-    @WIDTH = 10
+    @WIDTH = 9
     @HEIGHT = 7
-    @UNIT_SIZE = Tile.SIZE
+    @UNIT_HEIGHT = Plate.HEIGHT
+    @UNIT_WIDTH = Plate.WIDTH
 
     constructor: (x, y)->
         if Map.instance?
             return Map.instance
         super
         Map.instance = @
-        @matrix = []
+        @plateMatrix = []
+        offset = 64/4
         # backgrond images
-        for ty in [0..Map.HEIGHT - 1]
-            for tx in [0..Map.WIDTH - 1]
-                tile = new Tile((tx * Map.UNIT_SIZE), (ty * Map.UNIT_SIZE))
-                @matrix.push tile
-                @addChild tile
+        for ty in [0...Map.HEIGHT]
+            list = []
+            for tx in [0...Map.WIDTH]
+                if ty % 2 == 0
+                    plate = new Plate(tx * Map.UNIT_WIDTH , (ty * Map.UNIT_HEIGHT) - ty * offset, tx, ty)
+                else
+                    plate = new Plate((tx * Map.UNIT_WIDTH+Map.UNIT_HEIGHT/2), (ty * Map.UNIT_HEIGHT)- ty * offset, tx, ty)
+                list.push plate
+                @addChild plate
+            @plateMatrix.push list
         @x = x
         @y = y
-        @width = Map.WIDTH * Map.UNIT_SIZE
-        @height = Map.HEIGHT * Map.UNIT_SIZE
+        @width = Map.WIDTH * Map.UNIT_WIDTH
+        @height = (Map.HEIGHT-1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 16
         @object = {}
 
-    isIntersect: (x, y) ->
-        #Debug.log "#{@getPosX(x)},#{@getPosX(y)}"
-        for k,v of @object
-            #Debug.log "#{k}=#{@getPosX(v.x)},#{@getPosY(v.y)}"
-            if @getPosX(v.x) == @getPosX(x) and @getPosY(v.y) == @getPosY(y)
-                return true
-        return false
+    getTargetPoision:(plate, direct=Direct.RIGHT) ->
+        if direct == Direct.RIGHT
+            if @plateMatrix[plate.iy].length > plate.ix + 1
+                return @plateMatrix[plate.iy][plate.ix+1]
+            else
+                return null
+        else if direct == Direct.LEFT
+            if plate.ix > 0
+                return @plateMatrix[plate.iy][plate.ix-1]
+            else
+                return null
 
-    getTileByPos: (posx, posy) ->
-        @matrix[posy * Map.WIDTH + posx]
-
-    getTile: (x, y) ->
-        @matrix[@getPosY(y) * Map.WIDTH + @getPosX(x)]
+        if (direct & Direct.RIGHT) != 0 and (direct & Direct.UP) != 0
+            offset = if plate.iy % 2 == 0 then 0 else 1
+            if offset + plate.ix < Map.WIDTH and plate.iy > 0
+                return @plateMatrix[plate.iy-1][offset + plate.ix]
+            else
+                return null
+        else if (direct & Direct.RIGHT) != 0 and (direct & Direct.DOWN) != 0
+            offset = if plate.iy % 2 == 0 then 0 else 1
+            if offset + plate.ix < Map.WIDTH and plate.iy+1 < Map.HEIGHT
+                return @plateMatrix[plate.iy+1][offset + plate.ix]
+            else
+                return null
+        else if (direct & Direct.LEFT) != 0 and (direct & Direct.UP) != 0
+            offset = if plate.iy % 2 == 0 then -1 else 0
+            if offset + plate.ix >= 0 and plate.iy > 0
+                return @plateMatrix[plate.iy-1][offset + plate.ix]
+            else
+                return null
+        else if (direct & Direct.LEFT) != 0 and (direct & Direct.DOWN) != 0
+            offset = if plate.iy % 2 == 0 then -1 else 0
+            if offset + plate.ix >= 0 and plate.iy+1 < Map.HEIGHT
+                return @plateMatrix[plate.iy+1][offset + plate.ix]
+            else
+                return null
         
-    getX: (posX) ->
-        posX * Map.UNIT_SIZE + @x
+        return null
 
-    getY: (posY) ->
-        posY * Map.UNIT_SIZE + @y
-
-    getPos: (x, y) ->
-        return new Point @getPosX(x), @getPosY(y)
-
-    getPosX: (x) ->
-        x = parseInt(x)
-        tmpx = (x - @x)
-        base = tmpx - (tmpx % Map.UNIT_SIZE)
-        if tmpx >= base + Map.UNIT_SIZE/2
-            return base / Map.UNIT_SIZE + 1
-        else
-            return base / Map.UNIT_SIZE
-    getPosY: (y) ->
-        y = parseInt(y)
-        tmpx = (y - @y)
-        base = tmpx - (tmpx % Map.UNIT_SIZE)
-        if tmpx >= base + Map.UNIT_SIZE/2
-            return base / Map.UNIT_SIZE + 1
-        else
-            return base / Map.UNIT_SIZE
 
 class Button extends Sprite
     @WIDTH = 120

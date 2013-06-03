@@ -1,6 +1,8 @@
 class Instruction
-    @MOVE_UP = "moveup"
-    @MOVE_DOWN = "moveDown"
+    @MOVE_LEFT_UP = "moveLeftUp"
+    @MOVE_LEFT_DOWN = "moveLeftDown"
+    @MOVE_RIGHT_UP = "moveRightUp"
+    @MOVE_RIGHT_DOWN = "moveRightDown"
     @MOVE_LEFT = "moveLeft"
     @MOVE_RIGHT = "moveRight"
     @SHOT = "shot"
@@ -12,8 +14,116 @@ class Instruction
 
     constructor: (@id, @func)->
 
+move = (plate) ->
+    ret = false
+    if plate?
+        @prevPlate = @currentPlate
+        pos = plate.getAbsolutePos()
+        @tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
+        @currentPlate = plate
+        ret = new Point plate.ix, plate.iy
+    else
+        ret = false
+    return ret
 
-        
+class MoveRight extends Instruction
+    constructor:() ->
+        super Instruction.MOVE_RIGHT, @func
+    func:() ->
+        ret = true
+        @frame = 0
+        plate = @map.getTargetPoision(@currentPlate, Direct.RIGHT)
+        return move.call(@, plate)
 
 
+class MoveLeftUp extends Instruction
+    constructor:() ->
+        super Instruction.MOVE_LEFT_UP, @func
+    func: () ->
+        ret = true
+        @frame = 6
+        plate = @map.getTargetPoision(@currentPlate, Direct.UP | Direct.LEFT)
+        return move.call(@, plate)
 
+
+class MoveLeftDown extends Instruction
+    constructor:() ->
+        super Instruction.MOVE_LEFT_DOWN, @func
+    func:() ->
+        ret = true
+        @frame = 7
+        plate = @map.getTargetPoision(@currentPlate, Direct.DOWN | Direct.LEFT)
+        return move.call(@, plate)
+
+class MoveRightUp extends Instruction
+    constructor:() ->
+        super Instruction.MOVE_RIGHT_UP, @func
+    func:() ->
+        ret = true
+        @frame = 4
+        plate = @map.getTargetPoision(@currentPlate, Direct.UP | Direct.RIGHT)
+        return move.call(@, plate)
+
+class MoveRightDown extends Instruction
+    constructor:() ->
+        super Instruction.MOVE_RIGHT_DOWN, @func
+    func:() ->
+        ret = true
+        @frame = 5
+        plate = @map.getTargetPoision(@currentPlate, Direct.DOWN | Direct.RIGHT)
+        return move.call(@, plate)
+
+class MoveLeft extends Instruction
+    constructor:() ->
+        super Instruction.MOVE_LEFT, @func
+    func:() ->
+        ret = true
+        @frame = 2
+        plate = @map.getTargetPoision(@currentPlate, Direct.LEFT)
+        return move.call(@, plate)
+
+class Shot extends Instruction
+    constructor: () ->
+        super Instruction.SHOT, @func
+    func: () ->
+        unless @bltQueue.empty()
+            for b in @bltQueue.dequeue()
+                b.shot(@x, @y, @getDirect())
+                @scene.world.bullets.push b
+                @scene.world.addChild b
+                @scene.views.footer.statusBox.remainingBullets.decrement()
+            return true
+        return false
+
+
+class Searching extends Instruction
+    constructor:() ->
+        super Instruction.SEARCH, @func
+    func: () ->
+        world = @scene.world
+        robot = if @ == world.player then world.enemy else @
+        return new Point(robot.x - @x, robot.y - @y)
+
+class Pickup extends Instruction
+    constructor:() ->
+        super Instruction.PICKUP, @func
+    func: () ->
+        ret = @bltQueue.enqueue(@createBullet())
+        if ret != false
+            item = new BulletItem(@x, @y)
+            @scene.world.addChild item
+            @scene.world.items.push item
+            @scene.views.footer.statusBox.remainingBullets.increment()
+        return ret
+
+class GetHp extends Instruction
+    constructor: () ->
+        super Instruction.GET_HP, @func
+    func: () ->
+        return @hp
+
+class GetBulletQueueSize extends Instruction
+    constructor: () ->
+        super Instruction.GET_BULLET_QUEUE_SIZE, @func
+    func: () ->
+        return @bltQueue.size()

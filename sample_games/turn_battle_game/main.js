@@ -7,130 +7,23 @@ R = Config.R;
 
 CommandPool = (function() {
   function CommandPool() {
-    var end, getBulletQueueSize, getHp, map, moveDown, moveLeft, moveRight, moveUp, pickup, search, shot;
+    var end;
 
-    map = Map.instance;
-    this.game = Game.instance;
     end = new Instruction(Instruction.END, function() {
       return true;
     });
     this.end = new Command(end);
-    moveUp = new Instruction(Instruction.MOVE_UP, function() {
-      var ret, y;
-
-      ret = true;
-      this.frame = 1;
-      y = this.y - Map.UNIT_SIZE;
-      if (!this.map.isIntersect(this.x, y) && y >= 0) {
-        this.tl.moveBy(0, -Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME).then(function() {
-          return this.onAnimateComplete();
-        });
-        ret = this.map.getPos(this.x, this.y - Map.UNIT_SIZE);
-      } else {
-        ret = false;
-      }
-      return ret;
-    });
-    this.moveUp = new Command(moveUp);
-    moveDown = new Instruction(Instruction.MOVE_DOWN, function() {
-      var ret, y;
-
-      ret = true;
-      this.frame = 3;
-      y = this.y + Map.UNIT_SIZE;
-      if (!this.map.isIntersect(this.x, y) && y <= (Map.UNIT_SIZE * Map.HEIGHT)) {
-        this.tl.moveBy(0, Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME).then(function() {
-          return this.onAnimateComplete();
-        });
-        ret = this.map.getPos(this.x, this.y + Map.UNIT_SIZE);
-      } else {
-        ret = false;
-      }
-      return ret;
-    });
-    this.moveDown = new Command(moveDown);
-    moveLeft = new Instruction(Instruction.MOVE_LEFT, function() {
-      var ret, x;
-
-      ret = true;
-      this.frame = 2;
-      x = this.x - Map.UNIT_SIZE;
-      if (!this.map.isIntersect(x, this.y) && x >= 0) {
-        this.tl.moveBy(-Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME).then(function() {
-          return this.onAnimateComplete();
-        });
-        ret = this.map.getPos(this.x - Map.UNIT_SIZE, this.y);
-      } else {
-        ret = false;
-      }
-      return ret;
-    });
-    this.moveLeft = new Command(moveLeft);
-    moveRight = new Instruction(Instruction.MOVE_RIGHT, function() {
-      var ret, x;
-
-      ret = true;
-      this.frame = 0;
-      x = this.x + Map.UNIT_SIZE;
-      if (!this.map.isIntersect(x, this.y) && x <= (Map.UNIT_SIZE * (Map.WIDTH - 1))) {
-        this.tl.moveBy(Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME).then(function() {
-          return this.onAnimateComplete();
-        });
-        ret = this.map.getPos(this.x + Map.UNIT_SIZE, this.y);
-      } else {
-        ret = false;
-      }
-      return ret;
-    });
-    this.moveRight = new Command(moveRight);
-    shot = new Instruction(Instruction.SHOT, function() {
-      var b, scene, _i, _len, _ref;
-
-      scene = Game.instance.scene;
-      if (!this.bltQueue.empty()) {
-        _ref = this.bltQueue.dequeue();
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          b = _ref[_i];
-          b.set(this.x, this.y, this.getDirect());
-          scene.world.bullets.push(b);
-          scene.world.addChild(b);
-          scene.views.footer.statusBox.remainingBullets.decrement();
-        }
-        return true;
-      }
-      return false;
-    });
-    this.shot = new Command(shot);
-    search = new Instruction(Instruction.SEARCH, function() {
-      var robot, world;
-
-      world = Game.instance.scene.world;
-      robot = this === world.player ? world.enemy : this;
-      return new Point(this.map.getPosX(robot.x - this.x), this.map.getPosY(robot.y - this.y));
-    });
-    this.search = new Command(search);
-    pickup = new Instruction(Instruction.PICKUP, function() {
-      var item, ret, scene;
-
-      ret = this.bltQueue.enqueue(this.createBullet());
-      if (ret !== false) {
-        scene = Game.instance.scene;
-        item = new BulletItem(this.x, this.y);
-        scene.world.addChild(item);
-        scene.world.items.push(item);
-        scene.views.footer.statusBox.remainingBullets.increment();
-      }
-      return ret;
-    });
-    this.pickup = new Command(pickup);
-    getHp = new Instruction(Instruction.GET_HP, function() {
-      return this.hp;
-    });
-    this.getHp = new Command(getHp);
-    getBulletQueueSize = new Instruction(Instruction.GET_BULLET_QUEUE_SIZE, function() {
-      return this.bltQueue.size();
-    });
-    this.getBulletQueueSize = Command(getBulletQueueSize);
+    this.moveLeftUp = new Command(new MoveLeftUp);
+    this.moveleftDown = new Command(new MoveLeftDown);
+    this.moveRightUp = new Command(new MoveRightUp);
+    this.moveRightDown = new Command(new MoveRightDown);
+    this.moveRight = new Command(new MoveRight);
+    this.moveLeft = new Command(new MoveLeft);
+    this.shot = new Command(new Shot);
+    this.search = new Command(new Searching);
+    this.pickup = new Command(new Pickup);
+    this.getHp = new Command(new GetHp);
+    this.getBulletQueueSize = Command(new GetBulletQueueSize);
   }
 
   return CommandPool;
@@ -147,7 +40,7 @@ ViewGroup = (function(_super) {
     this.addChild(this.background);
     this.header = new Header(0, 0);
     this.addChild(this.header);
-    this.map = new Map(0, 32);
+    this.map = new Map(16, 64);
     this.addChild(this.map);
     this.footer = new Footer(5, this.map.y + this.map.height + 5);
     this.msgbox = this.footer.msgbox;
@@ -227,13 +120,9 @@ RobotWorld = (function(_super) {
     this.bullets = [];
     this.items = [];
     this.player = new PlayerRobot;
-    this.player.x = this.map.getX(3);
-    this.player.y = this.map.getY(4);
     this.addChild(this.player);
     this.robots.push(this.player);
     this.enemy = new EnemyRobot;
-    this.enemy.x = this.map.getX(8);
-    this.enemy.y = this.map.getY(4);
     this.addChild(this.enemy);
     this.robots.push(this.enemy);
     this.swicher = new TurnSwitcher(this);
@@ -277,7 +166,6 @@ RobotWorld = (function(_super) {
         del = i;
         this.bullets[i] = false;
       }
-      v.update();
     }
     if (del !== -1) {
       return this.bullets = _.compact(this.bullets);
@@ -372,6 +260,8 @@ RobotGame = (function(_super) {
     this.keybind(68, 'd');
     this.keybind(83, 's');
     this.keybind(81, 'q');
+    this.keybind(69, 'e');
+    this.keybind(67, 'c');
     this.keybind(76, 'l');
     this.keybind(77, 'm');
     this.keybind(74, 'j');

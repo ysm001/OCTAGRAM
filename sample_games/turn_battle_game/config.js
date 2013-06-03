@@ -28,7 +28,7 @@ Config.R = (function() {
     HP_YELLOW: "" + R.RESOURCE_DIR + "/background/hp_yellow.png",
     HP_BULE: "" + R.RESOURCE_DIR + "/background/hp_blue.png",
     HEADER_UNDER_BAR: "" + R.RESOURCE_DIR + "/background/hp_under_bar.png",
-    TILE: "" + R.RESOURCE_DIR + "/background/tile.png",
+    PLATE: "" + R.RESOURCE_DIR + "/background/plate.png",
     MSGBOX: "" + R.RESOURCE_DIR + "/background/msgbox.png",
     STATUS_BOX: "" + R.RESOURCE_DIR + "/background/status_box.png",
     NEXT_BUTTON: "" + R.RESOURCE_DIR + "/background/next_button.png"

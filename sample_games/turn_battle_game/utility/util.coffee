@@ -1,4 +1,21 @@
 
+
+toi = (i) ->
+    parseInt(i)
+
+class Direct
+    bit = 1
+    @LEFT = bit << 0
+    @RIGHT = bit << 1
+    @UP = bit << 2
+    @DOWN = bit << 3
+
+class Point
+    constructor:(@x, @y) ->
+
+    length: () ->
+        Math.sqrt(@x*@x+@y*@y)
+
 class Util
 
     @includedAngle: (vec1, vec2) ->
@@ -13,6 +30,13 @@ class Util
 
     @toDeg: (r) ->
         r * 180.0 / (Math.atan(1.0) * 4.0)
+
+    @toRad: (deg) ->
+        deg * Math.PI / 180
+
+    @toCartesianCoordinates: (r, rad) ->
+        return new Point(r * Math.cos(rad), r * Math.sin(rad))
+
 
 class Stack
 

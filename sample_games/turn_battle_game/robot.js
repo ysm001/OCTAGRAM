@@ -47,24 +47,15 @@ ItemQueue = (function() {
 })();
 
 Robot = (function(_super) {
-  var bit;
-
   __extends(Robot, _super);
 
   Robot.MAX_HP = 4;
 
-  bit = 1;
-
-  Robot.LEFT = bit << 0;
-
-  Robot.RIGHT = bit << 1;
-
-  Robot.UP = bit << 2;
-
-  Robot.DOWN = bit << 3;
-
   function Robot(width, height) {
-    this.onAnimateComplete = __bind(this.onAnimateComplete, this);    Robot.__super__.constructor.call(this, width, height);
+    this.onAnimateComplete = __bind(this.onAnimateComplete, this);
+    var pos;
+
+    Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
     this.game = Game.instance;
     this.iter = null;
@@ -75,6 +66,11 @@ Robot = (function(_super) {
     this.cmdQueue = new CommandQueue;
     this.bltQueue = new ItemQueue([], 5);
     this.map = Map.instance;
+    this.prevPlate = this.map.plateMatrix[0][0];
+    this.currentPlate = this.map.plateMatrix[0][0];
+    pos = this.currentPlate.getAbsolutePos();
+    this.x = pos.x;
+    this.y = pos.y;
   }
 
   Robot.prototype.onViewUpdate = function(views) {};
@@ -94,8 +90,10 @@ Robot = (function(_super) {
 
     msgbox = this.game.scene.views.msgbox;
     switch (id) {
-      case Instruction.MOVE_UP:
-      case Instruction.MOVE_DOWN:
+      case Instruction.MOVE_RIGHT_UP:
+      case Instruction.MOVE_RIGHT_DOWN:
+      case Instruction.MOVE_LEFT_DOWN:
+      case Instruction.MOVE_LEFT_UP:
       case Instruction.MOVE_LEFT:
       case Instruction.MOVE_RIGHT:
         if (ret !== false) {
@@ -132,13 +130,21 @@ Robot = (function(_super) {
   Robot.prototype.getDirect = function() {
     switch (this.frame) {
       case 0:
-        return Robot.RIGHT;
+        return Direct.RIGHT;
       case 1:
-        return Robot.UP;
+        return Direct.UP;
       case 2:
-        return Robot.LEFT;
+        return Direct.LEFT;
       case 3:
-        return Robot.DOWN;
+        return Direct.DOWN;
+      case 4:
+        return Direct.UP | Direct.RIGHT;
+      case 5:
+        return Direct.DOWN | Direct.RIGHT;
+      case 6:
+        return Direct.UP | Direct.LEFT;
+      case 7:
+        return Direct.DOWN | Direct.LEFT;
     }
   };
 
@@ -158,10 +164,7 @@ Robot = (function(_super) {
     ret = false;
     while (this.cmdQueue.empty() === false) {
       cmd = this.cmdQueue.dequeue();
-      Debug.dump(cmd);
-      Debug.log("id : " + cmd.instruction.id);
       ret = cmd["eval"](this);
-      Debug.dump(ret);
       this.onCmdComplete(cmd.instruction.id, ret);
       if (cmd.instruction.id === Instruction.END) {
         ret = true;
@@ -178,12 +181,14 @@ Robot = (function(_super) {
 PlayerRobot = (function(_super) {
   __extends(PlayerRobot, _super);
 
-  PlayerRobot.SIZE = 64;
+  PlayerRobot.WIDTH = 64;
+
+  PlayerRobot.HEIGHT = 74;
 
   PlayerRobot.UPDATE_FRAME = 10;
 
   function PlayerRobot() {
-    PlayerRobot.__super__.constructor.call(this, PlayerRobot.SIZE, PlayerRobot.SIZE);
+    PlayerRobot.__super__.constructor.call(this, PlayerRobot.WIDTH, PlayerRobot.HEIGHT);
     this.name = R.String.PLAYER;
     this.image = this.game.assets[R.CHAR.PLAYER];
     this.cmdPool = new CommandPool;
@@ -194,13 +199,8 @@ PlayerRobot = (function(_super) {
   };
 
   PlayerRobot.prototype.onViewUpdate = function(views) {
-    var map, prevTile, tile;
-
-    map = views.map;
-    prevTile = map.getTile(this.prevX, this.prevY);
-    prevTile.setNormal();
-    tile = map.getTile(this.x, this.y);
-    return tile.setPlayerSelected();
+    this.prevPlate.setNormal();
+    return this.currentPlate.setPlayerSelected();
   };
 
   PlayerRobot.prototype.onHpReduce = function(views) {
@@ -213,16 +213,22 @@ PlayerRobot = (function(_super) {
 
   PlayerRobot.prototype.onKeyInput = function(input) {
     if (input.w === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveUp);
+      this.cmdQueue.enqueue(this.cmdPool.moveLeftUp);
       return this.cmdQueue.enqueue(this.cmdPool.end);
     } else if (input.a === true) {
       this.cmdQueue.enqueue(this.cmdPool.moveLeft);
       return this.cmdQueue.enqueue(this.cmdPool.end);
     } else if (input.x === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveDown);
+      this.cmdQueue.enqueue(this.cmdPool.moveleftDown);
       return this.cmdQueue.enqueue(this.cmdPool.end);
     } else if (input.d === true) {
       this.cmdQueue.enqueue(this.cmdPool.moveRight);
+      return this.cmdQueue.enqueue(this.cmdPool.end);
+    } else if (input.e === true) {
+      this.cmdQueue.enqueue(this.cmdPool.moveRightUp);
+      return this.cmdQueue.enqueue(this.cmdPool.end);
+    } else if (input.c === true) {
+      this.cmdQueue.enqueue(this.cmdPool.moveRightDown);
       return this.cmdQueue.enqueue(this.cmdPool.end);
     } else if (input.s === true) {
       this.cmdQueue.enqueue(this.cmdPool.search);
@@ -257,13 +263,8 @@ EnemyRobot = (function(_super) {
   };
 
   EnemyRobot.prototype.onViewUpdate = function(views) {
-    var map, prevTile, tile;
-
-    map = views.map;
-    prevTile = map.getTile(this.prevX, this.prevY);
-    prevTile.setNormal();
-    tile = map.getTile(this.x, this.y);
-    return tile.setEnemySelected();
+    this.prevPlate.setNormal();
+    return this.currentPlate.setEnemySelected();
   };
 
   EnemyRobot.prototype.onHpReduce = function(views) {

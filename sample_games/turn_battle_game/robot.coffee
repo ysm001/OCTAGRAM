@@ -25,11 +25,6 @@ class ItemQueue
 
 class Robot extends Sprite
     @MAX_HP = 4
-    bit = 1
-    @LEFT = bit << 0
-    @RIGHT = bit << 1
-    @UP = bit << 2
-    @DOWN = bit << 3
     constructor: (width, height) ->
         super width, height
         @name = "robot"
@@ -42,7 +37,11 @@ class Robot extends Sprite
         @cmdQueue = new CommandQueue
         @bltQueue = new ItemQueue [], 5
         @map = Map.instance
-
+        @prevPlate = @map.plateMatrix[0][0]
+        @currentPlate = @map.plateMatrix[0][0]
+        pos = @currentPlate.getAbsolutePos()
+        @x = pos.x
+        @y = pos.y
     
     onViewUpdate: (views) ->
 
@@ -58,7 +57,7 @@ class Robot extends Sprite
     onCmdComplete: (id, ret) ->
         msgbox = @game.scene.views.msgbox
         switch id
-            when Instruction.MOVE_UP, Instruction.MOVE_DOWN, Instruction.MOVE_LEFT, Instruction.MOVE_RIGHT
+            when Instruction.MOVE_RIGHT_UP, Instruction.MOVE_RIGHT_DOWN, Instruction.MOVE_LEFT_DOWN, Instruction.MOVE_LEFT_UP, Instruction.MOVE_LEFT, Instruction.MOVE_RIGHT
                 if ret != false
                     msgbox.print R.String.move(@name, ret.x+1, ret.y+1)
                     @animated = true
@@ -84,13 +83,21 @@ class Robot extends Sprite
     getDirect: () ->
         switch @frame
             when 0
-                Robot.RIGHT
+                Direct.RIGHT
             when 1
-                Robot.UP
+                Direct.UP
             when 2
-                Robot.LEFT
+                Direct.LEFT
             when 3
-                Robot.DOWN
+                Direct.DOWN
+            when 4
+                Direct.UP | Direct.RIGHT
+            when 5
+                Direct.DOWN | Direct.RIGHT
+            when 6
+                Direct.UP | Direct.LEFT
+            when 7
+                Direct.DOWN | Direct.LEFT
 
 
     damege: () ->
@@ -115,10 +122,10 @@ class Robot extends Sprite
         ret = false
         while @cmdQueue.empty() == false
             cmd = @cmdQueue.dequeue()
-            Debug.dump cmd
-            Debug.log "id : #{cmd.instruction.id}"
+            #Debug.dump cmd
+            #Debug.log "id : #{cmd.instruction.id}"
             ret = cmd.eval @
-            Debug.dump ret
+            #Debug.dump ret
             @onCmdComplete cmd.instruction.id, ret
             if cmd.instruction.id == Instruction.END
                 ret = true
@@ -126,10 +133,11 @@ class Robot extends Sprite
         return ret
 
 class PlayerRobot extends Robot
-    @SIZE = 64
+    @WIDTH = 64
+    @HEIGHT = 74
     @UPDATE_FRAME = 10
     constructor: () ->
-        super PlayerRobot.SIZE, PlayerRobot.SIZE
+        super PlayerRobot.WIDTH, PlayerRobot.HEIGHT
         @name = R.String.PLAYER
         @image = @game.assets[R.CHAR.PLAYER]
         @cmdPool = new CommandPool
@@ -138,11 +146,8 @@ class PlayerRobot extends Robot
         new DroidBullet(@x, @y, DroidBullet.RIGHT)
 
     onViewUpdate: (views) ->
-        map = views.map
-        prevTile = map.getTile @prevX, @prevY
-        prevTile.setNormal()
-        tile = map.getTile @x, @y
-        tile.setPlayerSelected()
+        @prevPlate.setNormal()
+        @currentPlate.setPlayerSelected()
 
     onHpReduce: (views) ->
         scene = Game.instance.scene
@@ -151,16 +156,22 @@ class PlayerRobot extends Robot
 
     onKeyInput: (input) ->
         if input.w == true
-            @cmdQueue.enqueue @cmdPool.moveUp
+            @cmdQueue.enqueue @cmdPool.moveLeftUp
             @cmdQueue.enqueue @cmdPool.end
         else if input.a == true
             @cmdQueue.enqueue @cmdPool.moveLeft
             @cmdQueue.enqueue @cmdPool.end
         else if input.x == true
-            @cmdQueue.enqueue @cmdPool.moveDown
+            @cmdQueue.enqueue @cmdPool.moveleftDown
             @cmdQueue.enqueue @cmdPool.end
         else if input.d == true
             @cmdQueue.enqueue @cmdPool.moveRight
+            @cmdQueue.enqueue @cmdPool.end
+        else if input.e == true
+            @cmdQueue.enqueue @cmdPool.moveRightUp
+            @cmdQueue.enqueue @cmdPool.end
+        else if input.c == true
+            @cmdQueue.enqueue @cmdPool.moveRightDown
             @cmdQueue.enqueue @cmdPool.end
         else if input.s == true
             @cmdQueue.enqueue @cmdPool.search
@@ -183,11 +194,8 @@ class EnemyRobot extends Robot
         new DroidBullet(@x, @y, DroidBullet.RIGHT)
 
     onViewUpdate: (views) ->
-        map = views.map
-        prevTile = map.getTile @prevX, @prevY
-        prevTile.setNormal()
-        tile = map.getTile @x, @y
-        tile.setEnemySelected()
+        @prevPlate.setNormal()
+        @currentPlate.setEnemySelected()
 
     onHpReduce: (views) ->
         scene = Game.instance.scene

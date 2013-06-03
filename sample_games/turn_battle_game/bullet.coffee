@@ -1,42 +1,38 @@
 
-class Point
-    constructor:(@x, @y) ->
-
-    length: () ->
-        Math.sqrt(@x*@x+@y*@y)
-
 class Bullet extends Sprite
-    bit = 1
-    @LEFT = bit << 0
-    @RIGHT = bit << 1
-    @UP = bit << 2
-    @DOWN = bit << 3
-    @MAX_FRAME = 16
 
-    constructor: (x, y, w, h, direct=Bullet.RIGHT) ->
+    @MAX_FRAME = 15
+    constructor: (x, y, w, h) ->
         super w, h
         @rotate 90
-        @set x, y, direct
 
-    set: (@x, @y, @direct=Bullet.RIGHT) ->
+    shot: (@x, @y, @direct=Direct.RIGHT) ->
         @offsetX = @x
         @offsetY = @y
         @dstPoint = new Point 0, 0
         @animated = true
         if @_rorateDeg?
             @rotate -@_rorateDeg
-        if (@direct & Bullet.UP) != 0
-            @dstPoint.y = -Map.UNIT_SIZE * 2
-        else if (@direct & Bullet.DOWN) != 0
-            @dstPoint.y = Map.UNIT_SIZE * 2
 
-        if (@direct & Bullet.LEFT) != 0
-            @dstPoint.x = -Map.UNIT_SIZE * 2
-        else if (@direct & Bullet.RIGHT) != 0
-            @dstPoint.x = Map.UNIT_SIZE * 2
-        rotate = Util.toDeg(Util.includedAngle(@dstPoint, new Point(@dstPoint.length(),0)))
+        rotate = 0
+        if (@direct & Direct.LEFT) != 0
+            rotate += 180
+
+        if (@direct & Direct.UP) != 0
+            if (@direct & Direct.LEFT) != 0
+                rotate += 60
+            else
+                rotate -= 60
+        else if (@direct & Direct.DOWN) != 0
+            if (@direct & Direct.LEFT) != 0
+                rotate -= 60
+            else
+                rotate += 60
+
         @rotate rotate
-        @count = 0
+        @_rorateDeg = rotate
+        point = Util.toCartesianCoordinates(70*2, Util.toRad(rotate))
+        @tl.moveBy(toi(point.x), toi(point.y), Bullet.MAX_FRAME).then(() -> @onDestroy())
 
     hit: (robot) ->
         explosion = new Explosion robot.x, robot.y
@@ -44,16 +40,7 @@ class Bullet extends Sprite
         @onDestroy()
         robot.damege()
 
-    update:() ->
-        if @animated
-            #Debug.log "#{@x}, #{@y}"
-            @x += parseInt(@dstPoint.x / Bullet.MAX_FRAME)
-            @y += parseInt(@dstPoint.y / Bullet.MAX_FRAME)
-            @count++
-            if @count >= Bullet.MAX_FRAME
-                @onDestroy()
-
-    onDestroy: () ->
+    onDestroy: () =>
         if @animated
             @animated = false
             @parentNode.removeChild @
@@ -62,16 +49,16 @@ class Bullet extends Sprite
 class DroidBullet extends Bullet
     @WIDTH = 64
     @HEIGHT = 64
-    constructor: (x, y, direct=DroidBullet.RIGHT) ->
-        super x, y, DroidBullet.WIDTH, DroidBullet.HEIGHT, direct
+    constructor: (x, y) ->
+        super x, y, DroidBullet.WIDTH, DroidBullet.HEIGHT
         @image = Game.instance.assets[R.BULLET.DROID]
 
 
 class EnemyBullet extends Bullet
     @WIDTH = 64
     @HEIGHT = 64
-    constructor: (x, y, direct=DroidBullet.RIGHT) ->
-        super x, y, EnemyBullet.WIDTH, EnemyBullet.HEIGHT, direct
+    constructor: (x, y) ->
+        super x, y, EnemyBullet.WIDTH, EnemyBullet.HEIGHT
         @image = Game.instance.assets[R.BULLET.ENEMY]
 
 

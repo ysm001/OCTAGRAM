@@ -2,110 +2,30 @@
 R = Config.R
 
 class CommandPool
-
     constructor: () ->
-        map = Map.instance
-        @game = Game.instance
-
         end = new Instruction Instruction.END, () ->
             return true
         @end = new Command end
-
-        moveUp = new Instruction Instruction.MOVE_UP, () ->
-            ret = true
-            @frame = 1
-            y = @y - Map.UNIT_SIZE
-            if !@map.isIntersect(@x, y) and y >= 0
-                @tl.moveBy(0, -Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
-                ret = @map.getPos(@x, @y - Map.UNIT_SIZE)
-            else
-                ret = false
-            return ret
-        @moveUp = new Command moveUp
-
-        moveDown = new Instruction Instruction.MOVE_DOWN, () ->
-            ret = true
-            @frame = 3
-            y = @y + Map.UNIT_SIZE
-            if !@map.isIntersect(@x, y) and y <= (Map.UNIT_SIZE * Map.HEIGHT)
-                @tl.moveBy(0, Map.UNIT_SIZE, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
-                ret = @map.getPos(@x, @y + Map.UNIT_SIZE)
-            else
-                ret = false
-            return ret
-        @moveDown = new Command moveDown
-
-        moveLeft = new Instruction Instruction.MOVE_LEFT, () ->
-            ret = true
-            @frame = 2
-            x = @x - Map.UNIT_SIZE
-            if !@map.isIntersect(x, @y) and x >= 0
-                @tl.moveBy(-Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
-                ret = @map.getPos(@x - Map.UNIT_SIZE, @y)
-            else
-                ret = false
-            return ret
-        @moveLeft = new Command moveLeft
-
-        moveRight = new Instruction Instruction.MOVE_RIGHT, () ->
-            ret = true
-            @frame = 0
-            x = @x + Map.UNIT_SIZE
-            if !@map.isIntersect(x, @y) and x <= (Map.UNIT_SIZE * (Map.WIDTH - 1))
-                @tl.moveBy(Map.UNIT_SIZE, 0, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
-                ret = @map.getPos(@x + Map.UNIT_SIZE, @y)
-            else
-                ret = false
-            return ret
-        @moveRight = new Command moveRight
-
-        shot = new Instruction Instruction.SHOT, () ->
-            scene = Game.instance.scene
-            unless @bltQueue.empty()
-                for b in @bltQueue.dequeue()
-                    b.set(@x, @y, @getDirect())
-                    scene.world.bullets.push b
-                    scene.world.addChild b
-                    scene.views.footer.statusBox.remainingBullets.decrement()
-                return true
-            return false
-        @shot = new Command shot
-
-        search = new Instruction Instruction.SEARCH, () ->
-            world = Game.instance.scene.world
-            robot = if @ == world.player then world.enemy else @
-            return new Point(@map.getPosX(robot.x - @x), @map.getPosY(robot.y - @y))
-
-        @search = new Command search
-
-        pickup = new Instruction Instruction.PICKUP, () ->
-            ret = @bltQueue.enqueue(@createBullet())
-            if ret != false
-                scene = Game.instance.scene
-                item = new BulletItem(@x, @y)
-                scene.world.addChild item
-                scene.world.items.push item
-                scene.views.footer.statusBox.remainingBullets.increment()
-            return ret
-        @pickup = new Command pickup
-
-        getHp = new Instruction Instruction.GET_HP, () ->
-            return @hp
-        @getHp = new Command getHp
-
-        getBulletQueueSize = new Instruction Instruction.GET_BULLET_QUEUE_SIZE, () ->
-            return @bltQueue.size()
-        @getBulletQueueSize = Command getBulletQueueSize
+        @moveLeftUp = new Command(new MoveLeftUp)
+        @moveleftDown = new Command(new MoveLeftDown)
+        @moveRightUp = new Command(new MoveRightUp)
+        @moveRightDown = new Command(new MoveRightDown)
+        @moveRight = new Command(new MoveRight)
+        @moveLeft = new Command(new MoveLeft)
+        @shot = new Command(new Shot)
+        @search = new Command(new Searching)
+        @pickup = new Command(new Pickup)
+        @getHp = new Command(new GetHp)
+        @getBulletQueueSize = Command(new GetBulletQueueSize)
             
 class ViewGroup extends Group
-
     constructor: (@scene) ->
         super
         @background = new Background 0, 0
         @addChild @background
         @header = new Header 0, 0
         @addChild @header
-        @map = new Map 0, 32
+        @map = new Map 16, 64
         @addChild @map
         @footer = new Footer(5, @map.y + @map.height + 5)
         @msgbox = @footer.msgbox
@@ -150,14 +70,10 @@ class RobotWorld extends Group
         @bullets = []
         @items = []
         @player = new PlayerRobot
-        @player.x = @map.getX 3
-        @player.y = @map.getY 4
         @addChild @player
         @robots.push @player
 
         @enemy = new EnemyRobot
-        @enemy.x = @map.getX 8
-        @enemy.y = @map.getY 4
         @addChild @enemy
         @robots.push @enemy
 
@@ -166,8 +82,6 @@ class RobotWorld extends Group
     initialize: (views)->
 
     collisionBullet: (bullet, robot) ->
-        #Debug.log "#{@map.getPosX(bullet.x)}, #{@map.getPosY(bullet.y)}"
-        #Debug.log "#{@map.getPosX(robot.x)}, #{@map.getPosY(robot.y)}"
         return robot.within(bullet, 32)
 
     updateItems: () ->
@@ -190,7 +104,6 @@ class RobotWorld extends Group
             else if v.animated == false
                 del = i
                 @bullets[i] = false
-            v.update()
         if del != -1
             @bullets = _.compact(@bullets)
 
@@ -245,6 +158,8 @@ class RobotGame extends Game
         @keybind(68, 'd')
         @keybind(83, 's')
         @keybind(81, 'q')
+        @keybind(69, 'e')
+        @keybind(67, 'c')
 
         @keybind(76, 'l')
         @keybind(77, 'm')
