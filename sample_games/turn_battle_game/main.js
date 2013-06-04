@@ -6,7 +6,7 @@ var CommandPool, R, RobotGame, RobotScene, RobotWorld, TurnSwitcher, ViewGroup,
 R = Config.R;
 
 CommandPool = (function() {
-  function CommandPool() {
+  function CommandPool(robot) {
     var end;
 
     end = new Instruction(Instruction.END, function() {
@@ -19,9 +19,11 @@ CommandPool = (function() {
     this.moveRightDown = new Command(new MoveRightDown);
     this.moveRight = new Command(new MoveRight);
     this.moveLeft = new Command(new MoveLeft);
-    this.shot = new Command(new Shot);
     this.search = new Command(new Searching);
-    this.pickup = new Command(new Pickup);
+    this.pickupNormal = new Command(new Pickup(), [BulletType.NORMAL, NormalBulletItem, robot.bltQueue]);
+    this.pickupWide = new Command(new Pickup(), [BulletType.WIDE, WideBulletItem, robot.wideBltQueue]);
+    this.shotNormal = new Command(new Shot(), [robot.bltQueue]);
+    this.shotWide = new Command(new Shot(), [robot.wideBltQueue]);
     this.getHp = new Command(new GetHp);
     this.getBulletQueueSize = Command(new GetBulletQueueSize);
   }
@@ -38,18 +40,15 @@ ViewGroup = (function(_super) {
     ViewGroup.__super__.constructor.apply(this, arguments);
     this.background = new Background(0, 0);
     this.addChild(this.background);
-    this.header = new Header(0, 0);
+    this.header = new Header(16, 16);
+    this.playerHpBar = this.header.playerHpBar;
+    this.enemyHpBar = this.header.enemyHpBar;
     this.addChild(this.header);
-    this.map = new Map(16, 64);
+    this.map = new Map(16, 48);
     this.addChild(this.map);
-    this.footer = new Footer(5, this.map.y + this.map.height + 5);
+    this.footer = new Footer(25, this.map.y + this.map.height);
     this.msgbox = this.footer.msgbox;
     this.addChild(this.footer);
-    this.playerHpBar = new PlayerHp(0, 0, PlayerHp.YELLOW);
-    this.addChild(this.playerHpBar);
-    this.enemyHpBar = new PlayerHp(Header.WIDTH / 2, 0, PlayerHp.BLUE);
-    this.enemyHpBar.direct("left");
-    this.addChild(this.enemyHpBar);
   }
 
   ViewGroup.prototype.update = function(world) {
@@ -112,6 +111,8 @@ RobotWorld = (function(_super) {
   __extends(RobotWorld, _super);
 
   function RobotWorld(scene) {
+    var plate, pos;
+
     this.scene = scene;
     RobotWorld.__super__.constructor.apply(this, arguments);
     this.game = Game.instance;
@@ -120,6 +121,11 @@ RobotWorld = (function(_super) {
     this.bullets = [];
     this.items = [];
     this.player = new PlayerRobot;
+    plate = this.map.getPlate(4, 5);
+    pos = plate.getAbsolutePos();
+    this.player.currentPlate = plate;
+    this.player.x = pos.x;
+    this.player.y = pos.y;
     this.addChild(this.player);
     this.robots.push(this.player);
     this.enemy = new EnemyRobot;
@@ -131,7 +137,7 @@ RobotWorld = (function(_super) {
   RobotWorld.prototype.initialize = function(views) {};
 
   RobotWorld.prototype.collisionBullet = function(bullet, robot) {
-    return robot.within(bullet, 32);
+    return bullet.holder !== robot && bullet.within(robot, 32);
   };
 
   RobotWorld.prototype.updateItems = function() {
@@ -152,19 +158,27 @@ RobotWorld = (function(_super) {
   };
 
   RobotWorld.prototype.updateBullets = function() {
-    var del, i, v, _i, _len, _ref;
+    var del, i, robot, v, _i, _j, _len, _len1, _ref, _ref1;
 
     del = -1;
-    _ref = this.bullets;
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      v = _ref[i];
-      if (this.collisionBullet(v, this.enemy)) {
-        del = i;
-        v.hit(this.enemy);
-        this.bullets[i] = false;
-      } else if (v.animated === false) {
-        del = i;
-        this.bullets[i] = false;
+    _ref = this.robots;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      robot = _ref[_i];
+      _ref1 = this.bullets;
+      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+        v = _ref1[i];
+        if (v !== false) {
+          if (this.collisionBullet(v, robot)) {
+            del = i;
+            v.hit(robot);
+            this.bullets[i] = false;
+            Debug.dump(v);
+            Debug.dump(robot);
+          } else if (v.animated === false) {
+            del = i;
+            this.bullets[i] = false;
+          }
+        }
       }
     }
     if (del !== -1) {
@@ -293,6 +307,10 @@ RobotGame = (function(_super) {
   };
 
   RobotGame.prototype.onload = function() {
+    this.assets["font0.png"] = this.assets['resources/ui/font0.png'];
+    this.assets["apad.png"] = this.assets['resources/ui/apad.png'];
+    this.assets["icon0.png"] = this.assets['resources/ui/icon0.png'];
+    this.assets["pad.png"] = this.assets['resources/ui/pad.png'];
     this.scene = new RobotScene(this);
     return this.pushScene(this.scene);
   };

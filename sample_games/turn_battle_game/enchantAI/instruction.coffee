@@ -14,55 +14,59 @@ class Instruction
 
     constructor: (@id, @func)->
 
-move = (plate) ->
-    ret = false
-    if plate?
-        @prevPlate = @currentPlate
-        pos = plate.getAbsolutePos()
-        @tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
-        @currentPlate = plate
-        ret = new Point plate.ix, plate.iy
-    else
-        ret = false
-    return ret
+class MoveInstruction extends Instruction
+    constructor: (id, func) ->
+        super id, func
 
-class MoveRight extends Instruction
+    @move: (plate) ->
+        ret = false
+        if plate? and plate.lock == false
+            @prevPlate = @currentPlate
+            pos = plate.getAbsolutePos()
+            @tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
+            @currentPlate = plate
+            ret = new Point plate.ix, plate.iy
+        else
+            ret = false
+        return ret
+
+class MoveRight extends MoveInstruction
     constructor:() ->
         super Instruction.MOVE_RIGHT, @func
     func:() ->
         ret = true
         @frame = 0
         plate = @map.getTargetPoision(@currentPlate, Direct.RIGHT)
-        return move.call(@, plate)
+        return MoveInstruction.move.call(@, plate)
 
 
-class MoveLeftUp extends Instruction
+class MoveLeftUp extends MoveInstruction
     constructor:() ->
         super Instruction.MOVE_LEFT_UP, @func
     func: () ->
         ret = true
         @frame = 6
         plate = @map.getTargetPoision(@currentPlate, Direct.UP | Direct.LEFT)
-        return move.call(@, plate)
+        return MoveInstruction.move.call(@, plate)
 
 
-class MoveLeftDown extends Instruction
+class MoveLeftDown extends MoveInstruction
     constructor:() ->
         super Instruction.MOVE_LEFT_DOWN, @func
     func:() ->
         ret = true
         @frame = 7
         plate = @map.getTargetPoision(@currentPlate, Direct.DOWN | Direct.LEFT)
-        return move.call(@, plate)
+        return MoveInstruction.move.call(@, plate)
 
-class MoveRightUp extends Instruction
+class MoveRightUp extends MoveInstruction
     constructor:() ->
         super Instruction.MOVE_RIGHT_UP, @func
     func:() ->
         ret = true
         @frame = 4
         plate = @map.getTargetPoision(@currentPlate, Direct.UP | Direct.RIGHT)
-        return move.call(@, plate)
+        return MoveInstruction.move.call(@, plate)
 
 class MoveRightDown extends Instruction
     constructor:() ->
@@ -71,7 +75,7 @@ class MoveRightDown extends Instruction
         ret = true
         @frame = 5
         plate = @map.getTargetPoision(@currentPlate, Direct.DOWN | Direct.RIGHT)
-        return move.call(@, plate)
+        return MoveInstruction.move.call(@, plate)
 
 class MoveLeft extends Instruction
     constructor:() ->
@@ -80,21 +84,20 @@ class MoveLeft extends Instruction
         ret = true
         @frame = 2
         plate = @map.getTargetPoision(@currentPlate, Direct.LEFT)
-        return move.call(@, plate)
+        return MoveInstruction.move.call(@, plate)
 
 class Shot extends Instruction
     constructor: () ->
         super Instruction.SHOT, @func
-    func: () ->
-        unless @bltQueue.empty()
-            for b in @bltQueue.dequeue()
+    func: (bltQueue) ->
+        unless bltQueue.empty()
+            for b in bltQueue.dequeue()
                 b.shot(@x, @y, @getDirect())
                 @scene.world.bullets.push b
-                @scene.world.addChild b
-                @scene.views.footer.statusBox.remainingBullets.decrement()
-            return true
+                #@scene.world.addChild b
+                @scene.world.insertBefore b, @
+            return b
         return false
-
 
 class Searching extends Instruction
     constructor:() ->
@@ -107,13 +110,14 @@ class Searching extends Instruction
 class Pickup extends Instruction
     constructor:() ->
         super Instruction.PICKUP, @func
-    func: () ->
-        ret = @bltQueue.enqueue(@createBullet())
+    func: (type, itemClass, queue) ->
+        blt = BulletFactory.create(type, @)
+        ret = queue.enqueue(blt)
         if ret != false
-            item = new BulletItem(@x, @y)
+            item = new itemClass(@x, @y)
             @scene.world.addChild item
             @scene.world.items.push item
-            @scene.views.footer.statusBox.remainingBullets.increment()
+            ret = blt
         return ret
 
 class GetHp extends Instruction

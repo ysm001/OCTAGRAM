@@ -1,42 +1,50 @@
 R = Config.R
 
-class Header extends Sprite
-    @WIDTH = 640
-    @HEIGHT = 32
-    constructor: (x,y) ->
-        super Header.WIDTH, Header.HEIGHT
-        @x = x
-        @y = y
-        @image = Game.instance.assets[R.BACKGROUND_IMAGE.HEADER]
-
+class Background extends Sprite
+    @SIZE = 640
+    constructor: (x, y) ->
+        super Background.SIZE, Background.SIZE
+        @image = Game.instance.assets[R.BACKGROUND_IMAGE.SPACE]
 
 class HpBar extends Bar
+    @HEIGHT = 24
+    @MAX_VALUE = 256
     constructor: (x,y,resource=PlayerHp.YELLOW) ->
         super x, y
-        @height = Header.HEIGHT
-        @value = Header.WIDTH / 2
-        @maxValue = Header.WIDTH / 2
+        @height = HpBar.HEIGHT
+        @value = HpBar.MAX_VALUE
+        @maxValue = HpBar.MAX_VALUE
         switch resource
             when PlayerHp.BLUE
                 @image = Game.instance.assets[R.BACKGROUND_IMAGE.HP_BULE]
             when PlayerHp.YELLOW
                 @image = Game.instance.assets[R.BACKGROUND_IMAGE.HP_YELLOW]
 
-class HpUnderBar extends Sprite
-    @WIDTH = Header.WIDTH / 2
-    @HEIGHT = Header.HEIGHT
-    constructor: (x, y) ->
-        super HpUnderBar.WIDTH, HpUnderBar.HEIGHT
+
+class HpEnclosePart extends Sprite
+    @WIDTH = HpBar.MAX_VALUE / 4
+    @HEIGHT = HpBar.HEIGHT
+    constructor: (x, y, i) ->
+        super HpEnclosePart.WIDTH, HpEnclosePart.HEIGHT
         @x = x
         @y = y
-        @height = Header.HEIGHT
-        @image = Game.instance.assets[R.BACKGROUND_IMAGE.HEADER_UNDER_BAR]
+        if i == 0
+            @frame = 0
+        else if i == PlayerHp.MAX_HP - 1
+            @frame = 2
+        else
+            @frame = 1
+        @image = Game.instance.assets[R.BACKGROUND_IMAGE.HP_ENCLOSE]
 
-class Background extends Sprite
-    @SIZE = 640
+class HpEnclose extends Group
+    @WIDTH = HpBar.MAX_VALUE
+    @HEIGHT = HpBar.HEIGHT
     constructor: (x, y) ->
-        super Background.SIZE, Background.SIZE
-        @image = Game.instance.assets[R.BACKGROUND_IMAGE.SPACE]
+        super HpEnclose.WIDTH, HpEnclose.HEIGHT
+        @x = x
+        @y = y
+        for i in [0..3]
+            @addChild new HpEnclosePart(i*HpEnclosePart.WIDTH ,0, i)
 
 class PlayerHp extends Group
     @YELLOW = 1
@@ -46,16 +54,28 @@ class PlayerHp extends Group
         super
         @hp = new HpBar x, y, resource
         @addChild @hp
-        @underBar = new HpUnderBar x, y
+        @underBar = new HpEnclose x, y
         @addChild @underBar
     direct: (direct) ->
-        @underBar.scale(-1, 1)
-        @hp.direction = direct
+        #@underBar.scale(-1, 1)
+        #@hp.direction = direct
         # TODO:
         # doing by force !!
-        @hp.x = Header.WIDTH
+        #@hp.x = Header.WIDTH
     reduce: () ->
         @hp.value -= @hp.maxValue / PlayerHp.MAX_HP if @hp.value > 0
+
+class Header extends Group
+    @WIDTH = 600
+    constructor: (x, y) ->
+        super
+        @x = x
+        @y = y
+        @playerHpBar = new PlayerHp 16, 0, PlayerHp.YELLOW
+        @addChild @playerHpBar
+        @enemyHpBar = new PlayerHp Header.WIDTH/2 + 16, 0, PlayerHp.BLUE
+        @enemyHpBar.direct "left"
+        @addChild @enemyHpBar
 
 class Plate extends Sprite
     @HEIGHT = 74
@@ -64,19 +84,21 @@ class Plate extends Sprite
         super Plate.WIDTH, Plate.HEIGHT
         @x = x
         @y = y
+        @lock = false
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE]
 
     setPlayerSelected: () ->
         @frame = 1
+        @lock = true
         map = Map.instance
-        map.object[@frame] = new Point map.x + @x, map.y + @y
 
     setEnemySelected: () ->
         @frame = 2
+        @lock = true
         map = Map.instance
-        map.object[@frame] = new Point map.x + @x, map.y + @y
 
     setNormal: () ->
+        @lock = false
         @frame = 0
 
     getAbsolutePos: () ->
@@ -118,6 +140,9 @@ class Map extends Group
         @width = Map.WIDTH * Map.UNIT_WIDTH
         @height = (Map.HEIGHT-1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 16
         @object = {}
+
+    getPlate: (x, y) ->
+        return @plateMatrix[x][y]
 
     getTargetPoision:(plate, direct=Direct.RIGHT) ->
         if direct == Direct.RIGHT
@@ -182,8 +207,8 @@ class NextButton extends Button
 
 
 class MsgWindow extends Sprite
-    @WIDTH = 450
-    @HEIGHT = 150
+    @WIDTH = 320
+    @HEIGHT = 128
     constructor: (x,y) ->
         super MsgWindow.WIDTH, MsgWindow.HEIGHT
         @x = x
@@ -201,17 +226,17 @@ class MsgBox extends Group
         @label = new Label
         @label.font = "16px 'Meiryo UI'"
         @label.color = '#FFF'
-        @label.x = 30
+        @label.x = 10
         @label.y = 30
         @addChild @label
-        @label.width = MsgWindow.WIDTH * 0.85
+        @label.width = MsgWindow.WIDTH * 0.9
 
     print: (msg) ->
         @label.text = "#{msg}"
 
 class StatusWindow extends Sprite
-    @WIDTH = 180
-    @HEIGHT = 150
+    @WIDTH = 160
+    @HEIGHT = 128
     constructor: (x,y) ->
         super StatusWindow.WIDTH, StatusWindow.HEIGHT
         @x = x
@@ -221,33 +246,38 @@ class StatusWindow extends Sprite
 
 class RemainingBullet extends Sprite
     @SIZE = 24
-    constructor: (x, y) ->
-        super 24, 24
+    constructor: (x, y, frame) ->
+        super RemainingBullet.SIZE, RemainingBullet.SIZE
         @x = x
         @y = y
+        @frame = frame
         @image = Game.instance.assets[R.ITEM.STATUS_BULLET]
 
 class RemainingBullets extends Group
-
-    @HEIGHT = 100
+    @HEIGHT = 30
     @WIDTH = 120
-    constructor: (x, y) ->
+
+    constructor: (x, y, @type) ->
         super RemainingBullets.WIDTH, RemainingBullets.HEIGHT
         @x = x
         @y = y
         @size = 0
-        @stack = new Stack 5
+        @array = []
+        for i in [0..4]
+            b = new RemainingBullet(i * RemainingBullet.SIZE, 0, @type)
+            @array.push b
+            @addChild b
+
 
     increment: () ->
-        b = new RemainingBullet(@size * RemainingBullet.SIZE ,0)
-        @stack.push b
-        @size++
-        @addChild b if b?
+        if @size < 5
+            @array[@size].frame = @type - 1
+            @size++
 
     decrement: () ->
-        b = @stack.pop()
-        @size--
-        @removeChild b if b?
+        if @size > 0
+            @size--
+            @array[@size].frame = @type
 
 class StatusBox extends Group
 
@@ -255,27 +285,32 @@ class StatusBox extends Group
         super StatusWindow.WIDTH, StatusWindow.HEIGHT
         @x = x
         @y = y
-        @window = new StatusWindow 0, 0
-        @addChild @window
-        @label = new Label("弾:")
-        @label.font = "16px 'Meiryo UI'"
-        @label.color = '#FFF'
-        @label.x = 30
-        @label.y = 30
-        @addChild @label
-        @label.width = MsgWindow.WIDTH * 0.25
+        #@window = new StatusWindow 0, 0
+        #@addChild @window
+        @scoreLabel = new ScoreLabel(30, 0)
+        @scoreLabel.score = 100
+        @addChild @scoreLabel
+        #@label = new Label("残弾数")
+        #@label.font = "12px 'Meiryo UI'"
+        #@label.color = '#FFF'
+        #@label.x = 30
+        #@label.y = 0
+        #@addChild @label
+        @normalRemain = new RemainingBullets 30, 30, 1
+        @wideRemain = new RemainingBullets 30, @normalRemain.y + RemainingBullet.SIZE, 3
+        @dualRemain = new RemainingBullets 30, @wideRemain.y + RemainingBullet.SIZE, 5
 
-        @remainingBullets = new RemainingBullets 30, 30
-        @addChild @remainingBullets
-
+        @addChild @normalRemain
+        @addChild @wideRemain
+        @addChild @dualRemain
 
 class Footer extends Group
     constructor: (x,y) ->
         super
         @x = x
         @y = y
-        @msgbox = new MsgBox 0,0
+        @msgbox = new MsgBox 20, 0
         @addChild @msgbox
-        @statusBox = new StatusBox x+MsgWindow.WIDTH-10,0
+        @statusBox = new StatusBox x+MsgWindow.WIDTH+32, 16
         @addChild @statusBox
 

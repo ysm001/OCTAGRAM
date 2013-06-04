@@ -14,10 +14,10 @@ class Config.R
         HEADER : "#{R.RESOURCE_DIR}/background/header.png"
         HP_YELLOW : "#{R.RESOURCE_DIR}/background/hp_yellow.png"
         HP_BULE : "#{R.RESOURCE_DIR}/background/hp_blue.png"
-        HEADER_UNDER_BAR : "#{R.RESOURCE_DIR}/background/hp_under_bar.png"
+        HP_ENCLOSE : "#{R.RESOURCE_DIR}/background/hpenclose.png"
         PLATE : "#{R.RESOURCE_DIR}/background/plate.png"
         MSGBOX : "#{R.RESOURCE_DIR}/background/msgbox.png"
-        STATUS_BOX : "#{R.RESOURCE_DIR}/background/status_box.png"
+        STATUS_BOX : "#{R.RESOURCE_DIR}/background/statusbox.png"
         NEXT_BUTTON : "#{R.RESOURCE_DIR}/background/next_button.png"
     @UI :
         FONT0 : "#{R.RESOURCE_DIR}/ui/font0.png"
@@ -28,9 +28,11 @@ class Config.R
         EXPLOSION : "#{R.RESOURCE_DIR}/effect/explosion_64x64.png"
     @BULLET :
         ENEMY : "#{R.RESOURCE_DIR}/bullet/bullet1.png"
-        DROID : "#{R.RESOURCE_DIR}/bullet/bullet2.png"
+        NORMAL : "#{R.RESOURCE_DIR}/bullet/normal.png"
+        WIDE : "#{R.RESOURCE_DIR}/bullet/wide.png"
     @ITEM :
-        BULLET : "#{R.RESOURCE_DIR}/item/bullet.png"
+        NORMAL_BULLET : "#{R.RESOURCE_DIR}/item/normal_bullet_item.png"
+        WIDE_BULLET : "#{R.RESOURCE_DIR}/item/wide_bullet_item.png"
         STATUS_BULLET : "#{R.RESOURCE_DIR}/item/status_bullet.png"
 
         #enchant.ui = { assets: [Config.R.PAD, Config.R.APAD, Config.R.FONT0, Config.R.ICON0] }
@@ -49,4 +51,4 @@ class Config.R.String
     @move:(s, x, y) ->
         return "#{s}は(#{x},#{y})に移動しました"
 enchant()
-enchant.ui = { assets: ['resources/ui/pad.png', 'resources/ui/apad.png', 'resources/ui/icon0.png', 'resources/ui/font0.png'] }
+enchant.ui.assets = ['resources/ui/pad.png', 'resources/ui/apad.png', 'resources/ui/icon0.png', 'resources/ui/font0.png']

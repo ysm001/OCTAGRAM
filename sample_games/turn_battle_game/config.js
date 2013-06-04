@@ -27,10 +27,10 @@ Config.R = (function() {
     HEADER: "" + R.RESOURCE_DIR + "/background/header.png",
     HP_YELLOW: "" + R.RESOURCE_DIR + "/background/hp_yellow.png",
     HP_BULE: "" + R.RESOURCE_DIR + "/background/hp_blue.png",
-    HEADER_UNDER_BAR: "" + R.RESOURCE_DIR + "/background/hp_under_bar.png",
+    HP_ENCLOSE: "" + R.RESOURCE_DIR + "/background/hpenclose.png",
     PLATE: "" + R.RESOURCE_DIR + "/background/plate.png",
     MSGBOX: "" + R.RESOURCE_DIR + "/background/msgbox.png",
-    STATUS_BOX: "" + R.RESOURCE_DIR + "/background/status_box.png",
+    STATUS_BOX: "" + R.RESOURCE_DIR + "/background/statusbox.png",
     NEXT_BUTTON: "" + R.RESOURCE_DIR + "/background/next_button.png"
   };
 
@@ -47,11 +47,13 @@ Config.R = (function() {
 
   R.BULLET = {
     ENEMY: "" + R.RESOURCE_DIR + "/bullet/bullet1.png",
-    DROID: "" + R.RESOURCE_DIR + "/bullet/bullet2.png"
+    NORMAL: "" + R.RESOURCE_DIR + "/bullet/normal.png",
+    WIDE: "" + R.RESOURCE_DIR + "/bullet/wide.png"
   };
 
   R.ITEM = {
-    BULLET: "" + R.RESOURCE_DIR + "/item/bullet.png",
+    NORMAL_BULLET: "" + R.RESOURCE_DIR + "/item/normal_bullet_item.png",
+    WIDE_BULLET: "" + R.RESOURCE_DIR + "/item/wide_bullet_item.png",
     STATUS_BULLET: "" + R.RESOURCE_DIR + "/item/status_bullet.png"
   };
 
@@ -90,6 +92,4 @@ Config.R.String = (function() {
 
 enchant();
 
-enchant.ui = {
-  assets: ['resources/ui/pad.png', 'resources/ui/apad.png', 'resources/ui/icon0.png', 'resources/ui/font0.png']
-};
+enchant.ui.assets = ['resources/ui/pad.png', 'resources/ui/apad.png', 'resources/ui/icon0.png', 'resources/ui/font0.png'];

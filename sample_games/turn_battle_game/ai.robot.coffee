@@ -13,10 +13,11 @@
     "config.js",
     "utility/debug.js",
     "utility/util.js",
-    "robot.js",
-    "view.js",
     "effect.js",
     "bullet.js",
+    "item.js",
+    "robot.js",
+    "view.js",
     "main.js"
 )
 

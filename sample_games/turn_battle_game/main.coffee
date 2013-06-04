@@ -2,7 +2,7 @@
 R = Config.R
 
 class CommandPool
-    constructor: () ->
+    constructor: (robot) ->
         end = new Instruction Instruction.END, () ->
             return true
         @end = new Command end
@@ -12,9 +12,11 @@ class CommandPool
         @moveRightDown = new Command(new MoveRightDown)
         @moveRight = new Command(new MoveRight)
         @moveLeft = new Command(new MoveLeft)
-        @shot = new Command(new Shot)
         @search = new Command(new Searching)
-        @pickup = new Command(new Pickup)
+        @pickupNormal = new Command(new Pickup(), [BulletType.NORMAL, NormalBulletItem,robot.bltQueue])
+        @pickupWide = new Command(new Pickup(), [BulletType.WIDE, WideBulletItem,robot.wideBltQueue])
+        @shotNormal = new Command(new Shot(), [robot.bltQueue])
+        @shotWide = new Command(new Shot(), [robot.wideBltQueue])
         @getHp = new Command(new GetHp)
         @getBulletQueueSize = Command(new GetBulletQueueSize)
             
@@ -23,20 +25,20 @@ class ViewGroup extends Group
         super
         @background = new Background 0, 0
         @addChild @background
-        @header = new Header 0, 0
+
+        @header = new Header 16, 16
+        @playerHpBar = @header.playerHpBar
+        @enemyHpBar = @header.enemyHpBar
         @addChild @header
-        @map = new Map 16, 64
+
+        @map = new Map 16, 48
         @addChild @map
-        @footer = new Footer(5, @map.y + @map.height + 5)
+
+        @footer = new Footer(25, @map.y + @map.height)
         @msgbox = @footer.msgbox
         @addChild @footer
         #@nextBtn = new NextButton @msgbox.x + MsgBox.WIDTH + 8, @msgbox.y
         #@addChild @nextBtn
-        @playerHpBar = new PlayerHp 0, 0, PlayerHp.YELLOW
-        @addChild @playerHpBar
-        @enemyHpBar = new PlayerHp Header.WIDTH/2, 0, PlayerHp.BLUE
-        @enemyHpBar.direct "left"
-        @addChild @enemyHpBar
 
     update: (world) ->
         for i in world.robots
@@ -60,7 +62,6 @@ class TurnSwitcher
                 @i++
                 @i = 0 if @i == @world.robots.length
 
-
 class RobotWorld extends Group
     constructor: (@scene) ->
         super
@@ -70,6 +71,11 @@ class RobotWorld extends Group
         @bullets = []
         @items = []
         @player = new PlayerRobot
+        plate = @map.getPlate(4,5)
+        pos = plate.getAbsolutePos()
+        @player.currentPlate = plate
+        @player.x = pos.x
+        @player.y = pos.y
         @addChild @player
         @robots.push @player
 
@@ -82,7 +88,7 @@ class RobotWorld extends Group
     initialize: (views)->
 
     collisionBullet: (bullet, robot) ->
-        return robot.within(bullet, 32)
+        return bullet.holder != robot and bullet.within(robot, 32)
 
     updateItems: () ->
         del = -1
@@ -96,14 +102,18 @@ class RobotWorld extends Group
 
     updateBullets: () ->
         del = -1
-        for v,i in @bullets
-            if @collisionBullet(v, @enemy)
-                del = i
-                v.hit(@enemy)
-                @bullets[i] = false
-            else if v.animated == false
-                del = i
-                @bullets[i] = false
+        for robot in @robots
+            for v,i in @bullets
+                if v != false
+                    if @collisionBullet(v, robot)
+                        del = i
+                        v.hit(robot)
+                        @bullets[i] = false
+                        Debug.dump v
+                        Debug.dump robot
+                    else if v.animated == false
+                        del = i
+                        @bullets[i] = false
         if del != -1
             @bullets = _.compact(@bullets)
 
@@ -181,6 +191,10 @@ class RobotGame extends Game
         load R.ITEM
 
     onload: ->
+        @assets["font0.png"] = @assets['resources/ui/font0.png']
+        @assets["apad.png"] = @assets['resources/ui/apad.png']
+        @assets["icon0.png"] = @assets['resources/ui/icon0.png']
+        @assets["pad.png"] = @assets['resources/ui/pad.png']
         @scene = new RobotScene @
         @pushScene @scene
 

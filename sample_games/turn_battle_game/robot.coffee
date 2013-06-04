@@ -1,6 +1,9 @@
 
 R = Config.R
 
+###
+    store bullet objects
+###
 class ItemQueue
     constructor: (@collection = [], @max = -1) ->
 
@@ -29,13 +32,12 @@ class Robot extends Sprite
         super width, height
         @name = "robot"
         @game = Game.instance
-        @iter = null
-        @prevX = -1
-        @prevY = -1
         @animated = false
         @hp = Robot.MAX_HP
         @cmdQueue = new CommandQueue
         @bltQueue = new ItemQueue [], 5
+        @wideBltQueue = new ItemQueue [], 5
+        @dualBltQueue = new ItemQueue [], 5
         @map = Map.instance
         @prevPlate = @map.plateMatrix[0][0]
         @currentPlate = @map.plateMatrix[0][0]
@@ -49,13 +51,11 @@ class Robot extends Sprite
 
     onKeyInput: (input) ->
 
-    createBullet: () ->
-
     onAnimateComplete: () =>
         @animated = false
 
     onCmdComplete: (id, ret) ->
-        msgbox = @game.scene.views.msgbox
+        msgbox = @scene.views.msgbox
         switch id
             when Instruction.MOVE_RIGHT_UP, Instruction.MOVE_RIGHT_DOWN, Instruction.MOVE_LEFT_DOWN, Instruction.MOVE_LEFT_UP, Instruction.MOVE_LEFT, Instruction.MOVE_RIGHT
                 if ret != false
@@ -74,12 +74,8 @@ class Robot extends Sprite
                 else
                     msgbox.print R.String.CANNOTPICKUP
         
-        
-    setCmdCollection: (@cmdCollection) ->
-
-    isAnimated: () ->
-        @tl.queue.length != 0
-
+    # return the direction the robot
+    # is faceing
     getDirect: () ->
         switch @frame
             when 0
@@ -99,7 +95,6 @@ class Robot extends Sprite
             when 7
                 Direct.DOWN | Direct.LEFT
 
-
     damege: () ->
         @hp -= 1
         @onHpReduce()
@@ -108,8 +103,6 @@ class Robot extends Sprite
         # Why the @ x @ y does it become a floating-point number?
         @x = Math.round @x
         @y = Math.round @y
-        @prevX = @x
-        @prevY = @y
         # unless @cmdCollection?
         #     return
         # unless @iter?
@@ -140,10 +133,24 @@ class PlayerRobot extends Robot
         super PlayerRobot.WIDTH, PlayerRobot.HEIGHT
         @name = R.String.PLAYER
         @image = @game.assets[R.CHAR.PLAYER]
-        @cmdPool = new CommandPool
+        @cmdPool = new CommandPool @
 
-    createBullet: () ->
-        new DroidBullet(@x, @y, DroidBullet.RIGHT)
+    onCmdComplete: (id, ret) ->
+        super id, ret
+        statusBox = @scene.views.footer.statusBox
+        switch id
+            when Instruction.SHOT
+                if ret != false
+                    if ret instanceof WideBullet
+                        statusBox.wideRemain.decrement()
+                    else if ret instanceof NormalBullet
+                        statusBox.normalRemain.decrement()
+            when Instruction.PICKUP
+                if ret != false
+                    if ret instanceof WideBullet
+                        statusBox.wideRemain.increment()
+                    else if ret instanceof NormalBullet
+                        statusBox.normalRemain.increment()
 
     onViewUpdate: (views) ->
         @prevPlate.setNormal()
@@ -175,10 +182,24 @@ class PlayerRobot extends Robot
             @cmdQueue.enqueue @cmdPool.end
         else if input.s == true
             @cmdQueue.enqueue @cmdPool.search
-            @cmdQueue.enqueue @cmdPool.shot
+            rand = Math.floor(Math.random() * 3)
+            switch rand
+                when 0
+                    @cmdQueue.enqueue @cmdPool.shotNormal
+                when 1
+                    @cmdQueue.enqueue @cmdPool.shotWide
+                else
+                    @cmdQueue.enqueue @cmdPool.shotNormal
             @cmdQueue.enqueue @cmdPool.end
         else if input.q == true
-            @cmdQueue.enqueue @cmdPool.pickup
+            rand = Math.floor(Math.random() * 3)
+            switch rand
+                when 0
+                    @cmdQueue.enqueue @cmdPool.pickupNormal
+                when 1
+                    @cmdQueue.enqueue @cmdPool.pickupWide
+                else
+                    @cmdQueue.enqueue @cmdPool.pickupNormal
             @cmdQueue.enqueue @cmdPool.end
 
 class EnemyRobot extends Robot
@@ -188,53 +209,53 @@ class EnemyRobot extends Robot
         super EnemyRobot.SIZE, EnemyRobot.SIZE
         @name = R.String.ENEMY
         @image = @game.assets[R.CHAR.ENEMY]
-        @cmdPool = new CommandPool
-
-    createBullet: () ->
-        new DroidBullet(@x, @y, DroidBullet.RIGHT)
+        @cmdPool = new CommandPool @
 
     onViewUpdate: (views) ->
         @prevPlate.setNormal()
         @currentPlate.setEnemySelected()
 
     onHpReduce: (views) ->
-        scene = Game.instance.scene
-        hpBar = scene.views.enemyHpBar
+        hpBar = @scene.views.enemyHpBar
         hpBar.reduce()
 
     onKeyInput:(input) ->
-        if input.i == true
-            @cmdQueue.enqueue @cmdPool.moveUp
-        else if input.j == true
+        if input.w == true
+            @cmdQueue.enqueue @cmdPool.moveLeftUp
+            @cmdQueue.enqueue @cmdPool.end
+        else if input.a == true
             @cmdQueue.enqueue @cmdPool.moveLeft
-        else if input.m == true
-            @cmdQueue.enqueue @cmdPool.moveDown
-        else if input.l == true
+            @cmdQueue.enqueue @cmdPool.end
+        else if input.x == true
+            @cmdQueue.enqueue @cmdPool.moveleftDown
+            @cmdQueue.enqueue @cmdPool.end
+        else if input.d == true
             @cmdQueue.enqueue @cmdPool.moveRight
-
-class SpritePool
-    constructor: (@createFunc, @maxAllocSize ,@maxPoolSize) ->
-        @sprites = []
-        @count = 0
-        @freeCallback = null
-
-    setDestructor: (@destructor) ->
-
-    alloc: ->
-        if @count > @maxAllocSize
-            return null
-        if @sprites.length == 0
-            sprite = @createFunc()
-        else
-            sprite = @sprites.pop()
-        @count++
-        return sprite
-
-    free: (sprite) ->
-        if @sprites.length < @maxPoolSize
-            @sprites[@sprites.length] = sprite
-        @count--
-        if @destructor?
-            @destructor sprite
-
-            
+            @cmdQueue.enqueue @cmdPool.end
+        else if input.e == true
+            @cmdQueue.enqueue @cmdPool.moveRightUp
+            @cmdQueue.enqueue @cmdPool.end
+        else if input.c == true
+            @cmdQueue.enqueue @cmdPool.moveRightDown
+            @cmdQueue.enqueue @cmdPool.end
+        else if input.s == true
+            @cmdQueue.enqueue @cmdPool.search
+            rand = Math.floor(Math.random() * 3)
+            switch rand
+                when 0
+                    @cmdQueue.enqueue @cmdPool.shotNormal
+                when 1
+                    @cmdQueue.enqueue @cmdPool.shotWide
+                else
+                    @cmdQueue.enqueue @cmdPool.shotNormal
+            @cmdQueue.enqueue @cmdPool.end
+        else if input.q == true
+            rand = Math.floor(Math.random() * 3)
+            switch rand
+                when 0
+                    @cmdQueue.enqueue @cmdPool.pickupNormal
+                when 1
+                    @cmdQueue.enqueue @cmdPool.pickupWide
+                else
+                    @cmdQueue.enqueue @cmdPool.pickupNormal
+            @cmdQueue.enqueue @cmdPool.end
