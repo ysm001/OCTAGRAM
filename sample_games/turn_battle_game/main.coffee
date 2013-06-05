@@ -26,8 +26,10 @@ class CommandPool
         @getBulletQueueSize = Command(new GetBulletQueueSize)
             
 class ViewGroup extends Group
-    constructor: (@scene) ->
+    constructor: (x, y, @scene) ->
         super
+        @x = x
+        @y = y
         @background = new Background 0, 0
         @addChild @background
 
@@ -69,7 +71,7 @@ class TurnSwitcher
                 @i = 0 if @i == @world.robots.length
 
 class RobotWorld extends Group
-    constructor: (@scene) ->
+    constructor: (x, y, @scene) ->
         super
         @game = Game.instance
         @map = Map.instance
@@ -148,8 +150,8 @@ class RobotScene extends Scene
     constructor: (@game) ->
         super @
         @backgroundColor = "#c0c0c0"
-        @views = new ViewGroup @
-        @world = new RobotWorld @
+        @views = new ViewGroup Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
+        @world = new RobotWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
         @addChild @views
         @addChild @world
 
@@ -203,7 +205,7 @@ class RobotGame extends Game
         @pushScene @scene
 
 window.onload = () ->
-    game = new RobotGame Config.GAME_WIDTH, Config.GAME_WIDTH
+    game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT
     game.start()
 
 

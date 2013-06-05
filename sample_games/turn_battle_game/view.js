@@ -13,6 +13,8 @@ Background = (function(_super) {
   function Background(x, y) {
     Background.__super__.constructor.call(this, Background.SIZE, Background.SIZE);
     this.image = Game.instance.assets[R.BACKGROUND_IMAGE.SPACE];
+    this.x = x;
+    this.y = y;
   }
 
   return Background;

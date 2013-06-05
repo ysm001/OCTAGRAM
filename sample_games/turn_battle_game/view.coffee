@@ -5,6 +5,8 @@ class Background extends Sprite
     constructor: (x, y) ->
         super Background.SIZE, Background.SIZE
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.SPACE]
+        @x = x
+        @y = y
 
 class HpBar extends Bar
     @HEIGHT = 24

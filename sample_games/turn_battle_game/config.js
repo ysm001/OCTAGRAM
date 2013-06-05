@@ -4,9 +4,13 @@ var Config;
 Config = (function() {
   function Config() {}
 
-  Config.GAME_WIDTH = 640;
+  Config.GAME_WIDTH = 1280;
 
   Config.GAME_HEIGHT = 640;
+
+  Config.GAME_OFFSET_X = 640;
+
+  Config.GAME_OFFSET_Y = 0;
 
   return Config;
 

@@ -37,9 +37,11 @@ CommandPool = (function() {
 ViewGroup = (function(_super) {
   __extends(ViewGroup, _super);
 
-  function ViewGroup(scene) {
+  function ViewGroup(x, y, scene) {
     this.scene = scene;
     ViewGroup.__super__.constructor.apply(this, arguments);
+    this.x = x;
+    this.y = y;
     this.background = new Background(0, 0);
     this.addChild(this.background);
     this.header = new Header(16, 16);
@@ -111,7 +113,7 @@ TurnSwitcher = (function() {
 RobotWorld = (function(_super) {
   __extends(RobotWorld, _super);
 
-  function RobotWorld(scene) {
+  function RobotWorld(x, y, scene) {
     var plate, pos;
 
     this.scene = scene;
@@ -240,8 +242,8 @@ RobotScene = (function(_super) {
     this.game = game;
     RobotScene.__super__.constructor.call(this, this);
     this.backgroundColor = "#c0c0c0";
-    this.views = new ViewGroup(this);
-    this.world = new RobotWorld(this);
+    this.views = new ViewGroup(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
+    this.world = new RobotWorld(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
     this.addChild(this.views);
     this.addChild(this.world);
     this.world.initialize(this.views);
@@ -320,6 +322,6 @@ RobotGame = (function(_super) {
 window.onload = function() {
   var game;
 
-  game = new RobotGame(Config.GAME_WIDTH, Config.GAME_WIDTH);
+  game = new RobotGame(Config.GAME_WIDTH, Config.GAME_HEIGHT);
   return game.start();
 };

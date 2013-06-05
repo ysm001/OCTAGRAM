@@ -1,8 +1,9 @@
         
 class Config
-    @GAME_WIDTH = 640
+    @GAME_WIDTH = 1280
     @GAME_HEIGHT = 640
-
+    @GAME_OFFSET_X = 640
+    @GAME_OFFSET_Y = 0
 
 class Config.R
     @RESOURCE_DIR : "resources"
