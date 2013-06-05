@@ -2,13 +2,14 @@
 var Command, CommandIterator, CommandQueue;
 
 Command = (function() {
-  function Command(instruction, args) {
+  function Command(instruction, robot, args) {
     this.instruction = instruction;
+    this.robot = robot;
     this.args = args != null ? args : null;
   }
 
-  Command.prototype["eval"] = function(robot) {
-    return this.instruction.func.apply(robot, this.args);
+  Command.prototype["eval"] = function() {
+    return this.instruction.func.apply(this.robot, this.args);
   };
 
   return Command;

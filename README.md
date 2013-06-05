@@ -1,2 +1,6 @@
-* sample_games
-** turn battle game
+Tip Based Visual Programming Language Library
+==================================================
+
+# sample game　
+---------------------
+## ターン制のゲーム

@@ -63,5 +63,3 @@ class Config.R.String
         return "#{s}は攻撃しました"
     @move:(s, x, y) ->
         return "#{s}は(#{x},#{y})に移動しました"
-enchant()
-enchant.ui.assets = ['resources/ui/pad.png', 'resources/ui/apad.png', 'resources/ui/icon0.png', 'resources/ui/font0.png']

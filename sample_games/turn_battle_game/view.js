@@ -563,9 +563,6 @@ StatusBox = (function(_super) {
     StatusBox.__super__.constructor.call(this, StatusWindow.WIDTH, StatusWindow.HEIGHT);
     this.x = x;
     this.y = y;
-    this.scoreLabel = new ScoreLabel(20, 0);
-    this.scoreLabel.score = 100;
-    this.addChild(this.scoreLabel);
     this.normalRemain = new RemainingBullets(30, 30, 1);
     this.wideRemain = new RemainingBullets(30, this.normalRemain.y + RemainingBullet.SIZE, 3);
     this.dualRemain = new RemainingBullets(30, this.wideRemain.y + RemainingBullet.SIZE, 5);

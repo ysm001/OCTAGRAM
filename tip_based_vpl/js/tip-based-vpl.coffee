@@ -1,0 +1,25 @@
+( ->
+    s = document.getElementsByTagName("script")
+    d = s[s.length-1].src.substring(0, s[s.length-1].src.lastIndexOf("/")+1)
+    for arg in arguments
+        document.write('<script type="text/javascript" src="'+d+arg+'"></script>')
+)(
+	"vpl/tip.model.js",
+	"vpl/tip.instruction.js",
+	"vpl/tip.instruction.stack.js",
+	"vpl/test.js",
+	"vpl/util.js",
+	"vpl/resource.js",
+	"vpl/tip.effect.js",
+	"vpl/transition.js",
+	"vpl/tip.view.js",
+	"vpl/tip.factory.js",
+	"vpl/ui.js",
+	"vpl/background.js",
+	"vpl/cpu.js",
+	"vpl/cpu.executer.js",
+	"vpl/error-checker.js",
+	"vpl/ui.slider.js",
+	"vpl/ui.config.js",
+	"vpl/main.js"
+)

@@ -358,9 +358,9 @@ class StatusBox extends Group
         @y = y
         #@window = new StatusWindow 0, 0
         #@addChild @window
-        @scoreLabel = new ScoreLabel(20, 0)
-        @scoreLabel.score = 100
-        @addChild @scoreLabel
+        #@scoreLabel = new ScoreLabel(20, 0)
+        #@scoreLabel.score = 100
+        #@addChild @scoreLabel
         #@label = new Label("残弾数")
         #@label.font = "12px 'Meiryo UI'"
         #@label.color = '#FFF'

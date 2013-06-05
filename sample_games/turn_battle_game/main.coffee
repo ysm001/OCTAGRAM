@@ -3,27 +3,27 @@ R = Config.R
 
 class CommandPool
     constructor: (robot) ->
-        end = new Instruction Instruction.END, () ->
+        end = new RobotInstruction RobotInstruction.END, () ->
             return true
         @end = new Command end
-        @moveLeftUp = new Command(new MoveLeftUp)
-        @moveleftDown = new Command(new MoveLeftDown)
-        @moveRightUp = new Command(new MoveRightUp)
-        @moveRightDown = new Command(new MoveRightDown)
-        @moveRight = new Command(new MoveRight)
-        @moveLeft = new Command(new MoveLeft)
+        @moveLeftUp = new Command(new MoveLeftUp, robot)
+        @moveleftDown = new Command(new MoveLeftDown, robot)
+        @moveRightUp = new Command(new MoveRightUp, robot)
+        @moveRightDown = new Command(new MoveRightDown, robot)
+        @moveRight = new Command(new MoveRight, robot)
+        @moveLeft = new Command(new MoveLeft, robot)
 
-        @pickupNormal = new Command(new Pickup(), [BulletType.NORMAL, NormalBulletItem,robot.bltQueue])
-        @pickupWide = new Command(new Pickup(), [BulletType.WIDE, WideBulletItem,robot.wideBltQueue])
-        @pickupDual = new Command(new Pickup(), [BulletType.DUAL, DualBulletItem,robot.dualBltQueue])
+        @pickupNormal = new Command(new Pickup(), robot,[BulletType.NORMAL, NormalBulletItem,robot.bltQueue])
+        @pickupWide = new Command(new Pickup(), robot, [BulletType.WIDE, WideBulletItem,robot.wideBltQueue])
+        @pickupDual = new Command(new Pickup(), robot, [BulletType.DUAL, DualBulletItem,robot.dualBltQueue])
 
-        @shotNormal = new Command(new Shot(), [robot.bltQueue])
-        @shotWide = new Command(new Shot(), [robot.wideBltQueue])
-        @shotDual = new Command(new Shot(), [robot.dualBltQueue])
+        @shotNormal = new Command(new Shot(), robot, [robot.bltQueue])
+        @shotWide = new Command(new Shot(), robot, [robot.wideBltQueue])
+        @shotDual = new Command(new Shot(), robot, [robot.dualBltQueue])
 
-        @search = new Command(new Searching)
-        @getHp = new Command(new GetHp)
-        @getBulletQueueSize = Command(new GetBulletQueueSize)
+        @search = new Command(new Searching, robot)
+        @getHp = new Command(new GetHp, robot)
+        @getBulletQueueSize = Command(new GetBulletQueueSize, robot)
             
 class ViewGroup extends Group
     constructor: (x, y, @scene) ->
@@ -91,6 +91,7 @@ class RobotWorld extends Group
         @addChild @enemy
         @robots.push @enemy
 
+        Game.instance.addInstruction(new MoveRightInstruction(@player))
         # @swicher = new TurnSwitcher @
 
     initialize: (views)->
@@ -149,7 +150,6 @@ class RobotWorld extends Group
 class RobotScene extends Scene
     constructor: (@game) ->
         super @
-        @backgroundColor = "#c0c0c0"
         @views = new ViewGroup Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
         @world = new RobotWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
         @addChild @views
@@ -164,9 +164,9 @@ class RobotScene extends Scene
         @world.update(@views)
         @views.update(@world)
 
-class RobotGame extends Game
+class RobotGame extends TipBasedVPL
     constructor: (width, height) ->
-        super width, height
+        super width, height, "./tip_based_vpl/resource/"
         @_assetPreload()
         @keybind(87, 'w')
         @keybind(65, 'a')
@@ -197,12 +197,14 @@ class RobotGame extends Game
         load R.ITEM
 
     onload: ->
+        @scene = new RobotScene @
+        @pushScene @scene
+        super
         @assets["font0.png"] = @assets['resources/ui/font0.png']
         @assets["apad.png"] = @assets['resources/ui/apad.png']
         @assets["icon0.png"] = @assets['resources/ui/icon0.png']
         @assets["pad.png"] = @assets['resources/ui/pad.png']
-        @scene = new RobotScene @
-        @pushScene @scene
+        Game.instance.loadInstruction()
 
 window.onload = () ->
     game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT

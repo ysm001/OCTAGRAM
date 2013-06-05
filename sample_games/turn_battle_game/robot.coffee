@@ -73,18 +73,18 @@ class Robot extends Sprite
     onCmdComplete: (id, ret) ->
         msgbox = @scene.views.msgbox
         switch id
-            when Instruction.MOVE_RIGHT_UP, Instruction.MOVE_RIGHT_DOWN, Instruction.MOVE_LEFT_DOWN, Instruction.MOVE_LEFT_UP, Instruction.MOVE_LEFT, Instruction.MOVE_RIGHT
+            when RobotInstruction.MOVE_RIGHT_UP, RobotInstruction.MOVE_RIGHT_DOWN, RobotInstruction.MOVE_LEFT_DOWN, RobotInstruction.MOVE_LEFT_UP, RobotInstruction.MOVE_LEFT, RobotInstruction.MOVE_RIGHT
                 if ret != false
                     msgbox.print R.String.move(@name, ret.x+1, ret.y+1)
                     @animated = true
                 else
                     msgbox.print R.String.CANNOTMOVE
-            when Instruction.SHOT
+            when RobotInstruction.SHOT
                 if ret != false
                     msgbox.print R.String.shot(@name)
                 else
                     msgbox.print R.String.CANNOTSHOT
-            when Instruction.PICKUP
+            when RobotInstruction.PICKUP
                 if ret != false
                     msgbox.print R.String.pickup(@name)
                 else
@@ -133,10 +133,10 @@ class Robot extends Sprite
             cmd = @cmdQueue.dequeue()
             #Debug.dump cmd
             #Debug.log "id : #{cmd.instruction.id}"
-            ret = cmd.eval @
+            ret = cmd.eval()
             #Debug.dump ret
             @onCmdComplete cmd.instruction.id, ret
-            if cmd.instruction.id == Instruction.END
+            if cmd.instruction.id == RobotInstruction.END
                 ret = true
                 break
         return ret
@@ -155,7 +155,7 @@ class PlayerRobot extends Robot
         super id, ret
         statusBox = @scene.views.footer.statusBox
         switch id
-            when Instruction.SHOT
+            when RobotInstruction.SHOT
                 if ret != false
                     effect = new ShotEffect(@x, @y)
                     @scene.addChild effect
@@ -165,7 +165,7 @@ class PlayerRobot extends Robot
                         statusBox.normalRemain.decrement()
                     else if ret instanceof DualBullet
                         statusBox.dualRemain.decrement()
-            when Instruction.PICKUP
+            when RobotInstruction.PICKUP
                 if ret != false
                     if ret instanceof WideBullet
                         statusBox.wideRemain.increment()

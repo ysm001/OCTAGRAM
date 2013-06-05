@@ -5,8 +5,6 @@
     for arg in arguments
         document.write('<script type="text/javascript" src="'+d+arg+'"></script>')
 )(
-    "third_party/enchant.js/src/enchant.min.js",
-    "third_party/enchant.js/src/plugins/ui.enchant.js",
     "third_party/underscore-min.js",
     "EnchantAI/cmd.js",
     "EnchantAI/instruction.js",

@@ -1,8 +1,8 @@
 class Command
-    constructor: (@instruction, @args = null)->
+    constructor: (@instruction, @robot, @args = null)->
 
-    eval: (robot) ->
-        @instruction.func.apply robot, @args
+    eval: () ->
+        @instruction.func.apply @robot, @args
 
 class CommandQueue
     constructor: (@collection = []) ->

@@ -105,7 +105,3 @@ Config.R.String = (function() {
   return String;
 
 })();
-
-enchant();
-
-enchant.ui.assets = ['resources/ui/pad.png', 'resources/ui/apad.png', 'resources/ui/icon0.png', 'resources/ui/font0.png'];

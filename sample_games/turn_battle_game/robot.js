@@ -121,12 +121,12 @@ Robot = (function(_super) {
 
     msgbox = this.scene.views.msgbox;
     switch (id) {
-      case Instruction.MOVE_RIGHT_UP:
-      case Instruction.MOVE_RIGHT_DOWN:
-      case Instruction.MOVE_LEFT_DOWN:
-      case Instruction.MOVE_LEFT_UP:
-      case Instruction.MOVE_LEFT:
-      case Instruction.MOVE_RIGHT:
+      case RobotInstruction.MOVE_RIGHT_UP:
+      case RobotInstruction.MOVE_RIGHT_DOWN:
+      case RobotInstruction.MOVE_LEFT_DOWN:
+      case RobotInstruction.MOVE_LEFT_UP:
+      case RobotInstruction.MOVE_LEFT:
+      case RobotInstruction.MOVE_RIGHT:
         if (ret !== false) {
           msgbox.print(R.String.move(this.name, ret.x + 1, ret.y + 1));
           return this.animated = true;
@@ -134,14 +134,14 @@ Robot = (function(_super) {
           return msgbox.print(R.String.CANNOTMOVE);
         }
         break;
-      case Instruction.SHOT:
+      case RobotInstruction.SHOT:
         if (ret !== false) {
           return msgbox.print(R.String.shot(this.name));
         } else {
           return msgbox.print(R.String.CANNOTSHOT);
         }
         break;
-      case Instruction.PICKUP:
+      case RobotInstruction.PICKUP:
         if (ret !== false) {
           return msgbox.print(R.String.pickup(this.name));
         } else {
@@ -185,9 +185,9 @@ Robot = (function(_super) {
     ret = false;
     while (this.cmdQueue.empty() === false) {
       cmd = this.cmdQueue.dequeue();
-      ret = cmd["eval"](this);
+      ret = cmd["eval"]();
       this.onCmdComplete(cmd.instruction.id, ret);
-      if (cmd.instruction.id === Instruction.END) {
+      if (cmd.instruction.id === RobotInstruction.END) {
         ret = true;
         break;
       }
@@ -221,7 +221,7 @@ PlayerRobot = (function(_super) {
     PlayerRobot.__super__.onCmdComplete.call(this, id, ret);
     statusBox = this.scene.views.footer.statusBox;
     switch (id) {
-      case Instruction.SHOT:
+      case RobotInstruction.SHOT:
         if (ret !== false) {
           effect = new ShotEffect(this.x, this.y);
           this.scene.addChild(effect);
@@ -234,7 +234,7 @@ PlayerRobot = (function(_super) {
           }
         }
         break;
-      case Instruction.PICKUP:
+      case RobotInstruction.PICKUP:
         if (ret !== false) {
           if (ret instanceof WideBullet) {
             return statusBox.wideRemain.increment();

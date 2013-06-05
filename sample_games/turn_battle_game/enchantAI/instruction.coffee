@@ -1,4 +1,4 @@
-class Instruction
+class RobotInstruction
     @MOVE_LEFT_UP = "moveLeftUp"
     @MOVE_LEFT_DOWN = "moveLeftDown"
     @MOVE_RIGHT_UP = "moveRightUp"
@@ -14,25 +14,46 @@ class Instruction
 
     constructor: (@id, @func)->
 
-class MoveInstruction extends Instruction
+class MoveInstruction extends RobotInstruction
     constructor: (id, func) ->
         super id, func
 
-    @move: (plate) ->
+    @move: (plate, instr) ->
         ret = false
         @prevPlate = @currentPlate
         if plate? and plate.lock == false
             pos = plate.getAbsolutePos()
-            @tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
+            @tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(() -> instr.onComplete())
             @currentPlate = plate
             ret = new Point plate.ix, plate.iy
         else
             ret = false
         return ret
 
+class MoveRightInstruction extends ActionInstruction
+  constructor : (@robot) ->
+    super()
+    @setAsynchronous(true)
+
+  action : () -> 
+      ret = true
+      @robot.frame = 0
+      plate = robot.map.getTargetPoision(@robot.currentPlate, Direct.RIGHT)
+      ret = MoveInstruction.move.call(@robot, plate, @)
+      @setAsynchronous(ret != false)
+
+  onComplete: () ->
+    @robot.onAnimateComplete()
+    super
+    
+  clone : () -> 
+    instr = new MoveRightInstruction()
+    instr.robot = @robot
+    return instr
+
 class MoveRight extends MoveInstruction
     constructor:() ->
-        super Instruction.MOVE_RIGHT, @func
+        super RobotInstruction.MOVE_RIGHT, @func
     func:() ->
         ret = true
         @frame = 0
@@ -42,7 +63,7 @@ class MoveRight extends MoveInstruction
 
 class MoveLeftUp extends MoveInstruction
     constructor:() ->
-        super Instruction.MOVE_LEFT_UP, @func
+        super RobotInstruction.MOVE_LEFT_UP, @func
     func: () ->
         ret = true
         @frame = 6
@@ -52,7 +73,7 @@ class MoveLeftUp extends MoveInstruction
 
 class MoveLeftDown extends MoveInstruction
     constructor:() ->
-        super Instruction.MOVE_LEFT_DOWN, @func
+        super RobotInstruction.MOVE_LEFT_DOWN, @func
     func:() ->
         ret = true
         @frame = 7
@@ -61,34 +82,34 @@ class MoveLeftDown extends MoveInstruction
 
 class MoveRightUp extends MoveInstruction
     constructor:() ->
-        super Instruction.MOVE_RIGHT_UP, @func
+        super RobotInstruction.MOVE_RIGHT_UP, @func
     func:() ->
         ret = true
         @frame = 4
         plate = @map.getTargetPoision(@currentPlate, Direct.UP | Direct.RIGHT)
         return MoveInstruction.move.call(@, plate)
 
-class MoveRightDown extends Instruction
+class MoveRightDown extends RobotInstruction
     constructor:() ->
-        super Instruction.MOVE_RIGHT_DOWN, @func
+        super RobotInstruction.MOVE_RIGHT_DOWN, @func
     func:() ->
         ret = true
         @frame = 5
         plate = @map.getTargetPoision(@currentPlate, Direct.DOWN | Direct.RIGHT)
         return MoveInstruction.move.call(@, plate)
 
-class MoveLeft extends Instruction
+class MoveLeft extends RobotInstruction
     constructor:() ->
-        super Instruction.MOVE_LEFT, @func
+        super RobotInstruction.MOVE_LEFT, @func
     func:() ->
         ret = true
         @frame = 2
         plate = @map.getTargetPoision(@currentPlate, Direct.LEFT)
         return MoveInstruction.move.call(@, plate)
 
-class Shot extends Instruction
+class Shot extends RobotInstruction
     constructor: () ->
-        super Instruction.SHOT, @func
+        super RobotInstruction.SHOT, @func
     func: (bltQueue) ->
         unless bltQueue.empty()
             for b in bltQueue.dequeue()
@@ -98,17 +119,17 @@ class Shot extends Instruction
             return b
         return false
 
-class Searching extends Instruction
+class Searching extends RobotInstruction
     constructor:() ->
-        super Instruction.SEARCH, @func
+        super RobotInstruction.SEARCH, @func
     func: () ->
         world = @scene.world
         robot = if @ == world.player then world.enemy else @
         return new Point(robot.x - @x, robot.y - @y)
 
-class Pickup extends Instruction
+class Pickup extends RobotInstruction
     constructor:() ->
-        super Instruction.PICKUP, @func
+        super RobotInstruction.PICKUP, @func
     func: (type, itemClass, queue) ->
         blt = BulletFactory.create(type, @)
         ret = queue.enqueue(blt)
@@ -119,14 +140,14 @@ class Pickup extends Instruction
             ret = blt
         return ret
 
-class GetHp extends Instruction
+class GetHp extends RobotInstruction
     constructor: () ->
-        super Instruction.GET_HP, @func
+        super RobotInstruction.GET_HP, @func
     func: () ->
         return @hp
 
-class GetBulletQueueSize extends Instruction
+class GetBulletQueueSize extends RobotInstruction
     constructor: () ->
-        super Instruction.GET_BULLET_QUEUE_SIZE, @func
+        super RobotInstruction.GET_BULLET_QUEUE_SIZE, @func
     func: () ->
         return @bltQueue.size()

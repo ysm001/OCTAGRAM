@@ -9,25 +9,25 @@ CommandPool = (function() {
   function CommandPool(robot) {
     var end;
 
-    end = new Instruction(Instruction.END, function() {
+    end = new RobotInstruction(RobotInstruction.END, function() {
       return true;
     });
     this.end = new Command(end);
-    this.moveLeftUp = new Command(new MoveLeftUp);
-    this.moveleftDown = new Command(new MoveLeftDown);
-    this.moveRightUp = new Command(new MoveRightUp);
-    this.moveRightDown = new Command(new MoveRightDown);
-    this.moveRight = new Command(new MoveRight);
-    this.moveLeft = new Command(new MoveLeft);
-    this.pickupNormal = new Command(new Pickup(), [BulletType.NORMAL, NormalBulletItem, robot.bltQueue]);
-    this.pickupWide = new Command(new Pickup(), [BulletType.WIDE, WideBulletItem, robot.wideBltQueue]);
-    this.pickupDual = new Command(new Pickup(), [BulletType.DUAL, DualBulletItem, robot.dualBltQueue]);
-    this.shotNormal = new Command(new Shot(), [robot.bltQueue]);
-    this.shotWide = new Command(new Shot(), [robot.wideBltQueue]);
-    this.shotDual = new Command(new Shot(), [robot.dualBltQueue]);
-    this.search = new Command(new Searching);
-    this.getHp = new Command(new GetHp);
-    this.getBulletQueueSize = Command(new GetBulletQueueSize);
+    this.moveLeftUp = new Command(new MoveLeftUp, robot);
+    this.moveleftDown = new Command(new MoveLeftDown, robot);
+    this.moveRightUp = new Command(new MoveRightUp, robot);
+    this.moveRightDown = new Command(new MoveRightDown, robot);
+    this.moveRight = new Command(new MoveRight, robot);
+    this.moveLeft = new Command(new MoveLeft, robot);
+    this.pickupNormal = new Command(new Pickup(), robot, [BulletType.NORMAL, NormalBulletItem, robot.bltQueue]);
+    this.pickupWide = new Command(new Pickup(), robot, [BulletType.WIDE, WideBulletItem, robot.wideBltQueue]);
+    this.pickupDual = new Command(new Pickup(), robot, [BulletType.DUAL, DualBulletItem, robot.dualBltQueue]);
+    this.shotNormal = new Command(new Shot(), robot, [robot.bltQueue]);
+    this.shotWide = new Command(new Shot(), robot, [robot.wideBltQueue]);
+    this.shotDual = new Command(new Shot(), robot, [robot.dualBltQueue]);
+    this.search = new Command(new Searching, robot);
+    this.getHp = new Command(new GetHp, robot);
+    this.getBulletQueueSize = Command(new GetBulletQueueSize, robot);
   }
 
   return CommandPool;
@@ -134,6 +134,7 @@ RobotWorld = (function(_super) {
     this.enemy = new EnemyRobot;
     this.addChild(this.enemy);
     this.robots.push(this.enemy);
+    Game.instance.addInstruction(new MoveRightInstruction(this.player));
   }
 
   RobotWorld.prototype.initialize = function(views) {};
@@ -241,7 +242,6 @@ RobotScene = (function(_super) {
   function RobotScene(game) {
     this.game = game;
     RobotScene.__super__.constructor.call(this, this);
-    this.backgroundColor = "#c0c0c0";
     this.views = new ViewGroup(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
     this.world = new RobotWorld(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
     this.addChild(this.views);
@@ -266,7 +266,7 @@ RobotGame = (function(_super) {
   __extends(RobotGame, _super);
 
   function RobotGame(width, height) {
-    RobotGame.__super__.constructor.call(this, width, height);
+    RobotGame.__super__.constructor.call(this, width, height, "./tip_based_vpl/resource/");
     this._assetPreload();
     this.keybind(87, 'w');
     this.keybind(65, 'a');
@@ -307,17 +307,19 @@ RobotGame = (function(_super) {
   };
 
   RobotGame.prototype.onload = function() {
+    this.scene = new RobotScene(this);
+    this.pushScene(this.scene);
+    RobotGame.__super__.onload.apply(this, arguments);
     this.assets["font0.png"] = this.assets['resources/ui/font0.png'];
     this.assets["apad.png"] = this.assets['resources/ui/apad.png'];
     this.assets["icon0.png"] = this.assets['resources/ui/icon0.png'];
     this.assets["pad.png"] = this.assets['resources/ui/pad.png'];
-    this.scene = new RobotScene(this);
-    return this.pushScene(this.scene);
+    return Game.instance.loadInstruction();
   };
 
   return RobotGame;
 
-})(Game);
+})(TipBasedVPL);
 
 window.onload = function() {
   var game;
