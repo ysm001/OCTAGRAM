@@ -87,19 +87,22 @@ class Spot
         switch type
             when Spot.TYPE_NORMAL_BULLET
                 @effect = new SpotNormalEffect(point.x, point.y + 5)
-                @resultFunc = (robot) ->
-                    robot.cmdQueue.enqueue robot.cmdPool.pickupNormal
-                    robot.cmdQueue.enqueue robot.cmdPool.end
+                @resultFunc = (robot, plate) ->
+                    robot.barrierMap[BulletType.NORMAL] = new NormalBarrierEffect()
+                    point = plate.getAbsolutePos()
+                    robot.parentNode.addChild new NormalEnpowerEffect(point.x, point.y)
             when Spot.TYPE_WIDE_BULLET
                 @effect = new SpotWideEffect(point.x, point.y + 5)
-                @resultFunc = (robot) ->
-                    robot.cmdQueue.enqueue robot.cmdPool.pickupWide
-                    robot.cmdQueue.enqueue robot.cmdPool.end
+                @resultFunc = (robot, plate) ->
+                    robot.barrierMap[BulletType.WIDE] = new WideBarrierEffect()
+                    point = plate.getAbsolutePos()
+                    robot.parentNode.addChild new WideEnpowerEffect(point.x, point.y)
             when Spot.TYPE_DUAL_BULLET
                 @effect = new SpotDualEffect(point.x, point.y + 5)
-                @resultFunc = (robot) ->
-                    robot.cmdQueue.enqueue robot.cmdPool.pickupDual
-                    robot.cmdQueue.enqueue robot.cmdPool.end
+                @resultFunc = (robot, plate) ->
+                    robot.barrierMap[BulletType.DUAL] = new DualBarrierEffect()
+                    point = plate.getAbsolutePos()
+                    robot.parentNode.addChild new DualEnpowerEffect(point.x, point.y)
 
 class Plate extends Sprite
     @HEIGHT = 74
@@ -147,7 +150,7 @@ class Plate extends Sprite
             @setEnemySelected()
         if @spotEnabled is true
             @parentNode.removeChild @spot.effect
-            @spot.resultFunc robot
+            @spot.resultFunc robot, @
             @spot = null
             @spotEnabled = false
 

@@ -154,23 +154,26 @@ Spot = (function() {
     switch (type) {
       case Spot.TYPE_NORMAL_BULLET:
         this.effect = new SpotNormalEffect(point.x, point.y + 5);
-        this.resultFunc = function(robot) {
-          robot.cmdQueue.enqueue(robot.cmdPool.pickupNormal);
-          return robot.cmdQueue.enqueue(robot.cmdPool.end);
+        this.resultFunc = function(robot, plate) {
+          robot.barrierMap[BulletType.NORMAL] = new NormalBarrierEffect();
+          point = plate.getAbsolutePos();
+          return robot.parentNode.addChild(new NormalEnpowerEffect(point.x, point.y));
         };
         break;
       case Spot.TYPE_WIDE_BULLET:
         this.effect = new SpotWideEffect(point.x, point.y + 5);
-        this.resultFunc = function(robot) {
-          robot.cmdQueue.enqueue(robot.cmdPool.pickupWide);
-          return robot.cmdQueue.enqueue(robot.cmdPool.end);
+        this.resultFunc = function(robot, plate) {
+          robot.barrierMap[BulletType.WIDE] = new WideBarrierEffect();
+          point = plate.getAbsolutePos();
+          return robot.parentNode.addChild(new WideEnpowerEffect(point.x, point.y));
         };
         break;
       case Spot.TYPE_DUAL_BULLET:
         this.effect = new SpotDualEffect(point.x, point.y + 5);
-        this.resultFunc = function(robot) {
-          robot.cmdQueue.enqueue(robot.cmdPool.pickupDual);
-          return robot.cmdQueue.enqueue(robot.cmdPool.end);
+        this.resultFunc = function(robot, plate) {
+          robot.barrierMap[BulletType.DUAL] = new DualBarrierEffect();
+          point = plate.getAbsolutePos();
+          return robot.parentNode.addChild(new DualEnpowerEffect(point.x, point.y));
         };
     }
   }
@@ -241,7 +244,7 @@ Plate = (function(_super) {
     }
     if (this.spotEnabled === true) {
       this.parentNode.removeChild(this.spot.effect);
-      this.spot.resultFunc(robot);
+      this.spot.resultFunc(robot, this);
       this.spot = null;
       return this.spotEnabled = false;
     }

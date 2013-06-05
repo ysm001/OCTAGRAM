@@ -47,17 +47,21 @@ class BulletType
 class Bullet extends Sprite
 
     @MAX_FRAME = 15
-    constructor: (w, h) ->
+    constructor: (w, h, @type) ->
         super w, h
         @rotate 90
 
     shot: (@x, @y, @direct=Direct.RIGHT) ->
 
     hit: (robot) ->
-        explosion = new Explosion robot.x, robot.y
-        @scene.addChild explosion
+        if robot.barrierMap.isset @type
+            effect = robot.barrierMap.get(@type)
+            effect.show(robot.x, robot.y, @scene)
+        else
+            robot.damege()
+            explosion = new Explosion robot.x, robot.y
+            @scene.addChild explosion
         @onDestroy()
-        robot.damege()
 
     onDestroy: () =>
         if @animated
@@ -69,7 +73,7 @@ class Bullet extends Sprite
     behave like Bullet Class
 ###
 class BulletGroup extends Group
-    constructor: () ->
+    constructor: (@type) ->
         super
         @bullets = []
         Object.defineProperty @, "animated",
@@ -84,11 +88,15 @@ class BulletGroup extends Group
             i.shot(x, y, direct)
 
     hit: (robot) ->
+        if robot.barrierMap.isset @type
+            effect = robot.barrierMap.get(@type)
+            effect.show(robot.x, robot.y, @scene)
+        else
+            robot.damege()
+            explosion = new Explosion robot.x, robot.y
+            @scene.addChild explosion
         for i in @bullets
             i.onDestroy()
-        explosion = new Explosion robot.x, robot.y
-        @scene.addChild explosion
-        robot.damege()
 
     within: (s, value) ->
         for i in @bullets
@@ -110,7 +118,7 @@ class NormalBullet extends Bullet
     MAX_FRAME = 15
 
     constructor: () ->
-        super NormalBullet.WIDTH, NormalBullet.HEIGHT
+        super NormalBullet.WIDTH, NormalBullet.HEIGHT, BulletType.NORMAL
         @image = Game.instance.assets[R.BULLET.NORMAL]
 
     shot: (@x, @y, @direct=Direct.RIGHT) ->
@@ -147,7 +155,7 @@ class WideBulletPart extends Bullet
     MAX_FRAME = 10
 
     constructor: (@left=true) ->
-        super WideBulletPart.WIDTH, WideBulletPart.HEIGHT
+        super WideBulletPart.WIDTH, WideBulletPart.HEIGHT, BulletType.WIDE
         @image = Game.instance.assets[R.BULLET.WIDE]
         @frame = 1
 
@@ -182,7 +190,7 @@ class WideBulletPart extends Bullet
         
 class WideBullet extends BulletGroup
     constructor: () ->
-        super
+        super BulletType.WIDE
         @bullets.push new WideBulletPart(true)
         @bullets.push new WideBulletPart(false)
         for i in @bullets
@@ -194,7 +202,7 @@ class DualBulletPart extends Bullet
     MAX_FRAME = 10
 
     constructor: (@back=true) ->
-        super DualBulletPart.WIDTH, DualBulletPart.HEIGHT
+        super DualBulletPart.WIDTH, DualBulletPart.HEIGHT, BulletType.DUAL
         @image = Game.instance.assets[R.BULLET.DUAL]
         @frame = 1
 
@@ -227,7 +235,7 @@ class DualBulletPart extends Bullet
 
 class DualBullet extends BulletGroup
     constructor: () ->
-        super
+        super BulletType.DUAL
         @bullets.push new DualBulletPart(true)
         @bullets.push new DualBulletPart(false)
         for i in @bullets

@@ -30,6 +30,12 @@ class Config.R
         SPOT_NORMAL : "#{R.RESOURCE_DIR}/effect/spot_normal.png"
         SPOT_WIDE : "#{R.RESOURCE_DIR}/effect/spot_wide.png"
         SPOT_DUAL : "#{R.RESOURCE_DIR}/effect/spot_dual.png"
+        BARRIER_NORMAL :  "#{R.RESOURCE_DIR}/effect/barrier_normal.png"
+        BARRIER_WIDE :  "#{R.RESOURCE_DIR}/effect/barrier_wide.png"
+        BARRIER_DUAL :  "#{R.RESOURCE_DIR}/effect/barrier_dual.png"
+        ENPOWER_NORMAL : "#{R.RESOURCE_DIR}/effect/enpower_normal.png"
+        ENPOWER_WIDE : "#{R.RESOURCE_DIR}/effect/enpower_wide.png"
+        ENPOWER_DUAL : "#{R.RESOURCE_DIR}/effect/enpower_dual.png"
     @BULLET :
         ENEMY : "#{R.RESOURCE_DIR}/bullet/bullet1.png"
         NORMAL : "#{R.RESOURCE_DIR}/bullet/normal.png"

@@ -93,8 +93,10 @@ Bullet = (function(_super) {
 
   Bullet.MAX_FRAME = 15;
 
-  function Bullet(w, h) {
-    this.onDestroy = __bind(this.onDestroy, this);    Bullet.__super__.constructor.call(this, w, h);
+  function Bullet(w, h, type) {
+    this.type = type;
+    this.onDestroy = __bind(this.onDestroy, this);
+    Bullet.__super__.constructor.call(this, w, h);
     this.rotate(90);
   }
 
@@ -105,12 +107,17 @@ Bullet = (function(_super) {
   };
 
   Bullet.prototype.hit = function(robot) {
-    var explosion;
+    var effect, explosion;
 
-    explosion = new Explosion(robot.x, robot.y);
-    this.scene.addChild(explosion);
-    this.onDestroy();
-    return robot.damege();
+    if (robot.barrierMap.isset(this.type)) {
+      effect = robot.barrierMap.get(this.type);
+      effect.show(robot.x, robot.y, this.scene);
+    } else {
+      robot.damege();
+      explosion = new Explosion(robot.x, robot.y);
+      this.scene.addChild(explosion);
+    }
+    return this.onDestroy();
   };
 
   Bullet.prototype.onDestroy = function() {
@@ -133,10 +140,11 @@ Bullet = (function(_super) {
 BulletGroup = (function(_super) {
   __extends(BulletGroup, _super);
 
-  function BulletGroup() {
-    this.onDestroy = __bind(this.onDestroy, this);
+  function BulletGroup(type) {
     var _this = this;
 
+    this.type = type;
+    this.onDestroy = __bind(this.onDestroy, this);
     BulletGroup.__super__.constructor.apply(this, arguments);
     this.bullets = [];
     Object.defineProperty(this, "animated", {
@@ -170,16 +178,23 @@ BulletGroup = (function(_super) {
   };
 
   BulletGroup.prototype.hit = function(robot) {
-    var explosion, i, _i, _len, _ref;
+    var effect, explosion, i, _i, _len, _ref, _results;
 
+    if (robot.barrierMap.isset(this.type)) {
+      effect = robot.barrierMap.get(this.type);
+      effect.show(robot.x, robot.y, this.scene);
+    } else {
+      robot.damege();
+      explosion = new Explosion(robot.x, robot.y);
+      this.scene.addChild(explosion);
+    }
     _ref = this.bullets;
+    _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       i = _ref[_i];
-      i.onDestroy();
+      _results.push(i.onDestroy());
     }
-    explosion = new Explosion(robot.x, robot.y);
-    this.scene.addChild(explosion);
-    return robot.damege();
+    return _results;
   };
 
   BulletGroup.prototype.within = function(s, value) {
@@ -229,7 +244,7 @@ NormalBullet = (function(_super) {
   MAX_FRAME = 15;
 
   function NormalBullet() {
-    NormalBullet.__super__.constructor.call(this, NormalBullet.WIDTH, NormalBullet.HEIGHT);
+    NormalBullet.__super__.constructor.call(this, NormalBullet.WIDTH, NormalBullet.HEIGHT, BulletType.NORMAL);
     this.image = Game.instance.assets[R.BULLET.NORMAL];
   }
 
@@ -290,7 +305,7 @@ WideBulletPart = (function(_super) {
 
   function WideBulletPart(left) {
     this.left = left != null ? left : true;
-    WideBulletPart.__super__.constructor.call(this, WideBulletPart.WIDTH, WideBulletPart.HEIGHT);
+    WideBulletPart.__super__.constructor.call(this, WideBulletPart.WIDTH, WideBulletPart.HEIGHT, BulletType.WIDE);
     this.image = Game.instance.assets[R.BULLET.WIDE];
     this.frame = 1;
   }
@@ -345,7 +360,7 @@ WideBullet = (function(_super) {
   function WideBullet() {
     var i, _i, _len, _ref;
 
-    WideBullet.__super__.constructor.apply(this, arguments);
+    WideBullet.__super__.constructor.call(this, BulletType.WIDE);
     this.bullets.push(new WideBulletPart(true));
     this.bullets.push(new WideBulletPart(false));
     _ref = this.bullets;
@@ -372,7 +387,7 @@ DualBulletPart = (function(_super) {
 
   function DualBulletPart(back) {
     this.back = back != null ? back : true;
-    DualBulletPart.__super__.constructor.call(this, DualBulletPart.WIDTH, DualBulletPart.HEIGHT);
+    DualBulletPart.__super__.constructor.call(this, DualBulletPart.WIDTH, DualBulletPart.HEIGHT, BulletType.DUAL);
     this.image = Game.instance.assets[R.BULLET.DUAL];
     this.frame = 1;
   }
@@ -425,7 +440,7 @@ DualBullet = (function(_super) {
   function DualBullet() {
     var i, _i, _len, _ref;
 
-    DualBullet.__super__.constructor.apply(this, arguments);
+    DualBullet.__super__.constructor.call(this, BulletType.DUAL);
     this.bullets.push(new DualBulletPart(true));
     this.bullets.push(new DualBulletPart(false));
     _ref = this.bullets;

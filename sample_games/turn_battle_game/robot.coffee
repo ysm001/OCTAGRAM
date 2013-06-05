@@ -26,6 +26,19 @@ class ItemQueue
     size: () ->
         @collection.length
 
+class BarrierMap extends Object
+
+    constructor: () ->
+
+    get:(key) ->
+        ret = @[key]
+        delete @[key]
+        return ret
+
+    isset:(key) ->
+        return if @[key]? then true else false
+
+
 class Robot extends Sprite
     @MAX_HP = 4
     constructor: (width, height) ->
@@ -38,6 +51,7 @@ class Robot extends Sprite
         @bltQueue = new ItemQueue [], 5
         @wideBltQueue = new ItemQueue [], 5
         @dualBltQueue = new ItemQueue [], 5
+        @barrierMap = new BarrierMap
         @map = Map.instance
         @prevPlate = @map.plateMatrix[0][0]
         @currentPlate = @map.plateMatrix[0][0]
