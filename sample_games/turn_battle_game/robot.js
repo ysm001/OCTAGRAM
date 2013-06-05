@@ -77,7 +77,10 @@ Robot = (function(_super) {
     this.y = pos.y;
   }
 
-  Robot.prototype.onViewUpdate = function(views) {};
+  Robot.prototype.onViewUpdate = function(views) {
+    this.prevPlate.setNormal();
+    return this.currentPlate.onRobotRide(this);
+  };
 
   Robot.prototype.onHpReduce = function(views) {};
 
@@ -187,17 +190,21 @@ PlayerRobot = (function(_super) {
   }
 
   PlayerRobot.prototype.onCmdComplete = function(id, ret) {
-    var statusBox;
+    var effect, statusBox;
 
     PlayerRobot.__super__.onCmdComplete.call(this, id, ret);
     statusBox = this.scene.views.footer.statusBox;
     switch (id) {
       case Instruction.SHOT:
         if (ret !== false) {
+          effect = new ShotEffect(this.x, this.y);
+          this.scene.addChild(effect);
           if (ret instanceof WideBullet) {
             return statusBox.wideRemain.decrement();
           } else if (ret instanceof NormalBullet) {
             return statusBox.normalRemain.decrement();
+          } else if (ret instanceof DualBullet) {
+            return statusBox.dualRemain.decrement();
           }
         }
         break;
@@ -207,14 +214,11 @@ PlayerRobot = (function(_super) {
             return statusBox.wideRemain.increment();
           } else if (ret instanceof NormalBullet) {
             return statusBox.normalRemain.increment();
+          } else if (ret instanceof DualBullet) {
+            return statusBox.dualRemain.increment();
           }
         }
     }
-  };
-
-  PlayerRobot.prototype.onViewUpdate = function(views) {
-    this.prevPlate.setNormal();
-    return this.currentPlate.setPlayerSelected();
   };
 
   PlayerRobot.prototype.onHpReduce = function(views) {
@@ -256,6 +260,9 @@ PlayerRobot = (function(_super) {
         case 1:
           this.cmdQueue.enqueue(this.cmdPool.shotWide);
           break;
+        case 2:
+          this.cmdQueue.enqueue(this.cmdPool.shotDual);
+          break;
         default:
           this.cmdQueue.enqueue(this.cmdPool.shotNormal);
       }
@@ -268,6 +275,9 @@ PlayerRobot = (function(_super) {
           break;
         case 1:
           this.cmdQueue.enqueue(this.cmdPool.pickupWide);
+          break;
+        case 2:
+          this.cmdQueue.enqueue(this.cmdPool.pickupDual);
           break;
         default:
           this.cmdQueue.enqueue(this.cmdPool.pickupNormal);
@@ -293,11 +303,6 @@ EnemyRobot = (function(_super) {
     this.image = this.game.assets[R.CHAR.ENEMY];
     this.cmdPool = new CommandPool(this);
   }
-
-  EnemyRobot.prototype.onViewUpdate = function(views) {
-    this.prevPlate.setNormal();
-    return this.currentPlate.setEnemySelected();
-  };
 
   EnemyRobot.prototype.onHpReduce = function(views) {
     var hpBar;

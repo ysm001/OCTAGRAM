@@ -31,6 +31,14 @@ class WideBulletItem extends Item
         @image = Game.instance.assets[R.ITEM.WIDE_BULLET]
         @tl.fadeOut(FRAME).and().moveBy(0, -48, FRAME).then(() -> @onComplete())
         
+class DualBulletItem extends Item
+    @SIZE = 64
+    FRAME = 20
 
-
-
+    constructor:(x, y) ->
+        super DualBulletItem.SIZE, DualBulletItem.SIZE
+        @x = x
+        @y = y-8
+        @image = Game.instance.assets[R.ITEM.DUAL_BULLET]
+        @tl.fadeOut(FRAME).and().moveBy(0, -48, FRAME).then(() -> @onComplete())
+        

@@ -26,13 +26,19 @@ class Config.R
         APAD : "#{R.RESOURCE_DIR}/ui/apad.png"
     @EFFECT :
         EXPLOSION : "#{R.RESOURCE_DIR}/effect/explosion_64x64.png"
+        SHOT : "#{R.RESOURCE_DIR}/effect/shot_player.png"
+        SPOT_NORMAL : "#{R.RESOURCE_DIR}/effect/spot_normal.png"
+        SPOT_WIDE : "#{R.RESOURCE_DIR}/effect/spot_wide.png"
+        SPOT_DUAL : "#{R.RESOURCE_DIR}/effect/spot_dual.png"
     @BULLET :
         ENEMY : "#{R.RESOURCE_DIR}/bullet/bullet1.png"
         NORMAL : "#{R.RESOURCE_DIR}/bullet/normal.png"
         WIDE : "#{R.RESOURCE_DIR}/bullet/wide.png"
+        DUAL : "#{R.RESOURCE_DIR}/bullet/dual.png"
     @ITEM :
         NORMAL_BULLET : "#{R.RESOURCE_DIR}/item/normal_bullet_item.png"
         WIDE_BULLET : "#{R.RESOURCE_DIR}/item/wide_bullet_item.png"
+        DUAL_BULLET : "#{R.RESOURCE_DIR}/item/dual_bullet_item.png"
         STATUS_BULLET : "#{R.RESOURCE_DIR}/item/status_bullet.png"
 
         #enchant.ui = { assets: [Config.R.PAD, Config.R.APAD, Config.R.FONT0, Config.R.ICON0] }

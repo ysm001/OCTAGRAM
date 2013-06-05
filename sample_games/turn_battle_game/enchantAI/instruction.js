@@ -48,8 +48,8 @@ MoveInstruction = (function(_super) {
     var pos, ret;
 
     ret = false;
+    this.prevPlate = this.currentPlate;
     if ((plate != null) && plate.lock === false) {
-      this.prevPlate = this.currentPlate;
       pos = plate.getAbsolutePos();
       this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(function() {
         return this.onAnimateComplete();

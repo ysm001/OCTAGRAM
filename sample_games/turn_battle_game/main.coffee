@@ -12,11 +12,16 @@ class CommandPool
         @moveRightDown = new Command(new MoveRightDown)
         @moveRight = new Command(new MoveRight)
         @moveLeft = new Command(new MoveLeft)
-        @search = new Command(new Searching)
+
         @pickupNormal = new Command(new Pickup(), [BulletType.NORMAL, NormalBulletItem,robot.bltQueue])
         @pickupWide = new Command(new Pickup(), [BulletType.WIDE, WideBulletItem,robot.wideBltQueue])
+        @pickupDual = new Command(new Pickup(), [BulletType.DUAL, DualBulletItem,robot.dualBltQueue])
+
         @shotNormal = new Command(new Shot(), [robot.bltQueue])
         @shotWide = new Command(new Shot(), [robot.wideBltQueue])
+        @shotDual = new Command(new Shot(), [robot.dualBltQueue])
+
+        @search = new Command(new Searching)
         @getHp = new Command(new GetHp)
         @getBulletQueueSize = Command(new GetBulletQueueSize)
             
@@ -83,7 +88,7 @@ class RobotWorld extends Group
         @addChild @enemy
         @robots.push @enemy
 
-        @swicher = new TurnSwitcher @
+        # @swicher = new TurnSwitcher @
 
     initialize: (views)->
 
@@ -109,8 +114,6 @@ class RobotWorld extends Group
                         del = i
                         v.hit(robot)
                         @bullets[i] = false
-                        Debug.dump v
-                        Debug.dump robot
                     else if v.animated == false
                         del = i
                         @bullets[i] = false

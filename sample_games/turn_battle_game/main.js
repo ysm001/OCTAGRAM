@@ -19,11 +19,13 @@ CommandPool = (function() {
     this.moveRightDown = new Command(new MoveRightDown);
     this.moveRight = new Command(new MoveRight);
     this.moveLeft = new Command(new MoveLeft);
-    this.search = new Command(new Searching);
     this.pickupNormal = new Command(new Pickup(), [BulletType.NORMAL, NormalBulletItem, robot.bltQueue]);
     this.pickupWide = new Command(new Pickup(), [BulletType.WIDE, WideBulletItem, robot.wideBltQueue]);
+    this.pickupDual = new Command(new Pickup(), [BulletType.DUAL, DualBulletItem, robot.dualBltQueue]);
     this.shotNormal = new Command(new Shot(), [robot.bltQueue]);
     this.shotWide = new Command(new Shot(), [robot.wideBltQueue]);
+    this.shotDual = new Command(new Shot(), [robot.dualBltQueue]);
+    this.search = new Command(new Searching);
     this.getHp = new Command(new GetHp);
     this.getBulletQueueSize = Command(new GetBulletQueueSize);
   }
@@ -131,7 +133,6 @@ RobotWorld = (function(_super) {
     this.enemy = new EnemyRobot;
     this.addChild(this.enemy);
     this.robots.push(this.enemy);
-    this.swicher = new TurnSwitcher(this);
   }
 
   RobotWorld.prototype.initialize = function(views) {};
@@ -172,8 +173,6 @@ RobotWorld = (function(_super) {
             del = i;
             v.hit(robot);
             this.bullets[i] = false;
-            Debug.dump(v);
-            Debug.dump(robot);
           } else if (v.animated === false) {
             del = i;
             this.bullets[i] = false;

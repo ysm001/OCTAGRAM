@@ -33,7 +33,7 @@ class BulletFactory
             when BulletType.WIDE
                 bullet = new WideBullet()
             when BulletType.DUAL
-                bullet = null
+                bullet = new DualBullet()
             else
                 return false
         bullet.holder = robot
@@ -107,6 +107,8 @@ class BulletGroup extends Group
 class NormalBullet extends Bullet
     @WIDTH = 64
     @HEIGHT = 64
+    MAX_FRAME = 15
+
     constructor: () ->
         super NormalBullet.WIDTH, NormalBullet.HEIGHT
         @image = Game.instance.assets[R.BULLET.NORMAL]
@@ -134,7 +136,7 @@ class NormalBullet extends Bullet
         @rotate rotate
         @_rorateDeg = rotate
         point = Util.toCartesianCoordinates(70*2, Util.toRad(rotate))
-        @tl.moveBy(toi(point.x), toi(point.y), Bullet.MAX_FRAME).then(() -> @onDestroy())
+        @tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @onDestroy())
 
 ###
     spread in 2 directions`
@@ -183,5 +185,50 @@ class WideBullet extends BulletGroup
         super
         @bullets.push new WideBulletPart(true)
         @bullets.push new WideBulletPart(false)
+        for i in @bullets
+            @addChild i
+
+class DualBulletPart extends Bullet
+    @WIDTH = 64
+    @HEIGHT = 64
+    MAX_FRAME = 10
+
+    constructor: (@back=true) ->
+        super DualBulletPart.WIDTH, DualBulletPart.HEIGHT
+        @image = Game.instance.assets[R.BULLET.DUAL]
+        @frame = 1
+
+    shot: (@x, @y, @direct=Direct.RIGHT) ->
+        @animated = true
+        if @_rorateDeg?
+            @rotate -@_rorateDeg
+
+        rotate = 0
+        if (@direct & Direct.LEFT) != 0
+            rotate += 180
+
+        if (@direct & Direct.UP) != 0
+            if (@direct & Direct.LEFT) != 0
+                rotate += 60
+            else
+                rotate -= 60
+        else if (@direct & Direct.DOWN) != 0
+            if (@direct & Direct.LEFT) != 0
+                rotate -= 60
+            else
+                rotate += 60
+
+        if @back == true
+            rotate += 180
+        @rotate rotate
+        @_rorateDeg = rotate
+        point = Util.toCartesianCoordinates(70, Util.toRad(rotate))
+        @tl.moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @onDestroy())
+
+class DualBullet extends BulletGroup
+    constructor: () ->
+        super
+        @bullets.push new DualBulletPart(true)
+        @bullets.push new DualBulletPart(false)
         for i in @bullets
             @addChild i

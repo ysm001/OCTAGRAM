@@ -77,6 +77,30 @@ class Header extends Group
         @enemyHpBar.direct "left"
         @addChild @enemyHpBar
 
+class Spot
+    
+    @TYPE_NORMAL_BULLET = 1
+    @TYPE_WIDE_BULLET = 2
+    @TYPE_DUAL_BULLET = 3
+
+    constructor: (type, point) ->
+        switch type
+            when Spot.TYPE_NORMAL_BULLET
+                @effect = new SpotNormalEffect(point.x, point.y + 5)
+                @resultFunc = (robot) ->
+                    robot.cmdQueue.enqueue robot.cmdPool.pickupNormal
+                    robot.cmdQueue.enqueue robot.cmdPool.end
+            when Spot.TYPE_WIDE_BULLET
+                @effect = new SpotWideEffect(point.x, point.y + 5)
+                @resultFunc = (robot) ->
+                    robot.cmdQueue.enqueue robot.cmdPool.pickupWide
+                    robot.cmdQueue.enqueue robot.cmdPool.end
+            when Spot.TYPE_DUAL_BULLET
+                @effect = new SpotDualEffect(point.x, point.y + 5)
+                @resultFunc = (robot) ->
+                    robot.cmdQueue.enqueue robot.cmdPool.pickupDual
+                    robot.cmdQueue.enqueue robot.cmdPool.end
+
 class Plate extends Sprite
     @HEIGHT = 74
     @WIDTH = 64
@@ -86,16 +110,15 @@ class Plate extends Sprite
         @y = y
         @lock = false
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE]
+        @spotEnabled = false
 
     setPlayerSelected: () ->
         @frame = 1
         @lock = true
-        map = Map.instance
 
     setEnemySelected: () ->
         @frame = 2
         @lock = true
-        map = Map.instance
 
     setNormal: () ->
         @lock = false
@@ -110,6 +133,23 @@ class Plate extends Sprite
             i = i.parentNode
 
         new Point(@x + offsetX, @y + offsetY)
+
+    setSpot: (type) ->
+        if @spotEnabled is false
+            @spotEnabled = true
+            @spot = new Spot type, @
+            @parentNode.addChild @spot.effect
+
+    onRobotRide: (robot) ->
+        if robot instanceof PlayerRobot
+            @setPlayerSelected()
+        else if robot instanceof EnemyRobot
+            @setEnemySelected()
+        if @spotEnabled is true
+            @parentNode.removeChild @spot.effect
+            @spot.resultFunc robot
+            @spot = null
+            @spotEnabled = false
 
 class Map extends Group
     @WIDTH = 9
@@ -134,12 +174,19 @@ class Map extends Group
                     plate = new Plate((tx * Map.UNIT_WIDTH+Map.UNIT_HEIGHT/2), (ty * Map.UNIT_HEIGHT)- ty * offset, tx, ty)
                 list.push plate
                 @addChild plate
+                rand = Math.floor(Math.random() * 20)
+                switch rand
+                    when 0
+                        plate.setSpot(Spot.TYPE_NORMAL_BULLET)
+                    when 1
+                        plate.setSpot(Spot.TYPE_WIDE_BULLET)
+                    when 2
+                        plate.setSpot(Spot.TYPE_DUAL_BULLET)
             @plateMatrix.push list
         @x = x
         @y = y
         @width = Map.WIDTH * Map.UNIT_WIDTH
         @height = (Map.HEIGHT-1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 16
-        @object = {}
 
     getPlate: (x, y) ->
         return @plateMatrix[x][y]
@@ -287,7 +334,7 @@ class StatusBox extends Group
         @y = y
         #@window = new StatusWindow 0, 0
         #@addChild @window
-        @scoreLabel = new ScoreLabel(30, 0)
+        @scoreLabel = new ScoreLabel(20, 0)
         @scoreLabel.score = 100
         @addChild @scoreLabel
         #@label = new Label("残弾数")

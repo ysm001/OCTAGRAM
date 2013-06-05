@@ -20,8 +20,8 @@ class MoveInstruction extends Instruction
 
     @move: (plate) ->
         ret = false
+        @prevPlate = @currentPlate
         if plate? and plate.lock == false
-            @prevPlate = @currentPlate
             pos = plate.getAbsolutePos()
             @tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(() -> @onAnimateComplete())
             @currentPlate = plate
@@ -94,7 +94,6 @@ class Shot extends Instruction
             for b in bltQueue.dequeue()
                 b.shot(@x, @y, @getDirect())
                 @scene.world.bullets.push b
-                #@scene.world.addChild b
                 @scene.world.insertBefore b, @
             return b
         return false

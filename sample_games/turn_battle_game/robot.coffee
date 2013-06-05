@@ -46,6 +46,8 @@ class Robot extends Sprite
         @y = pos.y
     
     onViewUpdate: (views) ->
+        @prevPlate.setNormal()
+        @currentPlate.onRobotRide(@)
 
     onHpReduce: (views) ->
 
@@ -141,20 +143,23 @@ class PlayerRobot extends Robot
         switch id
             when Instruction.SHOT
                 if ret != false
+                    effect = new ShotEffect(@x, @y)
+                    @scene.addChild effect
                     if ret instanceof WideBullet
                         statusBox.wideRemain.decrement()
                     else if ret instanceof NormalBullet
                         statusBox.normalRemain.decrement()
+                    else if ret instanceof DualBullet
+                        statusBox.dualRemain.decrement()
             when Instruction.PICKUP
                 if ret != false
                     if ret instanceof WideBullet
                         statusBox.wideRemain.increment()
                     else if ret instanceof NormalBullet
                         statusBox.normalRemain.increment()
+                    else if ret instanceof DualBullet
+                        statusBox.dualRemain.increment()
 
-    onViewUpdate: (views) ->
-        @prevPlate.setNormal()
-        @currentPlate.setPlayerSelected()
 
     onHpReduce: (views) ->
         scene = Game.instance.scene
@@ -188,6 +193,8 @@ class PlayerRobot extends Robot
                     @cmdQueue.enqueue @cmdPool.shotNormal
                 when 1
                     @cmdQueue.enqueue @cmdPool.shotWide
+                when 2
+                    @cmdQueue.enqueue @cmdPool.shotDual
                 else
                     @cmdQueue.enqueue @cmdPool.shotNormal
             @cmdQueue.enqueue @cmdPool.end
@@ -198,6 +205,8 @@ class PlayerRobot extends Robot
                     @cmdQueue.enqueue @cmdPool.pickupNormal
                 when 1
                     @cmdQueue.enqueue @cmdPool.pickupWide
+                when 2
+                    @cmdQueue.enqueue @cmdPool.pickupDual
                 else
                     @cmdQueue.enqueue @cmdPool.pickupNormal
             @cmdQueue.enqueue @cmdPool.end
@@ -210,10 +219,6 @@ class EnemyRobot extends Robot
         @name = R.String.ENEMY
         @image = @game.assets[R.CHAR.ENEMY]
         @cmdPool = new CommandPool @
-
-    onViewUpdate: (views) ->
-        @prevPlate.setNormal()
-        @currentPlate.setEnemySelected()
 
     onHpReduce: (views) ->
         hpBar = @scene.views.enemyHpBar
