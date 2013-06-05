@@ -54,15 +54,14 @@ ViewGroup = (function(_super) {
   }
 
   ViewGroup.prototype.update = function(world) {
-    var i, _i, _len, _ref, _results;
+    var i, _i, _len, _ref;
 
     _ref = world.robots;
-    _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       i = _ref[_i];
-      _results.push(i.onViewUpdate(this));
+      i.onViewUpdate(this);
     }
-    return _results;
+    return this.map.update();
   };
 
   return ViewGroup;

@@ -150,6 +150,8 @@ Spot = (function() {
 
   Spot.TYPE_DUAL_BULLET = 3;
 
+  Spot.SIZE = 3;
+
   function Spot(type, point) {
     switch (type) {
       case Spot.TYPE_NORMAL_BULLET:
@@ -177,6 +179,17 @@ Spot = (function() {
         };
     }
   }
+
+  Spot.createRandom = function(point) {
+    var type;
+
+    type = Math.floor(Math.random() * Spot.SIZE) + 1;
+    return new Spot(type, poit);
+  };
+
+  Spot.getRandomType = function() {
+    return Math.floor(Math.random() * Spot.SIZE) + 1;
+  };
 
   return Spot;
 
@@ -358,6 +371,19 @@ Map = (function(_super) {
       }
     }
     return null;
+  };
+
+  Map.prototype.update = function() {
+    /*
+    if @age % 10 == 0
+        x = Math.floor(Math.random() * (Map.WIDTH))
+        y = Math.floor(Math.random() * (Map.HEIGHT)) 
+        Debug.log "#{x}, #{y}"
+        type = Spot.getRandomType()
+        Debug.dump @plateMatrix[x][y]
+        @plateMatrix[x][y].setSpot type
+    */
+
   };
 
   return Map;

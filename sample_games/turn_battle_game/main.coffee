@@ -48,6 +48,7 @@ class ViewGroup extends Group
     update: (world) ->
         for i in world.robots
             i.onViewUpdate(@)
+        @map.update()
 
 class TurnSwitcher
     constructor: (@world) ->

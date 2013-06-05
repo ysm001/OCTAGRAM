@@ -82,6 +82,7 @@ class Spot
     @TYPE_NORMAL_BULLET = 1
     @TYPE_WIDE_BULLET = 2
     @TYPE_DUAL_BULLET = 3
+    @SIZE = 3
 
     constructor: (type, point) ->
         switch type
@@ -103,6 +104,13 @@ class Spot
                     robot.barrierMap[BulletType.DUAL] = new DualBarrierEffect()
                     point = plate.getAbsolutePos()
                     robot.parentNode.addChild new DualEnpowerEffect(point.x, point.y)
+
+    @createRandom: (point) ->
+        type = Math.floor(Math.random() * (Spot.SIZE)) + 1
+        return new Spot(type, poit)
+
+    @getRandomType: () ->
+        return Math.floor(Math.random() * (Spot.SIZE)) + 1
 
 class Plate extends Sprite
     @HEIGHT = 74
@@ -233,6 +241,17 @@ class Map extends Group
         
         return null
 
+    update: () ->
+        return
+        ###
+        if @age % 10 == 0
+            x = Math.floor(Math.random() * (Map.WIDTH))
+            y = Math.floor(Math.random() * (Map.HEIGHT)) 
+            Debug.log "#{x}, #{y}"
+            type = Spot.getRandomType()
+            Debug.dump @plateMatrix[x][y]
+            @plateMatrix[x][y].setSpot type
+        ###
 
 class Button extends Sprite
     @WIDTH = 120
