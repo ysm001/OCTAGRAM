@@ -7,27 +7,30 @@ R = Config.R;
 
 CommandPool = (function() {
   function CommandPool(robot) {
-    var end;
+    /*
+    end = new RobotInstruction RobotInstruction.END, () ->
+        return true
+    @end = new Command end
+    @moveLeftUp = new Command(new MoveLeftUp, robot)
+    @moveleftDown = new Command(new MoveLeftDown, robot)
+    @moveRightUp = new Command(new MoveRightUp, robot)
+    @moveRightDown = new Command(new MoveRightDown, robot)
+    @moveRight = new Command(new MoveRight, robot)
+    @moveLeft = new Command(new MoveLeft, robot)
+    
+    @pickupNormal = new Command(new Pickup(), robot,[BulletType.NORMAL, NormalBulletItem,robot.bltQueue])
+    @pickupWide = new Command(new Pickup(), robot, [BulletType.WIDE, WideBulletItem,robot.wideBltQueue])
+    @pickupDual = new Command(new Pickup(), robot, [BulletType.DUAL, DualBulletItem,robot.dualBltQueue])
+    
+    @shotNormal = new Command(new Shot(), robot, [robot.bltQueue])
+    @shotWide = new Command(new Shot(), robot, [robot.wideBltQueue])
+    @shotDual = new Command(new Shot(), robot, [robot.dualBltQueue])
+    
+    @search = new Command(new Searching, robot)
+    @getHp = new Command(new GetHp, robot)
+    @getBulletQueueSize = Command(new GetBulletQueueSize, robot)
+    */
 
-    end = new RobotInstruction(RobotInstruction.END, function() {
-      return true;
-    });
-    this.end = new Command(end);
-    this.moveLeftUp = new Command(new MoveLeftUp, robot);
-    this.moveleftDown = new Command(new MoveLeftDown, robot);
-    this.moveRightUp = new Command(new MoveRightUp, robot);
-    this.moveRightDown = new Command(new MoveRightDown, robot);
-    this.moveRight = new Command(new MoveRight, robot);
-    this.moveLeft = new Command(new MoveLeft, robot);
-    this.pickupNormal = new Command(new Pickup(), robot, [BulletType.NORMAL, NormalBulletItem, robot.bltQueue]);
-    this.pickupWide = new Command(new Pickup(), robot, [BulletType.WIDE, WideBulletItem, robot.wideBltQueue]);
-    this.pickupDual = new Command(new Pickup(), robot, [BulletType.DUAL, DualBulletItem, robot.dualBltQueue]);
-    this.shotNormal = new Command(new Shot(), robot, [robot.bltQueue]);
-    this.shotWide = new Command(new Shot(), robot, [robot.wideBltQueue]);
-    this.shotDual = new Command(new Shot(), robot, [robot.dualBltQueue]);
-    this.search = new Command(new Searching, robot);
-    this.getHp = new Command(new GetHp, robot);
-    this.getBulletQueueSize = Command(new GetBulletQueueSize, robot);
   }
 
   return CommandPool;
@@ -135,6 +138,17 @@ RobotWorld = (function(_super) {
     this.addChild(this.enemy);
     this.robots.push(this.enemy);
     Game.instance.addInstruction(new MoveRightInstruction(this.player));
+    Game.instance.addInstruction(new MoveLeftInstruction(this.player));
+    Game.instance.addInstruction(new MoveRightDownInstruction(this.player));
+    Game.instance.addInstruction(new MoveRightUpInstruction(this.player));
+    Game.instance.addInstruction(new MoveLeftUpInstruction(this.player));
+    Game.instance.addInstruction(new MoveLeftDownInstruction(this.player));
+    Game.instance.addInstruction(new NormalShotInstruction(this.player));
+    Game.instance.addInstruction(new WideShotInstruction(this.player));
+    Game.instance.addInstruction(new DualShotInstruction(this.player));
+    Game.instance.addInstruction(new NormalPickupInstruction(this.player));
+    Game.instance.addInstruction(new WidePickupInstruction(this.player));
+    Game.instance.addInstruction(new DualPickupInstruction(this.player));
   }
 
   RobotWorld.prototype.initialize = function(views) {};

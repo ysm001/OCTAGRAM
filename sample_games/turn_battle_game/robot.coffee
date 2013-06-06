@@ -73,7 +73,7 @@ class Robot extends Sprite
     onCmdComplete: (id, ret) ->
         msgbox = @scene.views.msgbox
         switch id
-            when RobotInstruction.MOVE_RIGHT_UP, RobotInstruction.MOVE_RIGHT_DOWN, RobotInstruction.MOVE_LEFT_DOWN, RobotInstruction.MOVE_LEFT_UP, RobotInstruction.MOVE_LEFT, RobotInstruction.MOVE_RIGHT
+            when RobotInstruction.MOVE
                 if ret != false
                     msgbox.print R.String.move(@name, ret.x+1, ret.y+1)
                     @animated = true

@@ -1,10 +1,5 @@
 class RobotInstruction
-    @MOVE_LEFT_UP = "moveLeftUp"
-    @MOVE_LEFT_DOWN = "moveLeftDown"
-    @MOVE_RIGHT_UP = "moveRightUp"
-    @MOVE_RIGHT_DOWN = "moveRightDown"
-    @MOVE_LEFT = "moveLeft"
-    @MOVE_RIGHT = "moveRight"
+    @MOVE = "move"
     @SHOT = "shot"
     @PICKUP = "pickup"
     @SEARCH = "search"
@@ -30,94 +25,166 @@ class MoveInstruction extends RobotInstruction
             ret = false
         return ret
 
-class MoveRightInstruction extends ActionInstruction
-  constructor : (@robot) ->
-    super()
-    @setAsynchronous(true)
+class MovingInstruction extends ActionInstruction
+    constructor : (@robot, @direct, @frame, @instrClass) ->
+        super
+        @setAsynchronous(true)
 
-  action : () -> 
-      ret = true
-      @robot.frame = 0
-      plate = robot.map.getTargetPoision(@robot.currentPlate, Direct.RIGHT)
-      ret = MoveInstruction.move.call(@robot, plate, @)
-      @setAsynchronous(ret != false)
-
-  onComplete: () ->
-    @robot.onAnimateComplete()
-    super
-    
-  clone : () -> 
-    instr = new MoveRightInstruction()
-    instr.robot = @robot
-    return instr
-
-class MoveRight extends MoveInstruction
-    constructor:() ->
-        super RobotInstruction.MOVE_RIGHT, @func
-    func:() ->
+    action : () -> 
         ret = true
-        @frame = 0
-        plate = @map.getTargetPoision(@currentPlate, Direct.RIGHT)
-        return MoveInstruction.move.call(@, plate)
+        @robot.frame = @frame
+        Debug.log @frame
+        plate = @robot.map.getTargetPoision(@robot.currentPlate, @direct)
+        ret = MoveInstruction.move.call(@robot, plate, @)
+        @setAsynchronous(ret != false)
+        @ret = ret
+
+    onComplete: () ->
+        @robot.onAnimateComplete()
+        @robot.onCmdComplete(RobotInstruction.MOVE, @ret)
+        super
+
+    clone : () -> 
+        instr = new @instrClass(@robot)
+        return instr
 
 
-class MoveLeftUp extends MoveInstruction
-    constructor:() ->
-        super RobotInstruction.MOVE_LEFT_UP, @func
-    func: () ->
-        ret = true
-        @frame = 6
-        plate = @map.getTargetPoision(@currentPlate, Direct.UP | Direct.LEFT)
-        return MoveInstruction.move.call(@, plate)
+class MoveRightInstruction extends MovingInstruction
+    constructor : (@robot) ->
+        super(@robot, Direct.RIGHT, 0, MoveRightInstruction)
+
+    mkDescription: () ->
+        "MoveRightInstruction"
+
+class MoveLeftInstruction extends MovingInstruction
+    constructor : (@robot) ->
+        super(@robot, Direct.LEFT, 2, MoveLeftInstruction)
+
+    mkDescription: () ->
+        "MoveLeftInstruction"
+
+class MoveRightUpInstruction extends MovingInstruction
+    constructor : (@robot) ->
+        super(@robot, Direct.RIGHT | Direct.UP, 4, MoveRightUpInstruction)
+
+    mkDescription: () ->
+        "MoveRightUpInstruction"
+
+class MoveRightDownInstruction extends MovingInstruction
+    constructor : (@robot) ->
+        super(@robot, Direct.RIGHT | Direct.DOWN, 5, MoveRightDownInstruction)
+
+    mkDescription: () ->
+        "MoveRightDownInstruction"
+
+class MoveLeftUpInstruction extends MovingInstruction
+    constructor : (@robot) ->
+        super(@robot, Direct.LEFT | Direct.UP, 6, MoveLeftUpInstruction)
+
+    mkDescription: () ->
+        "MoveLeftUpInstruction"
+
+class MoveLeftDownInstruction extends MovingInstruction
+    constructor : (@robot) ->
+        super(@robot, Direct.LEFT | Direct.DOWN, 7, MoveLeftDownInstruction)
+
+    mkDescription: () ->
+        "MoveLeftDownInstruction"
 
 
-class MoveLeftDown extends MoveInstruction
-    constructor:() ->
-        super RobotInstruction.MOVE_LEFT_DOWN, @func
-    func:() ->
-        ret = true
-        @frame = 7
-        plate = @map.getTargetPoision(@currentPlate, Direct.DOWN | Direct.LEFT)
-        return MoveInstruction.move.call(@, plate)
+class ShotInstruction extends ActionInstruction
+    constructor : (@robot, @bltQueue, @instrClass) ->
+        super
+        @setAsynchronous(true)
 
-class MoveRightUp extends MoveInstruction
-    constructor:() ->
-        super RobotInstruction.MOVE_RIGHT_UP, @func
-    func:() ->
-        ret = true
-        @frame = 4
-        plate = @map.getTargetPoision(@currentPlate, Direct.UP | Direct.RIGHT)
-        return MoveInstruction.move.call(@, plate)
+    action : () -> 
+        ret = false
+        unless @bltQueue.empty()
+            for b in @bltQueue.dequeue()
+                b.shot(@robot.x, @robot.y, @robot.getDirect())
+                @robot.scene.world.bullets.push b
+                @robot.scene.world.insertBefore b, @robot
+                b.setOnDestoryEvent(() => @onComplete())
+                ret = b
+        @setAsynchronous(ret != false)
+        @ret = ret
 
-class MoveRightDown extends RobotInstruction
-    constructor:() ->
-        super RobotInstruction.MOVE_RIGHT_DOWN, @func
-    func:() ->
-        ret = true
-        @frame = 5
-        plate = @map.getTargetPoision(@currentPlate, Direct.DOWN | Direct.RIGHT)
-        return MoveInstruction.move.call(@, plate)
+    onComplete: () ->
+        @robot.onAnimateComplete()
+        @robot.onCmdComplete(RobotInstruction.SHOT ,@ret)
+        super
 
-class MoveLeft extends RobotInstruction
-    constructor:() ->
-        super RobotInstruction.MOVE_LEFT, @func
-    func:() ->
-        ret = true
-        @frame = 2
-        plate = @map.getTargetPoision(@currentPlate, Direct.LEFT)
-        return MoveInstruction.move.call(@, plate)
+    clone : () -> 
+        instr = new @instrClass(@robot)
+        return instr
 
-class Shot extends RobotInstruction
-    constructor: () ->
-        super RobotInstruction.SHOT, @func
-    func: (bltQueue) ->
-        unless bltQueue.empty()
-            for b in bltQueue.dequeue()
-                b.shot(@x, @y, @getDirect())
-                @scene.world.bullets.push b
-                @scene.world.insertBefore b, @
-            return b
-        return false
+class NormalShotInstruction extends ShotInstruction
+    constructor: (robot) ->
+        super robot, robot.bltQueue, NormalShotInstruction
+
+    mkDescription: () ->
+        "NormalShotInstruction"
+
+class WideShotInstruction extends ShotInstruction
+    constructor: (robot) ->
+        super robot, robot.wideBltQueue, WideShotInstruction
+
+    mkDescription: () ->
+        "WideShotInstruction"
+
+class DualShotInstruction extends ShotInstruction
+    constructor: (robot) ->
+        super robot, robot.dualBltQueue, DualShotInstruction
+
+    mkDescription: () ->
+        "DualShotInstruction"
+
+class PickupInstruction extends ActionInstruction
+    constructor: (@robot, @queue, @type, @itemClass, @instrClass) ->
+        super
+        @setAsynchronous(true)
+
+    action: () ->
+        blt = BulletFactory.create(@type, @robot)
+        ret = @queue.enqueue(blt)
+        if ret != false
+            item = new @itemClass(@robot.x, @robot.y)
+            @robot.scene.world.addChild item
+            @robot.scene.world.items.push item
+            item.setOnCompleteEvent(() => @onComplete())
+            ret = blt
+        @setAsynchronous(ret != false)
+        @ret = ret
+
+    onComplete: () ->
+        @robot.onAnimateComplete()
+        @robot.onCmdComplete(RobotInstruction.PICKUP, @ret)
+        super
+
+    clone : () -> 
+        instr = new @instrClass(@robot)
+        return instr
+
+class NormalPickupInstruction extends PickupInstruction
+    constructor: (robot) ->
+        super robot, robot.bltQueue, BulletType.NORMAL, NormalBulletItem, NormalPickupInstruction
+
+    mkDescription: () ->
+        "NormalPickupInstruction"
+
+class WidePickupInstruction extends PickupInstruction
+    constructor: (robot) ->
+        super robot, robot.wideBltQueue, BulletType.WIDE, WideBulletItem, WidePickupInstruction
+
+    mkDescription: () ->
+        "WidePickupInstruction"
+
+class DualPickupInstruction extends PickupInstruction
+    constructor: (robot) ->
+        super robot, robot.dualBltQueue, BulletType.DUAL, DualBulletItem, DualPickupInstruction
+
+    mkDescription: () ->
+        "DualPickupInstruction"
 
 class Searching extends RobotInstruction
     constructor:() ->

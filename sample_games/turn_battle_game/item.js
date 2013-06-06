@@ -13,8 +13,15 @@ Item = (function(_super) {
   }
 
   Item.prototype.onComplete = function() {
+    if (this.event != null) {
+      this.event(this);
+    }
     this.animated = false;
     return this.parentNode.removeChild(this);
+  };
+
+  Item.prototype.setOnCompleteEvent = function(event) {
+    this.event = event;
   };
 
   return Item;

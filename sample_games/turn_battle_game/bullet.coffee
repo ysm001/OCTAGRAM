@@ -53,6 +53,8 @@ class Bullet extends Sprite
 
     shot: (@x, @y, @direct=Direct.RIGHT) ->
 
+    setOnDestoryEvent: (@event) ->
+
     hit: (robot) ->
         if robot.barrierMap.isset @type
             effect = robot.barrierMap.get(@type)
@@ -65,6 +67,7 @@ class Bullet extends Sprite
 
     onDestroy: () =>
         if @animated
+            @event @ if @event?
             @animated = false
             @parentNode.removeChild @
 
@@ -87,6 +90,8 @@ class BulletGroup extends Group
         for i in @bullets
             i.shot(x, y, direct)
 
+    setOnDestoryEvent: (@event) ->
+
     hit: (robot) ->
         if robot.barrierMap.isset @type
             effect = robot.barrierMap.get(@type)
@@ -95,8 +100,7 @@ class BulletGroup extends Group
             robot.damege()
             explosion = new Explosion robot.x, robot.y
             @scene.addChild explosion
-        for i in @bullets
-            i.onDestroy()
+        @onDestroy()
 
     within: (s, value) ->
         for i in @bullets
@@ -105,8 +109,10 @@ class BulletGroup extends Group
         return false
 
     onDestroy: () =>
-        for i in @bullets
-            i.onDestroy(robot)
+        if @animated is true
+            @event(@) if @event?
+            for i in @bullets
+                i.onDestroy()
 
 
 ###
@@ -154,7 +160,7 @@ class WideBulletPart extends Bullet
     @HEIGHT = 64
     MAX_FRAME = 10
 
-    constructor: (@left=true) ->
+    constructor: (@parent, @left=true) ->
         super WideBulletPart.WIDTH, WideBulletPart.HEIGHT, BulletType.WIDE
         @image = Game.instance.assets[R.BULLET.WIDE]
         @frame = 1
@@ -186,13 +192,13 @@ class WideBulletPart extends Bullet
         @rotate rotate
         @_rorateDeg = rotate
         point = Util.toCartesianCoordinates(70, Util.toRad(rotate))
-        @tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @onDestroy())
+        @tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @parent.onDestroy())
         
 class WideBullet extends BulletGroup
     constructor: () ->
         super BulletType.WIDE
-        @bullets.push new WideBulletPart(true)
-        @bullets.push new WideBulletPart(false)
+        @bullets.push new WideBulletPart(@, true)
+        @bullets.push new WideBulletPart(@, false)
         for i in @bullets
             @addChild i
 
@@ -201,7 +207,7 @@ class DualBulletPart extends Bullet
     @HEIGHT = 64
     MAX_FRAME = 10
 
-    constructor: (@back=true) ->
+    constructor: (@parent, @back=true) ->
         super DualBulletPart.WIDTH, DualBulletPart.HEIGHT, BulletType.DUAL
         @image = Game.instance.assets[R.BULLET.DUAL]
         @frame = 1
@@ -231,12 +237,12 @@ class DualBulletPart extends Bullet
         @rotate rotate
         @_rorateDeg = rotate
         point = Util.toCartesianCoordinates(70, Util.toRad(rotate))
-        @tl.moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @onDestroy())
+        @tl.moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @parent.onDestroy())
 
 class DualBullet extends BulletGroup
     constructor: () ->
         super BulletType.DUAL
-        @bullets.push new DualBulletPart(true)
-        @bullets.push new DualBulletPart(false)
+        @bullets.push new DualBulletPart(@, true)
+        @bullets.push new DualBulletPart(@, false)
         for i in @bullets
             @addChild i
