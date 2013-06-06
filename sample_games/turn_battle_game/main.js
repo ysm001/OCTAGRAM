@@ -105,15 +105,8 @@ RobotWorld = (function(_super) {
     this.enemy = new EnemyRobot;
     this.addChild(this.enemy);
     this.robots.push(this.enemy);
-    Game.instance.addInstruction(new MoveRightInstruction(this.player));
-    Game.instance.addInstruction(new MoveLeftInstruction(this.player));
-    Game.instance.addInstruction(new MoveRightDownInstruction(this.player));
-    Game.instance.addInstruction(new MoveRightUpInstruction(this.player));
-    Game.instance.addInstruction(new MoveLeftUpInstruction(this.player));
-    Game.instance.addInstruction(new MoveLeftDownInstruction(this.player));
-    Game.instance.addInstruction(new NormalShotInstruction(this.player));
-    Game.instance.addInstruction(new WideShotInstruction(this.player));
-    Game.instance.addInstruction(new DualShotInstruction(this.player));
+    Game.instance.addInstruction(new MoveInstruction(this.player));
+    Game.instance.addInstruction(new ShotInstruction(this.player));
     Game.instance.addInstruction(new NormalPickupInstruction(this.player));
     Game.instance.addInstruction(new WidePickupInstruction(this.player));
     Game.instance.addInstruction(new DualPickupInstruction(this.player));

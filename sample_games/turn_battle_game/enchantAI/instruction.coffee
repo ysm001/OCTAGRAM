@@ -1,3 +1,7 @@
+R = Config.R
+MOVE_STR = R.String.INSTRUCTION.MOVE
+SHOT_STR = R.String.INSTRUCTION.SHOT
+
 class RobotInstruction
     @MOVE = "move"
     @SHOT = "shot"
@@ -7,15 +11,29 @@ class RobotInstruction
     @GET_BULLET_QUEUE_SIZE = "getBulletQueueSize"
 
 class MoveInstruction extends ActionInstruction
-    constructor : (@robot, @direct, @frame, @instrClass) ->
+    @direct = [
+        Direct.RIGHT
+        Direct.RIGHT | Direct.UP
+        Direct.RIGHT | Direct.DOWN
+        Direct.LEFT
+        Direct.LEFT | Direct.UP
+        Direct.LEFT | Direct.DOWN
+    ]
+    @frame = [
+        0, 4, 5, 2, 6, 7
+    ]
+    constructor : (@robot) ->
         super
         @setAsynchronous(true)
+        # sliderタイトル, 初期値, 最小値, 最大値, 増大値
+        parameter = new TipParameter(MOVE_STR.colnum(), 0, 0, 6, 1)
+        @_id = 0
+        @addParameter(parameter)
 
     action : () -> 
         ret = true
-        @robot.frame = @frame
-        Debug.log @frame
-        plate = @robot.map.getTargetPoision(@robot.currentPlate, @direct)
+        @robot.frame = MoveInstruction.frame[@directId]
+        plate = @robot.map.getTargetPoision(@robot.currentPlate, MoveInstruction.direct[@_id])
         ret = @_move plate
         @setAsynchronous(ret != false)
         @robot.onCmdComplete(RobotInstruction.MOVE, ret)
@@ -37,62 +55,37 @@ class MoveInstruction extends ActionInstruction
         super
 
     clone : () -> 
-        instr = new @instrClass(@robot)
-        return instr
+        obj = @copy(new MoveInstruction(@robot))
+        obj._id = @_id
+        return obj
 
-
-class MoveRightInstruction extends MoveInstruction
-    constructor : (@robot) ->
-        super(@robot, Direct.RIGHT, 0, MoveRightInstruction)
-
-    mkDescription: () ->
-        "MoveRightInstruction"
-
-class MoveLeftInstruction extends MoveInstruction
-    constructor : (@robot) ->
-        super(@robot, Direct.LEFT, 2, MoveLeftInstruction)
+    onParameterChanged : (parameter) -> 
+        @_id = parameter.value
 
     mkDescription: () ->
-        "MoveLeftInstruction"
-
-class MoveRightUpInstruction extends MoveInstruction
-    constructor : (@robot) ->
-        super(@robot, Direct.RIGHT | Direct.UP, 4, MoveRightUpInstruction)
-
-    mkDescription: () ->
-        "MoveRightUpInstruction"
-
-class MoveRightDownInstruction extends MoveInstruction
-    constructor : (@robot) ->
-        super(@robot, Direct.RIGHT | Direct.DOWN, 5, MoveRightDownInstruction)
-
-    mkDescription: () ->
-        "MoveRightDownInstruction"
-
-class MoveLeftUpInstruction extends MoveInstruction
-    constructor : (@robot) ->
-        super(@robot, Direct.LEFT | Direct.UP, 6, MoveLeftUpInstruction)
-
-    mkDescription: () ->
-        "MoveLeftUpInstruction"
-
-class MoveLeftDownInstruction extends MoveInstruction
-    constructor : (@robot) ->
-        super(@robot, Direct.LEFT | Direct.DOWN, 7, MoveLeftDownInstruction)
-
-    mkDescription: () ->
-        "MoveLeftDownInstruction"
-
+        MOVE_STR.description[@_id](1)
 
 class ShotInstruction extends ActionInstruction
-    constructor : (@robot, @bltQueue, @instrClass) ->
+    bltQueues = null
+    constructor : (@robot) ->
         super
+        if bltQueues == null
+            bltQueues = [
+                @robot.bltQueue
+                @robot.wideBltQueue
+                @robot.dualBltQueue
+            ]
+        # sliderタイトル, 初期値, 最小値, 最大値, 増大値
+        parameter = new TipParameter(MOVE_STR.colnum(), 0, 0, 2, 1)
+        @_id = 0
+        @addParameter(parameter)
         @setAsynchronous(true)
 
     action : () -> 
         ret = false
-        unless @bltQueue.empty()
-            for b in @bltQueue.dequeue()
+        queue = bltQueues[@_id]
+        unless queue.empty()
+            for b in queue.dequeue()
                 b.shot(@robot.x, @robot.y, @robot.getDirect())
                 @robot.scene.world.bullets.push b
                 @robot.scene.world.insertBefore b, @robot
@@ -105,30 +98,16 @@ class ShotInstruction extends ActionInstruction
         @robot.onAnimateComplete()
         super
 
+    onParameterChanged : (parameter) -> 
+        @_id = parameter.value
+
     clone : () -> 
-        instr = new @instrClass(@robot)
-        return instr
-
-class NormalShotInstruction extends ShotInstruction
-    constructor: (robot) ->
-        super robot, robot.bltQueue, NormalShotInstruction
+        obj = @copy(new ShotInstruction(@robot))
+        obj._id = @_id
+        return obj
 
     mkDescription: () ->
-        "NormalShotInstruction"
-
-class WideShotInstruction extends ShotInstruction
-    constructor: (robot) ->
-        super robot, robot.wideBltQueue, WideShotInstruction
-
-    mkDescription: () ->
-        "WideShotInstruction"
-
-class DualShotInstruction extends ShotInstruction
-    constructor: (robot) ->
-        super robot, robot.dualBltQueue, DualShotInstruction
-
-    mkDescription: () ->
-        "DualShotInstruction"
+        SHOT_STR.description[@_id]()
 
 class PickupInstruction extends ActionInstruction
     constructor: (@robot, @queue, @type, @itemClass, @instrClass) ->

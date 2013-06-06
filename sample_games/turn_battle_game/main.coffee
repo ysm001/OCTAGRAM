@@ -67,15 +67,8 @@ class RobotWorld extends Group
         @addChild @enemy
         @robots.push @enemy
 
-        Game.instance.addInstruction(new MoveRightInstruction(@player))
-        Game.instance.addInstruction(new MoveLeftInstruction(@player))
-        Game.instance.addInstruction(new MoveRightDownInstruction(@player))
-        Game.instance.addInstruction(new MoveRightUpInstruction(@player))
-        Game.instance.addInstruction(new MoveLeftUpInstruction(@player))
-        Game.instance.addInstruction(new MoveLeftDownInstruction(@player))
-        Game.instance.addInstruction(new NormalShotInstruction(@player))
-        Game.instance.addInstruction(new WideShotInstruction(@player))
-        Game.instance.addInstruction(new DualShotInstruction(@player))
+        Game.instance.addInstruction(new MoveInstruction(@player))
+        Game.instance.addInstruction(new ShotInstruction(@player))
         Game.instance.addInstruction(new NormalPickupInstruction(@player))
         Game.instance.addInstruction(new WidePickupInstruction(@player))
         Game.instance.addInstruction(new DualPickupInstruction(@player))

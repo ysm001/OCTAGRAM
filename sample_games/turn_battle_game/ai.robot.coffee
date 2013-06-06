@@ -6,10 +6,10 @@
         document.write('<script type="text/javascript" src="'+d+arg+'"></script>')
 )(
     "third_party/underscore-min.js",
-    "enchantAI/instruction.js",
     "config.js",
     "utility/debug.js",
     "utility/util.js",
+    "enchantAI/instruction.js",
     "effect.js",
     "bullet.js",
     "item.js",

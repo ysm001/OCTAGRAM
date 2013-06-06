@@ -102,6 +102,67 @@ Config.R.String = (function() {
     return "" + s + "は(" + x + "," + y + ")に移動しました";
   };
 
+  String.INSTRUCTION = {
+    MOVE: {
+      colnum: function() {
+        return "移動方向";
+      },
+      slider: [
+        function() {
+          return "右";
+        }, function() {
+          return "右上";
+        }, function() {
+          return "右下";
+        }, function() {
+          return "左";
+        }, function() {
+          return "左上";
+        }, function() {
+          return "左下";
+        }
+      ],
+      description: [
+        function(step) {
+          return "右に" + step + "マス移動します";
+        }, function(step) {
+          return "右上に" + step + "マス移動します";
+        }, function(step) {
+          return "右下に" + step + "マス移動します";
+        }, function(step) {
+          return "左に" + step + "マス移動します";
+        }, function(step) {
+          return "左上に" + step + "マス移動します";
+        }, function(step) {
+          return "左下に" + step + "マス移動します";
+        }
+      ]
+    },
+    SHOT: {
+      colnum: function() {
+        return "弾の種類";
+      },
+      slider: [
+        function() {
+          return "ストレート";
+        }, function() {
+          return "ワイド";
+        }, function() {
+          return "デュアル";
+        }
+      ],
+      description: [
+        function() {
+          return "自機の前に2マス分弾を発射します";
+        }, function() {
+          return "自機の右前と左前に1マス分弾を発射します";
+        }, function() {
+          return "自機の前後に1マス分弾を発射します";
+        }
+      ]
+    }
+  };
+
   return String;
 
 })();
