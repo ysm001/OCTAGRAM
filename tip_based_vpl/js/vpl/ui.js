@@ -3,7 +3,7 @@
 # UI試行錯誤
 */
 
-var Frame, HelpPanel, Page, Pager, PagerArrow, RingMenu, SelectorTip, SideSelectorArrow, SideTipSelector, UICloseButton, UIConfigWindow, UIOkButton, UIPanel, UIPanelContent, UIPanelFilter, UISpriteComponent, UITextComponent, UITip, UITipConfigurator, UITipDirectionSelector, UITipSelector,
+var Frame, HelpPanel, SelectorTip, SideSelectorArrow, SideTipSelector, UICloseButton, UIConfigWindow, UIOkButton, UIPanel, UIPanelFilter, UISpriteComponent, UITextComponent, UITipConfigurator,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -101,7 +101,7 @@ UITextComponent = (function(_super) {
     this.children = [];
     this.font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif";
     this.color = "white";
-    LayerUtil.setOrder(this, Environment.layer.dialogText);
+    LayerUtil.setOrder(this, LayerOrder.dialogText);
   }
 
   UITextComponent.prototype.show = function() {
@@ -141,12 +141,24 @@ UITextComponent = (function(_super) {
 
 })(Label);
 
+UITipConfigurator = (function(_super) {
+  __extends(UITipConfigurator, _super);
+
+  function UITipConfigurator(parent) {
+    this.parent = parent;
+    UITipConfigurator.__super__.constructor.call(this, Resources.get("dummy"));
+  }
+
+  return UITipConfigurator;
+
+})(UISpriteComponent);
+
 UIPanelFilter = (function(_super) {
   __extends(UIPanelFilter, _super);
 
   function UIPanelFilter() {
     UIPanelFilter.__super__.constructor.call(this, Resources.get("panel"));
-    LayerUtil.setOrder(this, Environment.layer.dialog - 1);
+    LayerUtil.setOrder(this, LayerOrder.dialog - 1);
   }
 
   return UIPanelFilter;
@@ -165,7 +177,7 @@ UIPanel = (function(_super) {
     this.closeButton = new UICloseButton(this);
     this.okButton = new UIOkButton(this);
     this.closedWithOK = false;
-    LayerUtil.setOrder(this, Environment.layer.dialog);
+    LayerUtil.setOrder(this, LayerOrder.dialog);
     this.okButton.moveTo(this.x + this.image.width / 2 - this.okButton.width / 2, this.y + this.image.height - this.okButton.height - 24);
     this.closeButton.moveTo(this.x + 32, this.y + 24);
     this.label.moveTo(this.x + 80, this.y + 28);
@@ -222,7 +234,7 @@ UICloseButton = (function(_super) {
     image = Resources.get("closeButton");
     UICloseButton.__super__.constructor.call(this, image);
     this.image = image;
-    LayerUtil.setOrder(this, Environment.layer.dialogButton);
+    LayerUtil.setOrder(this, LayerOrder.dialogButton);
     this.addEventListener('touchstart', function() {
       _this.parent.closedWithOK = false;
       return _this.parent.hide();
@@ -244,7 +256,7 @@ UIOkButton = (function(_super) {
     image = Resources.get("okButton");
     UIOkButton.__super__.constructor.call(this, image);
     this.image = image;
-    LayerUtil.setOrder(this, Environment.layer.dialogButton);
+    LayerUtil.setOrder(this, LayerOrder.dialogButton);
     this.addEventListener('touchstart', function() {
       _this.parent.closedWithOK = true;
       return _this.parent.hide();
@@ -252,128 +264,6 @@ UIOkButton = (function(_super) {
   }
 
   return UIOkButton;
-
-})(UISpriteComponent);
-
-UITip = (function(_super) {
-  __extends(UITip, _super);
-
-  UITip.selectedEffect = null;
-
-  UITip.selectedInstance = null;
-
-  function UITip(parent, tip) {
-    var _this = this;
-
-    this.parent = parent;
-    this.tip = tip;
-    UITip.__super__.constructor.call(this, this.tip.image);
-    this.description = this.tip.description;
-    if (this.tip.icon != null) {
-      this.icon = this.tip.icon.clone();
-    }
-    LayerUtil.setOrder(this, Environment.layer.dialogButton);
-    if (this.icon != null) {
-      LayerUtil.setOrder(this.icon, Environment.layer.dialogIcon);
-    }
-    this.addEventListener('touchstart', function() {
-      if (!_this.hidden) {
-        if (_this.isSelected()) {
-          return _this.doubleClicked();
-        } else {
-          return _this.select();
-        }
-      }
-    });
-    if (UITip.selectedEffect == null) {
-      UITip.selectedEffect = new SelectedEffect();
-      LayerUtil.setOrder(UITip.selectedEffect, Environment.layer.dialogEffect);
-    }
-  }
-
-  UITip.prototype.doubleClicked = function() {
-    return this.parent.tipSelected(this.tip);
-  };
-
-  UITip.prototype.dragged = function() {};
-
-  UITip.prototype.dragEnd = function() {};
-
-  UITip.prototype.show = function() {
-    UITip.__super__.show.call(this);
-    if (this.icon != null) {
-      this.icon.opacity = 0;
-      this.icon.show(this);
-      this.icon.tl.setTimeBased();
-      return this.icon.tl.fadeIn(this.fadeTime);
-    }
-  };
-
-  UITip.prototype.hide = function() {
-    UITip.selectedEffect.hide();
-    if (this.icon != null) {
-      this.icon.hide();
-    }
-    return UITip.__super__.hide.call(this);
-  };
-
-  UITip.prototype.select = function() {
-    GlobalUI.help.setText(this.tip.description);
-    UITip.selectedEffect.show(this);
-    return UITip.selectedInstance = this;
-  };
-
-  UITip.prototype.isSelected = function() {
-    return UITip.selectedInstance === this;
-  };
-
-  return UITip;
-
-})(UISpriteComponent);
-
-UITipSelector = (function(_super) {
-  __extends(UITipSelector, _super);
-
-  function UITipSelector(parent) {
-    this.parent = parent;
-    UITipSelector.__super__.constructor.call(this, Resources.get("dummy"));
-  }
-
-  UITipSelector.prototype.addTip = function(tip) {
-    var uiTip;
-
-    uiTip = new UITip(this, tip);
-    uiTip.moveTo(this.x + this.children.length * tip.width, this.y);
-    return this.addChild(uiTip);
-  };
-
-  UITipSelector.prototype.tipSelected = function(tip) {
-    var evt, idx, target;
-
-    target = this.parent.parent;
-    idx = target.getIndex();
-    evt = document.createEvent('UIEvent', false);
-    evt.initUIEvent('insertNewTip', true, true);
-    evt.tip = tip;
-    evt.x = idx.x;
-    evt.y = idx.y;
-    document.dispatchEvent(evt);
-    return this.parent.hide();
-    /*
-    class UITipSelector extends UISpriteComponent 
-      constructor : (@parent) -> super(Resources.get("dummy"))
-    
-      add : (tip) -> 
-    uiTip = new UITip(this, tip)
-    uiTip.moveTo(@x + @children.length * tip.width, @y)
-    @addChild(uiTip)
-    
-      tipSelected : (tip) ->
-    */
-
-  };
-
-  return UITipSelector;
 
 })(UISpriteComponent);
 
@@ -390,10 +280,10 @@ SelectorTip = (function(_super) {
     if (SelectorTip.selectedEffect == null) {
       SelectorTip.selectedEffect = new SelectedEffect();
     }
-    LayerUtil.setOrder(this, Environment.layer.frameUI);
-    LayerUtil.setOrder(SelectorTip.selectedEffect, Environment.layer.frameUIEffect);
+    LayerUtil.setOrder(this, LayerOrder.frameUI);
+    LayerUtil.setOrder(SelectorTip.selectedEffect, LayerOrder.frameUIEffect);
     if (this.icon != null) {
-      LayerUtil.setOrder(this.icon, Environment.layer.frameUIIcon);
+      LayerUtil.setOrder(this.icon, LayerOrder.frameUIIcon);
     }
   }
 
@@ -411,9 +301,9 @@ SelectorTip = (function(_super) {
     var tip;
 
     tip = SelectorTip.__super__.createGhost.call(this);
-    LayerUtil.setOrder(tip, Environment.layer.frameUI);
+    LayerUtil.setOrder(tip, LayerOrder.frameUI);
     if (tip.icon != null) {
-      LayerUtil.setOrder(tip.icon, Environment.layer.frameUIIcon);
+      LayerUtil.setOrder(tip.icon, LayerOrder.frameUIIcon);
     }
     return tip;
   };
@@ -432,7 +322,7 @@ SideSelectorArrow = (function(_super) {
   function SideSelectorArrow(parent) {
     this.parent = parent;
     SideSelectorArrow.__super__.constructor.call(this, Resources.get("arrow"));
-    LayerUtil.setOrder(this, Environment.layer.frameUIArrow);
+    LayerUtil.setOrder(this, LayerOrder.frameUIArrow);
   }
 
   return SideSelectorArrow;
@@ -450,7 +340,7 @@ SideTipSelector = (function(_super) {
     SideTipSelector.__super__.constructor.call(this, Resources.get("sidebar"));
     this.moveTo(x, y);
     this.padding = 56;
-    LayerUtil.setOrder(this, Environment.layer.frameUI);
+    LayerUtil.setOrder(this, LayerOrder.frameUI);
     this.topArrow = new SideSelectorArrow();
     this.bottomArrow = new SideSelectorArrow();
     this.topArrow.rotate(-90);
@@ -554,163 +444,6 @@ SideTipSelector = (function(_super) {
 
 })(UISpriteComponent);
 
-UITipConfigurator = (function(_super) {
-  __extends(UITipConfigurator, _super);
-
-  function UITipConfigurator(parent) {
-    this.parent = parent;
-    UITipConfigurator.__super__.constructor.call(this, Resources.get("dummy"));
-  }
-
-  return UITipConfigurator;
-
-})(UISpriteComponent);
-
-UITipDirectionSelector = (function(_super) {
-  __extends(UITipDirectionSelector, _super);
-
-  function UITipDirectionSelector(parent, center) {
-    var bottom, left, leftBottom, leftTop, right, rightBottom, rightTop, top;
-
-    this.parent = parent;
-    this.center = center;
-    UITipDirectionSelector.__super__.constructor.call(this, Resources.get("dummy"));
-    left = new UITip(TipFactory.createEmptyTip());
-    right = new UITip(TipFactory.createEmptyTip());
-    top = new UITip(TipFactory.createEmptyTip());
-    bottom = new UITip(TipFactory.createEmptyTip());
-    leftTop = new UITip(TipFactory.createEmptyTip());
-    leftBottom = new UITip(TipFactory.createEmptyTip());
-    rightTop = new UITip(TipFactory.createEmptyTip());
-    rightBottom = new UITip(TipFactory.createEmptyTip());
-    this.center = new UITip(TipFactory.createStopTip());
-  }
-
-  return UITipDirectionSelector;
-
-})(UITipSelector);
-
-Pager = (function(_super) {
-  __extends(Pager, _super);
-
-  function Pager(topPage) {
-    this.topPage = topPage;
-    Pager.__super__.constructor.call(this, this.topPage.content);
-    this.parent = null;
-    this.next = new PagerArrow(this, this.topPage.next, true);
-    this.prev = new PagerArrow(this, this.topPage.prev, false);
-    this.next.moveTo(this.x + this.image.width - this.next.width, this.y + this.image.height / 2 - this.next.image.height / 2);
-    this.prev.moveTo(this.x, this.y + this.image.height / 2 - this.prev.image.height / 2);
-    this.next.addEventListener('touchstart', function() {
-      return this.parent.toNextPage();
-    });
-    this.prev.addEventListener('touchstart', function() {
-      return this.parent.toPrevPage();
-    });
-    this.addChild(this.next);
-    this.addChild(this.prev);
-  }
-
-  Pager.prototype.changePage = function(newPage) {
-    if (newPage.content != null) {
-      this.setContent(newPage.content);
-      this.setTitle(newPage.title);
-      this.setNextPage(newPage.next);
-      this.setPrevPage(newPage.prev);
-      this.next.update();
-      return this.prev.update();
-    }
-  };
-
-  Pager.prototype.show = function(parent) {
-    Pager.__super__.show.call(this);
-    this.changePage(this.topPage);
-    return this.parent = parent;
-  };
-
-  Pager.prototype.setNextPage = function(page) {
-    return this.next.content = page;
-  };
-
-  Pager.prototype.setPrevPage = function(page) {
-    return this.prev.content = page;
-  };
-
-  Pager.prototype.toNextPage = function() {
-    this.content.hide();
-    this.changePage(this.next.content);
-    return this.content.show();
-  };
-
-  Pager.prototype.toPrevPage = function() {
-    this.content.hide();
-    this.changePage(this.prev.content);
-    return this.content.show();
-  };
-
-  return Pager;
-
-})(UIPanel);
-
-Page = (function() {
-  function Page(content, title) {
-    this.content = content;
-    this.title = title;
-    this.nextPage = null;
-    this.prevPage = null;
-  }
-
-  return Page;
-
-})();
-
-PagerArrow = (function(_super) {
-  __extends(PagerArrow, _super);
-
-  function PagerArrow(parent, content, isRightArrow) {
-    this.parent = parent;
-    this.content = content;
-    PagerArrow.__super__.constructor.call(this, Resources.get("arrow"));
-    if (!isRightArrow) {
-      this.scaleX = -1;
-    }
-    LayerUtil.setOrder(this, Environment.layer.dialogButton);
-  }
-
-  PagerArrow.prototype.show = function() {
-    if (this.content != null) {
-      return PagerArrow.__super__.show.call(this);
-    }
-  };
-
-  PagerArrow.prototype.update = function() {
-    if ((this.content != null) && this.hidden) {
-      this.show();
-    }
-    if ((this.content == null) && !this.hidden) {
-      return this.hide();
-    }
-  };
-
-  return PagerArrow;
-
-})(UISpriteComponent);
-
-UIPanelContent = (function(_super) {
-  __extends(UIPanelContent, _super);
-
-  function UIPanelContent(parent) {
-    this.parent = parent;
-    UIPanelContent.__super__.constructor.call(this, Resources.get("dummy"));
-    this.addEventListener('enterframe', function() {
-      return moveTo(this.parent.x, this.parent.y);
-    });
-  }
-
-  return UIPanelContent;
-
-})(UISpriteComponent);
-
 UIConfigWindow = (function(_super) {
   __extends(UIConfigWindow, _super);
 
@@ -724,17 +457,6 @@ UIConfigWindow = (function(_super) {
   };
 
   return UIConfigWindow;
-
-})(UISpriteComponent);
-
-RingMenu = (function(_super) {
-  __extends(RingMenu, _super);
-
-  function RingMenu(parent) {
-    this.parent = parent;
-  }
-
-  return RingMenu;
 
 })(UISpriteComponent);
 
@@ -756,8 +478,8 @@ HelpPanel = (function(_super) {
     this.label.y = this.y + 16;
     this.label.font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif";
     this.label.color = "white";
-    LayerUtil.setOrder(this, Environment.layer.messageWindow);
-    LayerUtil.setOrder(this.label, Environment.layer.messageText);
+    LayerUtil.setOrder(this, LayerOrder.messageWindow);
+    LayerUtil.setOrder(this.label, LayerOrder.messageText);
   }
 
   HelpPanel.prototype.mkMsgHtml = function(text) {
@@ -803,10 +525,10 @@ Frame = (function() {
     this.bottom.moveTo(x, y + borderHeight + contentHeight);
     this.left.moveTo(x, y);
     this.right.moveTo(borderWidth + contentWidth, y);
-    LayerUtil.setOrder(this.top, Environment.layer.frame);
-    LayerUtil.setOrder(this.left, Environment.layer.frame);
-    LayerUtil.setOrder(this.right, Environment.layer.frame);
-    LayerUtil.setOrder(this.bottom, Environment.layer.frame);
+    LayerUtil.setOrder(this.top, LayerOrder.frame);
+    LayerUtil.setOrder(this.left, LayerOrder.frame);
+    LayerUtil.setOrder(this.right, LayerOrder.frame);
+    LayerUtil.setOrder(this.bottom, LayerOrder.frame);
   }
 
   Frame.prototype.show = function() {

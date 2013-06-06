@@ -2,7 +2,6 @@
 # UI試行錯誤
 ###
 
-
 class UISpriteComponent extends Sprite
   constructor : (image) ->
     super(image.width, image.height) if image?
@@ -58,7 +57,7 @@ class UITextComponent extends Label
     @children = []
     @font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif" 
     @color = "white"
-    LayerUtil.setOrder(this, Environment.layer.dialogText)
+    LayerUtil.setOrder(this, LayerOrder.dialogText)
 
   show : () ->
     if @hidden
@@ -78,15 +77,13 @@ class UITextComponent extends Label
     for child in @children
       child.hide()
 
+class UITipConfigurator extends UISpriteComponent
+  constructor : (@parent) -> super(Resources.get("dummy"))
+
 class UIPanelFilter extends UISpriteComponent
   constructor : () ->
     super(Resources.get("panel"))
-    LayerUtil.setOrder(this, Environment.layer.dialog - 1)
-    #@miniPanel = new UIMiniPanel(@content, this)
-    #@addChild(@miniPanel)
-
-    #setTitle : (title) -> @miniPanel.setTitle(title)
-    #setContent : (content) -> @miniPanel.setContent(content)
+    LayerUtil.setOrder(this, LayerOrder.dialog - 1)
 
 class UIPanel extends UISpriteComponent 
   constructor : (@content) ->
@@ -101,7 +98,7 @@ class UIPanel extends UISpriteComponent
     @okButton    = new UIOkButton(this)
     @closedWithOK = false
 
-    LayerUtil.setOrder(this, Environment.layer.dialog)
+    LayerUtil.setOrder(this, LayerOrder.dialog)
 
     @okButton.moveTo(@x + @image.width/2 - @okButton.width/2, 
       @y + @image.height - @okButton.height - 24)
@@ -143,7 +140,7 @@ class UICloseButton extends UISpriteComponent
     image = Resources.get("closeButton")
     super(image)
     @image = image 
-    LayerUtil.setOrder(this, Environment.layer.dialogButton)
+    LayerUtil.setOrder(this, LayerOrder.dialogButton)
 
     @addEventListener('touchstart', () =>
       @parent.closedWithOK = false
@@ -155,87 +152,12 @@ class UIOkButton extends UISpriteComponent
     image = Resources.get("okButton")
     super(image)
     @image = image 
-    LayerUtil.setOrder(this, Environment.layer.dialogButton)
+    LayerUtil.setOrder(this, LayerOrder.dialogButton)
 
     @addEventListener('touchstart', () =>
       @parent.closedWithOK = true
       @parent.hide()
     )
-
-class UITip extends UISpriteComponent 
-  @selectedEffect = null
-  @selectedInstance = null
-  constructor : (@parent, @tip) ->
-    super(@tip.image)
-    @description = @tip.description
-    @icon = @tip.icon.clone() if @tip.icon?
-    LayerUtil.setOrder(this, Environment.layer.dialogButton)
-    LayerUtil.setOrder(@icon, Environment.layer.dialogIcon) if @icon?
-
-    @addEventListener('touchstart', () => 
-      if !@hidden
-        if @isSelected() then @doubleClicked()
-        else @select()
-    )
-
-    if !UITip.selectedEffect?
-      UITip.selectedEffect = new SelectedEffect() 
-      LayerUtil.setOrder(UITip.selectedEffect, Environment.layer.dialogEffect)
-
-  doubleClicked : () -> @parent.tipSelected(@tip)
-  dragged : () ->
-  dragEnd : () ->
-
-  show : () ->
-    super()
-    if @icon?
-      @icon.opacity = 0
-      @icon.show(this)
-      @icon.tl.setTimeBased()
-      @icon.tl.fadeIn(@fadeTime)
-
-  hide : () ->
-    UITip.selectedEffect.hide()
-    @icon.hide() if @icon?
-    super()
-
-  select : () ->
-    GlobalUI.help.setText(@tip.description)
-    UITip.selectedEffect.show(this)
-    UITip.selectedInstance = this
-
-  isSelected : () -> UITip.selectedInstance == this
-
-class UITipSelector extends UISpriteComponent 
-  constructor : (@parent) -> super(Resources.get("dummy"))
-
-  addTip : (tip) -> 
-    uiTip = new UITip(this, tip)
-    uiTip.moveTo(@x + @children.length * tip.width, @y)
-    @addChild(uiTip)
-
-  tipSelected : (tip) ->
-    target = @parent.parent
-    idx = target.getIndex()
-    evt = document.createEvent('UIEvent', false)
-    evt.initUIEvent('insertNewTip', true, true)
-    evt.tip = tip
-    evt.x = idx.x
-    evt.y = idx.y
-    document.dispatchEvent(evt)
-    @parent.hide()
-
-    ###
-class UITipSelector extends UISpriteComponent 
-  constructor : (@parent) -> super(Resources.get("dummy"))
-
-  add : (tip) -> 
-    uiTip = new UITip(this, tip)
-    uiTip.moveTo(@x + @children.length * tip.width, @y)
-    @addChild(uiTip)
-
-  tipSelected : (tip) ->
-  ### 
 
 class SelectorTip extends CodeTip
   @selectedEffect = null
@@ -245,9 +167,9 @@ class SelectorTip extends CodeTip
     @description = @tip.description
 
     SelectorTip.selectedEffect = new SelectedEffect() if !SelectorTip.selectedEffect?
-    LayerUtil.setOrder(this, Environment.layer.frameUI)
-    LayerUtil.setOrder(SelectorTip.selectedEffect, Environment.layer.frameUIEffect)
-    LayerUtil.setOrder(@icon, Environment.layer.frameUIIcon) if @icon? 
+    LayerUtil.setOrder(this, LayerOrder.frameUI)
+    LayerUtil.setOrder(SelectorTip.selectedEffect, LayerOrder.frameUIEffect)
+    LayerUtil.setOrder(@icon, LayerOrder.frameUIIcon) if @icon? 
 
   showSelectedEffect : () -> SelectorTip.selectedEffect.show(this)
   hideSelectedEffect : () -> SelectorTip.selectedEffect.hide()
@@ -255,8 +177,8 @@ class SelectorTip extends CodeTip
   doubleClicked : () -> 
   createGhost : () ->
     tip = super()
-    LayerUtil.setOrder(tip, Environment.layer.frameUI) 
-    LayerUtil.setOrder(tip.icon, Environment.layer.frameUIIcon) if tip.icon? 
+    LayerUtil.setOrder(tip, LayerOrder.frameUI) 
+    LayerUtil.setOrder(tip.icon, LayerOrder.frameUIIcon) if tip.icon? 
     tip
 
   clone : () -> @tip.clone()
@@ -264,14 +186,14 @@ class SelectorTip extends CodeTip
 class SideSelectorArrow extends UISpriteComponent
   constructor : (@parent) ->
     super(Resources.get("arrow"))
-    LayerUtil.setOrder(this, Environment.layer.frameUIArrow)
+    LayerUtil.setOrder(this, LayerOrder.frameUIArrow)
 
 class SideTipSelector extends UISpriteComponent
   constructor : (x, y, @parent) -> 
     super(Resources.get("sidebar"))
     @moveTo(x, y)
     @padding = 56 
-    LayerUtil.setOrder(this, Environment.layer.frameUI)
+    LayerUtil.setOrder(this, LayerOrder.frameUI)
     @topArrow = new SideSelectorArrow() 
     @bottomArrow = new SideSelectorArrow() 
     @topArrow.rotate(-90)
@@ -328,101 +250,12 @@ class SideTipSelector extends UISpriteComponent
           child.moveBy(0, child.height)
           @hideOuter(child)
 
-class UITipConfigurator extends UISpriteComponent
-  constructor : (@parent) -> super(Resources.get("dummy"))
-
-class UITipDirectionSelector extends UITipSelector 
-  constructor : (@parent, @center) -> 
-    super(Resources.get("dummy"))
-
-    left        = new UITip(TipFactory.createEmptyTip())
-    right       = new UITip(TipFactory.createEmptyTip())
-    top         = new UITip(TipFactory.createEmptyTip())
-    bottom      = new UITip(TipFactory.createEmptyTip())
-    leftTop     = new UITip(TipFactory.createEmptyTip())
-    leftBottom  = new UITip(TipFactory.createEmptyTip())
-    rightTop    = new UITip(TipFactory.createEmptyTip())
-    rightBottom = new UITip(TipFactory.createEmptyTip())
-    @center = new UITip(TipFactory.createStopTip()) 
-
-class Pager extends UIPanel
-  constructor : (@topPage) ->
-    super(@topPage.content)
-    @parent = null
-    @next = new PagerArrow(this, @topPage.next, true)
-    @prev = new PagerArrow(this, @topPage.prev, false)
-    @next.moveTo(@x + @image.width - @next.width, 
-                 @y + @image.height/2 - @next.image.height/2)
-
-    @prev.moveTo(@x, 
-                 @y + @image.height/2 - @prev.image.height/2)
-
-    @next.addEventListener('touchstart', () -> @parent.toNextPage())
-    @prev.addEventListener('touchstart', () -> @parent.toPrevPage())
-
-    @addChild(@next)
-    @addChild(@prev)
-
-  changePage : (newPage) ->
-    if newPage.content?
-      @setContent(newPage.content)
-      @setTitle(newPage.title)
-      @setNextPage(newPage.next)
-      @setPrevPage(newPage.prev)
-      @next.update()
-      @prev.update()
-
-  show : (parent) -> 
-    super()
-    @changePage(@topPage)
-    @parent = parent
-
-  setNextPage : (page) -> @next.content = page
-  setPrevPage : (page) -> @prev.content = page
-
-  toNextPage : () -> 
-    @content.hide()
-    @changePage(@next.content)
-    @content.show()
-
-  toPrevPage : () -> 
-    @content.hide()
-    @changePage(@prev.content)
-    @content.show()
-
-class Page 
-  constructor : (@content, @title) ->
-    @nextPage = null 
-    @prevPage = null 
-
-class PagerArrow extends UISpriteComponent
-  constructor : (@parent, @content, isRightArrow) ->
-    super(Resources.get("arrow"))
-    @scaleX = -1 if !isRightArrow
-    LayerUtil.setOrder(this, Environment.layer.dialogButton)
-
-  show : () -> super() if @content?
-
-  update : () ->
-    @show() if @content? && @hidden
-    @hide() if !@content? && !@hidden
-
-class UIPanelContent extends UISpriteComponent 
-  constructor : (@parent) ->
-    super(Resources.get("dummy"))
-    @addEventListener('enterframe', ()->
-      moveTo(@parent.x, @parent.y)
-    )
-
 class UIConfigWindow extends UISpriteComponent
   constructor : (@parent) -> 
     super(Resources.get("dummy"))
 
   show : (target) ->
     super()
-
-class RingMenu extends UISpriteComponent
-  constructor : (@parent) ->
 
 class HelpPanel extends Sprite
   constructor : (x, y, w, h, @text) ->
@@ -439,8 +272,8 @@ class HelpPanel extends Sprite
     @label.y = @y + 16
     @label.font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif" 
     @label.color = "white"
-    LayerUtil.setOrder(this, Environment.layer.messageWindow)
-    LayerUtil.setOrder(@label, Environment.layer.messageText)
+    LayerUtil.setOrder(this, LayerOrder.messageWindow)
+    LayerUtil.setOrder(@label, LayerOrder.messageText)
 
   mkMsgHtml : (text) -> "<div class='msg'>" + text + "</div>"
 
@@ -475,10 +308,10 @@ class Frame
     @left.moveTo(x, y)
     @right.moveTo(borderWidth + contentWidth, y)
 
-    LayerUtil.setOrder(@top,    Environment.layer.frame)
-    LayerUtil.setOrder(@left,   Environment.layer.frame)
-    LayerUtil.setOrder(@right,  Environment.layer.frame)
-    LayerUtil.setOrder(@bottom, Environment.layer.frame)
+    LayerUtil.setOrder(@top,    LayerOrder.frame)
+    LayerUtil.setOrder(@left,   LayerOrder.frame)
+    LayerUtil.setOrder(@right,  LayerOrder.frame)
+    LayerUtil.setOrder(@bottom, LayerOrder.frame)
 
   show : () ->
     Game.instance.currentScene.addChild(@top)

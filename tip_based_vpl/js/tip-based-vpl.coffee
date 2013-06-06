@@ -14,6 +14,7 @@
 	"vpl/transition.js",
 	"vpl/tip.view.js",
 	"vpl/tip.factory.js",
+	"vpl/instruction.preset.js",
 	"vpl/ui.js",
 	"vpl/background.js",
 	"vpl/cpu.js",

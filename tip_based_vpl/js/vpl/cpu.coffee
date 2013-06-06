@@ -1,7 +1,7 @@
 #####################################################
 # CPU 
 #####################################################
-class TipBoard extends Sprite
+class Cpu extends Sprite
   constructor : (x, y, @xnum, @ynum, startIdx) ->
     super(Resources.get("dummy"))
     @tipTable = []

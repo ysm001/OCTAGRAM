@@ -1,57 +1,11 @@
 # test data
 counter = 0
-sprite = null
-
-initializeTester = (sx, sy) ->
-  sprite = new Sprite(48, 48)
-  sprite.image = Resources.get("testObject")
-  sprite.x = 640 - 48 
-  sprite.y = 240
-  LayerUtil.setOrder(sprite, 31)
-  #Game.instance.currentScene.addChild(sprite)
-
-  ###
-  action = new CustomInstructionActionTip(new CounterIncrementInstruction())
-  branch = new CustomInstructionBranchTip(new CounterBranchInstruction())
-  actionTip = TipFactory.createActionTip(action)
-  branchTip = TipFactory.createBranchTip(branch)
-  returnTip = TipFactory.createReturnTip(sx, sy)
-  stopTip   = TipFactory.createStopTip() 
-
-  actionTip.description = "カウンタを1進めます。"
-  branchTip.description = "カウンタが10未満であれば青矢印に進みます。</br>カウンタが10以上であれば赤矢印に進みます。"
-
-  TipTable.addInstruction(new MoveUpInstruction(), "オブジェクトを上に動かします。", Resources.get("iconUp"))
-  TipTable.addInstruction(new MoveDownInstruction(), "オブジェクトを下に動かします。", Resources.get("iconDown"))
-  TipTable.addTip(actionTip)
-  TipTable.addTip(branchTip)
-  TipTable.addInstruction(new RandomBranchInstruction(), "50%の確率で青矢印に進みます。</br>50%の確率で赤矢印に進みます。", Resources.get("iconRandom"))
-  TipTable.addTip(returnTip)
-  TipTable.addTip(stopTip)
-
-  for i in [0...5] then TipTable.addTip(stopTip)
-  ###
 
 generateTestCode = () ->
-    action = new CustomInstructionActionTip(new CounterIncrementInstruction())#new CounterActionTip(null)
-    branch = new CustomInstructionBranchTip(new CounterBranchInstruction())#new CounterIfTip(null)
-    #action = new CounterActionTip(null)
-    #branch = new CounterIfTip(null)
-    actionTip = new SingleTransitionCodeTip(action)
-    actionTip.description = "カウンタを1進めます"
-    branchTip = new BranchTransitionCodeTip(branch)
-    branchTip.description = "カウンタが10未満であれば青矢印に進みます。</br>カウンタが10以上であれば赤矢印に進みます。"
-    stopTip = new CodeTip(new StopTip())
-    #stopTip2 = new StopCodeTip(0,0,32,32,"test")
-    board.putTip(4, 0, Direction.right, actionTip)
-    board.putBranchTip(5,0,Direction.up,Direction.right,branchTip)
-    board.putSingleTip(6,0,stopTip)
-    #board.putSingleTip(6,0,stopTip2)
 
-executeTestCode = () ->
-  executer.execute()
+executeTestCode = () -> executer.execute()
 
-
+###
 class CounterIncrementInstruction extends ActionInstruction
   constructor : () ->
     super()
@@ -131,3 +85,4 @@ class RandomBranchInstruction extends BranchInstruction
 
   mkDescription : () ->
     @threthold + "%の確率で青矢印に進みます。</ br>" + (100 - @threthold) + "%の確率で赤矢印に進みます。"
+###

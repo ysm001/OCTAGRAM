@@ -22,7 +22,7 @@ TipTransition = (function(_super) {
       evt.transition = this;
       return document.dispatchEvent(evt);
     });
-    LayerUtil.setOrder(this, Environment.layer.transition);
+    LayerUtil.setOrder(this, LayerOrder.transition);
   }
 
   TipTransition.prototype.link = function(src, dst) {

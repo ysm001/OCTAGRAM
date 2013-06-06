@@ -84,7 +84,7 @@ UITextComponent = (function(_super) {
     this.children = [];
     this.font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif";
     this.color = "white";
-    LayerUtil.setOrder(this, Environment.layer.dialogText);
+    LayerUtil.setOrder(this, LayerOrder.dialogText);
   }
 
   UITextComponent.prototype.show = function() {
@@ -138,7 +138,7 @@ UIPanel = (function(_super) {
     this.label = new UITextComponent(this, "");
     this.closeButton = new UICloseButton(this);
     this.okButton = new UIOkButton(this);
-    LayerUtil.setOrder(this, Environment.layer.dialog);
+    LayerUtil.setOrder(this, LayerOrder.dialog);
     this.okButton.moveTo(this.image.width / 2 - this.okButton.width / 2, this.image.height - this.okButton.height - 12);
     this.closeButton.moveTo(16, 12);
     this.label.moveTo(64, 14);
@@ -186,7 +186,7 @@ UICloseButton = (function(_super) {
     image = Resources.get("closeButton");
     UICloseButton.__super__.constructor.call(this, image);
     this.image = image;
-    LayerUtil.setOrder(this, Environment.layer.dialogButton);
+    LayerUtil.setOrder(this, LayerOrder.dialogButton);
     this.addEventListener('touchstart', function() {
       return this.parent.hide();
     });
@@ -206,7 +206,7 @@ UIOkButton = (function(_super) {
     image = Resources.get("okButton");
     UIOkButton.__super__.constructor.call(this, image);
     this.image = image;
-    LayerUtil.setOrder(this, Environment.layer.dialogButton);
+    LayerUtil.setOrder(this, LayerOrder.dialogButton);
   }
 
   return UIOkButton;
@@ -230,9 +230,9 @@ UITip = (function(_super) {
     if (this.tip.icon != null) {
       this.icon = this.tip.icon.clone();
     }
-    LayerUtil.setOrder(this, Environment.layer.dialogButton);
+    LayerUtil.setOrder(this, LayerOrder.dialogButton);
     if (this.icon != null) {
-      LayerUtil.setOrder(this.icon, Environment.layer.dialogIcon);
+      LayerUtil.setOrder(this.icon, LayerOrder.dialogIcon);
     }
     this.addEventListener('touchstart', function() {
       if (!_this.hidden) {
@@ -245,7 +245,7 @@ UITip = (function(_super) {
     });
     if (UITip.selectedEffect == null) {
       UITip.selectedEffect = new SelectedEffect();
-      LayerUtil.setOrder(UITip.selectedEffect, Environment.layer.dialogEffect);
+      LayerUtil.setOrder(UITip.selectedEffect, LayerOrder.dialogEffect);
     }
   }
 
@@ -336,10 +336,10 @@ SelectorTip = (function(_super) {
     if (SelectorTip.selectedEffect == null) {
       SelectorTip.selectedEffect = new SelectedEffect();
     }
-    LayerUtil.setOrder(this, Environment.layer.frameUI);
-    LayerUtil.setOrder(SelectorTip.selectedEffect, Environment.layer.frameUIEffect);
+    LayerUtil.setOrder(this, LayerOrder.frameUI);
+    LayerUtil.setOrder(SelectorTip.selectedEffect, LayerOrder.frameUIEffect);
     if (this.icon != null) {
-      LayerUtil.setOrder(this.icon, Environment.layer.frameUIIcon);
+      LayerUtil.setOrder(this.icon, LayerOrder.frameUIIcon);
     }
   }
 
@@ -357,9 +357,9 @@ SelectorTip = (function(_super) {
     var tip;
 
     tip = SelectorTip.__super__.createGhost.call(this);
-    LayerUtil.setOrder(tip, Environment.layer.frameUI);
+    LayerUtil.setOrder(tip, LayerOrder.frameUI);
     if (tip.icon != null) {
-      LayerUtil.setOrder(tip.icon, Environment.layer.frameUIIcon);
+      LayerUtil.setOrder(tip.icon, LayerOrder.frameUIIcon);
     }
     return tip;
   };
@@ -378,7 +378,7 @@ SideSelectorArrow = (function(_super) {
   function SideSelectorArrow(parent) {
     this.parent = parent;
     SideSelectorArrow.__super__.constructor.call(this, Resources.get("arrow"));
-    LayerUtil.setOrder(this, Environment.layer.frameUIArrow);
+    LayerUtil.setOrder(this, LayerOrder.frameUIArrow);
   }
 
   return SideSelectorArrow;
@@ -396,7 +396,7 @@ SideTipSelector = (function(_super) {
     SideTipSelector.__super__.constructor.call(this, Resources.get("sidebar"));
     this.moveTo(x, y);
     this.padding = 56;
-    LayerUtil.setOrder(this, Environment.layer.frameUI);
+    LayerUtil.setOrder(this, LayerOrder.frameUI);
     this.topArrow = new SideSelectorArrow();
     this.bottomArrow = new SideSelectorArrow();
     this.topArrow.rotate(-90);
@@ -620,7 +620,7 @@ PagerArrow = (function(_super) {
     if (!isRightArrow) {
       this.scaleX = -1;
     }
-    LayerUtil.setOrder(this, Environment.layer.dialogButton);
+    LayerUtil.setOrder(this, LayerOrder.dialogButton);
   }
 
   PagerArrow.prototype.show = function() {
@@ -702,8 +702,8 @@ HelpPanel = (function(_super) {
     this.label.y = this.y + 16;
     this.label.font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif";
     this.label.color = "white";
-    LayerUtil.setOrder(this, Environment.layer.messageWindow);
-    LayerUtil.setOrder(this.label, Environment.layer.messageText);
+    LayerUtil.setOrder(this, LayerOrder.messageWindow);
+    LayerUtil.setOrder(this.label, LayerOrder.messageText);
   }
 
   HelpPanel.prototype.mkMsgHtml = function(text) {
@@ -749,10 +749,10 @@ Frame = (function() {
     this.bottom.moveTo(x, y + borderHeight + contentHeight);
     this.left.moveTo(x, y);
     this.right.moveTo(borderWidth + contentWidth, y);
-    LayerUtil.setOrder(this.top, Environment.layer.frame);
-    LayerUtil.setOrder(this.left, Environment.layer.frame);
-    LayerUtil.setOrder(this.right, Environment.layer.frame);
-    LayerUtil.setOrder(this.bottom, Environment.layer.frame);
+    LayerUtil.setOrder(this.top, LayerOrder.frame);
+    LayerUtil.setOrder(this.left, LayerOrder.frame);
+    LayerUtil.setOrder(this.right, LayerOrder.frame);
+    LayerUtil.setOrder(this.bottom, LayerOrder.frame);
   }
 
   Frame.prototype.show = function() {

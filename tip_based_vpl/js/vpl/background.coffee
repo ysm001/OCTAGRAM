@@ -16,5 +16,5 @@ class TipBackground
         map.image = image 
         map.moveTo(x+j*space, y+i*space)
 
-        LayerUtil.setOrder(map, Environment.layer.background)
+        LayerUtil.setOrder(map, LayerOrder.background)
         Game.instance.currentScene.addChild(map)

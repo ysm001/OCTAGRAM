@@ -6,6 +6,10 @@
 # -- クラス分け
 #####################################################
 
+# for debug
+board = null
+executer = null
+
 class Environment
   @ScreenWidth = 640 
   @ScreenHeight = 640 
@@ -13,36 +17,34 @@ class Environment
   @EditorHeight = 480
   @EditorX = 16
   @EditorY = 16
+  @startX = 4
+  @startY = -1
 
-  @layer = { 
-    background    : 10,
-    transition    : 15,
-    tip           : 20,
-    tipIcon       : 21,
-    tipEffect     : 22,
-    frame         : 30,
-    frameUI       : 31,
-    frameUIIcon   : 32,
-    frameUIArrow  : 33,
-    frameUIEffect : 34,
-    messageWindow : 40,
-    messageText   : 45,
-    dialog        : 50,
-    dialogButton  : 55,
-    dialogUI      : 56,
-    dialogText    : 57,
-    dialogIcon    : 58,
-    dialogEffect  : 59,
-    top           : 100,
-  }
-
-class Configure
-  #@latency = 30
+class LayerOrder
+  @background    = 10
+  @transition    = 15
+  @tip           = 20
+  @tipIcon       = 21
+  @tipEffect     = 22
+  @frame         = 30
+  @frameUI       = 31
+  @frameUIIcon   = 32
+  @frameUIArrow  = 33
+  @frameUIEffect = 34
+  @messageWindow = 40
+  @messageText   = 45
+  @dialog        = 50
+  @dialogButton  = 55
+  @dialogUI      = 56
+  @dialogText    = 57
+  @dialogIcon    = 58
+  @dialogEffect  = 59
+  @top           = 100
   
 class GlobalUI
   @frame
   @help
-  @panel
+  #@panel
   @configPanel
   @side
 
@@ -51,16 +53,8 @@ class TipTable
   @addTip : (tip) -> @tips.push(tip)
   @addInstruction : (inst, icon) ->
     tip = TipFactory.createInstructionTip(inst) 
-    #tip.description = description
     tip.icon = new Icon(icon) if icon?
     TipTable.addTip(tip)
-
-class ClipBoard
-  @data = null
-
-board = null
-executer = null
-errorChecker = new ErrorChecker()
 
 class TipBasedVPL extends Game
   constructor : (w, h, resourceBase) ->
@@ -72,18 +66,21 @@ class TipBasedVPL extends Game
   addInstruction : (instruction, icon) ->
     TipTable.addInstruction(instruction, icon)
 
-  loadInstruction : () ->
-    sx = 4
-    sy = -1
-    returnTip = TipFactory.createReturnTip(sx, sy)
+  addPresetInstructions : () ->
+    returnTip = TipFactory.createReturnTip(Environment.startX, Environment.startY)
     stopTip   = TipFactory.createStopTip() 
     inst = new RandomBranchInstruction()
     TipTable.addInstruction(inst, Resources.get("iconRandom"))
     TipTable.addTip(returnTip)
     TipTable.addTip(stopTip)
 
-    for tip in TipTable.tips
-      GlobalUI.side.addTip(tip)
+  clearInstructions : () -> @tips = []
+
+  loadInstruction : () ->
+    @clearInstructions()
+    @addPresetInstructions()
+
+    for tip in TipTable.tips then GlobalUI.side.addTip(tip)
       
     GlobalUI.side.show()
 
@@ -92,53 +89,23 @@ class TipBasedVPL extends Game
     y = 16
     xnum = 8
     ynum = 8
+
     back = new TipBackground(x, y, xnum, ynum)
-    #border = new Border(x, y, xnum, ynum)
-    board = new TipBoard(x + 12, y + 12, xnum, ynum, 4)
+    board = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX)
     executer = new Executer(board)
+
     GlobalUI.frame = new Frame(0, 0)
-    GlobalUI.help = new HelpPanel(0,480+16,640,144, "")
+    GlobalUI.help = new HelpPanel(0, 
+      Environment.EditorHeight + y, 
+      Environment.ScreenWidth, 
+      Environment.ScreenWidth - Environment.EditorWidth - x,
+      "")
     GlobalUI.frame.show()
     GlobalUI.help.show()
-    selector = new ParameterConfigPanel(480 + 8, 0)#new UITipSelector()
-    param1 = new TipParameter("a", 0, 0, 100, 1)
-    param2 = new TipParameter("a", 0, 0, 5, 1)
-    ###
-    selector.addParameter(param1)
-    selector.addParameter(param2)
-    ###
+    selector = new ParameterConfigPanel(Environment.EditorWidth + x/2, 0)
 
-    GlobalUI.side = new SideTipSelector(480 + 8, 0)
-
-    ###
-    slider = new Slider()
-    slider.moveTo(100,100)
-    slider.show()
-    ###
-
-    #selector.moveTo(64,64)
-    initializeTester(4, -1)
-    ###
-    for tip in TipTable.tips
-      #selector.addTip(tip)
-      GlobalUI.side.addTip(tip)
-    ###
-
-    configurator = new UITipConfigurator()
-    configurator.moveTo(64,64)
-
-    #GlobalUI.side.show()
-
-    page1 = new Page(selector, TextResource.msg.title["selector"])
-    page2 = new Page(configurator, TextResource.msg.title["configurator"])
-    page1.next = page2
-    page2.prev = page1
+    GlobalUI.side = new SideTipSelector(Environment.EditorWidth + x/2, 0)
     GlobalUI.configPanel = new UIPanel(selector)
     GlobalUI.configPanel.setTitle(TextResource.msg.title["configurator"])
     selector.parent = GlobalUI.configPanel
 
-###
-window.onload = ->
-  game = new TipBasedVPL(Environment.ScreenWidth, Environment.ScreenHeight, "./")
-  game.start()
-###

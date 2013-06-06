@@ -16,7 +16,7 @@ class TipTransition extends Sprite
       document.dispatchEvent(evt)
     )
 
-    LayerUtil.setOrder(this, Environment.layer.transition)
+    LayerUtil.setOrder(this, LayerOrder.transition)
 
   link : (src, dst) ->
     pos = @calcPosition(src, dst)

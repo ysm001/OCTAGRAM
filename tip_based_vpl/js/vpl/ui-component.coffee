@@ -45,7 +45,7 @@ class UITextComponent extends Label
     @children = []
     @font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif" 
     @color = "white"
-    LayerUtil.setOrder(this, Environment.layer.dialogText)
+    LayerUtil.setOrder(this, LayerOrder.dialogText)
 
   show : () ->
     if @hidden
@@ -76,7 +76,7 @@ class UIPanel extends UISpriteComponent
     @closeButton = new UICloseButton(this)
     @okButton    = new UIOkButton(this)
 
-    LayerUtil.setOrder(this, Environment.layer.dialog)
+    LayerUtil.setOrder(this, LayerOrder.dialog)
 
     @okButton.moveTo(@image.width/2 - @okButton.width/2, 
       @image.height - @okButton.height - 12)
@@ -111,7 +111,7 @@ class UICloseButton extends UISpriteComponent
     image = Resources.get("closeButton")
     super(image)
     @image = image 
-    LayerUtil.setOrder(this, Environment.layer.dialogButton)
+    LayerUtil.setOrder(this, LayerOrder.dialogButton)
 
     @addEventListener('touchstart', ()->
       @parent.hide()
@@ -122,7 +122,7 @@ class UIOkButton extends UISpriteComponent
     image = Resources.get("okButton")
     super(image)
     @image = image 
-    LayerUtil.setOrder(this, Environment.layer.dialogButton)
+    LayerUtil.setOrder(this, LayerOrder.dialogButton)
 
 class UITip extends UISpriteComponent 
   @selectedEffect = null
@@ -131,8 +131,8 @@ class UITip extends UISpriteComponent
     super(@tip.image)
     @description = @tip.description
     @icon = @tip.icon.clone() if @tip.icon?
-    LayerUtil.setOrder(this, Environment.layer.dialogButton)
-    LayerUtil.setOrder(@icon, Environment.layer.dialogIcon) if @icon?
+    LayerUtil.setOrder(this, LayerOrder.dialogButton)
+    LayerUtil.setOrder(@icon, LayerOrder.dialogIcon) if @icon?
 
     @addEventListener('touchstart', () => 
       if !@hidden
@@ -142,7 +142,7 @@ class UITip extends UISpriteComponent
 
     if !UITip.selectedEffect?
       UITip.selectedEffect = new SelectedEffect() 
-      LayerUtil.setOrder(UITip.selectedEffect, Environment.layer.dialogEffect)
+      LayerUtil.setOrder(UITip.selectedEffect, LayerOrder.dialogEffect)
 
   doubleClicked : () -> @parent.tipSelected(@tip)
   dragged : () ->
@@ -195,9 +195,9 @@ class SelectorTip extends CodeTip
     @description = @tip.description
 
     SelectorTip.selectedEffect = new SelectedEffect() if !SelectorTip.selectedEffect?
-    LayerUtil.setOrder(this, Environment.layer.frameUI)
-    LayerUtil.setOrder(SelectorTip.selectedEffect, Environment.layer.frameUIEffect)
-    LayerUtil.setOrder(@icon, Environment.layer.frameUIIcon) if @icon? 
+    LayerUtil.setOrder(this, LayerOrder.frameUI)
+    LayerUtil.setOrder(SelectorTip.selectedEffect, LayerOrder.frameUIEffect)
+    LayerUtil.setOrder(@icon, LayerOrder.frameUIIcon) if @icon? 
 
   showSelectedEffect : () -> SelectorTip.selectedEffect.show(this)
   hideSelectedEffect : () -> SelectorTip.selectedEffect.hide()
@@ -205,8 +205,8 @@ class SelectorTip extends CodeTip
   doubleClicked : () -> 
   createGhost : () ->
     tip = super()
-    LayerUtil.setOrder(tip, Environment.layer.frameUI) 
-    LayerUtil.setOrder(tip.icon, Environment.layer.frameUIIcon) if tip.icon? 
+    LayerUtil.setOrder(tip, LayerOrder.frameUI) 
+    LayerUtil.setOrder(tip.icon, LayerOrder.frameUIIcon) if tip.icon? 
     tip
 
   clone : () -> @tip.clone()
@@ -214,14 +214,14 @@ class SelectorTip extends CodeTip
 class SideSelectorArrow extends UISpriteComponent
   constructor : (@parent) ->
     super(Resources.get("arrow"))
-    LayerUtil.setOrder(this, Environment.layer.frameUIArrow)
+    LayerUtil.setOrder(this, LayerOrder.frameUIArrow)
 
 class SideTipSelector extends UISpriteComponent
   constructor : (x, y, @parent) -> 
     super(Resources.get("sidebar"))
     @moveTo(x, y)
     @padding = 56 
-    LayerUtil.setOrder(this, Environment.layer.frameUI)
+    LayerUtil.setOrder(this, LayerOrder.frameUI)
     @topArrow = new SideSelectorArrow() 
     @bottomArrow = new SideSelectorArrow() 
     @topArrow.rotate(-90)
@@ -349,7 +349,7 @@ class PagerArrow extends UISpriteComponent
   constructor : (@parent, @content, isRightArrow) ->
     super(Resources.get("arrow"))
     @scaleX = -1 if !isRightArrow
-    LayerUtil.setOrder(this, Environment.layer.dialogButton)
+    LayerUtil.setOrder(this, LayerOrder.dialogButton)
 
   show : () -> super() if @content?
 
@@ -389,8 +389,8 @@ class HelpPanel extends Sprite
     @label.y = @y + 16
     @label.font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif" 
     @label.color = "white"
-    LayerUtil.setOrder(this, Environment.layer.messageWindow)
-    LayerUtil.setOrder(@label, Environment.layer.messageText)
+    LayerUtil.setOrder(this, LayerOrder.messageWindow)
+    LayerUtil.setOrder(@label, LayerOrder.messageText)
 
   mkMsgHtml : (text) -> "<div class='msg'>" + text + "</div>"
 
@@ -425,10 +425,10 @@ class Frame
     @left.moveTo(x, y)
     @right.moveTo(borderWidth + contentWidth, y)
 
-    LayerUtil.setOrder(@top,    Environment.layer.frame)
-    LayerUtil.setOrder(@left,   Environment.layer.frame)
-    LayerUtil.setOrder(@right,  Environment.layer.frame)
-    LayerUtil.setOrder(@bottom, Environment.layer.frame)
+    LayerUtil.setOrder(@top,    LayerOrder.frame)
+    LayerUtil.setOrder(@left,   LayerOrder.frame)
+    LayerUtil.setOrder(@right,  LayerOrder.frame)
+    LayerUtil.setOrder(@bottom, LayerOrder.frame)
 
   show : () ->
     Game.instance.currentScene.addChild(@top)
