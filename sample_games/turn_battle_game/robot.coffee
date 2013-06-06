@@ -47,7 +47,6 @@ class Robot extends Sprite
         @game = Game.instance
         @animated = false
         @hp = Robot.MAX_HP
-        @cmdQueue = new CommandQueue
         @bltQueue = new ItemQueue [], 5
         @wideBltQueue = new ItemQueue [], 5
         @dualBltQueue = new ItemQueue [], 5
@@ -119,27 +118,9 @@ class Robot extends Sprite
         # Why the @ x @ y does it become a floating-point number?
         @x = Math.round @x
         @y = Math.round @y
-        # unless @cmdCollection?
-        #     return
-        # unless @iter?
-        #     @iter = new CommandIterator @cmdCollection
-        # unless @iter.hasNext()
-        #     @iter = new CommandIterator @cmdCollection
 
-        # cmd = @iter.next()
         @onKeyInput @game.input
-        ret = false
-        while @cmdQueue.empty() == false
-            cmd = @cmdQueue.dequeue()
-            #Debug.dump cmd
-            #Debug.log "id : #{cmd.instruction.id}"
-            ret = cmd.eval()
-            #Debug.dump ret
-            @onCmdComplete cmd.instruction.id, ret
-            if cmd.instruction.id == RobotInstruction.END
-                ret = true
-                break
-        return ret
+        return true
 
 class PlayerRobot extends Robot
     @WIDTH = 64
@@ -149,7 +130,6 @@ class PlayerRobot extends Robot
         super PlayerRobot.WIDTH, PlayerRobot.HEIGHT
         @name = R.String.PLAYER
         @image = @game.assets[R.CHAR.PLAYER]
-        @cmdPool = new CommandPool @
 
     onCmdComplete: (id, ret) ->
         super id, ret
@@ -180,51 +160,6 @@ class PlayerRobot extends Robot
         hpBar = scene.views.playerHpBar
         hpBar.reduce()
 
-    onKeyInput: (input) ->
-        if input.w == true
-            @cmdQueue.enqueue @cmdPool.moveLeftUp
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.a == true
-            @cmdQueue.enqueue @cmdPool.moveLeft
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.x == true
-            @cmdQueue.enqueue @cmdPool.moveleftDown
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.d == true
-            @cmdQueue.enqueue @cmdPool.moveRight
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.e == true
-            @cmdQueue.enqueue @cmdPool.moveRightUp
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.c == true
-            @cmdQueue.enqueue @cmdPool.moveRightDown
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.s == true
-            @cmdQueue.enqueue @cmdPool.search
-            rand = Math.floor(Math.random() * 3)
-            switch rand
-                when 0
-                    @cmdQueue.enqueue @cmdPool.shotNormal
-                when 1
-                    @cmdQueue.enqueue @cmdPool.shotWide
-                when 2
-                    @cmdQueue.enqueue @cmdPool.shotDual
-                else
-                    @cmdQueue.enqueue @cmdPool.shotNormal
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.q == true
-            rand = Math.floor(Math.random() * 3)
-            switch rand
-                when 0
-                    @cmdQueue.enqueue @cmdPool.pickupNormal
-                when 1
-                    @cmdQueue.enqueue @cmdPool.pickupWide
-                when 2
-                    @cmdQueue.enqueue @cmdPool.pickupDual
-                else
-                    @cmdQueue.enqueue @cmdPool.pickupNormal
-            @cmdQueue.enqueue @cmdPool.end
-
 class EnemyRobot extends Robot
     @SIZE = 64
     @UPDATE_FRAME = 10
@@ -232,49 +167,7 @@ class EnemyRobot extends Robot
         super EnemyRobot.SIZE, EnemyRobot.SIZE
         @name = R.String.ENEMY
         @image = @game.assets[R.CHAR.ENEMY]
-        @cmdPool = new CommandPool @
 
     onHpReduce: (views) ->
         hpBar = @scene.views.enemyHpBar
         hpBar.reduce()
-
-    onKeyInput:(input) ->
-        if input.w == true
-            @cmdQueue.enqueue @cmdPool.moveLeftUp
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.a == true
-            @cmdQueue.enqueue @cmdPool.moveLeft
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.x == true
-            @cmdQueue.enqueue @cmdPool.moveleftDown
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.d == true
-            @cmdQueue.enqueue @cmdPool.moveRight
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.e == true
-            @cmdQueue.enqueue @cmdPool.moveRightUp
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.c == true
-            @cmdQueue.enqueue @cmdPool.moveRightDown
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.s == true
-            @cmdQueue.enqueue @cmdPool.search
-            rand = Math.floor(Math.random() * 3)
-            switch rand
-                when 0
-                    @cmdQueue.enqueue @cmdPool.shotNormal
-                when 1
-                    @cmdQueue.enqueue @cmdPool.shotWide
-                else
-                    @cmdQueue.enqueue @cmdPool.shotNormal
-            @cmdQueue.enqueue @cmdPool.end
-        else if input.q == true
-            rand = Math.floor(Math.random() * 3)
-            switch rand
-                when 0
-                    @cmdQueue.enqueue @cmdPool.pickupNormal
-                when 1
-                    @cmdQueue.enqueue @cmdPool.pickupWide
-                else
-                    @cmdQueue.enqueue @cmdPool.pickupNormal
-            @cmdQueue.enqueue @cmdPool.end

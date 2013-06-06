@@ -1,31 +1,5 @@
 
 R = Config.R
-
-class CommandPool
-    constructor: (robot) ->
-        ###
-        end = new RobotInstruction RobotInstruction.END, () ->
-            return true
-        @end = new Command end
-        @moveLeftUp = new Command(new MoveLeftUp, robot)
-        @moveleftDown = new Command(new MoveLeftDown, robot)
-        @moveRightUp = new Command(new MoveRightUp, robot)
-        @moveRightDown = new Command(new MoveRightDown, robot)
-        @moveRight = new Command(new MoveRight, robot)
-        @moveLeft = new Command(new MoveLeft, robot)
-
-        @pickupNormal = new Command(new Pickup(), robot,[BulletType.NORMAL, NormalBulletItem,robot.bltQueue])
-        @pickupWide = new Command(new Pickup(), robot, [BulletType.WIDE, WideBulletItem,robot.wideBltQueue])
-        @pickupDual = new Command(new Pickup(), robot, [BulletType.DUAL, DualBulletItem,robot.dualBltQueue])
-
-        @shotNormal = new Command(new Shot(), robot, [robot.bltQueue])
-        @shotWide = new Command(new Shot(), robot, [robot.wideBltQueue])
-        @shotDual = new Command(new Shot(), robot, [robot.dualBltQueue])
-
-        @search = new Command(new Searching, robot)
-        @getHp = new Command(new GetHp, robot)
-        @getBulletQueueSize = Command(new GetBulletQueueSize, robot)
-        ###
             
 class ViewGroup extends Group
     constructor: (x, y, @scene) ->

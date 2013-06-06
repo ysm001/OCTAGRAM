@@ -90,7 +90,6 @@ Robot = (function(_super) {
     this.game = Game.instance;
     this.animated = false;
     this.hp = Robot.MAX_HP;
-    this.cmdQueue = new CommandQueue;
     this.bltQueue = new ItemQueue([], 5);
     this.wideBltQueue = new ItemQueue([], 5);
     this.dualBltQueue = new ItemQueue([], 5);
@@ -172,22 +171,10 @@ Robot = (function(_super) {
   };
 
   Robot.prototype.update = function() {
-    var cmd, ret;
-
     this.x = Math.round(this.x);
     this.y = Math.round(this.y);
     this.onKeyInput(this.game.input);
-    ret = false;
-    while (this.cmdQueue.empty() === false) {
-      cmd = this.cmdQueue.dequeue();
-      ret = cmd["eval"]();
-      this.onCmdComplete(cmd.instruction.id, ret);
-      if (cmd.instruction.id === RobotInstruction.END) {
-        ret = true;
-        break;
-      }
-    }
-    return ret;
+    return true;
   };
 
   return Robot;
@@ -207,7 +194,6 @@ PlayerRobot = (function(_super) {
     PlayerRobot.__super__.constructor.call(this, PlayerRobot.WIDTH, PlayerRobot.HEIGHT);
     this.name = R.String.PLAYER;
     this.image = this.game.assets[R.CHAR.PLAYER];
-    this.cmdPool = new CommandPool(this);
   }
 
   PlayerRobot.prototype.onCmdComplete = function(id, ret) {
@@ -250,63 +236,6 @@ PlayerRobot = (function(_super) {
     return hpBar.reduce();
   };
 
-  PlayerRobot.prototype.onKeyInput = function(input) {
-    var rand;
-
-    if (input.w === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveLeftUp);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.a === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveLeft);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.x === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveleftDown);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.d === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveRight);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.e === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveRightUp);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.c === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveRightDown);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.s === true) {
-      this.cmdQueue.enqueue(this.cmdPool.search);
-      rand = Math.floor(Math.random() * 3);
-      switch (rand) {
-        case 0:
-          this.cmdQueue.enqueue(this.cmdPool.shotNormal);
-          break;
-        case 1:
-          this.cmdQueue.enqueue(this.cmdPool.shotWide);
-          break;
-        case 2:
-          this.cmdQueue.enqueue(this.cmdPool.shotDual);
-          break;
-        default:
-          this.cmdQueue.enqueue(this.cmdPool.shotNormal);
-      }
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.q === true) {
-      rand = Math.floor(Math.random() * 3);
-      switch (rand) {
-        case 0:
-          this.cmdQueue.enqueue(this.cmdPool.pickupNormal);
-          break;
-        case 1:
-          this.cmdQueue.enqueue(this.cmdPool.pickupWide);
-          break;
-        case 2:
-          this.cmdQueue.enqueue(this.cmdPool.pickupDual);
-          break;
-        default:
-          this.cmdQueue.enqueue(this.cmdPool.pickupNormal);
-      }
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    }
-  };
-
   return PlayerRobot;
 
 })(Robot);
@@ -322,7 +251,6 @@ EnemyRobot = (function(_super) {
     EnemyRobot.__super__.constructor.call(this, EnemyRobot.SIZE, EnemyRobot.SIZE);
     this.name = R.String.ENEMY;
     this.image = this.game.assets[R.CHAR.ENEMY];
-    this.cmdPool = new CommandPool(this);
   }
 
   EnemyRobot.prototype.onHpReduce = function(views) {
@@ -330,57 +258,6 @@ EnemyRobot = (function(_super) {
 
     hpBar = this.scene.views.enemyHpBar;
     return hpBar.reduce();
-  };
-
-  EnemyRobot.prototype.onKeyInput = function(input) {
-    var rand;
-
-    if (input.w === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveLeftUp);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.a === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveLeft);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.x === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveleftDown);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.d === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveRight);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.e === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveRightUp);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.c === true) {
-      this.cmdQueue.enqueue(this.cmdPool.moveRightDown);
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.s === true) {
-      this.cmdQueue.enqueue(this.cmdPool.search);
-      rand = Math.floor(Math.random() * 3);
-      switch (rand) {
-        case 0:
-          this.cmdQueue.enqueue(this.cmdPool.shotNormal);
-          break;
-        case 1:
-          this.cmdQueue.enqueue(this.cmdPool.shotWide);
-          break;
-        default:
-          this.cmdQueue.enqueue(this.cmdPool.shotNormal);
-      }
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    } else if (input.q === true) {
-      rand = Math.floor(Math.random() * 3);
-      switch (rand) {
-        case 0:
-          this.cmdQueue.enqueue(this.cmdPool.pickupNormal);
-          break;
-        case 1:
-          this.cmdQueue.enqueue(this.cmdPool.pickupWide);
-          break;
-        default:
-          this.cmdQueue.enqueue(this.cmdPool.pickupNormal);
-      }
-      return this.cmdQueue.enqueue(this.cmdPool.end);
-    }
   };
 
   return EnemyRobot;
