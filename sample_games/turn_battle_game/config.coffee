@@ -47,6 +47,8 @@ class Config.R
         WIDE_BULLET : "#{R.RESOURCE_DIR}/item/wide_bullet_item.png"
         DUAL_BULLET : "#{R.RESOURCE_DIR}/item/dual_bullet_item.png"
         STATUS_BULLET : "#{R.RESOURCE_DIR}/item/status_bullet.png"
+    @TIP :
+        ARROW : "#{R.RESOURCE_DIR}/tip/arrow.png"
 
         #enchant.ui = { assets: [Config.R.PAD, Config.R.APAD, Config.R.FONT0, Config.R.ICON0] }
 class Config.R.String
@@ -67,7 +69,7 @@ class Config.R.String
     @INSTRUCTION :
         MOVE : 
             colnum : () -> "移動方向"
-            slider : [ 
+            label : [ 
                 () -> "右"
                 () -> "右上"
                 () -> "右下"
@@ -85,7 +87,7 @@ class Config.R.String
             ]
         SHOT : 
             colnum : () -> "弾の種類"
-            slider : [ 
+            label : [ 
                 () -> "ストレート"
                 () -> "ワイド"
                 () -> "デュアル"
@@ -94,4 +96,38 @@ class Config.R.String
                 () -> "自機の前に2マス分弾を発射します"
                 () -> "自機の右前と左前に1マス分弾を発射します"
                 () -> "自機の前後に1マス分弾を発射します"
+            ]
+        PICKUP :
+            colnum : () -> "弾の種類"
+            label : [
+                () -> "ストレート"
+                () -> "ワイド"
+                () -> "デュアル"
+            ]
+            description : [
+                () -> "ストレートバレッドを拾います"
+                () -> "ワイドバレッドを拾います"
+                () -> "デュアルバレッドを拾います"
+            ]
+        HP :
+            colnum : () -> "HP"
+            description : (hp) -> "HPが#{hp}以上の時、青矢印に進みます。</ br>HPが#{hp}未満の時、赤矢印に進みます。"
+        HOLD_BULLEFT :
+            id : 
+                kind : "kind"
+                size : "size"
+            colnum : (id) ->
+                if id == "kind"
+                    "弾の種類"
+                else if id == "size"
+                    "弾数"
+            label : [
+                () -> "ストレート"
+                () -> "ワイド"
+                () -> "デュアル"
+            ]
+            description : [
+                (size) -> "ストレートバレッドの保持数が#{size}以上の時、青矢印に進みます。</br>ストレートバレッドの保持数が#{size}未満の時、赤矢印に進みます。"
+                (size) -> "ワイドバレッドの保持数が#{size}以上の時、青矢印に進みます。</br>ワイドバレッドの保持数が#{size}未満の時、赤矢印に進みます。"
+                (size) -> "デュアルバレッドの保持数が#{size}以上の時、青矢印に進みます。</br>デュアルバレッドの保持数が#{size}未満の時、赤矢印に進みます。"
             ]

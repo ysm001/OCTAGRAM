@@ -69,9 +69,9 @@ class RobotWorld extends Group
 
         Game.instance.addInstruction(new MoveInstruction(@player))
         Game.instance.addInstruction(new ShotInstruction(@player))
-        Game.instance.addInstruction(new NormalPickupInstruction(@player))
-        Game.instance.addInstruction(new WidePickupInstruction(@player))
-        Game.instance.addInstruction(new DualPickupInstruction(@player))
+        Game.instance.addInstruction(new PickupInstruction(@player))
+        Game.instance.addInstruction(new HpBranchInstruction(@player))
+        Game.instance.addInstruction(new HoldBulletBranchInstruction(@player))
         # @swicher = new TurnSwitcher @
 
     initialize: (views)->
@@ -175,6 +175,7 @@ class RobotGame extends TipBasedVPL
         load R.EFFECT
         load R.BULLET
         load R.ITEM
+        load R.TIP
 
     onload: ->
         @scene = new RobotScene @

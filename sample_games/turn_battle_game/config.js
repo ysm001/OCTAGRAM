@@ -73,6 +73,10 @@ Config.R = (function() {
     STATUS_BULLET: "" + R.RESOURCE_DIR + "/item/status_bullet.png"
   };
 
+  R.TIP = {
+    ARROW: "" + R.RESOURCE_DIR + "/tip/arrow.png"
+  };
+
   return R;
 
 })();
@@ -107,7 +111,7 @@ Config.R.String = (function() {
       colnum: function() {
         return "移動方向";
       },
-      slider: [
+      label: [
         function() {
           return "右";
         }, function() {
@@ -142,7 +146,7 @@ Config.R.String = (function() {
       colnum: function() {
         return "弾の種類";
       },
-      slider: [
+      label: [
         function() {
           return "ストレート";
         }, function() {
@@ -158,6 +162,68 @@ Config.R.String = (function() {
           return "自機の右前と左前に1マス分弾を発射します";
         }, function() {
           return "自機の前後に1マス分弾を発射します";
+        }
+      ]
+    },
+    PICKUP: {
+      colnum: function() {
+        return "弾の種類";
+      },
+      label: [
+        function() {
+          return "ストレート";
+        }, function() {
+          return "ワイド";
+        }, function() {
+          return "デュアル";
+        }
+      ],
+      description: [
+        function() {
+          return "ストレートバレッドを拾います";
+        }, function() {
+          return "ワイドバレッドを拾います";
+        }, function() {
+          return "デュアルバレッドを拾います";
+        }
+      ]
+    },
+    HP: {
+      colnum: function() {
+        return "HP";
+      },
+      description: function(hp) {
+        return "HPが" + hp + "以上の時、青矢印に進みます。</ br>HPが" + hp + "未満の時、赤矢印に進みます。";
+      }
+    },
+    HOLD_BULLEFT: {
+      id: {
+        kind: "kind",
+        size: "size"
+      },
+      colnum: function(id) {
+        if (id === "kind") {
+          return "弾の種類";
+        } else if (id === "size") {
+          return "弾数";
+        }
+      },
+      label: [
+        function() {
+          return "ストレート";
+        }, function() {
+          return "ワイド";
+        }, function() {
+          return "デュアル";
+        }
+      ],
+      description: [
+        function(size) {
+          return "ストレートバレッドの保持数が" + size + "以上の時、青矢印に進みます。</br>ストレートバレッドの保持数が" + size + "未満の時、赤矢印に進みます。";
+        }, function(size) {
+          return "ワイドバレッドの保持数が" + size + "以上の時、青矢印に進みます。</br>ワイドバレッドの保持数が" + size + "未満の時、赤矢印に進みます。";
+        }, function(size) {
+          return "デュアルバレッドの保持数が" + size + "以上の時、青矢印に進みます。</br>デュアルバレッドの保持数が" + size + "未満の時、赤矢印に進みます。";
         }
       ]
     }

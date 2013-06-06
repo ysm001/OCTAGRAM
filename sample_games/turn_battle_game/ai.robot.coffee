@@ -9,11 +9,11 @@
     "config.js",
     "utility/debug.js",
     "utility/util.js",
-    "enchantAI/instruction.js",
     "effect.js",
     "bullet.js",
     "item.js",
     "robot.js",
+    "enchantAI/instruction.js",
     "view.js",
     "main.js"
 )

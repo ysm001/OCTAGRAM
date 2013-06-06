@@ -107,9 +107,9 @@ RobotWorld = (function(_super) {
     this.robots.push(this.enemy);
     Game.instance.addInstruction(new MoveInstruction(this.player));
     Game.instance.addInstruction(new ShotInstruction(this.player));
-    Game.instance.addInstruction(new NormalPickupInstruction(this.player));
-    Game.instance.addInstruction(new WidePickupInstruction(this.player));
-    Game.instance.addInstruction(new DualPickupInstruction(this.player));
+    Game.instance.addInstruction(new PickupInstruction(this.player));
+    Game.instance.addInstruction(new HpBranchInstruction(this.player));
+    Game.instance.addInstruction(new HoldBulletBranchInstruction(this.player));
   }
 
   RobotWorld.prototype.initialize = function(views) {};
@@ -278,7 +278,8 @@ RobotGame = (function(_super) {
     load(R.UI);
     load(R.EFFECT);
     load(R.BULLET);
-    return load(R.ITEM);
+    load(R.ITEM);
+    return load(R.TIP);
   };
 
   RobotGame.prototype.onload = function() {

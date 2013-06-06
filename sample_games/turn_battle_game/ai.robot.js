@@ -10,4 +10,4 @@
     _results.push(document.write('<script type="text/javascript" src="' + d + arg + '"></script>'));
   }
   return _results;
-})("third_party/underscore-min.js", "config.js", "utility/debug.js", "utility/util.js", "enchantAI/instruction.js", "effect.js", "bullet.js", "item.js", "robot.js", "view.js", "main.js");
+})("third_party/underscore-min.js", "config.js", "utility/debug.js", "utility/util.js", "effect.js", "bullet.js", "item.js", "robot.js", "enchantAI/instruction.js", "view.js", "main.js");
