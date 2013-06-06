@@ -3,6 +3,7 @@ R = Config.R
 
 class CommandPool
     constructor: (robot) ->
+        ###
         end = new RobotInstruction RobotInstruction.END, () ->
             return true
         @end = new Command end
@@ -24,6 +25,7 @@ class CommandPool
         @search = new Command(new Searching, robot)
         @getHp = new Command(new GetHp, robot)
         @getBulletQueueSize = Command(new GetBulletQueueSize, robot)
+        ###
             
 class ViewGroup extends Group
     constructor: (x, y, @scene) ->
@@ -92,6 +94,17 @@ class RobotWorld extends Group
         @robots.push @enemy
 
         Game.instance.addInstruction(new MoveRightInstruction(@player))
+        Game.instance.addInstruction(new MoveLeftInstruction(@player))
+        Game.instance.addInstruction(new MoveRightDownInstruction(@player))
+        Game.instance.addInstruction(new MoveRightUpInstruction(@player))
+        Game.instance.addInstruction(new MoveLeftUpInstruction(@player))
+        Game.instance.addInstruction(new MoveLeftDownInstruction(@player))
+        Game.instance.addInstruction(new NormalShotInstruction(@player))
+        Game.instance.addInstruction(new WideShotInstruction(@player))
+        Game.instance.addInstruction(new DualShotInstruction(@player))
+        Game.instance.addInstruction(new NormalPickupInstruction(@player))
+        Game.instance.addInstruction(new WidePickupInstruction(@player))
+        Game.instance.addInstruction(new DualPickupInstruction(@player))
         # @swicher = new TurnSwitcher @
 
     initialize: (views)->

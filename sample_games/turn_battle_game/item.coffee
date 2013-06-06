@@ -5,8 +5,11 @@ class Item extends Sprite
         @animated = true
 
     onComplete: () =>
+        @event(@) if @event?
         @animated = false
         @parentNode.removeChild @
+
+    setOnCompleteEvent: (@event) ->
 
 
 class NormalBulletItem extends Item

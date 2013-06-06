@@ -121,12 +121,7 @@ Robot = (function(_super) {
 
     msgbox = this.scene.views.msgbox;
     switch (id) {
-      case RobotInstruction.MOVE_RIGHT_UP:
-      case RobotInstruction.MOVE_RIGHT_DOWN:
-      case RobotInstruction.MOVE_LEFT_DOWN:
-      case RobotInstruction.MOVE_LEFT_UP:
-      case RobotInstruction.MOVE_LEFT:
-      case RobotInstruction.MOVE_RIGHT:
+      case RobotInstruction.MOVE:
         if (ret !== false) {
           msgbox.print(R.String.move(this.name, ret.x + 1, ret.y + 1));
           return this.animated = true;
