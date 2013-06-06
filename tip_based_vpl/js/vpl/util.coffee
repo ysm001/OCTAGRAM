@@ -27,7 +27,7 @@ class TipUtil
 
 class LayerUtil
   @setOrder : (obj, order) ->
-    obj._element = document.createElement("div")
+    obj._element = document.createElement("div") if !obj._element?
     obj._element.style.zIndex = order
 
 class EventUtil

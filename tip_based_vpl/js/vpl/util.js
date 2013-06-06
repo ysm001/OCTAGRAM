@@ -45,7 +45,9 @@ LayerUtil = (function() {
   function LayerUtil() {}
 
   LayerUtil.setOrder = function(obj, order) {
-    obj._element = document.createElement("div");
+    if (obj._element == null) {
+      obj._element = document.createElement("div");
+    }
     return obj._element.style.zIndex = order;
   };
 

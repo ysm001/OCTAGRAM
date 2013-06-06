@@ -94,7 +94,6 @@ CodeTip = (function(_super) {
       }
       return CodeTip.selectedInstance = _this;
     });
-    this.updateIcon();
     this.executionEffect = new ExecutionEffect(this);
     if (CodeTip.selectedEffect == null) {
       CodeTip.selectedEffect = new SelectedEffect();
@@ -227,13 +226,13 @@ CodeTip = (function(_super) {
   CodeTip.prototype.updateIcon = function() {
     var icon;
 
-    return this.icon = this.code.getIcon != null ? this.code.getIcon() : (icon = TipUtil.tipToIcon(this.code), icon != null ? new Icon(icon) : null);
-    /*
-    if @icon?
-      @icon.hide()
-      @icon.show(this)
-    */
-
+    if (this.icon != null) {
+      this.icon.hide();
+    }
+    this.icon = this.code.getIcon != null ? this.code.getIcon() : (icon = TipUtil.tipToIcon(this.code), icon != null ? new Icon(icon) : null);
+    if (this.icon != null) {
+      return this.icon.show(this);
+    }
   };
 
   CodeTip.prototype.setDescription = function(desc) {
@@ -283,9 +282,7 @@ CodeTip = (function(_super) {
 
   CodeTip.prototype.show = function() {
     Game.instance.currentScene.addChild(this);
-    if (this.icon != null) {
-      return this.icon.show(this);
-    }
+    return this.updateIcon();
   };
 
   CodeTip.prototype.hide = function() {
@@ -455,8 +452,12 @@ JumpTransitionCodeTip = (function(_super) {
 Icon = (function(_super) {
   __extends(Icon, _super);
 
-  function Icon(icon) {
-    Icon.__super__.constructor.call(this, icon.width, icon.height);
+  function Icon(icon, width, height) {
+    var h, w;
+
+    w = width != null ? width : icon.width;
+    h = height != null ? height : icon.height;
+    Icon.__super__.constructor.call(this, w, h);
     this.image = icon;
     this.parent = null;
     this.hidden = true;
@@ -479,19 +480,29 @@ Icon = (function(_super) {
   };
 
   Icon.prototype.show = function(parent) {
-    if (parent != null) {
-      this.parent = parent;
+    if (this.hidden) {
+      this.hidden = false;
+      if (parent != null) {
+        this.parent = parent;
+      }
+      this.fitPosition();
+      return Game.instance.currentScene.addChild(this);
     }
-    this.fitPosition();
-    return Game.instance.currentScene.addChild(this);
   };
 
   Icon.prototype.hide = function() {
-    return Game.instance.currentScene.removeChild(this);
+    if (!this.hidden) {
+      this.hidden = true;
+      return Game.instance.currentScene.removeChild(this);
+    }
   };
 
   Icon.prototype.clone = function() {
-    return new Icon(this.image);
+    var obj;
+
+    obj = new Icon(this.image, this.width, this.height);
+    obj.frame = this.frame;
+    return obj;
   };
 
   return Icon;

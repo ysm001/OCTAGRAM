@@ -63,7 +63,7 @@ class CodeTip extends Sprite
       CodeTip.selectedInstance = this
     )
 
-    @updateIcon()
+    #@updateIcon()
 
     @executionEffect = new ExecutionEffect(this)
     CodeTip.selectedEffect = new SelectedEffect() if !CodeTip.selectedEffect?
@@ -139,17 +139,15 @@ class CodeTip extends Sprite
   isAsynchronous : () -> @code.isAsynchronous? && @code.isAsynchronous()
 
   updateIcon : () ->
+    @icon.hide() if @icon?
+
     @icon = 
       if @code.getIcon? then @code.getIcon() 
       else 
         icon = TipUtil.tipToIcon(@code)
         if icon? then new Icon(icon) else null
 
-    ###
-    if @icon?
-      @icon.hide()
-      @icon.show(this)
-    ###
+    @icon.show(this) if @icon?
 
   setDescription : (desc) ->
     @description = desc
@@ -179,7 +177,8 @@ class CodeTip extends Sprite
 
   show : () -> 
     Game.instance.currentScene.addChild(this)
-    @icon.show(this) if @icon?
+    #@icon.show(this) if @icon?
+    @updateIcon()
 
   hide : () ->
     Game.instance.currentScene.removeChild(this)
@@ -271,12 +270,16 @@ class JumpTransitionCodeTip extends CodeTip
 # SingleTransitionTipのCV 
 #####################################################
 class Icon extends Sprite
-  constructor : (icon) ->
-    super(icon.width, icon.height)
+  constructor : (icon, width, height) ->
+    w = if width? then width else icon.width
+    h = if height? then height else icon.height
+    super(w, h)
+
     @image = icon
     @parent = null
     @hidden = true
     LayerUtil.setOrder(this, LayerOrder.tipIcon)
+    #LayerUtil.setOrder(this, LayerOrder.frameUIIcon) 
 
     @addEventListener('touchstart', (e)-> @parent.dispatchEvent(e))
     @addEventListener('touchmove', (e)-> @parent.dispatchEvent(e))
@@ -288,14 +291,21 @@ class Icon extends Sprite
         @parent.y + @parent.height/2 - @height/2)
 
   show : (parent) ->
-    @parent = parent if parent?
-    @fitPosition()
-    Game.instance.currentScene.addChild(this)
+    if @hidden
+      @hidden = false
+      @parent = parent if parent?
+      @fitPosition()
+      Game.instance.currentScene.addChild(this)
 
   hide : () -> 
-    Game.instance.currentScene.removeChild(this)
+    if !@hidden
+      @hidden = true
+      Game.instance.currentScene.removeChild(this)
 
-  clone : () -> new Icon(@image)
+  clone : () -> 
+    obj = new Icon(@image, @width, @height)
+    obj.frame = @frame 
+    obj
 
 #####################################################
 # SingleTransitionTipのCV 
