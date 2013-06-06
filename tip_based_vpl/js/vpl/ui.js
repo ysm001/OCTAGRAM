@@ -350,10 +350,10 @@ SideTipSelector = (function(_super) {
     this.addChild(this.topArrow);
     this.addChild(this.bottomArrow);
     this.topArrow.addEventListener('touchstart', function() {
-      return _this.scrollUp();
+      return _this.scrollDown();
     });
     this.bottomArrow.addEventListener('touchstart', function() {
-      return _this.scrollDown();
+      return _this.scrollUp();
     });
     dummy = Resources.get("emptyTip");
     this.capacity = 8;
