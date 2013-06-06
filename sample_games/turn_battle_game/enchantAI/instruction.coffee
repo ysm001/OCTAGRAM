@@ -77,11 +77,11 @@ class MoveInstruction extends ActionInstruction
         return @icon
 
 class ShotInstruction extends ActionInstruction
-    bltQueues = null
+    bltQueue = null
     constructor : (@robot) ->
         super
-        if bltQueues == null
-            bltQueues = [
+        if bltQueue == null
+            bltQueue = [
                 @robot.bltQueue
                 @robot.wideBltQueue
                 @robot.dualBltQueue
@@ -94,7 +94,7 @@ class ShotInstruction extends ActionInstruction
 
     action : () -> 
         ret = false
-        queue = bltQueues[@_id]
+        queue = bltQueue[@_id]
         unless queue.empty()
             for b in queue.dequeue()
                 b.shot(@robot.x, @robot.y, @robot.getDirect())
@@ -134,12 +134,12 @@ class PickupInstruction extends ActionInstruction
         WideBulletItem,
         DualBulletItem
     ]
-    bltQueues = null
+    bltQueue = null
 
     constructor: (@robot) ->
         super
-        if bltQueues == null
-            bltQueues = [
+        if bltQueue == null
+            bltQueue = [
                 @robot.bltQueue
                 @robot.wideBltQueue
                 @robot.dualBltQueue
@@ -152,7 +152,7 @@ class PickupInstruction extends ActionInstruction
 
     action: () ->
         blt = BulletFactory.create(type[@_id], @robot)
-        ret = bltQueues[@_id].enqueue(blt)
+        ret = bltQueue[@_id].enqueue(blt)
         if ret != false
             item = new itemClass[@_id](@robot.x, @robot.y)
             @robot.scene.world.addChild item
@@ -204,7 +204,59 @@ class HpBranchInstruction extends BranchInstruction
 
 class HoldBulletBranchInstruction extends BranchInstruction
 
-    bltQueues = null
+    bltQueue = null
+    constructor: (@robot) ->
+        super
+        if bltQueue == null
+            bltQueue = [
+                @robot.bltQueue
+                @robot.wideBltQueue
+                @robot.dualBltQueue
+            ]
+        @_id = 0
+        @bulletSize = 0
+        # タイトル, 初期値, 最小値, 最大値, 増大値
+        parameter = new TipParameter(HoldBulletStr.colnum(HoldBulletStr.id.kind), 0, 0, 3, 1)
+        parameter.id = HoldBulletStr.id.kind
+        @addParameter(parameter)
+        parameter = new TipParameter(HoldBulletStr.colnum(HoldBulletStr.id.size), 0, 0, 5, 1)
+        parameter.id = HoldBulletStr.id.size
+        @addParameter(parameter)
+
+    action : () ->
+        @bulletSize <= bltQueue[@_id].size()
+
+    clone : () ->
+        obj = @copy(new HoldBulletBranchInstruction(@robot))
+        obj._id = @_id
+        obj.bulletSize = @bulletSize
+        obj
+
+    onParameterChanged : (parameter) ->
+        if parameter.id == HoldBulletStr.id.kind
+            @_id = parameter.value
+        else if parameter.id == HoldBulletStr.id.size
+            @bulletSize = parameter.value
+
+    mkLabel: (parameter) ->
+        if parameter.id == HoldBulletStr.id.kind
+            return HoldBulletStr.label[@_id]()
+        else if parameter.id == HoldBulletStr.id.size
+            return parameter.value
+
+    mkDescription: () ->
+        HoldBulletStr.description[@_id](@bulletSize)
+
+class SearchingBranchInstruction extends BranchInstruction
+
+    @direct = [
+        Direct.RIGHT
+        Direct.RIGHT | Direct.UP
+        Direct.RIGHT | Direct.DOWN
+        Direct.LEFT
+        Direct.LEFT | Direct.UP
+        Direct.LEFT | Direct.DOWN
+    ]
     constructor: (@robot) ->
         super
         if bltQueues == null
@@ -238,14 +290,12 @@ class HoldBulletBranchInstruction extends BranchInstruction
         else if parameter.id == HoldBulletStr.id.size
             @bulletSize = parameter.value
 
-    ###
     mkLabel: (parameter) ->
         if parameter.id == HoldBulletStr.id.kind
             return HoldBulletStr.label[@_id]()
         else if parameter.id == HoldBulletStr.id.size
             return parameter.value
 
-    ###
     mkDescription: () ->
         HoldBulletStr.description[@_id](@bulletSize)
 
@@ -257,27 +307,3 @@ class Searching extends RobotInstruction
         robot = if @ == world.player then world.enemy else @
         return new Point(robot.x - @x, robot.y - @y)
 
-class Pickup extends RobotInstruction
-    constructor:() ->
-        super RobotInstruction.PICKUP, @func
-    func: (type, itemClass, queue) ->
-        blt = BulletFactory.create(type, @)
-        ret = queue.enqueue(blt)
-        if ret != false
-            item = new itemClass(@x, @y)
-            @scene.world.addChild item
-            @scene.world.items.push item
-            ret = blt
-        return ret
-
-class GetHp extends RobotInstruction
-    constructor: () ->
-        super RobotInstruction.GET_HP, @func
-    func: () ->
-        return @hp
-
-class GetBulletQueueSize extends RobotInstruction
-    constructor: () ->
-        super RobotInstruction.GET_BULLET_QUEUE_SIZE, @func
-    func: () ->
-        return @bltQueue.size()
