@@ -204,8 +204,8 @@ class SideTipSelector extends UISpriteComponent
     @addChild(@topArrow)
     @addChild(@bottomArrow)
 
-    @topArrow.addEventListener('touchstart', () => @scrollUp())
-    @bottomArrow.addEventListener('touchstart', () => @scrollDown())
+    @topArrow.addEventListener('touchstart', () => @scrollDown())
+    @bottomArrow.addEventListener('touchstart', () => @scrollUp())
 
     dummy = Resources.get("emptyTip")
     @capacity = 8 
