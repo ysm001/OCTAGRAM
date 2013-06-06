@@ -229,7 +229,7 @@ class SideTipSelector extends UISpriteComponent
 
   isUpScrollable : () -> 
     rest = @getTipNum() - @scrollPosition
-    rest > (@capacity + 1)
+    rest > @capacity
   isDownScrollable : () -> @scrollPosition > 0
 
   scrollUp : () ->

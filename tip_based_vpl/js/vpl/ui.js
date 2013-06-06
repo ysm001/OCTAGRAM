@@ -391,7 +391,7 @@ SideTipSelector = (function(_super) {
     var rest;
 
     rest = this.getTipNum() - this.scrollPosition;
-    return rest > (this.capacity + 1);
+    return rest > this.capacity;
   };
 
   SideTipSelector.prototype.isDownScrollable = function() {
