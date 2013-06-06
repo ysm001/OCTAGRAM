@@ -37,7 +37,7 @@ class Slider extends UISpriteComponent
     )
     @scroll(@value)
 
-    LayerUtil.setOrder(this, Environment.layer.dialogUI)
+    LayerUtil.setOrder(this, LayerOrder.dialogUI)
 
     @addChild(@knob)
     @addChild(@label)
@@ -82,5 +82,5 @@ class Slider extends UISpriteComponent
 class SliderKnob extends UISpriteComponent
   constructor : (@parent) ->
    super(Resources.get("sliderKnob"))
-   LayerUtil.setOrder(this, Environment.layer.dialogUI)
+   LayerUtil.setOrder(this, LayerOrder.dialogUI)
 

@@ -98,7 +98,7 @@ CodeTip = (function(_super) {
     if (CodeTip.selectedEffect == null) {
       CodeTip.selectedEffect = new SelectedEffect();
     }
-    LayerUtil.setOrder(this, Environment.layer.tip);
+    LayerUtil.setOrder(this, LayerOrder.tip);
   }
 
   CodeTip.prototype.select = function() {
@@ -281,11 +281,6 @@ CodeTip = (function(_super) {
     if (this.icon != null) {
       obj.icon = this.icon.clone();
     }
-    /*
-    obj.parameters = []
-    for param in @parameters then obj.parameters.push(param.clone())
-    */
-
     return obj;
   };
 
@@ -441,7 +436,7 @@ Icon = (function(_super) {
     Icon.__super__.constructor.call(this, icon.width, icon.height);
     this.image = icon;
     this.parent = null;
-    LayerUtil.setOrder(this, Environment.layer.tipIcon);
+    LayerUtil.setOrder(this, LayerOrder.tipIcon);
     this.addEventListener('touchstart', function(e) {
       return this.parent.dispatchEvent(e);
     });

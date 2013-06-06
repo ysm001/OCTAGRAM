@@ -24,7 +24,7 @@ SelectedEffect = (function(_super) {
     this.addEventListener('touchend', function(e) {
       return _this.parent.dispatchEvent(e);
     });
-    LayerUtil.setOrder(this, Environment.layer.tipEffect);
+    LayerUtil.setOrder(this, LayerOrder.tipEffect);
   }
 
   SelectedEffect.prototype.show = function(parent) {
@@ -61,7 +61,7 @@ ExecutionEffect = (function(_super) {
     this.visible = false;
     this.busy = false;
     this.tl.setTimeBased();
-    LayerUtil.setOrder(this, Environment.layer.tipEffect);
+    LayerUtil.setOrder(this, LayerOrder.tipEffect);
   }
 
   ExecutionEffect.prototype.show = function() {

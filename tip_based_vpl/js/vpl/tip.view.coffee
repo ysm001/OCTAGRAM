@@ -66,7 +66,7 @@ class CodeTip extends Sprite
     @executionEffect = new ExecutionEffect(this)
     CodeTip.selectedEffect = new SelectedEffect() if !CodeTip.selectedEffect?
 
-    LayerUtil.setOrder(this, Environment.layer.tip)
+    LayerUtil.setOrder(this, LayerOrder.tip)
 
   select : () =>
     GlobalUI.help.setText(@description)
@@ -168,10 +168,6 @@ class CodeTip extends Sprite
     obj.description = @description
     obj.icon = @icon.clone() if @icon?
 
-    ###
-    obj.parameters = []
-    for param in @parameters then obj.parameters.push(param.clone())
-    ###
     obj
 
 #####################################################
@@ -256,7 +252,7 @@ class Icon extends Sprite
     super(icon.width, icon.height)
     @image = icon
     @parent = null
-    LayerUtil.setOrder(this, Environment.layer.tipIcon)
+    LayerUtil.setOrder(this, LayerOrder.tipIcon)
 
     @addEventListener('touchstart', (e)-> @parent.dispatchEvent(e))
     @addEventListener('touchmove', (e)-> @parent.dispatchEvent(e))

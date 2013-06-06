@@ -13,7 +13,7 @@ class SelectedEffect extends Sprite
     @addEventListener('touchmove', (e) => @parent.dispatchEvent(e))
     @addEventListener('touchend', (e) => @parent.dispatchEvent(e))
 
-    LayerUtil.setOrder(this, Environment.layer.tipEffect)
+    LayerUtil.setOrder(this, LayerOrder.tipEffect)
 
   show : (parent) ->
     @parent = parent
@@ -39,7 +39,7 @@ class ExecutionEffect extends Sprite
     @tl.setTimeBased()
     #@addEventListener('touchstart', => @hide())
 
-    LayerUtil.setOrder(this, Environment.layer.tipEffect)
+    LayerUtil.setOrder(this, LayerOrder.tipEffect)
 
   show : () ->
     @moveTo(@parent.x, @parent.y)

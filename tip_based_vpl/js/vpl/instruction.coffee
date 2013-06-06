@@ -42,19 +42,3 @@ class CustomInstructionBranchTip extends BranchTip
 
   clone : () -> 
     @copy(new CustomInstructionBranchTip(@instruction.clone(), @getConseq, @getAlter()))
-
-class CustomTipDescriptor
-  constructor : (@instruction, @description, @image) ->
-
-class InstructionImporter
-  @import : (instDescTable) ->
-    tipTable = []
-    for desc in instDescTable
-      tip = 
-        if desc.instruction isinstanceof ActionInstruction
-          new CustomInstructionActionTip(desc.instruction)
-        else new CustomInstructionBranchTip(desc.instruction)
-      tip.description = desc.description
-      tipTable.push(tip)
-
-    tip

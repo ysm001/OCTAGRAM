@@ -45,7 +45,7 @@ Slider = (function(_super) {
       return this.scroll(value);
     });
     this.scroll(this.value);
-    LayerUtil.setOrder(this, Environment.layer.dialogUI);
+    LayerUtil.setOrder(this, LayerOrder.dialogUI);
     this.addChild(this.knob);
     this.addChild(this.label);
     this.addChild(this.title);
@@ -116,7 +116,7 @@ SliderKnob = (function(_super) {
   function SliderKnob(parent) {
     this.parent = parent;
     SliderKnob.__super__.constructor.call(this, Resources.get("sliderKnob"));
-    LayerUtil.setOrder(this, Environment.layer.dialogUI);
+    LayerUtil.setOrder(this, LayerOrder.dialogUI);
   }
 
   return SliderKnob;

@@ -20,9 +20,10 @@ TipTransition = (function(_super) {
       evt.x = e.x;
       evt.y = e.y;
       evt.transition = this;
-      return document.dispatchEvent(evt);
+      document.dispatchEvent(evt);
+      return this.onDirectionChanged(evt);
     });
-    LayerUtil.setOrder(this, Environment.layer.transition);
+    LayerUtil.setOrder(this, LayerOrder.transition);
   }
 
   TipTransition.prototype.link = function(src, dst) {
@@ -79,6 +80,8 @@ TipTransition = (function(_super) {
       return Direction.left;
     }
   };
+
+  TipTransition.prototype.onDirectionChanged = function(e) {};
 
   TipTransition.prototype.hide = function() {
     return Game.instance.currentScene.removeChild(this);
