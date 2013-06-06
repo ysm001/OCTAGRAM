@@ -37,10 +37,19 @@ Instruction = (function() {
     param.onValueChanged = function() {
       return _this.onParameterChanged(param);
     };
+    param.mkLabel = function() {
+      return _this.mkLabel(param);
+    };
     return this.parameters.push(param);
   };
 
   Instruction.prototype.mkDescription = function() {};
+
+  Instruction.prototype.mkLabel = function(value) {
+    return value;
+  };
+
+  Instruction.prototype.getIcon = function() {};
 
   Instruction.prototype.onParameterChanged = function(parameter) {};
 
@@ -119,6 +128,10 @@ CustomInstructionActionTip = (function(_super) {
     return this.instruction.mkDescription();
   };
 
+  CustomInstructionActionTip.prototype.getIcon = function() {
+    return this.instruction.getIcon();
+  };
+
   CustomInstructionActionTip.prototype.clone = function() {
     return this.copy(new CustomInstructionActionTip(this.instruction.clone(), this.getNext()));
   };
@@ -145,6 +158,10 @@ CustomInstructionBranchTip = (function(_super) {
 
   CustomInstructionBranchTip.prototype.isAsynchronous = function() {
     return this.instruction.isAsynchronous;
+  };
+
+  CustomInstructionBranchTip.prototype.getIcon = function() {
+    return this.instruction.getIcon();
   };
 
   CustomInstructionBranchTip.prototype.clone = function() {

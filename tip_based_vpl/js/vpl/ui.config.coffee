@@ -6,9 +6,12 @@ class ParameterSlider extends Slider
     @scroll(@parameter.getValue())
     super()
 
+  setText : () ->
+    super(@parameter.mkLabel())
+
   onValueChanged : () -> 
-    super()
     @parameter.setValue(@value)
+    @setText(@parameter.mkLabel())
 
 class ParameterConfigPanel extends UISpriteComponent
   constructor : () ->

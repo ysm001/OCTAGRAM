@@ -18,9 +18,12 @@ class Instruction
 
   addParameter : (param) -> 
     param.onValueChanged = () => @onParameterChanged(param)
+    param.mkLabel = () => @mkLabel(param)
     @parameters.push(param)
 
   mkDescription : () ->
+  mkLabel : (value) -> value
+  getIcon : () -> 
 
   onParameterChanged : (parameter) ->
   copy : (obj) ->
@@ -48,6 +51,7 @@ class CustomInstructionActionTip extends ActionTip
   action : () -> @instruction.execute()
   isAsynchronous : () -> @instruction.isAsynchronous 
   mkDescription : () -> @instruction.mkDescription()
+  getIcon : () -> @instruction.getIcon()
 
   clone : () -> 
     @copy(new CustomInstructionActionTip(@instruction.clone(), @getNext()))
@@ -59,6 +63,7 @@ class CustomInstructionBranchTip extends BranchTip
   condition : () -> @instruction.execute()
   mkDescription : () -> @instruction.mkDescription()
   isAsynchronous : () -> @instruction.isAsynchronous 
+  getIcon : () -> @instruction.getIcon()
 
   clone : () -> 
     @copy(new CustomInstructionBranchTip(@instruction.clone(), @getConseq, @getAlter()))

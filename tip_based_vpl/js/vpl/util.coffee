@@ -12,6 +12,9 @@ class TipUtil
 
     Resources.get(assetName)
 
+  @tipToIcon : (code) ->
+    if code instanceof NopTip then Resources.get("iconNop")
+
   @tipToMessage : (code) ->
      if      code instanceof EmptyTip  then TextResource.msg["empty"]
      else if code instanceof ReturnTip then TextResource.msg["return"] 

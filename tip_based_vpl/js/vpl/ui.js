@@ -275,7 +275,10 @@ SelectorTip = (function(_super) {
   function SelectorTip(tip) {
     this.tip = tip;
     SelectorTip.__super__.constructor.call(this, this.tip.code);
-    this.icon = this.tip.icon;
+    if (this.tip.icon != null) {
+      this.icon = this.tip.icon;
+      this.icon.parent = this;
+    }
     this.description = this.tip.description;
     if (SelectorTip.selectedEffect == null) {
       SelectorTip.selectedEffect = new SelectedEffect();

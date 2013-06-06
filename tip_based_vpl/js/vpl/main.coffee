@@ -51,12 +51,12 @@ class GlobalUI
 class TipTable
   @tips = []
   @addTip : (tip, icon) -> 
-    tip.setIcon(new Icon(icon)) if icon?
+    #tip.setIcon(new Icon(icon)) if icon?
     @tips.push(tip)
 
   @addInstruction : (inst, icon) ->
     tip = TipFactory.createInstructionTip(inst) 
-    tip.setIcon(new Icon(icon)) if icon?
+    #tip.setIcon(new Icon(icon)) if icon?
     #tip.icon = new Icon(icon) if icon?
     TipTable.addTip(tip)
 

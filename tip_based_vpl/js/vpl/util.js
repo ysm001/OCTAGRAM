@@ -11,6 +11,12 @@ TipUtil = (function() {
     return Resources.get(assetName);
   };
 
+  TipUtil.tipToIcon = function(code) {
+    if (code instanceof NopTip) {
+      return Resources.get("iconNop");
+    }
+  };
+
   TipUtil.tipToMessage = function(code) {
     if (code instanceof EmptyTip) {
       return TextResource.msg["empty"];

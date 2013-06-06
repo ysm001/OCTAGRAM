@@ -94,6 +94,7 @@ CodeTip = (function(_super) {
       }
       return CodeTip.selectedInstance = _this;
     });
+    this.updateIcon();
     this.executionEffect = new ExecutionEffect(this);
     if (CodeTip.selectedEffect == null) {
       CodeTip.selectedEffect = new SelectedEffect();
@@ -184,6 +185,7 @@ CodeTip = (function(_super) {
         var _j, _len1, _ref1, _results;
 
         if (closedWithOK) {
+          _this.updateIcon();
           return _this.setDescription(_this.code.mkDescription());
         } else {
           _ref1 = _this.parameters;
@@ -222,13 +224,30 @@ CodeTip = (function(_super) {
     return (this.code.isAsynchronous != null) && this.code.isAsynchronous();
   };
 
+  CodeTip.prototype.updateIcon = function() {
+    var icon;
+
+    return this.icon = this.code.getIcon != null ? this.code.getIcon() : (icon = TipUtil.tipToIcon(this.code), icon != null ? new Icon(icon) : null);
+    /*
+    if @icon?
+      @icon.hide()
+      @icon.show(this)
+    */
+
+  };
+
   CodeTip.prototype.setDescription = function(desc) {
     this.description = desc;
     return this.onDescriptionChanged();
   };
 
   CodeTip.prototype.setIcon = function(icon) {
-    return this.icon = icon;
+    this.icon = icon;
+    return this.icon.fitPosition();
+  };
+
+  CodeTip.prototype.getIcon = function(icon) {
+    return this.icon;
   };
 
   CodeTip.prototype.onDescriptionChanged = function() {
@@ -440,6 +459,7 @@ Icon = (function(_super) {
     Icon.__super__.constructor.call(this, icon.width, icon.height);
     this.image = icon;
     this.parent = null;
+    this.hidden = true;
     LayerUtil.setOrder(this, LayerOrder.tipIcon);
     this.addEventListener('touchstart', function(e) {
       return this.parent.dispatchEvent(e);
@@ -499,6 +519,8 @@ TipParameter = (function() {
   };
 
   TipParameter.prototype.onValueChanged = function() {};
+
+  TipParameter.prototype.mkLabel = function() {};
 
   TipParameter.prototype.clone = function() {
     return new TipParameter(this.valueName, this.value, this.min, this.max, this.step);

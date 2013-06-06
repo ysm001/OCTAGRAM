@@ -63,6 +63,8 @@ class CodeTip extends Sprite
       CodeTip.selectedInstance = this
     )
 
+    @updateIcon()
+
     @executionEffect = new ExecutionEffect(this)
     CodeTip.selectedEffect = new SelectedEffect() if !CodeTip.selectedEffect?
 
@@ -120,7 +122,9 @@ class CodeTip extends Sprite
       GlobalUI.configPanel.show(this)
 
       GlobalUI.configPanel.onClosed = (closedWithOK) =>
-        if closedWithOK then @setDescription(@code.mkDescription())
+        if closedWithOK 
+          @updateIcon() 
+          @setDescription(@code.mkDescription())
         else 
           for param, i in @parameters
             param.setValue(backup[i])
@@ -134,11 +138,28 @@ class CodeTip extends Sprite
 
   isAsynchronous : () -> @code.isAsynchronous? && @code.isAsynchronous()
 
+  updateIcon : () ->
+    @icon = 
+      if @code.getIcon? then @code.getIcon() 
+      else 
+        icon = TipUtil.tipToIcon(@code)
+        if icon? then new Icon(icon) else null
+
+    ###
+    if @icon?
+      @icon.hide()
+      @icon.show(this)
+    ###
+
   setDescription : (desc) ->
     @description = desc
     @onDescriptionChanged()
 
-  setIcon : (icon) -> @icon = icon
+  setIcon : (icon) -> 
+    @icon = icon
+    @icon.fitPosition()
+
+  getIcon : (icon) -> @icon
 
   onDescriptionChanged : () ->
     if @isSelected() then GlobalUI.help.setText(@description)
@@ -254,6 +275,7 @@ class Icon extends Sprite
     super(icon.width, icon.height)
     @image = icon
     @parent = null
+    @hidden = true
     LayerUtil.setOrder(this, LayerOrder.tipIcon)
 
     @addEventListener('touchstart', (e)-> @parent.dispatchEvent(e))
@@ -270,7 +292,8 @@ class Icon extends Sprite
     @fitPosition()
     Game.instance.currentScene.addChild(this)
 
-  hide : () -> Game.instance.currentScene.removeChild(this)
+  hide : () -> 
+    Game.instance.currentScene.removeChild(this)
 
   clone : () -> new Icon(@image)
 
@@ -288,6 +311,7 @@ class TipParameter
   getValue : () -> @value
 
   onValueChanged : () ->
+  mkLabel : () ->
 
   clone : () -> new TipParameter(@valueName, @value, @min, @max, @step)
   copy : (obj) ->
