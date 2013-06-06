@@ -311,7 +311,9 @@ class Icon extends Sprite
 # SingleTransitionTipのCV 
 #####################################################
 class TipParameter
-  constructor : (@valueName, @value, @min, @max, @step) -> @text = ""
+  constructor : (@valueName, @value, @min, @max, @step) ->
+    @text = ""
+    @id = 0
 
   setValue : (value) ->
     @value = value
@@ -330,6 +332,7 @@ class TipParameter
     obj.min = @min
     obj.max = @max
     obj.step = @step
+    obj.id = @id
 
   toString : () -> @value.toString()
 

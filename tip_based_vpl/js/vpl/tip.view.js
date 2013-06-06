@@ -517,6 +517,7 @@ TipParameter = (function() {
     this.max = max;
     this.step = step;
     this.text = "";
+    this.id = 0;
   }
 
   TipParameter.prototype.setValue = function(value) {
@@ -542,7 +543,8 @@ TipParameter = (function() {
     obj.value = this.value;
     obj.min = this.min;
     obj.max = this.max;
-    return obj.step = this.step;
+    obj.step = this.step;
+    return obj.id = this.id;
   };
 
   TipParameter.prototype.toString = function() {
