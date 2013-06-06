@@ -5,27 +5,8 @@ class RobotInstruction
     @SEARCH = "search"
     @GET_HP = "getHp"
     @GET_BULLET_QUEUE_SIZE = "getBulletQueueSize"
-    @END = "end"
 
-    constructor: (@id, @func)->
-
-class MoveInstruction extends RobotInstruction
-    constructor: (id, func) ->
-        super id, func
-
-    @move: (plate, instr) ->
-        ret = false
-        @prevPlate = @currentPlate
-        if plate? and plate.lock == false
-            pos = plate.getAbsolutePos()
-            @tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(() -> instr.onComplete())
-            @currentPlate = plate
-            ret = new Point plate.ix, plate.iy
-        else
-            ret = false
-        return ret
-
-class MovingInstruction extends ActionInstruction
+class MoveInstruction extends ActionInstruction
     constructor : (@robot, @direct, @frame, @instrClass) ->
         super
         @setAsynchronous(true)
@@ -35,13 +16,24 @@ class MovingInstruction extends ActionInstruction
         @robot.frame = @frame
         Debug.log @frame
         plate = @robot.map.getTargetPoision(@robot.currentPlate, @direct)
-        ret = MoveInstruction.move.call(@robot, plate, @)
+        ret = @_move plate
         @setAsynchronous(ret != false)
-        @ret = ret
+        @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+
+    _move: (plate) ->
+        ret = false
+        @robot.prevPlate = @robot.currentPlate
+        if plate? and plate.lock == false
+            pos = plate.getAbsolutePos()
+            @robot.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(() => @onComplete())
+            @robot.currentPlate = plate
+            ret = new Point plate.ix, plate.iy
+        else
+            ret = false
+        return ret
 
     onComplete: () ->
         @robot.onAnimateComplete()
-        @robot.onCmdComplete(RobotInstruction.MOVE, @ret)
         super
 
     clone : () -> 
@@ -49,42 +41,42 @@ class MovingInstruction extends ActionInstruction
         return instr
 
 
-class MoveRightInstruction extends MovingInstruction
+class MoveRightInstruction extends MoveInstruction
     constructor : (@robot) ->
         super(@robot, Direct.RIGHT, 0, MoveRightInstruction)
 
     mkDescription: () ->
         "MoveRightInstruction"
 
-class MoveLeftInstruction extends MovingInstruction
+class MoveLeftInstruction extends MoveInstruction
     constructor : (@robot) ->
         super(@robot, Direct.LEFT, 2, MoveLeftInstruction)
 
     mkDescription: () ->
         "MoveLeftInstruction"
 
-class MoveRightUpInstruction extends MovingInstruction
+class MoveRightUpInstruction extends MoveInstruction
     constructor : (@robot) ->
         super(@robot, Direct.RIGHT | Direct.UP, 4, MoveRightUpInstruction)
 
     mkDescription: () ->
         "MoveRightUpInstruction"
 
-class MoveRightDownInstruction extends MovingInstruction
+class MoveRightDownInstruction extends MoveInstruction
     constructor : (@robot) ->
         super(@robot, Direct.RIGHT | Direct.DOWN, 5, MoveRightDownInstruction)
 
     mkDescription: () ->
         "MoveRightDownInstruction"
 
-class MoveLeftUpInstruction extends MovingInstruction
+class MoveLeftUpInstruction extends MoveInstruction
     constructor : (@robot) ->
         super(@robot, Direct.LEFT | Direct.UP, 6, MoveLeftUpInstruction)
 
     mkDescription: () ->
         "MoveLeftUpInstruction"
 
-class MoveLeftDownInstruction extends MovingInstruction
+class MoveLeftDownInstruction extends MoveInstruction
     constructor : (@robot) ->
         super(@robot, Direct.LEFT | Direct.DOWN, 7, MoveLeftDownInstruction)
 
@@ -107,11 +99,10 @@ class ShotInstruction extends ActionInstruction
                 b.setOnDestoryEvent(() => @onComplete())
                 ret = b
         @setAsynchronous(ret != false)
-        @ret = ret
+        @robot.onCmdComplete(RobotInstruction.SHOT ,ret)
 
     onComplete: () ->
         @robot.onAnimateComplete()
-        @robot.onCmdComplete(RobotInstruction.SHOT ,@ret)
         super
 
     clone : () -> 
@@ -154,11 +145,10 @@ class PickupInstruction extends ActionInstruction
             item.setOnCompleteEvent(() => @onComplete())
             ret = blt
         @setAsynchronous(ret != false)
-        @ret = ret
+        @robot.onCmdComplete(RobotInstruction.PICKUP, ret)
 
     onComplete: () ->
         @robot.onAnimateComplete()
-        @robot.onCmdComplete(RobotInstruction.PICKUP, @ret)
         super
 
     clone : () -> 
