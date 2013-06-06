@@ -325,7 +325,6 @@ class TipParameter
   mkLabel : () ->
 
   clone : () -> @copy(new TipParameter(@valueName, @value, @min, @max, @step))
-
   copy : (obj) ->
     obj.valueName = @valueName
     obj.value = @value
@@ -333,6 +332,7 @@ class TipParameter
     obj.max = @max
     obj.step = @step
     obj.id = @id
+    obj
 
   toString : () -> @value.toString()
 

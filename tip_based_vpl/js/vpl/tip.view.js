@@ -544,7 +544,8 @@ TipParameter = (function() {
     obj.min = this.min;
     obj.max = this.max;
     obj.step = this.step;
-    return obj.id = this.id;
+    obj.id = this.id;
+    return obj;
   };
 
   TipParameter.prototype.toString = function() {
