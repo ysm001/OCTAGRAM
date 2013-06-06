@@ -38,6 +38,7 @@ class Resources
     "sidebar"         : "sidebar_160x496.png"
     "slider"          : "slider_256x32.png"
     "sliderKnob"      : "slider_knob_16x16.png"
+    "dummy"           : "dummy_1x1.png"
   }
 
   ## リソースのロード
