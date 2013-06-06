@@ -14,6 +14,7 @@ class TipTransition extends Sprite
       evt.y = e.y
       evt.transition = this
       document.dispatchEvent(evt)
+      @onDirectionChanged(evt)
     )
 
     LayerUtil.setOrder(this, LayerOrder.transition)
@@ -48,6 +49,8 @@ class TipTransition extends Sprite
     else if -112.5 < theta <=  -67.5 then Direction.up
     else if  -67.5 < theta <=  -22.5 then Direction.rightUp
     else if theta > 157.5 || theta <= -157.5 <= 22.5 then Direction.left
+
+  onDirectionChanged : (e) ->
 
   hide : () -> Game.instance.currentScene.removeChild(this)
   show : () -> Game.instance.currentScene.addChild(this)

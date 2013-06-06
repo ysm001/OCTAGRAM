@@ -168,10 +168,6 @@ class CodeTip extends Sprite
     obj.description = @description
     obj.icon = @icon.clone() if @icon?
 
-    ###
-    obj.parameters = []
-    for param in @parameters then obj.parameters.push(param.clone())
-    ###
     obj
 
 #####################################################

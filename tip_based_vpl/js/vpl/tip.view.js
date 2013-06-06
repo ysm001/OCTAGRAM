@@ -281,11 +281,6 @@ CodeTip = (function(_super) {
     if (this.icon != null) {
       obj.icon = this.icon.clone();
     }
-    /*
-    obj.parameters = []
-    for param in @parameters then obj.parameters.push(param.clone())
-    */
-
     return obj;
   };
 
