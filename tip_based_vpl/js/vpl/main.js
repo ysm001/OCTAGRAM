@@ -96,9 +96,6 @@ TipTable = (function() {
   TipTable.tips = [];
 
   TipTable.addTip = function(tip, icon) {
-    if (icon != null) {
-      tip.setIcon(new Icon(icon));
-    }
     return this.tips.push(tip);
   };
 
@@ -106,9 +103,6 @@ TipTable = (function() {
     var tip;
 
     tip = TipFactory.createInstructionTip(inst);
-    if (icon != null) {
-      tip.setIcon(new Icon(icon));
-    }
     return TipTable.addTip(tip);
   };
 

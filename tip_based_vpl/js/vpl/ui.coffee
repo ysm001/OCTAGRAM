@@ -163,7 +163,10 @@ class SelectorTip extends CodeTip
   @selectedEffect = null
   constructor : (@tip) ->
     super(@tip.code) 
-    @icon = @tip.icon
+    if @tip.icon?
+      @icon = @tip.icon
+      @icon.parent = this
+
     @description = @tip.description
 
     SelectorTip.selectedEffect = new SelectedEffect() if !SelectorTip.selectedEffect?

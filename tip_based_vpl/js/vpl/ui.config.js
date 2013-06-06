@@ -16,9 +16,13 @@ ParameterSlider = (function(_super) {
     return ParameterSlider.__super__.show.call(this);
   };
 
+  ParameterSlider.prototype.setText = function() {
+    return ParameterSlider.__super__.setText.call(this, this.parameter.mkLabel());
+  };
+
   ParameterSlider.prototype.onValueChanged = function() {
-    ParameterSlider.__super__.onValueChanged.call(this);
-    return this.parameter.setValue(this.value);
+    this.parameter.setValue(this.value);
+    return this.setText(this.parameter.mkLabel());
   };
 
   return ParameterSlider;

@@ -35,6 +35,10 @@ RandomBranchInstruction = (function(_super) {
     return this.threthold = parameter.value;
   };
 
+  RandomBranchInstruction.prototype.getIcon = function() {
+    return new Icon(Resources.get("iconRandom"));
+  };
+
   RandomBranchInstruction.prototype.mkDescription = function() {
     return this.threthold + "%の確率で青矢印に進みます。</ br>" + (100 - this.threthold) + "%の確率で赤矢印に進みます。";
   };
