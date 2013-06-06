@@ -95,7 +95,10 @@ TipTable = (function() {
 
   TipTable.tips = [];
 
-  TipTable.addTip = function(tip) {
+  TipTable.addTip = function(tip, icon) {
+    if (icon != null) {
+      tip.setIcon(new Icon(icon));
+    }
     return this.tips.push(tip);
   };
 
@@ -104,7 +107,7 @@ TipTable = (function() {
 
     tip = TipFactory.createInstructionTip(inst);
     if (icon != null) {
-      tip.icon = new Icon(icon);
+      tip.setIcon(new Icon(icon));
     }
     return TipTable.addTip(tip);
   };
@@ -128,14 +131,16 @@ TipBasedVPL = (function(_super) {
   };
 
   TipBasedVPL.prototype.addPresetInstructions = function() {
-    var inst, returnTip, stopTip;
+    var inst, nopTip, returnTip, stopTip;
 
     returnTip = TipFactory.createReturnTip(Environment.startX, Environment.startY);
     stopTip = TipFactory.createStopTip();
+    nopTip = TipFactory.createNopTip();
     inst = new RandomBranchInstruction();
     TipTable.addInstruction(inst, Resources.get("iconRandom"));
     TipTable.addTip(returnTip);
-    return TipTable.addTip(stopTip);
+    TipTable.addTip(stopTip);
+    return TipTable.addTip(nopTip, Resources.get("iconNop"));
   };
 
   TipBasedVPL.prototype.clearInstructions = function() {

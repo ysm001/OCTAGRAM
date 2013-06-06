@@ -36,6 +36,14 @@ TipFactory = (function() {
     return new BranchTransitionCodeTip(code);
   };
 
+  TipFactory.createThinkTip = function(code) {
+    return new SingleTransitionCodeTip(code);
+  };
+
+  TipFactory.createNopTip = function() {
+    return TipFactory.createThinkTip(new NopTip());
+  };
+
   TipFactory.createInstructionTip = function(inst) {
     if (inst instanceof ActionInstruction) {
       return TipFactory.createActionTip(new CustomInstructionActionTip(inst));

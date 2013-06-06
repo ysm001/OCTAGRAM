@@ -7,6 +7,7 @@ class TipUtil
       else if code instanceof StopTip   then "stopTip" 
       else if code instanceof ActionTip then "actionTip" 
       else if code instanceof BranchTip then "branchTip" 
+      else if code instanceof ThinkTip  then "thinkTip" 
       else if code instanceof WallTip   then "wallTip" 
 
     Resources.get(assetName)
@@ -19,6 +20,7 @@ class TipUtil
      else if code instanceof ActionTip then TextResource.msg["action"] 
      else if code instanceof BranchTip then TextResource.msg["branch"]
      else if code instanceof WallTip   then TextResource.msg["wall"]
+     else if code instanceof NopTip    then TextResource.msg["nop"]
 
 class LayerUtil
   @setOrder : (obj, order) ->

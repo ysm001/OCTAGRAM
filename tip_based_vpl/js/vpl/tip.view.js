@@ -227,6 +227,10 @@ CodeTip = (function(_super) {
     return this.onDescriptionChanged();
   };
 
+  CodeTip.prototype.setIcon = function(icon) {
+    return this.icon = icon;
+  };
+
   CodeTip.prototype.onDescriptionChanged = function() {
     if (this.isSelected()) {
       return GlobalUI.help.setText(this.description);

@@ -50,10 +50,14 @@ class GlobalUI
 
 class TipTable
   @tips = []
-  @addTip : (tip) -> @tips.push(tip)
+  @addTip : (tip, icon) -> 
+    tip.setIcon(new Icon(icon)) if icon?
+    @tips.push(tip)
+
   @addInstruction : (inst, icon) ->
     tip = TipFactory.createInstructionTip(inst) 
-    tip.icon = new Icon(icon) if icon?
+    tip.setIcon(new Icon(icon)) if icon?
+    #tip.icon = new Icon(icon) if icon?
     TipTable.addTip(tip)
 
 class TipBasedVPL extends Game
@@ -69,10 +73,12 @@ class TipBasedVPL extends Game
   addPresetInstructions : () ->
     returnTip = TipFactory.createReturnTip(Environment.startX, Environment.startY)
     stopTip   = TipFactory.createStopTip() 
+    nopTip  = TipFactory.createNopTip()
     inst = new RandomBranchInstruction()
     TipTable.addInstruction(inst, Resources.get("iconRandom"))
     TipTable.addTip(returnTip)
     TipTable.addTip(stopTip)
+    TipTable.addTip(nopTip, Resources.get("iconNop"))
 
   clearInstructions : () -> @tips = []
 

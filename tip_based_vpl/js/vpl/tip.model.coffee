@@ -59,14 +59,24 @@ class SingleTransitionTip extends Tip
   clone : () -> @copy(new SingleTransitionTip(@getNext()))
 
 #####################################################
-# Nopチップ
-# 何もしないで次へ遷移するチップ
-# Nop, Return ,Startチップがこれに該当
+# Thinkチップ
+# 特殊チップ(nop, sub routine etc...)
 #####################################################
-class NopTip extends SingleTransitionTip 
+class ThinkTip extends SingleTransitionTip
+  constructor : (next) -> super(next)
+  clone : () -> @copy(new ThinkTip(@getNext()))
+
+#####################################################
+# Nopチップ
+#####################################################
+class NopTip extends ThinkTip
   constructor : (next) -> super(next)
   clone : () -> @copy(new NopTip(@getNext()))
 
+#####################################################
+# 何もしないで次へ遷移するチップ
+# Return ,Startチップがこれに該当
+#####################################################
 class StartTip extends SingleTransitionTip
   constructor : (next) -> super(next)
   clone : () -> @copy(new StartTip(@getNext()))

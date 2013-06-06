@@ -138,6 +138,8 @@ class CodeTip extends Sprite
     @description = desc
     @onDescriptionChanged()
 
+  setIcon : (icon) -> @icon = icon
+
   onDescriptionChanged : () ->
     if @isSelected() then GlobalUI.help.setText(@description)
 

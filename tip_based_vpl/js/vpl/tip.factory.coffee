@@ -13,6 +13,8 @@ class TipFactory
   @createEmptyTip   : (sx, sy) -> new CodeTip(new EmptyTip())
   @createActionTip  : (code) -> new SingleTransitionCodeTip(code)
   @createBranchTip  : (code) -> new BranchTransitionCodeTip(code)
+  @createThinkTip   : (code) -> new SingleTransitionCodeTip(code)
+  @createNopTip : () -> TipFactory.createThinkTip(new NopTip())
   @createInstructionTip : (inst) -> 
     if inst instanceof ActionInstruction
       TipFactory.createActionTip(new CustomInstructionActionTip(inst))

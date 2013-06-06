@@ -7,7 +7,7 @@ TipUtil = (function() {
   TipUtil.tipToImage = function(code) {
     var assetName;
 
-    assetName = code instanceof EmptyTip ? "emptyTip" : code instanceof ReturnTip ? "returnTip" : code instanceof StartTip ? "startTip" : code instanceof StopTip ? "stopTip" : code instanceof ActionTip ? "actionTip" : code instanceof BranchTip ? "branchTip" : code instanceof WallTip ? "wallTip" : void 0;
+    assetName = code instanceof EmptyTip ? "emptyTip" : code instanceof ReturnTip ? "returnTip" : code instanceof StartTip ? "startTip" : code instanceof StopTip ? "stopTip" : code instanceof ActionTip ? "actionTip" : code instanceof BranchTip ? "branchTip" : code instanceof ThinkTip ? "thinkTip" : code instanceof WallTip ? "wallTip" : void 0;
     return Resources.get(assetName);
   };
 
@@ -26,6 +26,8 @@ TipUtil = (function() {
       return TextResource.msg["branch"];
     } else if (code instanceof WallTip) {
       return TextResource.msg["wall"];
+    } else if (code instanceof NopTip) {
+      return TextResource.msg["nop"];
     }
   };
 
