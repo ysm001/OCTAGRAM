@@ -19,7 +19,6 @@ RandomBranchInstruction = (function(_super) {
     var r;
 
     r = Math.random();
-    console.log("if random val < " + this.threthold, r * 100 < this.threthold);
     return r * 100 < this.threthold;
   };
 

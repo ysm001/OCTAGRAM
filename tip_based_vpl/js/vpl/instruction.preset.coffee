@@ -9,7 +9,7 @@ class RandomBranchInstruction extends BranchInstruction
 
   action : () -> 
     r = Math.random()
-    console.log("if random val < " + @threthold, r*100 < @threthold)
+    #console.log("if random val < " + @threthold, r*100 < @threthold)
     r*100 < @threthold
 
   clone : () -> 
