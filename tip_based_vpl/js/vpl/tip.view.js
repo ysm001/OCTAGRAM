@@ -510,14 +510,14 @@ Icon = (function(_super) {
 })(Sprite);
 
 TipParameter = (function() {
-  function TipParameter(valueName, value, min, max, step) {
+  function TipParameter(valueName, value, min, max, step, id) {
     this.valueName = valueName;
     this.value = value;
     this.min = min;
     this.max = max;
     this.step = step;
+    this.id = id;
     this.text = "";
-    this.id = 0;
   }
 
   TipParameter.prototype.setValue = function(value) {
@@ -535,7 +535,7 @@ TipParameter = (function() {
   TipParameter.prototype.mkLabel = function() {};
 
   TipParameter.prototype.clone = function() {
-    return new TipParameter(this.valueName, this.value, this.min, this.max, this.step);
+    return this.copy(new TipParameter(this.valueName, this.value, this.min, this.max, this.step));
   };
 
   TipParameter.prototype.copy = function(obj) {
