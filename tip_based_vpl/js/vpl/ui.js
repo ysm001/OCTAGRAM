@@ -276,7 +276,7 @@ SelectorTip = (function(_super) {
     this.tip = tip;
     SelectorTip.__super__.constructor.call(this, this.tip.code);
     if (this.tip.icon != null) {
-      this.icon = this.tip.icon;
+      this.icon = this.tip.icon.clone();
       this.icon.parent = this;
     }
     this.description = this.tip.description;
@@ -297,6 +297,14 @@ SelectorTip = (function(_super) {
   SelectorTip.prototype.hideSelectedEffect = function() {
     return SelectorTip.selectedEffect.hide();
   };
+
+  /*
+  setIcon : (icon) ->
+    @icon = icon.clone()
+    @icon.parent = this
+    LayerUtil.setOrder(@icon, LayerOrder.frameUIIcon) if @icon?
+  */
+
 
   SelectorTip.prototype.doubleClicked = function() {};
 
@@ -399,6 +407,23 @@ SideTipSelector = (function(_super) {
 
   SideTipSelector.prototype.isDownScrollable = function() {
     return this.scrollPosition > 0;
+  };
+
+  SideTipSelector.prototype.show = function() {
+    var child, _i, _len, _ref, _results;
+
+    SideTipSelector.__super__.show.call(this);
+    _ref = GlobalUI.side.children;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      child = _ref[_i];
+      if (child.icon != null) {
+        _results.push(LayerUtil.setOrder(child.icon, LayerOrder.frameUIIcon));
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
   };
 
   SideTipSelector.prototype.scrollUp = function() {

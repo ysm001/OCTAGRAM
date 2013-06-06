@@ -87,7 +87,7 @@ class TipBasedVPL extends Game
     @addPresetInstructions()
 
     for tip in TipTable.tips then GlobalUI.side.addTip(tip)
-      
+
     GlobalUI.side.show()
 
   onload : () ->

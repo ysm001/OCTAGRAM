@@ -19,7 +19,8 @@ class RandomBranchInstruction extends BranchInstruction
 
   onParameterChanged : (parameter) -> @threthold = parameter.value
 
-  getIcon : () -> new Icon(Resources.get("iconRandom"))
-
+  getIcon : () -> 
+    new Icon(Resources.get("iconRandom"))
+    
   mkDescription : () ->
     @threthold + "%の確率で青矢印に進みます。</ br>" + (100 - @threthold) + "%の確率で赤矢印に進みます。"

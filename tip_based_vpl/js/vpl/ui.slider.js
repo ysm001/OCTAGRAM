@@ -93,10 +93,11 @@ Slider = (function(_super) {
   };
 
   Slider.prototype.valueToPosition = function(value) {
-    var range, x;
+    var range, val, x;
 
     range = this.max - this.min;
-    return x = this.x + this.width * (value / range);
+    val = value - this.min;
+    return x = this.x + this.width * (val / range);
   };
 
   Slider.prototype.positionToValue = function(x) {

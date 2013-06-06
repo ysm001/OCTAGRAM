@@ -163,8 +163,9 @@ class SelectorTip extends CodeTip
   @selectedEffect = null
   constructor : (@tip) ->
     super(@tip.code) 
+
     if @tip.icon?
-      @icon = @tip.icon
+      @icon = @tip.icon.clone()
       @icon.parent = this
 
     @description = @tip.description
@@ -176,6 +177,13 @@ class SelectorTip extends CodeTip
 
   showSelectedEffect : () -> SelectorTip.selectedEffect.show(this)
   hideSelectedEffect : () -> SelectorTip.selectedEffect.hide()
+
+  ###
+  setIcon : (icon) ->
+    @icon = icon.clone()
+    @icon.parent = this
+    LayerUtil.setOrder(@icon, LayerOrder.frameUIIcon) if @icon? 
+  ###
 
   doubleClicked : () -> 
   createGhost : () ->
@@ -219,6 +227,7 @@ class SideTipSelector extends UISpriteComponent
     uiTip.moveTo(@x + @padding, @y + @padding + @getTipNum() * tip.height)
     @hideOuter(uiTip)
     @addChild(uiTip)
+    #LayerUtil.setOrder(uiTip.icon, LayerOrder.frameUITip) if uiTip.icon
 
   isOut : (tip) ->
     tip.y < (@topArrow.y + @topArrow.height/2) || tip.y > (@bottomArrow.y - @bottomArrow.height/2)
@@ -234,6 +243,12 @@ class SideTipSelector extends UISpriteComponent
     rest = @getTipNum() - @scrollPosition
     rest > @capacity
   isDownScrollable : () -> @scrollPosition > 0
+
+  show : () ->
+    super()
+    for child in GlobalUI.side.children
+      if child.icon?
+        LayerUtil.setOrder(child.icon, LayerOrder.frameUIIcon)
 
   scrollUp : () ->
     if @isUpScrollable()

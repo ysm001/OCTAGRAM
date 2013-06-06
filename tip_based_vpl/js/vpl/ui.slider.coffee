@@ -73,7 +73,8 @@ class Slider extends UISpriteComponent
 
   valueToPosition : (value) ->
     range = @max - @min
-    x = @x + @width * (value / range) 
+    val = value - @min
+    x = @x + @width * (val / range) 
 
   positionToValue : (x) ->
     normValue = (x - @x) / @width
