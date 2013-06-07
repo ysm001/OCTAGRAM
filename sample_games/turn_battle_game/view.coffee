@@ -94,18 +94,21 @@ class Spot
                     robot.barrierMap[BulletType.NORMAL] = new NormalBarrierEffect()
                     point = plate.getAbsolutePos()
                     robot.parentNode.addChild new NormalEnpowerEffect(point.x, point.y)
+                    robot.onSetBarrier(BulletType.NORMAL)
             when Spot.TYPE_WIDE_BULLET
                 @effect = new SpotWideEffect(point.x, point.y + 5)
                 @resultFunc = (robot, plate) ->
                     robot.barrierMap[BulletType.WIDE] = new WideBarrierEffect()
                     point = plate.getAbsolutePos()
                     robot.parentNode.addChild new WideEnpowerEffect(point.x, point.y)
+                    robot.onSetBarrier(BulletType.WIDE)
             when Spot.TYPE_DUAL_BULLET
                 @effect = new SpotDualEffect(point.x, point.y + 5)
                 @resultFunc = (robot, plate) ->
                     robot.barrierMap[BulletType.DUAL] = new DualBarrierEffect()
                     point = plate.getAbsolutePos()
                     robot.parentNode.addChild new DualEnpowerEffect(point.x, point.y)
+                    robot.onSetBarrier(BulletType.DUAL)
 
     @createRandom: (point) ->
         type = Math.floor(Math.random() * (Spot.SIZE)) + 1
@@ -378,6 +381,21 @@ class RemainingBullets extends Group
             @size--
             @array[@size].frame = @type
 
+class StatusBarrier extends Sprite
+    @SIZE = 24
+    constructor: (x, y, @type) ->
+        super StatusBarrier.SIZE, StatusBarrier.SIZE
+        @x = x
+        @y = y
+        @frame = @type
+        @image = Game.instance.assets[R.ITEM.STATUS_BARRIER]
+
+    set: () ->
+        @frame = @type - 1
+
+    reset: () ->
+        @frame = @type
+
 class StatusBox extends Group
 
     constructor: (x,y) ->
@@ -395,10 +413,16 @@ class StatusBox extends Group
         #@label.x = 30
         #@label.y = 0
         #@addChild @label
+        @statusNormalBarrier = new StatusBarrier(30, 0, 1)
+        @statusWideBarrier = new StatusBarrier(55, 0, 3)
+        @statusDualBarrier = new StatusBarrier(80, 0, 5)
         @normalRemain = new RemainingBullets 30, 30, 1
         @wideRemain = new RemainingBullets 30, @normalRemain.y + RemainingBullet.SIZE, 3
         @dualRemain = new RemainingBullets 30, @wideRemain.y + RemainingBullet.SIZE, 5
 
+        @addChild @statusNormalBarrier
+        @addChild @statusWideBarrier
+        @addChild @statusDualBarrier
         @addChild @normalRemain
         @addChild @wideRemain
         @addChild @dualRemain

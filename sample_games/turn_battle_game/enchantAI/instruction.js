@@ -337,6 +337,7 @@ HoldBulletBranchInstruction = (function(_super) {
     }
     this._id = 0;
     this.bulletSize = 0;
+    this.icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32);
     parameter = new TipParameter(HoldBulletStr.colnum(HoldBulletStr.id.kind), 0, 0, 3, 1);
     parameter.id = HoldBulletStr.id.kind;
     this.addParameter(parameter);
@@ -376,6 +377,11 @@ HoldBulletBranchInstruction = (function(_super) {
 
   HoldBulletBranchInstruction.prototype.mkDescription = function() {
     return HoldBulletStr.description[this._id](this.bulletSize);
+  };
+
+  HoldBulletBranchInstruction.prototype.getIcon = function() {
+    this.icon.frame = this._id;
+    return this.icon;
   };
 
   return HoldBulletBranchInstruction;
@@ -450,6 +456,11 @@ SearchDirectBranchInstruction = (function(_super) {
     return stringObject.description[this._id](this.lenght);
   };
 
+  SearchDirectBranchInstruction.prototype.getIcon = function() {
+    this.icon.frame = this._id;
+    return this.icon;
+  };
+
   return SearchDirectBranchInstruction;
 
 })(BranchInstruction);
@@ -459,7 +470,7 @@ SearchDirectRobotBranchInstruction = (function(_super) {
 
   function SearchDirectRobotBranchInstruction(robot) {
     this.robot = robot;
-    this.icon = new Icon(Game.instance.assets[R.TIP.SEACH_ENEMY], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32);
     SearchDirectRobotBranchInstruction.__super__.constructor.call(this, this.robot, SearchingRobotDirectStr);
   }
 
@@ -476,11 +487,6 @@ SearchDirectRobotBranchInstruction = (function(_super) {
     return obj;
   };
 
-  SearchDirectRobotBranchInstruction.prototype.getIcon = function() {
-    this.icon.frame = this._id;
-    return this.icon;
-  };
-
   return SearchDirectRobotBranchInstruction;
 
 })(SearchDirectBranchInstruction);
@@ -490,7 +496,7 @@ SearchDirectItemBranchInstruction = (function(_super) {
 
   function SearchDirectItemBranchInstruction(robot) {
     this.robot = robot;
-    this.icon = new Icon(Game.instance.assets[R.TIP.SEACH_BARRIER], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32);
     SearchDirectItemBranchInstruction.__super__.constructor.call(this, this.robot, SearchingItemDirectStr);
   }
 
@@ -514,11 +520,6 @@ SearchDirectItemBranchInstruction = (function(_super) {
     obj._id = this._id;
     obj.lenght = this.lenght;
     return obj;
-  };
-
-  SearchDirectItemBranchInstruction.prototype.getIcon = function() {
-    this.icon.frame = this._id;
-    return this.icon;
   };
 
   return SearchDirectItemBranchInstruction;

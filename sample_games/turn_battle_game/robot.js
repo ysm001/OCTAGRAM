@@ -54,13 +54,16 @@ ItemQueue = (function() {
 BarrierMap = (function(_super) {
   __extends(BarrierMap, _super);
 
-  function BarrierMap() {}
+  function BarrierMap(robot) {
+    this.robot = robot;
+  }
 
   BarrierMap.prototype.get = function(key) {
     var ret;
 
     ret = this[key];
     delete this[key];
+    this.robot.onResetBarrier(key);
     return ret;
   };
 
@@ -93,7 +96,7 @@ Robot = (function(_super) {
     this.bltQueue = new ItemQueue([], 5);
     this.wideBltQueue = new ItemQueue([], 5);
     this.dualBltQueue = new ItemQueue([], 5);
-    this.barrierMap = new BarrierMap;
+    this.barrierMap = new BarrierMap(this);
     this.map = Map.instance;
     this.plateState = 0;
     parentNode.addChild(this);
@@ -112,6 +115,10 @@ Robot = (function(_super) {
   Robot.prototype.onAnimateComplete = function() {
     return this.animated = false;
   };
+
+  Robot.prototype.onSetBarrier = function(bulletType) {};
+
+  Robot.prototype.onResetBarrier = function(bulletType) {};
 
   Robot.prototype.onCmdComplete = function(id, ret) {
     var msgbox;
@@ -207,6 +214,34 @@ PlayerRobot = (function(_super) {
     this.image = this.game.assets[R.CHAR.PLAYER];
     this.plateState = Plate.STATE_PLAYER;
   }
+
+  PlayerRobot.prototype.onSetBarrier = function(bulletType) {
+    var statusBox;
+
+    statusBox = this.scene.views.footer.statusBox;
+    switch (bulletType) {
+      case BulletType.NORMAL:
+        return statusBox.statusNormalBarrier.set();
+      case BulletType.WIDE:
+        return statusBox.statusWideBarrier.set();
+      case BulletType.DUAL:
+        return statusBox.statusDualBarrier.set();
+    }
+  };
+
+  PlayerRobot.prototype.onResetBarrier = function(bulletType) {
+    var statusBox;
+
+    statusBox = this.scene.views.footer.statusBox;
+    switch (bulletType) {
+      case BulletType.NORMAL:
+        return statusBox.statusNormalBarrier.reset();
+      case BulletType.WIDE:
+        return statusBox.statusWideBarrier.reset();
+      case BulletType.DUAL:
+        return statusBox.statusDualBarrier.reset();
+    }
+  };
 
   PlayerRobot.prototype.onCmdComplete = function(id, ret) {
     var effect, plate, statusBox;

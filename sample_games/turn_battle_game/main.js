@@ -9,8 +9,8 @@ ViewGroup = (function(_super) {
   __extends(ViewGroup, _super);
 
   function ViewGroup(x, y, scene) {
-    this.scene = scene;
     ViewGroup.__super__.constructor.apply(this, arguments);
+    scene.addChild(this);
     this.x = x;
     this.y = y;
     this.background = new Background(0, 0);
@@ -87,8 +87,8 @@ RobotWorld = (function(_super) {
   function RobotWorld(x, y, scene) {
     var plate;
 
-    this.scene = scene;
     RobotWorld.__super__.constructor.apply(this, arguments);
+    scene.addChild(this);
     this.game = Game.instance;
     this.map = Map.instance;
     this.robots = [];
@@ -221,8 +221,6 @@ RobotScene = (function(_super) {
     RobotScene.__super__.constructor.call(this, this);
     this.views = new ViewGroup(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
     this.world = new RobotWorld(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
-    this.addChild(this.views);
-    this.addChild(this.world);
     this.world.initialize(this.views);
   }
 

@@ -62,13 +62,13 @@ generateTestCode = () ->
     rightDownTip = TipFactory.createInstructionTip(moveRightDownInstruction.clone())
 
     randomBranchInstruction = new RandomBranchInstruction()
-    randomBranchInstruction.threthold = 15
+    randomBranchInstruction.threthold = 25
     random1Tip = TipFactory.createInstructionTip(randomBranchInstruction)
     randomBranchInstruction = randomBranchInstruction.clone()
-    randomBranchInstruction.threthold = 30
+    randomBranchInstruction.threthold = 60
     random2Tip = TipFactory.createInstructionTip(randomBranchInstruction)
     randomBranchInstruction = randomBranchInstruction.clone()
-    randomBranchInstruction.threthold = 75
+    randomBranchInstruction.threthold = 80
     random3Tip = TipFactory.createInstructionTip(randomBranchInstruction)
     randomBranchInstruction = randomBranchInstruction.clone()
     randomBranchInstruction.threthold = 90

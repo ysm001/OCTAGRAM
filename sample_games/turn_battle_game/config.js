@@ -70,7 +70,8 @@ Config.R = (function() {
     NORMAL_BULLET: "" + R.RESOURCE_DIR + "/item/normal_bullet_item.png",
     WIDE_BULLET: "" + R.RESOURCE_DIR + "/item/wide_bullet_item.png",
     DUAL_BULLET: "" + R.RESOURCE_DIR + "/item/dual_bullet_item.png",
-    STATUS_BULLET: "" + R.RESOURCE_DIR + "/item/status_bullet.png"
+    STATUS_BULLET: "" + R.RESOURCE_DIR + "/item/status_bullet.png",
+    STATUS_BARRIER: "" + R.RESOURCE_DIR + "/item/status_barrier.png"
   };
 
   R.TIP = {
@@ -78,9 +79,10 @@ Config.R = (function() {
     LIFE: "" + R.RESOURCE_DIR + "/tip/arrow.png",
     PICKUP_BULLET: "" + R.RESOURCE_DIR + "/tip/plus_bullet.png",
     SHOT_BULLET: "" + R.RESOURCE_DIR + "/tip/shot_bullet.png",
-    SEACH_BARRIER: "" + R.RESOURCE_DIR + "/tip/search_barrier.png",
-    SEACH_ENEMY: "" + R.RESOURCE_DIR + "/tip/search_enemy.png",
-    CURRENT_DIRECT: "" + R.RESOURCE_DIR + "/tip/arrow.png"
+    SEARCH_BARRIER: "" + R.RESOURCE_DIR + "/tip/search_barrier.png",
+    SEARCH_ENEMY: "" + R.RESOURCE_DIR + "/tip/search_enemy.png",
+    CURRENT_DIRECT: "" + R.RESOURCE_DIR + "/tip/arrow.png",
+    REST_BULLET: "" + R.RESOURCE_DIR + "/tip/rest_bullet.png"
   };
 
   return R;

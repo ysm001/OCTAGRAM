@@ -2,8 +2,9 @@
 R = Config.R
 
 class ViewGroup extends Group
-    constructor: (x, y, @scene) ->
+    constructor: (x, y, scene) ->
         super
+        scene.addChild @
         @x = x
         @y = y
         @background = new Background 0, 0
@@ -47,8 +48,9 @@ class TurnSwitcher
                 @i = 0 if @i == @world.robots.length
 
 class RobotWorld extends Group
-    constructor: (x, y, @scene) ->
+    constructor: (x, y, scene) ->
         super
+        scene.addChild @
         @game = Game.instance
         @map = Map.instance
         @robots = []
@@ -134,9 +136,6 @@ class RobotScene extends Scene
         super @
         @views = new ViewGroup Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
         @world = new RobotWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
-        @addChild @views
-        @addChild @world
-
         @world.initialize @views
 
     onenterframe: ->

@@ -231,6 +231,7 @@ class HoldBulletBranchInstruction extends BranchInstruction
             ]
         @_id = 0
         @bulletSize = 0
+        @icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32)
         # タイトル, 初期値, 最小値, 最大値, 増大値
         parameter = new TipParameter(HoldBulletStr.colnum(HoldBulletStr.id.kind), 0, 0, 3, 1)
         parameter.id = HoldBulletStr.id.kind
@@ -262,6 +263,10 @@ class HoldBulletBranchInstruction extends BranchInstruction
 
     mkDescription: () ->
         HoldBulletStr.description[@_id](@bulletSize)
+
+    getIcon: () ->
+        @icon.frame = @_id
+        return @icon
 
 class SearchDirectBranchInstruction extends BranchInstruction
 
@@ -315,10 +320,14 @@ class SearchDirectBranchInstruction extends BranchInstruction
     mkDescription: () ->
         stringObject.description[@_id](@lenght)
 
+    getIcon: () ->
+        @icon.frame = @_id
+        return @icon
+
 class SearchDirectRobotBranchInstruction extends SearchDirectBranchInstruction
 
     constructor: (@robot) ->
-        @icon = new Icon(Game.instance.assets[R.TIP.SEACH_ENEMY], 32, 32)
+        @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
         super @robot, SearchingRobotDirectStr
 
     action : () ->
@@ -330,14 +339,10 @@ class SearchDirectRobotBranchInstruction extends SearchDirectBranchInstruction
         obj.lenght = @lenght
         obj
 
-    getIcon: () ->
-        @icon.frame = @_id
-        return @icon
-
 class SearchDirectItemBranchInstruction extends SearchDirectBranchInstruction
 
     constructor: (@robot) ->
-        @icon = new Icon(Game.instance.assets[R.TIP.SEACH_BARRIER], 32, 32)
+        @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32)
         super @robot, SearchingItemDirectStr
 
     action : () ->
@@ -351,10 +356,6 @@ class SearchDirectItemBranchInstruction extends SearchDirectBranchInstruction
         obj._id = @_id
         obj.lenght = @lenght
         obj
-
-    getIcon: () ->
-        @icon.frame = @_id
-        return @icon
 
 class CurrentDirectBranchInstruction extends BranchInstruction
 

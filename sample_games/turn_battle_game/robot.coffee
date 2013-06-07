@@ -28,11 +28,12 @@ class ItemQueue
 
 class BarrierMap extends Object
 
-    constructor: () ->
+    constructor: (@robot) ->
 
     get:(key) ->
         ret = @[key]
         delete @[key]
+        @robot.onResetBarrier(key)
         return ret
 
     isset:(key) ->
@@ -50,7 +51,7 @@ class Robot extends Sprite
         @bltQueue = new ItemQueue [], 5
         @wideBltQueue = new ItemQueue [], 5
         @dualBltQueue = new ItemQueue [], 5
-        @barrierMap = new BarrierMap
+        @barrierMap = new BarrierMap @
         @map = Map.instance
         @plateState = 0
         parentNode.addChild @
@@ -67,6 +68,10 @@ class Robot extends Sprite
 
     onAnimateComplete: () =>
         @animated = false
+
+    onSetBarrier: (bulletType) ->
+
+    onResetBarrier: (bulletType) ->
 
     onCmdComplete: (id, ret) ->
         msgbox = @scene.views.msgbox
@@ -140,6 +145,26 @@ class PlayerRobot extends Robot
         @name = R.String.PLAYER
         @image = @game.assets[R.CHAR.PLAYER]
         @plateState = Plate.STATE_PLAYER
+
+    onSetBarrier: (bulletType) ->
+        statusBox = @scene.views.footer.statusBox
+        switch bulletType
+            when BulletType.NORMAL
+                statusBox.statusNormalBarrier.set()
+            when BulletType.WIDE
+                statusBox.statusWideBarrier.set()
+            when BulletType.DUAL
+                statusBox.statusDualBarrier.set()
+
+    onResetBarrier: (bulletType) ->
+        statusBox = @scene.views.footer.statusBox
+        switch bulletType
+            when BulletType.NORMAL
+                statusBox.statusNormalBarrier.reset()
+            when BulletType.WIDE
+                statusBox.statusWideBarrier.reset()
+            when BulletType.DUAL
+                statusBox.statusDualBarrier.reset()
 
     onCmdComplete: (id, ret) ->
         super id, ret
