@@ -165,8 +165,10 @@ CodeTip = (function(_super) {
     CodeTip.__super__.constructor.call(this, TipUtil.tipToImage(this.code));
     this.immutable = this.code instanceof WallTip || this.code instanceof StartTip;
     this.description = this.code.mkDescription();
-    this.icon = this.code.getIcon != null ? this.code.getIcon() : null;
+    this.isTransitionSelect = false;
+    this.icon = this.getIcon();
     this.dragMode = false;
+    this.isFirstClick = false;
     CodeTip.clonedTip = null;
     this.dragStartX = 0;
     this.dragStartY = 0;
@@ -177,21 +179,29 @@ CodeTip = (function(_super) {
       this.icon.fitPosition();
     }
     this.addEventListener('touchstart', function(e) {
-      _this.dragMode = false;
-      return _this.select();
+      _this.isTransitionSelect = !_this.isInnerTip(e.x, e.y);
+      if (!_this.isTransitionSelect) {
+        if (_this.dragMode && (CodeTip.clonedTip != null)) {
+          CodeTip.clonedTip.hide();
+        }
+        _this.dragMode = false;
+        return _this.select();
+      }
     });
     this.addEventListener('touchmove', function(e) {
-      if (!_this.dragMode && !_this.immutable) {
-        _this.dragMode = true;
-        _this.dragStart(e);
+      if (!_this.isTransitionSelect) {
+        if (!_this.dragMode && !_this.immutable) {
+          _this.dragMode = true;
+          _this.dragStart(e);
+        }
+        return _this.dragged(e);
       }
-      return _this.dragged(e);
     });
     this.addEventListener('touchend', function(e) {
       if (!_this.immutable) {
-        if (!_this.dragMode && _this.isSelected()) {
+        if (!_this.dragMode && _this.isSelected() && !_this.isFirstClick) {
           _this.doubleClicked();
-        } else {
+        } else if (_this.dragMode) {
           _this.dragEnd(e);
         }
       }
@@ -204,8 +214,21 @@ CodeTip = (function(_super) {
     LayerUtil.setOrder(this, LayerOrder.tip);
   }
 
+  CodeTip.prototype.isInnerTip = function(x, y) {
+    var half, pos, xe, xs, ye, ys;
+
+    pos = this.getAbsolutePosition();
+    half = this.getWidth();
+    xs = pos.x;
+    xe = pos.x + half;
+    ys = pos.y;
+    ye = pos.y + half;
+    return x > xs && x < xe && y > ys && y < ye;
+  };
+
   CodeTip.prototype.select = function() {
     GlobalUI.help.setText(this.description);
+    this.isFirstClick = !this.isSelected();
     return this.showSelectedEffect();
   };
 
@@ -262,6 +285,7 @@ CodeTip = (function(_super) {
   CodeTip.prototype.dragEnd = function(e) {
     var evt, pos;
 
+    this.dragMode = false;
     if (CodeTip.clonedTip != null) {
       evt = document.createEvent('UIEvent', false);
       evt.initUIEvent('copyTip', true, true);
@@ -275,7 +299,7 @@ CodeTip = (function(_super) {
   };
 
   CodeTip.prototype.showConfigWindow = function() {
-    var backup, content, i, param, _i, _len, _ref1,
+    var backup, content, i, onValueChanged, param, _i, _len, _ref1,
       _this = this;
 
     if (this.parameters != null) {
@@ -285,6 +309,11 @@ CodeTip = (function(_super) {
       for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
         param = _ref1[i];
         backup[i] = param.getValue();
+        onValueChanged = param.onValueChanged;
+        param.onValueChanged = function() {
+          onValueChanged();
+          return _this.setDescription(_this.code.mkDescription());
+        };
         content.addParameter(param);
       }
       GlobalUI.configPanel.setContent(content);
@@ -293,7 +322,7 @@ CodeTip = (function(_super) {
         var _j, _len1, _ref2, _results;
 
         if (closedWithOK) {
-          _this.updateIcon();
+          _this.icon = _this.getIcon();
           return _this.setDescription(_this.code.mkDescription());
         } else {
           _ref2 = _this.parameters;
@@ -309,7 +338,7 @@ CodeTip = (function(_super) {
   };
 
   CodeTip.prototype.isSelected = function() {
-    return CodeTip.selectedInstance === this;
+    return CodeTip.selectedEffect.parentNode === this;
   };
 
   CodeTip.prototype.showExecutionEffect = function() {
@@ -334,16 +363,11 @@ CodeTip = (function(_super) {
     return (this.code.isAsynchronous != null) && this.code.isAsynchronous();
   };
 
-  CodeTip.prototype.updateIcon = function() {
+  CodeTip.prototype.getIcon = function() {
     var icon;
 
-    if (this.icon != null) {
-      this.icon.hide();
-    }
     this.icon = this.code.getIcon != null ? this.code.getIcon() : (icon = TipUtil.tipToIcon(this.code), icon != null ? new Icon(icon) : null);
-    if (this.icon != null) {
-      return this.icon.show(this);
-    }
+    return this.icon;
   };
 
   CodeTip.prototype.setDescription = function(desc) {
@@ -354,10 +378,6 @@ CodeTip = (function(_super) {
   CodeTip.prototype.setIcon = function(icon) {
     this.icon = icon;
     return this.icon.fitPosition();
-  };
-
-  CodeTip.prototype.getIcon = function(icon) {
-    return this.icon;
   };
 
   CodeTip.prototype.onDescriptionChanged = function() {

@@ -39,12 +39,13 @@ class Cpu extends Group
   replaceTip : (newTip, xidx, yidx) ->
     if !@getTip(xidx, yidx).immutable
       oldTip = @getTip(xidx, yidx) 
+      selected = oldTip.isSelected()
       oldTip.hide(this)
 
       newTip.moveTo(oldTip.x, oldTip.y)
       newTip.setIndex(xidx, yidx)
       newTip.show(this)
-      CodeTip.selectedEffect.parent = newTip if CodeTip.selectedEffect.parent == oldTip
+      if selected then newTip.select()
 
       @setTip(xidx, yidx, newTip)
       true

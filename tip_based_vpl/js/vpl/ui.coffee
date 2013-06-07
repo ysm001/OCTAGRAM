@@ -363,7 +363,7 @@ class HelpPanel extends Group
     Game.instance.currentScene.addChild(@label)
   ###
 
-  setText : (text) -> @label.text = @mkMsgHtml(text)
+  setText : (text) -> @label.text = text
   getText : () -> @label.text
 
 class Frame extends Group

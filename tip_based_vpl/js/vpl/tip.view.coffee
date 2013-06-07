@@ -79,12 +79,14 @@ class CodeTip extends SpriteGroup#Sprite
     super(TipUtil.tipToImage(@code))
     @immutable   = @code instanceof WallTip || @code instanceof StartTip
     @description = @code.mkDescription()#TipUtil.tipToMessage(@code) 
+    @isTransitionSelect = false
     
     #super(image.width, image.height)
     #@image = image 
-    @icon = if @code.getIcon? then @code.getIcon() else null
+    @icon = @getIcon()#if @code.getIcon? then @code.getIcon() else null
 
     @dragMode = false
+    @isFirstClick = false
     CodeTip.clonedTip = null
     @dragStartX = 0
     @dragStartY = 0
@@ -95,19 +97,26 @@ class CodeTip extends SpriteGroup#Sprite
       @icon.fitPosition()
 
     @addEventListener('touchstart', (e) =>
-      @dragMode = false
-      @select()
+      @isTransitionSelect = !@isInnerTip(e.x, e.y)
+      if !@isTransitionSelect
+        if @dragMode && CodeTip.clonedTip? 
+          CodeTip.clonedTip.hide()
+        @dragMode = false
+        @select()
     )
+
+    # ここで、チップの範囲外だったらdragしないようにする
     @addEventListener('touchmove', (e) => 
-      if !@dragMode && !@immutable
-        @dragMode = true
-        @dragStart(e)
-      @dragged(e) 
+      if !@isTransitionSelect
+        if !@dragMode && !@immutable 
+          @dragMode = true
+          @dragStart(e)
+        @dragged(e) 
     )
     @addEventListener('touchend', (e) => 
       if !@immutable
-        if !@dragMode && @isSelected() then @doubleClicked()
-        else @dragEnd(e)
+        if !@dragMode && @isSelected() && !@isFirstClick then @doubleClicked()
+        else if @dragMode then @dragEnd(e)
       CodeTip.selectedInstance = this
     )
 
@@ -118,8 +127,18 @@ class CodeTip extends SpriteGroup#Sprite
 
     LayerUtil.setOrder(this, LayerOrder.tip)
 
+  isInnerTip : (x, y) ->
+    pos = @getAbsolutePosition()
+    half = @getWidth()
+    xs = pos.x
+    xe = pos.x + half
+    ys = pos.y
+    ye = pos.y + half
+    x>xs && x<xe && y>ys && y<ye
+
   select : () =>
     GlobalUI.help.setText(@description)
+    @isFirstClick = !@isSelected()
     @showSelectedEffect()
 
   unselect : () ->
@@ -141,18 +160,22 @@ class CodeTip extends SpriteGroup#Sprite
     tip
 
   dragStart : (e) -> 
+    #console.log "start"
     CodeTip.clonedTip = @createGhost()
     CodeTip.clonedTip.show(@parentNode)
     @dragStartX = e.x
     @dragStartY = e.y
 
   dragged : (e) -> 
+    #console.log "dragged"
     if CodeTip.clonedTip?
       dx = e.x - @dragStartX
       dy = e.y - @dragStartY
       CodeTip.clonedTip.moveTo(@x + dx, @y + dy)
 
   dragEnd : (e) -> 
+    #console.log "end"
+    @dragMode = false
     if CodeTip.clonedTip?
       evt = document.createEvent('UIEvent', false)
       evt.initUIEvent('copyTip', true, true)
@@ -170,6 +193,11 @@ class CodeTip extends SpriteGroup#Sprite
       
       for param, i in @parameters
         backup[i] = param.getValue()
+        onValueChanged = param.onValueChanged
+        param.onValueChanged = () =>
+          onValueChanged()
+          @setDescription(@code.mkDescription())
+
         content.addParameter(param)
 
       GlobalUI.configPanel.setContent(content)
@@ -177,13 +205,16 @@ class CodeTip extends SpriteGroup#Sprite
 
       GlobalUI.configPanel.onClosed = (closedWithOK) =>
         if closedWithOK 
-          @updateIcon() 
+          #@updateIcon() 
+          @icon = @getIcon()
           @setDescription(@code.mkDescription())
         else 
           for param, i in @parameters
             param.setValue(backup[i])
 
-  isSelected : () -> CodeTip.selectedInstance == this
+  isSelected : () -> 
+    #CodeTip.selectedInstance == this
+    CodeTip.selectedEffect.parentNode == this
 
   showExecutionEffect : () -> @executionEffect.show(this)
   hideExecutionEffect : () -> @executionEffect.hide()
@@ -193,16 +224,13 @@ class CodeTip extends SpriteGroup#Sprite
 
   isAsynchronous : () -> @code.isAsynchronous? && @code.isAsynchronous()
 
-  updateIcon : () ->
-    @icon.hide() if @icon?
-
+  getIcon : () ->
     @icon = 
       if @code.getIcon? then @code.getIcon() 
       else 
         icon = TipUtil.tipToIcon(@code)
         if icon? then new Icon(icon) else null
-
-    @icon.show(this) if @icon?
+    @icon
 
   setDescription : (desc) ->
     @description = desc
@@ -212,7 +240,7 @@ class CodeTip extends SpriteGroup#Sprite
     @icon = icon
     @icon.fitPosition()
 
-  getIcon : (icon) -> @icon
+  #getIcon : (icon) -> @icon
 
   onDescriptionChanged : () ->
     if @isSelected() then GlobalUI.help.setText(@description)

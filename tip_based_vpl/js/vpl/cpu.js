@@ -55,16 +55,17 @@ Cpu = (function(_super) {
   };
 
   Cpu.prototype.replaceTip = function(newTip, xidx, yidx) {
-    var oldTip;
+    var oldTip, selected;
 
     if (!this.getTip(xidx, yidx).immutable) {
       oldTip = this.getTip(xidx, yidx);
+      selected = oldTip.isSelected();
       oldTip.hide(this);
       newTip.moveTo(oldTip.x, oldTip.y);
       newTip.setIndex(xidx, yidx);
       newTip.show(this);
-      if (CodeTip.selectedEffect.parent === oldTip) {
-        CodeTip.selectedEffect.parent = newTip;
+      if (selected) {
+        newTip.select();
       }
       this.setTip(xidx, yidx, newTip);
       return true;

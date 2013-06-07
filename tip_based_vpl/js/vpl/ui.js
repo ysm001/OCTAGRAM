@@ -456,7 +456,7 @@ HelpPanel = (function(_super) {
 
 
   HelpPanel.prototype.setText = function(text) {
-    return this.label.text = this.mkMsgHtml(text);
+    return this.label.text = text;
   };
 
   HelpPanel.prototype.getText = function() {
