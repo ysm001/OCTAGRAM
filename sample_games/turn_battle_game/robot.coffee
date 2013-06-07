@@ -57,9 +57,10 @@ class Robot extends Sprite
         pos = @currentPlate.getAbsolutePos()
         @x = pos.x
         @y = pos.y
+        @plateState = 0
     
     onViewUpdate: (views) ->
-        @prevPlate.setNormal()
+        @prevPlate.onRobotAway(@)
         @currentPlate.onRobotRide(@)
 
     onHpReduce: (views) ->
@@ -130,6 +131,7 @@ class PlayerRobot extends Robot
         super PlayerRobot.WIDTH, PlayerRobot.HEIGHT
         @name = R.String.PLAYER
         @image = @game.assets[R.CHAR.PLAYER]
+        @plateState = Plate.STATE_PLAYER
 
     onCmdComplete: (id, ret) ->
         super id, ret
@@ -167,6 +169,7 @@ class EnemyRobot extends Robot
         super EnemyRobot.SIZE, EnemyRobot.SIZE
         @name = R.String.ENEMY
         @image = @game.assets[R.CHAR.ENEMY]
+        @plateState = Plate.STATE_ENEMY
 
     onHpReduce: (views) ->
         hpBar = @scene.views.enemyHpBar

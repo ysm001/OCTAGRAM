@@ -100,10 +100,11 @@ Robot = (function(_super) {
     pos = this.currentPlate.getAbsolutePos();
     this.x = pos.x;
     this.y = pos.y;
+    this.plateState = 0;
   }
 
   Robot.prototype.onViewUpdate = function(views) {
-    this.prevPlate.setNormal();
+    this.prevPlate.onRobotAway(this);
     return this.currentPlate.onRobotRide(this);
   };
 
@@ -194,6 +195,7 @@ PlayerRobot = (function(_super) {
     PlayerRobot.__super__.constructor.call(this, PlayerRobot.WIDTH, PlayerRobot.HEIGHT);
     this.name = R.String.PLAYER;
     this.image = this.game.assets[R.CHAR.PLAYER];
+    this.plateState = Plate.STATE_PLAYER;
   }
 
   PlayerRobot.prototype.onCmdComplete = function(id, ret) {
@@ -251,6 +253,7 @@ EnemyRobot = (function(_super) {
     EnemyRobot.__super__.constructor.call(this, EnemyRobot.SIZE, EnemyRobot.SIZE);
     this.name = R.String.ENEMY;
     this.image = this.game.assets[R.CHAR.ENEMY];
+    this.plateState = Plate.STATE_ENEMY;
   }
 
   EnemyRobot.prototype.onHpReduce = function(views) {

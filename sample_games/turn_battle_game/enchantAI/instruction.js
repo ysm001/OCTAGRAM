@@ -400,11 +400,33 @@ SearchingDirectBranchInstruction = (function(_super) {
   };
 
   SearchingDirectBranchInstruction.prototype.onParameterChanged = function(parameter) {
+    var _this = this;
+
     if (parameter.id === SearchingDirectStr.id.direct) {
-      return this._id = parameter.value;
+      Map.instance.eachPlate(this.robot.currentPlate, direct[this._id], function(plate, i) {
+        if (i > 0) {
+          return plate.setState(Plate.STATE_NORMAL);
+        }
+      });
+      this._id = parameter.value;
     } else if (parameter.id === SearchingDirectStr.id.lenght) {
-      return this.lenght = parameter.value;
+      this.lenght = parameter.value;
     }
+    return Map.instance.eachPlate(this.robot.currentPlate, direct[this._id], function(plate, i) {
+      if (i > 0 && i <= _this.lenght) {
+        return plate.setState(Plate.STATE_SELECTED);
+      } else if (i > 0 && i > _this.lenght) {
+        return plate.setState(Plate.STATE_NORMAL);
+      }
+    });
+  };
+
+  SearchingDirectBranchInstruction.prototype.onParameterComplete = function(parameter) {
+    return Map.instance.eachPlate(this.robot.currentPlate, direct[this._id], function(plate, i) {
+      if (i > 0 && i < this.lenght) {
+        return plate.setState(Plate.STATE_NORMAL);
+      }
+    });
   };
 
   SearchingDirectBranchInstruction.prototype.mkLabel = function(parameter) {

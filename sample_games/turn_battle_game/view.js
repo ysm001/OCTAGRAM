@@ -204,6 +204,14 @@ Plate = (function(_super) {
 
   Plate.WIDTH = 64;
 
+  Plate.STATE_NORMAL = 0;
+
+  Plate.STATE_PLAYER = 1;
+
+  Plate.STATE_ENEMY = 2;
+
+  Plate.STATE_SELECTED = 3;
+
   function Plate(x, y, ix, iy) {
     this.ix = ix;
     this.iy = iy;
@@ -213,21 +221,21 @@ Plate = (function(_super) {
     this.lock = false;
     this.image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE];
     this.spotEnabled = false;
+    this.pravState = Plate.STATE_NORMAL;
   }
 
-  Plate.prototype.setPlayerSelected = function() {
-    this.frame = 1;
-    return this.lock = true;
+  Plate.prototype.setState = function(state) {
+    this.pravState = this.frame;
+    this.frame = state;
+    if (Plate.STATE_PLAYER || Plate.STATE_ENEMY) {
+      return this.lock = true;
+    } else {
+      return this.lock = false;
+    }
   };
 
-  Plate.prototype.setEnemySelected = function() {
-    this.frame = 2;
-    return this.lock = true;
-  };
-
-  Plate.prototype.setNormal = function() {
-    this.lock = false;
-    return this.frame = 0;
+  Plate.prototype.setPrevState = function() {
+    return this.setState(this.prevState);
   };
 
   Plate.prototype.getAbsolutePos = function() {
@@ -251,12 +259,12 @@ Plate = (function(_super) {
     }
   };
 
+  Plate.prototype.onRobotAway = function(robot) {
+    return this.setState(Plate.STATE_NORMAL);
+  };
+
   Plate.prototype.onRobotRide = function(robot) {
-    if (robot instanceof PlayerRobot) {
-      this.setPlayerSelected();
-    } else if (robot instanceof EnemyRobot) {
-      this.setEnemySelected();
-    }
+    this.setState(robot.plateState);
     if (this.spotEnabled === true) {
       this.parentNode.removeChild(this.spot.effect);
       this.spot.resultFunc(robot, this);
@@ -321,7 +329,24 @@ Map = (function(_super) {
   }
 
   Map.prototype.getPlate = function(x, y) {
-    return this.plateMatrix[x][y];
+    return this.plateMatrix[y][x];
+  };
+
+  Map.prototype.eachPlate = function(plate, direct, func) {
+    var i, ret, _results;
+
+    if (direct == null) {
+      direct = Direct.RIGHT;
+    }
+    ret = plate;
+    i = 0;
+    _results = [];
+    while (ret != null) {
+      func(ret, i);
+      ret = this.getTargetPoision(ret, direct);
+      _results.push(i++);
+    }
+    return _results;
   };
 
   Map.prototype.isExistObject = function(plate, direct, lenght) {

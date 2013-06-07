@@ -55,7 +55,7 @@ class RobotWorld extends Group
         @bullets = []
         @items = []
         @player = new PlayerRobot
-        plate = @map.getPlate(5,7)
+        plate = @map.getPlate(6,4)
         pos = plate.getAbsolutePos()
         @player.currentPlate = plate
         @player.moveTo(pos.x, pos.y)

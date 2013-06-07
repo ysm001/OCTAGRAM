@@ -281,9 +281,22 @@ class SearchingDirectBranchInstruction extends BranchInstruction
 
     onParameterChanged : (parameter) ->
         if parameter.id == SearchingDirectStr.id.direct
+            Map.instance.eachPlate @robot.currentPlate, direct[@_id], (plate, i) =>
+                plate.setState Plate.STATE_NORMAL if i > 0
             @_id = parameter.value
         else if parameter.id == SearchingDirectStr.id.lenght
             @lenght = parameter.value
+        Map.instance.eachPlate @robot.currentPlate, direct[@_id], (plate, i) =>
+            if i > 0 and i <= @lenght
+                plate.setState Plate.STATE_SELECTED
+            else if i > 0 and i > @lenght
+                plate.setState Plate.STATE_NORMAL
+
+
+    onParameterComplete : (parameter) ->
+        Map.instance.eachPlate @robot.currentPlate, direct[@_id], (plate, i) ->
+            if i > 0 and i < @lenght
+                plate.setState Plate.STATE_NORMAL
 
     mkLabel: (parameter) ->
         if parameter.id == SearchingDirectStr.id.direct

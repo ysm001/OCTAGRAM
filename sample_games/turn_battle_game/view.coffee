@@ -117,6 +117,11 @@ class Spot
 class Plate extends Sprite
     @HEIGHT = 74
     @WIDTH = 64
+    @STATE_NORMAL = 0
+    @STATE_PLAYER = 1
+    @STATE_ENEMY = 2
+    @STATE_SELECTED = 3
+    
     constructor: (x, y, @ix, @iy) ->
         super Plate.WIDTH, Plate.HEIGHT
         @x = x
@@ -124,18 +129,18 @@ class Plate extends Sprite
         @lock = false
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE]
         @spotEnabled = false
+        @pravState = Plate.STATE_NORMAL
 
-    setPlayerSelected: () ->
-        @frame = 1
-        @lock = true
+    setState: (state) ->
+        @pravState = @frame
+        @frame = state
+        if Plate.STATE_PLAYER or Plate.STATE_ENEMY
+            @lock = true
+        else
+            @lock = false
 
-    setEnemySelected: () ->
-        @frame = 2
-        @lock = true
-
-    setNormal: () ->
-        @lock = false
-        @frame = 0
+    setPrevState: () ->
+        @setState(@prevState)
 
     getAbsolutePos: () ->
         i = @parentNode
@@ -153,11 +158,11 @@ class Plate extends Sprite
             @spot = new Spot type, @
             @parentNode.addChild @spot.effect
 
+    onRobotAway: (robot) ->
+        @setState(Plate.STATE_NORMAL)
+
     onRobotRide: (robot) ->
-        if robot instanceof PlayerRobot
-            @setPlayerSelected()
-        else if robot instanceof EnemyRobot
-            @setEnemySelected()
+        @setState(robot.plateState)
         if @spotEnabled is true
             @parentNode.removeChild @spot.effect
             @spot.resultFunc robot, @
@@ -202,7 +207,15 @@ class Map extends Group
         @height = (Map.HEIGHT-1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 16
 
     getPlate: (x, y) ->
-        return @plateMatrix[x][y]
+        return @plateMatrix[y][x]
+
+    eachPlate: (plate, direct=Direct.RIGHT, func) ->
+        ret = plate
+        i = 0
+        while ret?
+            func(ret, i)
+            ret = @getTargetPoision(ret, direct)
+            i++
 
     isExistObject: (plate, direct=Direct.RIGHT, lenght) ->
         ret = plate

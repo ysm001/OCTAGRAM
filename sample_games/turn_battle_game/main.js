@@ -95,7 +95,7 @@ RobotWorld = (function(_super) {
     this.bullets = [];
     this.items = [];
     this.player = new PlayerRobot;
-    plate = this.map.getPlate(5, 7);
+    plate = this.map.getPlate(6, 4);
     pos = plate.getAbsolutePos();
     this.player.currentPlate = plate;
     this.player.moveTo(pos.x, pos.y);
