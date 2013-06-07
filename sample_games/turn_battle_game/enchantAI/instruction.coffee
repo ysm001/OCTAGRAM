@@ -6,6 +6,8 @@ HpStr = R.String.INSTRUCTION.Hp
 HoldBulletStr = R.String.INSTRUCTION.HoldBulleft
 SearchingRobotDirectStr = R.String.INSTRUCTION.SearchingRobotDirect
 SearchingItemDirectStr = R.String.INSTRUCTION.SearchingItemDirect
+CurrentDirectStr =  R.String.INSTRUCTION.CurrentDirect
+Debug.dump CurrentDirectStr
 
 class RobotInstruction
     @MOVE = "move"
@@ -248,16 +250,16 @@ class HoldBulletBranchInstruction extends BranchInstruction
 
 class SearchDirectBranchInstruction extends BranchInstruction
 
-    direct = [
-        Direct.RIGHT
-        Direct.RIGHT | Direct.UP
-        Direct.RIGHT | Direct.DOWN
-        Direct.LEFT
-        Direct.LEFT | Direct.UP
-        Direct.LEFT | Direct.DOWN
-    ]
     stringObject = null
     constructor: (@robot, stringObj) ->
+        @direct = [
+            Direct.RIGHT
+            Direct.RIGHT | Direct.UP
+            Direct.RIGHT | Direct.DOWN
+            Direct.LEFT
+            Direct.LEFT | Direct.UP
+            Direct.LEFT | Direct.DOWN
+        ]
         super
         stringObject = stringObj
         @_id = 0
@@ -273,19 +275,19 @@ class SearchDirectBranchInstruction extends BranchInstruction
 
     onParameterChanged : (parameter) ->
         if parameter.id == stringObject.id.direct
-            Map.instance.eachPlate @robot.currentPlate, direct[@_id], (plate, i) =>
+            Map.instance.eachPlate @robot.currentPlate, @direct[@_id], (plate, i) =>
                 plate.setState Plate.STATE_NORMAL if i > 0
             @_id = parameter.value
         else if parameter.id == stringObject.id.lenght
             @lenght = parameter.value
-        Map.instance.eachPlate @robot.currentPlate, direct[@_id], (plate, i) =>
+        Map.instance.eachPlate @robot.currentPlate, @direct[@_id], (plate, i) =>
             if i > 0 and i <= @lenght
                 plate.setState Plate.STATE_SELECTED
             else if i > 0 and i > @lenght
                 plate.setState Plate.STATE_NORMAL
 
     onParameterComplete : (parameter) ->
-        Map.instance.eachPlate @robot.currentPlate, direct[@_id], (plate, i) =>
+        Map.instance.eachPlate @robot.currentPlate, @direct[@_id], (plate, i) =>
             if i > 0
                 plate.setState Plate.STATE_NORMAL
 
@@ -304,7 +306,7 @@ class SearchDirectRobotBranchInstruction extends SearchDirectBranchInstruction
         super @robot, SearchingRobotDirectStr
 
     action : () ->
-        Map.instance.isExistObject @robot.currentPlate, direct[@_id], @lenght
+        Map.instance.isExistObject @robot.currentPlate, @direct[@_id], @lenght
 
     clone : () ->
         obj = @copy(new SearchDirectRobotBranchInstruction(@robot, SearchingRobotDirectStr))
@@ -319,7 +321,7 @@ class SearchDirectItemBranchInstruction extends SearchDirectBranchInstruction
 
     action : () ->
         ret = false
-        Map.instance.eachPlate @robot.currentPlate, direct[@_id], (plate, i) =>
+        Map.instance.eachPlate @robot.currentPlate, @direct[@_id], (plate, i) =>
             ret = true if plate.spotEnabled is true
         return true
 
@@ -328,3 +330,32 @@ class SearchDirectItemBranchInstruction extends SearchDirectBranchInstruction
         obj._id = @_id
         obj.lenght = @lenght
         obj
+
+class CurrentDirectBranchInstruction extends BranchInstruction
+
+    frame = [
+        0, 4, 5, 2, 6, 7
+    ]
+    constructor: (@robot) ->
+        super
+        @_id = 0
+        # タイトル, 初期値, 最小値, 最大値, 増大値
+        parameter = new TipParameter(CurrentDirectStr.colnum(), 0, 0, 5, 1)
+        @addParameter(parameter)
+
+    action : () ->
+        @robot.frame == frame[@_id]
+
+    clone : () ->
+        obj = @copy(new CurrentDirectBranchInstruction(@robot))
+        obj._id = @_id
+        obj
+
+    onParameterChanged : (parameter) ->
+        @_id = parameter.value
+
+    mkLabel: (parameter) ->
+        CurrentDirectStr.label[@_id]()
+
+    mkDescription: () ->
+        CurrentDirectStr.description[@_id]()

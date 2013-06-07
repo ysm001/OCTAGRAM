@@ -314,6 +314,41 @@ Config.R.String = (function() {
           return "左下に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
         }
       ]
+    },
+    CurrentDirect: {
+      colnum: function() {
+        return " 方向";
+      },
+      label: [
+        function() {
+          return "右";
+        }, function() {
+          return "右上";
+        }, function() {
+          return "右下";
+        }, function() {
+          return "左";
+        }, function() {
+          return "左上";
+        }, function() {
+          return "左下";
+        }
+      ],
+      description: [
+        function(step) {
+          return "右を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
+        }, function(step) {
+          return "右上を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
+        }, function(step) {
+          return "右下を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
+        }, function(step) {
+          return "左を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
+        }, function(step) {
+          return "左上を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
+        }, function(step) {
+          return "左下を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
+        }
+      ]
     }
   };
 
