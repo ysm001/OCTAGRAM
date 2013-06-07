@@ -260,13 +260,11 @@ Plate = (function(_super) {
   };
 
   Plate.prototype.onRobotAway = function(robot) {
-    this.setState(Plate.STATE_NORMAL);
-    return Debug.log("onRobotAway " + this.lock);
+    return this.setState(Plate.STATE_NORMAL);
   };
 
   Plate.prototype.onRobotRide = function(robot) {
     this.setState(robot.plateState);
-    Debug.log("onRobotRide " + this.lock);
     if (this.spotEnabled === true) {
       this.parentNode.removeChild(this.spot.effect);
       this.spot.resultFunc(robot, this);

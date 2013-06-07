@@ -41,7 +41,7 @@ class BarrierMap extends Object
 
 class Robot extends Sprite
     @MAX_HP = 4
-    constructor: (width, height) ->
+    constructor: (width, height, parentNode) ->
         super width, height
         @name = "robot"
         @game = Game.instance
@@ -53,9 +53,11 @@ class Robot extends Sprite
         @barrierMap = new BarrierMap
         @map = Map.instance
         @plateState = 0
+        parentNode.addChild @
         plate = @map.getPlate(0,0)
         @prevPlate = @currentPlate = plate
-        @moveToPlate(plate)
+        pos = plate.getAbsolutePos()
+        @moveTo pos.x, pos.y
     
     onViewUpdate: (views) ->
 
@@ -133,8 +135,8 @@ class PlayerRobot extends Robot
     @WIDTH = 64
     @HEIGHT = 74
     @UPDATE_FRAME = 10
-    constructor: () ->
-        super PlayerRobot.WIDTH, PlayerRobot.HEIGHT
+    constructor: (parentNode) ->
+        super PlayerRobot.WIDTH, PlayerRobot.HEIGHT, parentNode
         @name = R.String.PLAYER
         @image = @game.assets[R.CHAR.PLAYER]
         @plateState = Plate.STATE_PLAYER
@@ -144,7 +146,7 @@ class PlayerRobot extends Robot
         statusBox = @scene.views.footer.statusBox
         switch id
             when RobotInstruction.MOVE
-                if Math.floor(Math.random() * (6)) == 1
+                if Math.floor(Math.random() * (10)) == 1
                     plate = @map.getPlateRandom()
                     plate.setSpot(Spot.getRandomType())
             when RobotInstruction.SHOT
@@ -175,8 +177,8 @@ class PlayerRobot extends Robot
 class EnemyRobot extends Robot
     @SIZE = 64
     @UPDATE_FRAME = 10
-    constructor: () ->
-        super EnemyRobot.SIZE, EnemyRobot.SIZE
+    constructor: (parentNode) ->
+        super EnemyRobot.SIZE, EnemyRobot.SIZE, parentNode
         @name = R.String.ENEMY
         @image = @game.assets[R.CHAR.ENEMY]
         @plateState = Plate.STATE_ENEMY

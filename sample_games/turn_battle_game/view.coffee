@@ -160,11 +160,11 @@ class Plate extends Sprite
 
     onRobotAway: (robot) ->
         @setState(Plate.STATE_NORMAL)
-        Debug.log "onRobotAway #{@lock}"
+        #Debug.log "onRobotAway #{@lock}"
 
     onRobotRide: (robot) ->
         @setState(robot.plateState)
-        Debug.log "onRobotRide #{@lock}"
+        # Debug.log "onRobotRide #{@lock}"
         if @spotEnabled is true
             @parentNode.removeChild @spot.effect
             @spot.resultFunc robot, @

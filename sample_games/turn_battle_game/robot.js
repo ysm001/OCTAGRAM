@@ -81,9 +81,9 @@ Robot = (function(_super) {
 
   Robot.MAX_HP = 4;
 
-  function Robot(width, height) {
+  function Robot(width, height, parentNode) {
     this.onAnimateComplete = __bind(this.onAnimateComplete, this);
-    var plate;
+    var plate, pos;
 
     Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
@@ -96,9 +96,11 @@ Robot = (function(_super) {
     this.barrierMap = new BarrierMap;
     this.map = Map.instance;
     this.plateState = 0;
+    parentNode.addChild(this);
     plate = this.map.getPlate(0, 0);
     this.prevPlate = this.currentPlate = plate;
-    this.moveToPlate(plate);
+    pos = plate.getAbsolutePos();
+    this.moveTo(pos.x, pos.y);
   }
 
   Robot.prototype.onViewUpdate = function(views) {};
@@ -199,8 +201,8 @@ PlayerRobot = (function(_super) {
 
   PlayerRobot.UPDATE_FRAME = 10;
 
-  function PlayerRobot() {
-    PlayerRobot.__super__.constructor.call(this, PlayerRobot.WIDTH, PlayerRobot.HEIGHT);
+  function PlayerRobot(parentNode) {
+    PlayerRobot.__super__.constructor.call(this, PlayerRobot.WIDTH, PlayerRobot.HEIGHT, parentNode);
     this.name = R.String.PLAYER;
     this.image = this.game.assets[R.CHAR.PLAYER];
     this.plateState = Plate.STATE_PLAYER;
@@ -213,7 +215,7 @@ PlayerRobot = (function(_super) {
     statusBox = this.scene.views.footer.statusBox;
     switch (id) {
       case RobotInstruction.MOVE:
-        if (Math.floor(Math.random() * 6.) === 1) {
+        if (Math.floor(Math.random() * 10.) === 1) {
           plate = this.map.getPlateRandom();
           return plate.setSpot(Spot.getRandomType());
         }
@@ -263,8 +265,8 @@ EnemyRobot = (function(_super) {
 
   EnemyRobot.UPDATE_FRAME = 10;
 
-  function EnemyRobot() {
-    EnemyRobot.__super__.constructor.call(this, EnemyRobot.SIZE, EnemyRobot.SIZE);
+  function EnemyRobot(parentNode) {
+    EnemyRobot.__super__.constructor.call(this, EnemyRobot.SIZE, EnemyRobot.SIZE, parentNode);
     this.name = R.String.ENEMY;
     this.image = this.game.assets[R.CHAR.ENEMY];
     this.plateState = Plate.STATE_ENEMY;

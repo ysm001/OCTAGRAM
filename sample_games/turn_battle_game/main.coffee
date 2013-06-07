@@ -54,13 +54,13 @@ class RobotWorld extends Group
         @robots = []
         @bullets = []
         @items = []
-        @player = new PlayerRobot
+        @player = new PlayerRobot @
         @addChild @player
         @robots.push @player
         plate = @map.getPlate(6,4)
         @player.moveToPlate(plate)
 
-        @enemy = new EnemyRobot
+        @enemy = new EnemyRobot @
         @addChild @enemy
         @robots.push @enemy
         plate = @map.getPlate(1,1)

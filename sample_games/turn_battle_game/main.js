@@ -94,12 +94,12 @@ RobotWorld = (function(_super) {
     this.robots = [];
     this.bullets = [];
     this.items = [];
-    this.player = new PlayerRobot;
+    this.player = new PlayerRobot(this);
     this.addChild(this.player);
     this.robots.push(this.player);
     plate = this.map.getPlate(6, 4);
     this.player.moveToPlate(plate);
-    this.enemy = new EnemyRobot;
+    this.enemy = new EnemyRobot(this);
     this.addChild(this.enemy);
     this.robots.push(this.enemy);
     plate = this.map.getPlate(1, 1);
