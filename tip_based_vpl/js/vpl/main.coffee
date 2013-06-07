@@ -96,9 +96,10 @@ class TipBasedVPL extends Game
     xnum = 8
     ynum = 8
 
-    back = new TipBackground(x, y, xnum, ynum)
-    board = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX)
-    executer = new Executer(board)
+    new TipBackground(x, y, xnum, ynum)
+    Game.instance.vpl = {}
+    Game.instance.vpl.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX)
+    Game.instance.vpl.executer = executer = new Executer(Game.instance.vpl.cpu)
 
     GlobalUI.frame = new Frame(0, 0)
     GlobalUI.help = new HelpPanel(0, 

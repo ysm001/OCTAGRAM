@@ -155,15 +155,16 @@ TipBasedVPL = (function(_super) {
   };
 
   TipBasedVPL.prototype.onload = function() {
-    var back, selector, x, xnum, y, ynum;
+    var selector, x, xnum, y, ynum;
 
     x = 16;
     y = 16;
     xnum = 8;
     ynum = 8;
-    back = new TipBackground(x, y, xnum, ynum);
-    board = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX);
-    executer = new Executer(board);
+    new TipBackground(x, y, xnum, ynum);
+    Game.instance.vpl = {};
+    Game.instance.vpl.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX);
+    Game.instance.vpl.executer = executer = new Executer(Game.instance.vpl.cpu);
     GlobalUI.frame = new Frame(0, 0);
     GlobalUI.help = new HelpPanel(0, Environment.EditorHeight + y, Environment.ScreenWidth, Environment.ScreenWidth - Environment.EditorWidth - x, "");
     GlobalUI.frame.show();
