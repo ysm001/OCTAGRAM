@@ -248,6 +248,7 @@ class SideTipSelector extends UISpriteComponent
     super()
     for child in GlobalUI.side.children
       if child.icon?
+        @hideOuter(child)
         LayerUtil.setOrder(child.icon, LayerOrder.frameUIIcon)
 
   scrollUp : () ->

@@ -418,6 +418,7 @@ SideTipSelector = (function(_super) {
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       child = _ref[_i];
       if (child.icon != null) {
+        this.hideOuter(child);
         _results.push(LayerUtil.setOrder(child.icon, LayerOrder.frameUIIcon));
       } else {
         _results.push(void 0);

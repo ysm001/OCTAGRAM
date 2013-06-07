@@ -137,14 +137,9 @@ TipBasedVPL = (function(_super) {
     return TipTable.addTip(nopTip, Resources.get("iconNop"));
   };
 
-  TipBasedVPL.prototype.clearInstructions = function() {
-    return this.tips = [];
-  };
-
   TipBasedVPL.prototype.loadInstruction = function() {
     var tip, _i, _len, _ref;
 
-    this.clearInstructions();
     this.addPresetInstructions();
     _ref = TipTable.tips;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {

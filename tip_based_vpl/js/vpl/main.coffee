@@ -65,7 +65,7 @@ class TipBasedVPL extends Game
     super(w, h)
     @fps = 24
     Resources.base = resourceBase
-    Resources.load(@)
+    Resources.load(this)
 
   addInstruction : (instruction, icon) ->
     TipTable.addInstruction(instruction, icon)
@@ -80,10 +80,10 @@ class TipBasedVPL extends Game
     TipTable.addTip(stopTip)
     TipTable.addTip(nopTip, Resources.get("iconNop"))
 
-  clearInstructions : () -> @tips = []
+  #clearInstructions : () -> @TipTable.tips = []
 
   loadInstruction : () ->
-    @clearInstructions()
+    #@clearInstructions()
     @addPresetInstructions()
 
     for tip in TipTable.tips then GlobalUI.side.addTip(tip)
