@@ -89,6 +89,7 @@ class ShotInstruction extends ActionInstruction
             ]
         # sliderタイトル, 初期値, 最小値, 最大値, 増大値
         parameter = new TipParameter(ShotStr.colnum(), 0, 0, 2, 1)
+        @icon = new Icon(Game.instance.assets[R.TIP.SHOT_BULLET], 32, 32)
         @_id = 0
         @addParameter(parameter)
         @setAsynchronous(true)
@@ -124,6 +125,10 @@ class ShotInstruction extends ActionInstruction
     mkDescription: () ->
         ShotStr.description[@_id]()
 
+    getIcon: () ->
+        @icon.frame = @_id
+        return @icon
+
 class PickupInstruction extends ActionInstruction
     type = [
         BulletType.NORMAL
@@ -149,6 +154,7 @@ class PickupInstruction extends ActionInstruction
         # タイトル, 初期値, 最小値, 最大値, 増大値
         parameter = new TipParameter(PickupStr.colnum(), 0, 0, 2, 1)
         @_id = 0
+        @icon = new Icon(Game.instance.assets[R.TIP.PICKUP_BULLET], 32, 32)
         @addParameter(parameter)
 
     action: () ->
@@ -181,11 +187,16 @@ class PickupInstruction extends ActionInstruction
     mkDescription: () ->
         PickupStr.description[@_id]()
 
+    getIcon: () ->
+        @icon.frame = @_id
+        return @icon
+
 class HpBranchInstruction extends BranchInstruction
     constructor : (@robot) ->
         super()
         # タイトル, 初期値, 最小値, 最大値, 増大値
         parameter = new TipParameter(HpStr.colnum(), 1, 1, 4, 1)
+        @icon = new Icon(Game.instance.assets[R.TIP.LIFE], 32, 32)
         @hp = 1
         @addParameter(parameter)
 
@@ -202,6 +213,10 @@ class HpBranchInstruction extends BranchInstruction
 
     mkDescription : () ->
         HpStr.description(@hp)
+
+    getIcon: () ->
+        @icon.frame = @_id
+        return @icon
 
 class HoldBulletBranchInstruction extends BranchInstruction
 
@@ -303,6 +318,7 @@ class SearchDirectBranchInstruction extends BranchInstruction
 class SearchDirectRobotBranchInstruction extends SearchDirectBranchInstruction
 
     constructor: (@robot) ->
+        @icon = new Icon(Game.instance.assets[R.TIP.SEACH_ENEMY], 32, 32)
         super @robot, SearchingRobotDirectStr
 
     action : () ->
@@ -314,9 +330,14 @@ class SearchDirectRobotBranchInstruction extends SearchDirectBranchInstruction
         obj.lenght = @lenght
         obj
 
+    getIcon: () ->
+        @icon.frame = @_id
+        return @icon
+
 class SearchDirectItemBranchInstruction extends SearchDirectBranchInstruction
 
     constructor: (@robot) ->
+        @icon = new Icon(Game.instance.assets[R.TIP.SEACH_BARRIER], 32, 32)
         super @robot, SearchingItemDirectStr
 
     action : () ->
@@ -331,6 +352,10 @@ class SearchDirectItemBranchInstruction extends SearchDirectBranchInstruction
         obj.lenght = @lenght
         obj
 
+    getIcon: () ->
+        @icon.frame = @_id
+        return @icon
+
 class CurrentDirectBranchInstruction extends BranchInstruction
 
     frame = [
@@ -338,6 +363,7 @@ class CurrentDirectBranchInstruction extends BranchInstruction
     ]
     constructor: (@robot) ->
         super
+        @icon = new Icon(Game.instance.assets[R.TIP.CURRENT_DIRECT], 32, 32)
         @_id = 0
         # タイトル, 初期値, 最小値, 最大値, 増大値
         parameter = new TipParameter(CurrentDirectStr.colnum(), 0, 0, 5, 1)
@@ -359,3 +385,8 @@ class CurrentDirectBranchInstruction extends BranchInstruction
 
     mkDescription: () ->
         CurrentDirectStr.description[@_id]()
+
+    getIcon: () ->
+        @icon.frame = @_id
+        return @icon
+

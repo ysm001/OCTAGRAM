@@ -74,7 +74,13 @@ Config.R = (function() {
   };
 
   R.TIP = {
-    ARROW: "" + R.RESOURCE_DIR + "/tip/arrow.png"
+    ARROW: "" + R.RESOURCE_DIR + "/tip/arrow.png",
+    LIFE: "" + R.RESOURCE_DIR + "/tip/arrow.png",
+    PICKUP_BULLET: "" + R.RESOURCE_DIR + "/tip/plus_bullet.png",
+    SHOT_BULLET: "" + R.RESOURCE_DIR + "/tip/shot_bullet.png",
+    SEACH_BARRIER: "" + R.RESOURCE_DIR + "/tip/search_barrier.png",
+    SEACH_ENEMY: "" + R.RESOURCE_DIR + "/tip/search_enemy.png",
+    CURRENT_DIRECT: "" + R.RESOURCE_DIR + "/tip/arrow.png"
   };
 
   return R;

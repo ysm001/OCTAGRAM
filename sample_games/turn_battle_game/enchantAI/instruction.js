@@ -135,6 +135,7 @@ ShotInstruction = (function(_super) {
       bltQueue = [this.robot.bltQueue, this.robot.wideBltQueue, this.robot.dualBltQueue];
     }
     parameter = new TipParameter(ShotStr.colnum(), 0, 0, 2, 1);
+    this.icon = new Icon(Game.instance.assets[R.TIP.SHOT_BULLET], 32, 32);
     this._id = 0;
     this.addParameter(parameter);
     this.setAsynchronous(true);
@@ -188,6 +189,11 @@ ShotInstruction = (function(_super) {
     return ShotStr.description[this._id]();
   };
 
+  ShotInstruction.prototype.getIcon = function() {
+    this.icon.frame = this._id;
+    return this.icon;
+  };
+
   return ShotInstruction;
 
 })(ActionInstruction);
@@ -214,6 +220,7 @@ PickupInstruction = (function(_super) {
     this.setAsynchronous(true);
     parameter = new TipParameter(PickupStr.colnum(), 0, 0, 2, 1);
     this._id = 0;
+    this.icon = new Icon(Game.instance.assets[R.TIP.PICKUP_BULLET], 32, 32);
     this.addParameter(parameter);
   }
 
@@ -261,6 +268,11 @@ PickupInstruction = (function(_super) {
     return PickupStr.description[this._id]();
   };
 
+  PickupInstruction.prototype.getIcon = function() {
+    this.icon.frame = this._id;
+    return this.icon;
+  };
+
   return PickupInstruction;
 
 })(ActionInstruction);
@@ -274,6 +286,7 @@ HpBranchInstruction = (function(_super) {
     this.robot = robot;
     HpBranchInstruction.__super__.constructor.call(this);
     parameter = new TipParameter(HpStr.colnum(), 1, 1, 4, 1);
+    this.icon = new Icon(Game.instance.assets[R.TIP.LIFE], 32, 32);
     this.hp = 1;
     this.addParameter(parameter);
   }
@@ -296,6 +309,11 @@ HpBranchInstruction = (function(_super) {
 
   HpBranchInstruction.prototype.mkDescription = function() {
     return HpStr.description(this.hp);
+  };
+
+  HpBranchInstruction.prototype.getIcon = function() {
+    this.icon.frame = this._id;
+    return this.icon;
   };
 
   return HpBranchInstruction;
@@ -441,6 +459,7 @@ SearchDirectRobotBranchInstruction = (function(_super) {
 
   function SearchDirectRobotBranchInstruction(robot) {
     this.robot = robot;
+    this.icon = new Icon(Game.instance.assets[R.TIP.SEACH_ENEMY], 32, 32);
     SearchDirectRobotBranchInstruction.__super__.constructor.call(this, this.robot, SearchingRobotDirectStr);
   }
 
@@ -457,6 +476,11 @@ SearchDirectRobotBranchInstruction = (function(_super) {
     return obj;
   };
 
+  SearchDirectRobotBranchInstruction.prototype.getIcon = function() {
+    this.icon.frame = this._id;
+    return this.icon;
+  };
+
   return SearchDirectRobotBranchInstruction;
 
 })(SearchDirectBranchInstruction);
@@ -466,6 +490,7 @@ SearchDirectItemBranchInstruction = (function(_super) {
 
   function SearchDirectItemBranchInstruction(robot) {
     this.robot = robot;
+    this.icon = new Icon(Game.instance.assets[R.TIP.SEACH_BARRIER], 32, 32);
     SearchDirectItemBranchInstruction.__super__.constructor.call(this, this.robot, SearchingItemDirectStr);
   }
 
@@ -491,6 +516,11 @@ SearchDirectItemBranchInstruction = (function(_super) {
     return obj;
   };
 
+  SearchDirectItemBranchInstruction.prototype.getIcon = function() {
+    this.icon.frame = this._id;
+    return this.icon;
+  };
+
   return SearchDirectItemBranchInstruction;
 
 })(SearchDirectBranchInstruction);
@@ -507,6 +537,7 @@ CurrentDirectBranchInstruction = (function(_super) {
 
     this.robot = robot;
     CurrentDirectBranchInstruction.__super__.constructor.apply(this, arguments);
+    this.icon = new Icon(Game.instance.assets[R.TIP.CURRENT_DIRECT], 32, 32);
     this._id = 0;
     parameter = new TipParameter(CurrentDirectStr.colnum(), 0, 0, 5, 1);
     this.addParameter(parameter);
@@ -534,6 +565,11 @@ CurrentDirectBranchInstruction = (function(_super) {
 
   CurrentDirectBranchInstruction.prototype.mkDescription = function() {
     return CurrentDirectStr.description[this._id]();
+  };
+
+  CurrentDirectBranchInstruction.prototype.getIcon = function() {
+    this.icon.frame = this._id;
+    return this.icon;
   };
 
   return CurrentDirectBranchInstruction;

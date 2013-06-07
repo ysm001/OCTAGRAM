@@ -49,6 +49,12 @@ class Config.R
         STATUS_BULLET : "#{R.RESOURCE_DIR}/item/status_bullet.png"
     @TIP :
         ARROW : "#{R.RESOURCE_DIR}/tip/arrow.png"
+        LIFE : "#{R.RESOURCE_DIR}/tip/arrow.png"
+        PICKUP_BULLET : "#{R.RESOURCE_DIR}/tip/plus_bullet.png"
+        SHOT_BULLET : "#{R.RESOURCE_DIR}/tip/shot_bullet.png"
+        SEACH_BARRIER : "#{R.RESOURCE_DIR}/tip/search_barrier.png"
+        SEACH_ENEMY : "#{R.RESOURCE_DIR}/tip/search_enemy.png"
+        CURRENT_DIRECT : "#{R.RESOURCE_DIR}/tip/arrow.png"
 
         #enchant.ui = { assets: [Config.R.PAD, Config.R.APAD, Config.R.FONT0, Config.R.ICON0] }
 class Config.R.String
