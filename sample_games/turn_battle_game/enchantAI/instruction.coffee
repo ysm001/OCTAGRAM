@@ -1,9 +1,10 @@
 R = Config.R
-MOVE_STR = R.String.INSTRUCTION.MOVE
-SHOT_STR = R.String.INSTRUCTION.SHOT
-PICKUP_STR = R.String.INSTRUCTION.PICKUP
-HP_STR = R.String.INSTRUCTION.HP
-HoldBulletStr = R.String.INSTRUCTION.HOLD_BULLEFT
+MoveStr = R.String.INSTRUCTION.Move
+ShotStr = R.String.INSTRUCTION.Shot
+PickupStr = R.String.INSTRUCTION.Pickup
+HpStr = R.String.INSTRUCTION.Hp
+HoldBulletStr = R.String.INSTRUCTION.HoldBulleft
+SearchingDirectStr = R.String.INSTRUCTION.SearchingDirect
 
 class RobotInstruction
     @MOVE = "move"
@@ -30,7 +31,7 @@ class MoveInstruction extends ActionInstruction
         @_id = 0
         @setAsynchronous(true)
         # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-        parameter = new TipParameter(MOVE_STR.colnum(), 0, 0, 5, 1)
+        parameter = new TipParameter(MoveStr.colnum(), 0, 0, 5, 1)
         @addParameter(parameter)
         @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
 
@@ -67,10 +68,10 @@ class MoveInstruction extends ActionInstruction
         @_id = parameter.value
 
     mkDescription: () ->
-        MOVE_STR.description[@_id](1)
+        MoveStr.description[@_id](1)
 
     mkLabel: () ->
-        MOVE_STR.label[@_id]()
+        MoveStr.label[@_id]()
 
     getIcon: () ->
         @icon.frame = @_id
@@ -87,7 +88,7 @@ class ShotInstruction extends ActionInstruction
                 @robot.dualBltQueue
             ]
         # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-        parameter = new TipParameter(SHOT_STR.colnum(), 0, 0, 2, 1)
+        parameter = new TipParameter(ShotStr.colnum(), 0, 0, 2, 1)
         @_id = 0
         @addParameter(parameter)
         @setAsynchronous(true)
@@ -118,10 +119,10 @@ class ShotInstruction extends ActionInstruction
         return obj
 
     mkLabel: () ->
-        SHOT_STR.label[@_id]()
+        ShotStr.label[@_id]()
 
     mkDescription: () ->
-        SHOT_STR.description[@_id]()
+        ShotStr.description[@_id]()
 
 class PickupInstruction extends ActionInstruction
     type = [
@@ -146,7 +147,7 @@ class PickupInstruction extends ActionInstruction
             ]
         @setAsynchronous(true)
         # タイトル, 初期値, 最小値, 最大値, 増大値
-        parameter = new TipParameter(PICKUP_STR.colnum(), 0, 0, 2, 1)
+        parameter = new TipParameter(PickupStr.colnum(), 0, 0, 2, 1)
         @_id = 0
         @addParameter(parameter)
 
@@ -175,16 +176,16 @@ class PickupInstruction extends ActionInstruction
         return obj
 
     mkLabel: () ->
-        PICKUP_STR.label[@_id]()
+        PickupStr.label[@_id]()
 
     mkDescription: () ->
-        PICKUP_STR.description[@_id]()
+        PickupStr.description[@_id]()
 
 class HpBranchInstruction extends BranchInstruction
     constructor : (@robot) ->
         super()
         # タイトル, 初期値, 最小値, 最大値, 増大値
-        parameter = new TipParameter(HP_STR.colnum(), 1, 1, 4, 1)
+        parameter = new TipParameter(HpStr.colnum(), 1, 1, 4, 1)
         @hp = 1
         @addParameter(parameter)
 
@@ -200,7 +201,7 @@ class HpBranchInstruction extends BranchInstruction
         @hp = parameter.value
 
     mkDescription : () ->
-        HP_STR.description(@hp)
+        HpStr.description(@hp)
 
 class HoldBulletBranchInstruction extends BranchInstruction
 
@@ -247,9 +248,9 @@ class HoldBulletBranchInstruction extends BranchInstruction
     mkDescription: () ->
         HoldBulletStr.description[@_id](@bulletSize)
 
-class SearchingBranchInstruction extends BranchInstruction
+class SearchingDirectBranchInstruction extends BranchInstruction
 
-    @direct = [
+    direct = [
         Direct.RIGHT
         Direct.RIGHT | Direct.UP
         Direct.RIGHT | Direct.DOWN
@@ -259,51 +260,36 @@ class SearchingBranchInstruction extends BranchInstruction
     ]
     constructor: (@robot) ->
         super
-        if bltQueues == null
-            bltQueues = [
-                @robot.bltQueue
-                @robot.wideBltQueue
-                @robot.dualBltQueue
-            ]
         @_id = 0
-        @bulletSize = 0
+        @lenght = 1
         # タイトル, 初期値, 最小値, 最大値, 増大値
-        parameter = new TipParameter(HoldBulletStr.colnum(HoldBulletStr.id.kind), 0, 0, 3, 1)
-        parameter.id = HoldBulletStr.id.kind
+        parameter = new TipParameter(SearchingDirectStr.colnum(SearchingDirectStr.id.direct), 0, 0, 5, 1)
+        parameter.id = SearchingDirectStr.id.direct
         @addParameter(parameter)
-        parameter = new TipParameter(HoldBulletStr.colnum(HoldBulletStr.id.size), 0, 0, 5, 1)
-        parameter.id = HoldBulletStr.id.size
+        parameter = new TipParameter(SearchingDirectStr.colnum(SearchingDirectStr.id.lenght), 1, 1, 4, 1)
+        parameter.id = SearchingDirectStr.id.lenght
         @addParameter(parameter)
 
     action : () ->
-        @bulletSize <= bltQueue[@_id].size()
+        Map.instance.isExistObject @robot.currentPlate, direct[@_id], @lenght
 
     clone : () ->
-        obj = @copy(new HoldBulletBranchInstruction(@robot))
+        obj = @copy(new SearchingDirectBranchInstruction(@robot))
         obj._id = @_id
-        obj.bulletSize = @bulletSize
+        obj.lenght = @lenght
         obj
 
     onParameterChanged : (parameter) ->
-        if parameter.id == HoldBulletStr.id.kind
+        if parameter.id == SearchingDirectStr.id.direct
             @_id = parameter.value
-        else if parameter.id == HoldBulletStr.id.size
-            @bulletSize = parameter.value
+        else if parameter.id == SearchingDirectStr.id.lenght
+            @lenght = parameter.value
 
     mkLabel: (parameter) ->
-        if parameter.id == HoldBulletStr.id.kind
-            return HoldBulletStr.label[@_id]()
-        else if parameter.id == HoldBulletStr.id.size
+        if parameter.id == SearchingDirectStr.id.direct
+            return SearchingDirectStr.label[@_id]()
+        else if parameter.id == SearchingDirectStr.id.lenght
             return parameter.value
 
     mkDescription: () ->
-        HoldBulletStr.description[@_id](@bulletSize)
-
-class Searching extends RobotInstruction
-    constructor:() ->
-        super RobotInstruction.SEARCH, @func
-    func: () ->
-        world = @scene.world
-        robot = if @ == world.player then world.enemy else @
-        return new Point(robot.x - @x, robot.y - @y)
-
+        SearchingDirectStr.description[@_id](@lenght)

@@ -107,7 +107,7 @@ Config.R.String = (function() {
   };
 
   String.INSTRUCTION = {
-    MOVE: {
+    Move: {
       colnum: function() {
         return "移動方向";
       },
@@ -142,7 +142,7 @@ Config.R.String = (function() {
         }
       ]
     },
-    SHOT: {
+    Shot: {
       colnum: function() {
         return "弾の種類";
       },
@@ -157,15 +157,15 @@ Config.R.String = (function() {
       ],
       description: [
         function() {
-          return "自機の前に2マス分弾を発射します";
+          return "自機の前に4マス分弾を発射します";
         }, function() {
-          return "自機の右前と左前に1マス分弾を発射します";
+          return "自機の右前と左前に2マス分弾を発射します";
         }, function() {
-          return "自機の前後に1マス分弾を発射します";
+          return "自機の前後に2マス分弾を発射します";
         }
       ]
     },
-    PICKUP: {
+    Pickup: {
       colnum: function() {
         return "弾の種類";
       },
@@ -188,7 +188,7 @@ Config.R.String = (function() {
         }
       ]
     },
-    HP: {
+    Hp: {
       colnum: function() {
         return "HP";
       },
@@ -196,7 +196,7 @@ Config.R.String = (function() {
         return "HPが" + hp + "以上の時、青矢印に進みます。</ br>HPが" + hp + "未満の時、赤矢印に進みます。";
       }
     },
-    HOLD_BULLEFT: {
+    HoldBulleft: {
       id: {
         kind: "kind",
         size: "size"
@@ -224,6 +224,50 @@ Config.R.String = (function() {
           return "ワイドバレッドの保持数が" + size + "以上の時、青矢印に進みます。</br>ワイドバレッドの保持数が" + size + "未満の時、赤矢印に進みます。";
         }, function(size) {
           return "デュアルバレッドの保持数が" + size + "以上の時、青矢印に進みます。</br>デュアルバレッドの保持数が" + size + "未満の時、赤矢印に進みます。";
+        }
+      ]
+    },
+    SearchingDirect: {
+      id: {
+        direct: "direct",
+        lenght: "lenght"
+      },
+      colnum: function(id) {
+        switch (id) {
+          case "direct":
+            return "方向";
+          case "lenght":
+            return "距離";
+        }
+      },
+      label: [
+        function() {
+          return "右";
+        }, function() {
+          return "右上";
+        }, function() {
+          return "右下";
+        }, function() {
+          return "左";
+        }, function() {
+          return "左上";
+        }, function() {
+          return "左下";
+        }
+      ],
+      description: [
+        function(step) {
+          return "右に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "右上に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "右下に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "左に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "左上に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "左下に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
         }
       ]
     }

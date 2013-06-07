@@ -204,6 +204,16 @@ class Map extends Group
     getPlate: (x, y) ->
         return @plateMatrix[x][y]
 
+    isExistObject: (plate, direct=Direct.RIGHT, lenght) ->
+        ret = plate
+        for i in [0...lenght]
+            ret = @getTargetPoision(ret, direct)
+            if ret == null
+                break
+            else if ret.lock == true
+                return true
+        return false
+
     getTargetPoision:(plate, direct=Direct.RIGHT) ->
         if direct == Direct.RIGHT
             if @plateMatrix[plate.iy].length > plate.ix + 1

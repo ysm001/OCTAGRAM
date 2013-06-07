@@ -243,13 +243,15 @@ BulletGroup = (function(_super) {
 
 
 NormalBullet = (function(_super) {
-  var MAX_FRAME;
+  var LENGHT, MAX_FRAME;
 
   __extends(NormalBullet, _super);
 
   NormalBullet.WIDTH = 64;
 
   NormalBullet.HEIGHT = 64;
+
+  LENGHT = 4;
 
   MAX_FRAME = 15;
 
@@ -287,7 +289,7 @@ NormalBullet = (function(_super) {
     }
     this.rotate(rotate);
     this._rorateDeg = rotate;
-    point = Util.toCartesianCoordinates(70 * 2, Util.toRad(rotate));
+    point = Util.toCartesianCoordinates(68 * LENGHT, Util.toRad(rotate));
     return this.tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(function() {
       return this.onDestroy();
     });
@@ -303,7 +305,7 @@ NormalBullet = (function(_super) {
 
 
 WideBulletPart = (function(_super) {
-  var MAX_FRAME;
+  var LENGHT, MAX_FRAME;
 
   __extends(WideBulletPart, _super);
 
@@ -312,6 +314,8 @@ WideBulletPart = (function(_super) {
   WideBulletPart.HEIGHT = 64;
 
   MAX_FRAME = 10;
+
+  LENGHT = 2;
 
   function WideBulletPart(parent, left) {
     this.parent = parent;
@@ -355,7 +359,7 @@ WideBulletPart = (function(_super) {
     }
     this.rotate(rotate);
     this._rorateDeg = rotate;
-    point = Util.toCartesianCoordinates(70, Util.toRad(rotate));
+    point = Util.toCartesianCoordinates(68 * LENGHT, Util.toRad(rotate));
     return this.tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(function() {
       return this.parent.onDestroy();
     });
@@ -386,7 +390,7 @@ WideBullet = (function(_super) {
 })(BulletGroup);
 
 DualBulletPart = (function(_super) {
-  var MAX_FRAME;
+  var LENGHT, MAX_FRAME;
 
   __extends(DualBulletPart, _super);
 
@@ -395,6 +399,8 @@ DualBulletPart = (function(_super) {
   DualBulletPart.HEIGHT = 64;
 
   MAX_FRAME = 10;
+
+  LENGHT = 2;
 
   function DualBulletPart(parent, back) {
     this.parent = parent;
@@ -436,7 +442,7 @@ DualBulletPart = (function(_super) {
     }
     this.rotate(rotate);
     this._rorateDeg = rotate;
-    point = Util.toCartesianCoordinates(70, Util.toRad(rotate));
+    point = Util.toCartesianCoordinates(68 * LENGHT, Util.toRad(rotate));
     return this.tl.moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(function() {
       return this.parent.onDestroy();
     });

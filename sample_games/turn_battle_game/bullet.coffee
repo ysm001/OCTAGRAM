@@ -121,6 +121,7 @@ class BulletGroup extends Group
 class NormalBullet extends Bullet
     @WIDTH = 64
     @HEIGHT = 64
+    LENGHT = 4
     MAX_FRAME = 15
 
     constructor: () ->
@@ -149,7 +150,7 @@ class NormalBullet extends Bullet
 
         @rotate rotate
         @_rorateDeg = rotate
-        point = Util.toCartesianCoordinates(70*2, Util.toRad(rotate))
+        point = Util.toCartesianCoordinates(68*LENGHT, Util.toRad(rotate))
         @tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @onDestroy())
 
 ###
@@ -159,6 +160,7 @@ class WideBulletPart extends Bullet
     @WIDTH = 64
     @HEIGHT = 64
     MAX_FRAME = 10
+    LENGHT = 2
 
     constructor: (@parent, @left=true) ->
         super WideBulletPart.WIDTH, WideBulletPart.HEIGHT, BulletType.WIDE
@@ -191,7 +193,7 @@ class WideBulletPart extends Bullet
             rotate += 60
         @rotate rotate
         @_rorateDeg = rotate
-        point = Util.toCartesianCoordinates(70, Util.toRad(rotate))
+        point = Util.toCartesianCoordinates(68*LENGHT, Util.toRad(rotate))
         @tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @parent.onDestroy())
         
 class WideBullet extends BulletGroup
@@ -206,6 +208,7 @@ class DualBulletPart extends Bullet
     @WIDTH = 64
     @HEIGHT = 64
     MAX_FRAME = 10
+    LENGHT = 2
 
     constructor: (@parent, @back=true) ->
         super DualBulletPart.WIDTH, DualBulletPart.HEIGHT, BulletType.DUAL
@@ -236,7 +239,7 @@ class DualBulletPart extends Bullet
             rotate += 180
         @rotate rotate
         @_rorateDeg = rotate
-        point = Util.toCartesianCoordinates(70, Util.toRad(rotate))
+        point = Util.toCartesianCoordinates(68*LENGHT, Util.toRad(rotate))
         @tl.moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @parent.onDestroy())
 
 class DualBullet extends BulletGroup

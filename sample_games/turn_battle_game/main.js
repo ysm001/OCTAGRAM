@@ -95,14 +95,17 @@ RobotWorld = (function(_super) {
     this.bullets = [];
     this.items = [];
     this.player = new PlayerRobot;
-    plate = this.map.getPlate(4, 5);
+    plate = this.map.getPlate(5, 7);
     pos = plate.getAbsolutePos();
     this.player.currentPlate = plate;
-    this.player.x = pos.x;
-    this.player.y = pos.y;
+    this.player.moveTo(pos.x, pos.y);
     this.addChild(this.player);
     this.robots.push(this.player);
     this.enemy = new EnemyRobot;
+    plate = this.map.getPlate(1, 1);
+    pos = plate.getAbsolutePos();
+    this.enemy.currentPlate = plate;
+    this.enemy.moveTo(pos.x, pos.y);
     this.addChild(this.enemy);
     this.robots.push(this.enemy);
     Game.instance.addInstruction(new MoveInstruction(this.player));
@@ -110,6 +113,7 @@ RobotWorld = (function(_super) {
     Game.instance.addInstruction(new PickupInstruction(this.player));
     Game.instance.addInstruction(new HpBranchInstruction(this.player));
     Game.instance.addInstruction(new HoldBulletBranchInstruction(this.player));
+    Game.instance.addInstruction(new SearchingDirectBranchInstruction(this.player));
   }
 
   RobotWorld.prototype.initialize = function(views) {};

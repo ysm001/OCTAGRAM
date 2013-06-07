@@ -324,6 +324,24 @@ Map = (function(_super) {
     return this.plateMatrix[x][y];
   };
 
+  Map.prototype.isExistObject = function(plate, direct, lenght) {
+    var i, ret, _i;
+
+    if (direct == null) {
+      direct = Direct.RIGHT;
+    }
+    ret = plate;
+    for (i = _i = 0; 0 <= lenght ? _i < lenght : _i > lenght; i = 0 <= lenght ? ++_i : --_i) {
+      ret = this.getTargetPoision(ret, direct);
+      if (ret === null) {
+        break;
+      } else if (ret.lock === true) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   Map.prototype.getTargetPoision = function(plate, direct) {
     var offset;
 
