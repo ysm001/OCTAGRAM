@@ -55,27 +55,24 @@ class RobotWorld extends Group
         @bullets = []
         @items = []
         @player = new PlayerRobot
-        plate = @map.getPlate(6,4)
-        pos = plate.getAbsolutePos()
-        @player.currentPlate = plate
-        @player.moveTo(pos.x, pos.y)
         @addChild @player
         @robots.push @player
+        plate = @map.getPlate(6,4)
+        @player.moveToPlate(plate)
 
         @enemy = new EnemyRobot
-        plate = @map.getPlate(1,1)
-        pos = plate.getAbsolutePos()
-        @enemy.currentPlate = plate
-        @enemy.moveTo(pos.x, pos.y)
         @addChild @enemy
         @robots.push @enemy
+        plate = @map.getPlate(1,1)
+        @enemy.moveToPlate(plate)
 
         Game.instance.addInstruction(new MoveInstruction(@player))
         Game.instance.addInstruction(new ShotInstruction(@player))
         Game.instance.addInstruction(new PickupInstruction(@player))
         Game.instance.addInstruction(new HpBranchInstruction(@player))
         Game.instance.addInstruction(new HoldBulletBranchInstruction(@player))
-        Game.instance.addInstruction(new SearchingDirectBranchInstruction(@player))
+        Game.instance.addInstruction(new SearchDirectRobotBranchInstruction(@player))
+        Game.instance.addInstruction(new SearchDirectItemBranchInstruction(@player))
         # @swicher = new TurnSwitcher @
 
     initialize: (views)->

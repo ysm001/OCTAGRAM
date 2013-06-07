@@ -134,7 +134,7 @@ class Plate extends Sprite
     setState: (state) ->
         @pravState = @frame
         @frame = state
-        if Plate.STATE_PLAYER or Plate.STATE_ENEMY
+        if state is Plate.STATE_PLAYER or state is Plate.STATE_ENEMY
             @lock = true
         else
             @lock = false
@@ -160,9 +160,11 @@ class Plate extends Sprite
 
     onRobotAway: (robot) ->
         @setState(Plate.STATE_NORMAL)
+        Debug.log "onRobotAway #{@lock}"
 
     onRobotRide: (robot) ->
         @setState(robot.plateState)
+        Debug.log "onRobotRide #{@lock}"
         if @spotEnabled is true
             @parentNode.removeChild @spot.effect
             @spot.resultFunc robot, @
@@ -208,6 +210,9 @@ class Map extends Group
 
     getPlate: (x, y) ->
         return @plateMatrix[y][x]
+
+    getPlateRandom: () ->
+        return @plateMatrix[Math.floor(Math.random() * (Map.HEIGHT))][Math.floor(Math.random() * (Map.WIDTH))]
 
     eachPlate: (plate, direct=Direct.RIGHT, func) ->
         ret = plate

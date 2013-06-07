@@ -85,7 +85,7 @@ RobotWorld = (function(_super) {
   __extends(RobotWorld, _super);
 
   function RobotWorld(x, y, scene) {
-    var plate, pos;
+    var plate;
 
     this.scene = scene;
     RobotWorld.__super__.constructor.apply(this, arguments);
@@ -95,25 +95,22 @@ RobotWorld = (function(_super) {
     this.bullets = [];
     this.items = [];
     this.player = new PlayerRobot;
-    plate = this.map.getPlate(6, 4);
-    pos = plate.getAbsolutePos();
-    this.player.currentPlate = plate;
-    this.player.moveTo(pos.x, pos.y);
     this.addChild(this.player);
     this.robots.push(this.player);
+    plate = this.map.getPlate(6, 4);
+    this.player.moveToPlate(plate);
     this.enemy = new EnemyRobot;
-    plate = this.map.getPlate(1, 1);
-    pos = plate.getAbsolutePos();
-    this.enemy.currentPlate = plate;
-    this.enemy.moveTo(pos.x, pos.y);
     this.addChild(this.enemy);
     this.robots.push(this.enemy);
+    plate = this.map.getPlate(1, 1);
+    this.enemy.moveToPlate(plate);
     Game.instance.addInstruction(new MoveInstruction(this.player));
     Game.instance.addInstruction(new ShotInstruction(this.player));
     Game.instance.addInstruction(new PickupInstruction(this.player));
     Game.instance.addInstruction(new HpBranchInstruction(this.player));
     Game.instance.addInstruction(new HoldBulletBranchInstruction(this.player));
-    Game.instance.addInstruction(new SearchingDirectBranchInstruction(this.player));
+    Game.instance.addInstruction(new SearchDirectRobotBranchInstruction(this.player));
+    Game.instance.addInstruction(new SearchDirectItemBranchInstruction(this.player));
   }
 
   RobotWorld.prototype.initialize = function(views) {};

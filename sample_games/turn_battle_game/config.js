@@ -227,7 +227,7 @@ Config.R.String = (function() {
         }
       ]
     },
-    SearchingDirect: {
+    SearchingRobotDirect: {
       id: {
         direct: "direct",
         lenght: "lenght"
@@ -268,6 +268,50 @@ Config.R.String = (function() {
           return "左上に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
         }, function(step) {
           return "左下に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }
+      ]
+    },
+    SearchingItemDirect: {
+      id: {
+        direct: "direct",
+        lenght: "lenght"
+      },
+      colnum: function(id) {
+        switch (id) {
+          case "direct":
+            return "方向";
+          case "lenght":
+            return "距離";
+        }
+      },
+      label: [
+        function() {
+          return "右";
+        }, function() {
+          return "右上";
+        }, function() {
+          return "右下";
+        }, function() {
+          return "左";
+        }, function() {
+          return "左上";
+        }, function() {
+          return "左下";
+        }
+      ],
+      description: [
+        function(step) {
+          return "右に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "右上に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "右下に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "左に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "左上に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
+        }, function(step) {
+          return "左下に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。</br>見つからなかった場合、赤矢印に進みます。";
         }
       ]
     }

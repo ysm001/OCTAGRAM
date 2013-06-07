@@ -227,7 +227,7 @@ Plate = (function(_super) {
   Plate.prototype.setState = function(state) {
     this.pravState = this.frame;
     this.frame = state;
-    if (Plate.STATE_PLAYER || Plate.STATE_ENEMY) {
+    if (state === Plate.STATE_PLAYER || state === Plate.STATE_ENEMY) {
       return this.lock = true;
     } else {
       return this.lock = false;
@@ -260,11 +260,13 @@ Plate = (function(_super) {
   };
 
   Plate.prototype.onRobotAway = function(robot) {
-    return this.setState(Plate.STATE_NORMAL);
+    this.setState(Plate.STATE_NORMAL);
+    return Debug.log("onRobotAway " + this.lock);
   };
 
   Plate.prototype.onRobotRide = function(robot) {
     this.setState(robot.plateState);
+    Debug.log("onRobotRide " + this.lock);
     if (this.spotEnabled === true) {
       this.parentNode.removeChild(this.spot.effect);
       this.spot.resultFunc(robot, this);
@@ -330,6 +332,10 @@ Map = (function(_super) {
 
   Map.prototype.getPlate = function(x, y) {
     return this.plateMatrix[y][x];
+  };
+
+  Map.prototype.getPlateRandom = function() {
+    return this.plateMatrix[Math.floor(Math.random() * Map.HEIGHT)][Math.floor(Math.random() * Map.WIDTH)];
   };
 
   Map.prototype.eachPlate = function(plate, direct, func) {

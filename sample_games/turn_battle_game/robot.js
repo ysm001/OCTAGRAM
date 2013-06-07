@@ -83,7 +83,7 @@ Robot = (function(_super) {
 
   function Robot(width, height) {
     this.onAnimateComplete = __bind(this.onAnimateComplete, this);
-    var pos;
+    var plate;
 
     Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
@@ -95,18 +95,13 @@ Robot = (function(_super) {
     this.dualBltQueue = new ItemQueue([], 5);
     this.barrierMap = new BarrierMap;
     this.map = Map.instance;
-    this.prevPlate = this.map.plateMatrix[0][0];
-    this.currentPlate = this.map.plateMatrix[0][0];
-    pos = this.currentPlate.getAbsolutePos();
-    this.x = pos.x;
-    this.y = pos.y;
     this.plateState = 0;
+    plate = this.map.getPlate(0, 0);
+    this.prevPlate = this.currentPlate = plate;
+    this.moveToPlate(plate);
   }
 
-  Robot.prototype.onViewUpdate = function(views) {
-    this.prevPlate.onRobotAway(this);
-    return this.currentPlate.onRobotRide(this);
-  };
+  Robot.prototype.onViewUpdate = function(views) {};
 
   Robot.prototype.onHpReduce = function(views) {};
 
@@ -122,6 +117,8 @@ Robot = (function(_super) {
     msgbox = this.scene.views.msgbox;
     switch (id) {
       case RobotInstruction.MOVE:
+        this.prevPlate.onRobotAway(this);
+        this.currentPlate.onRobotRide(this);
         if (ret !== false) {
           msgbox.print(R.String.move(this.name, ret.x + 1, ret.y + 1));
           return this.animated = true;
@@ -143,6 +140,17 @@ Robot = (function(_super) {
           return msgbox.print(R.String.CANNOTPICKUP);
         }
     }
+  };
+
+  Robot.prototype.moveToPlate = function(plate) {
+    var pos;
+
+    this.prevPlate.onRobotAway(this);
+    this.pravState = this.currentPlate;
+    this.currentPlate = plate;
+    this.currentPlate.onRobotRide(this);
+    pos = plate.getAbsolutePos();
+    return this.moveTo(pos.x, pos.y);
   };
 
   Robot.prototype.getDirect = function() {
@@ -199,11 +207,17 @@ PlayerRobot = (function(_super) {
   }
 
   PlayerRobot.prototype.onCmdComplete = function(id, ret) {
-    var effect, statusBox;
+    var effect, plate, statusBox;
 
     PlayerRobot.__super__.onCmdComplete.call(this, id, ret);
     statusBox = this.scene.views.footer.statusBox;
     switch (id) {
+      case RobotInstruction.MOVE:
+        if (Math.floor(Math.random() * 6.) === 1) {
+          plate = this.map.getPlateRandom();
+          return plate.setSpot(Spot.getRandomType());
+        }
+        break;
       case RobotInstruction.SHOT:
         if (ret !== false) {
           effect = new ShotEffect(this.x, this.y);

@@ -52,16 +52,12 @@ class Robot extends Sprite
         @dualBltQueue = new ItemQueue [], 5
         @barrierMap = new BarrierMap
         @map = Map.instance
-        @prevPlate = @map.plateMatrix[0][0]
-        @currentPlate = @map.plateMatrix[0][0]
-        pos = @currentPlate.getAbsolutePos()
-        @x = pos.x
-        @y = pos.y
         @plateState = 0
+        plate = @map.getPlate(0,0)
+        @prevPlate = @currentPlate = plate
+        @moveToPlate(plate)
     
     onViewUpdate: (views) ->
-        @prevPlate.onRobotAway(@)
-        @currentPlate.onRobotRide(@)
 
     onHpReduce: (views) ->
 
@@ -74,6 +70,8 @@ class Robot extends Sprite
         msgbox = @scene.views.msgbox
         switch id
             when RobotInstruction.MOVE
+                @prevPlate.onRobotAway(@)
+                @currentPlate.onRobotRide(@)
                 if ret != false
                     msgbox.print R.String.move(@name, ret.x+1, ret.y+1)
                     @animated = true
@@ -90,6 +88,14 @@ class Robot extends Sprite
                 else
                     msgbox.print R.String.CANNOTPICKUP
         
+    moveToPlate: (plate) ->
+        @prevPlate.onRobotAway(@)
+        @pravState = @currentPlate
+        @currentPlate = plate
+        @currentPlate.onRobotRide(@)
+        pos = plate.getAbsolutePos()
+        @moveTo pos.x, pos.y
+
     # return the direction the robot
     # is faceing
     getDirect: () ->
@@ -137,6 +143,10 @@ class PlayerRobot extends Robot
         super id, ret
         statusBox = @scene.views.footer.statusBox
         switch id
+            when RobotInstruction.MOVE
+                if Math.floor(Math.random() * (6)) == 1
+                    plate = @map.getPlateRandom()
+                    plate.setSpot(Spot.getRandomType())
             when RobotInstruction.SHOT
                 if ret != false
                     effect = new ShotEffect(@x, @y)
