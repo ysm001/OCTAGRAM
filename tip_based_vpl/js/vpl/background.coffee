@@ -1,5 +1,6 @@
-class TipBackground 
+class TipBackground extends Group
   constructor : (x, y, xnum, ynum) ->
+    super()
     border     = Resources.get("mapBorder")
     background = Resources.get("mapTip")
     tip        = Resources.get("emptyTip")
@@ -15,6 +16,7 @@ class TipBackground
         map = new Sprite(image.width, image.height)         
         map.image = image 
         map.moveTo(x+j*space, y+i*space)
+        @addChild(map)
 
-        LayerUtil.setOrder(map, LayerOrder.background)
-        Game.instance.currentScene.addChild(map)
+        #LayerUtil.setOrder(map, LayerOrder.background)
+        #Game.instance.currentScene.addChild(map)

@@ -26,9 +26,20 @@ class TipUtil
      else if code instanceof NopTip    then TextResource.msg["nop"]
 
 class LayerUtil
+  @layers = []
+  @initialize : (@layerNum) ->
+    @layers = []
+    for i in [0..@layerNum]
+      layer = new Group()
+      LayerUtil.layers.push(layer)
+      Game.instance.currentScene.addChild(layer)
+
   @setOrder : (obj, order) ->
+    #LayerUtil.layers[order].addChild(obj)
+    ###
     obj._element = document.createElement("div") if !obj._element?
     obj._element.style.zIndex = order
+    ###
 
 class EventUtil
   createEvent : (eventName) ->

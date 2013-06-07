@@ -7,34 +7,26 @@ SelectedEffect = (function(_super) {
   __extends(SelectedEffect, _super);
 
   function SelectedEffect() {
-    var image,
-      _this = this;
+    var image;
 
     image = Resources.get("selectedEffect");
     SelectedEffect.__super__.constructor.call(this, image.width, image.height);
     this.image = image;
     this.visible = false;
     this.dragMode = false;
-    this.addEventListener('touchstart', function(e) {
-      return _this.parent.dispatchEvent(e);
-    });
-    this.addEventListener('touchmove', function(e) {
-      return _this.parent.dispatchEvent(e);
-    });
-    this.addEventListener('touchend', function(e) {
-      return _this.parent.dispatchEvent(e);
-    });
+    this.touchEnabled = false;
+    /*
+    @addEventListener('touchstart', (e) => @parent.dispatchEvent(e))
+    @addEventListener('touchmove', (e) => @parent.dispatchEvent(e))
+    @addEventListener('touchend', (e) => @parent.dispatchEvent(e))
+    */
+
     LayerUtil.setOrder(this, LayerOrder.tipEffect);
   }
 
   SelectedEffect.prototype.show = function(parent) {
-    this.parent = parent;
-    this.moveTo(this.parent.x, this.parent.y);
-    if (this.visible) {
-      this.hide();
-    }
     this.visible = true;
-    return Game.instance.currentScene.addChild(this);
+    return parent.addChild(this);
   };
 
   SelectedEffect.prototype.hide = function() {
@@ -64,12 +56,11 @@ ExecutionEffect = (function(_super) {
     LayerUtil.setOrder(this, LayerOrder.tipEffect);
   }
 
-  ExecutionEffect.prototype.show = function() {
-    this.moveTo(this.parent.x, this.parent.y);
+  ExecutionEffect.prototype.show = function(parent) {
     this.tl.clear();
     this.opacity = 1;
     if (!this.busy && !this.visible) {
-      Game.instance.currentScene.addChild(this);
+      parent.addChild(this);
     }
     return this.visible = true;
   };
@@ -81,7 +72,7 @@ ExecutionEffect = (function(_super) {
       this.tl.clear();
       this.busy = true;
       return this.tl.fadeOut(ExecutionEffect.fadeTime).then(function() {
-        Game.instance.currentScene.removeChild(_this);
+        _this.parentNode.removeChild(_this);
         _this.busy = false;
         return _this.visible = false;
       });

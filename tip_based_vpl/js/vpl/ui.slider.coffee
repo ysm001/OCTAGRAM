@@ -1,4 +1,4 @@
-class Slider extends UISpriteComponent
+class Slider extends SpriteGroup#UISpriteComponent
   constructor : (@min, @max, @step, @value) ->
     super(Resources.get("slider"))
     @knob = new SliderKnob(this)
@@ -10,20 +10,20 @@ class Slider extends UISpriteComponent
 
     @titleWidth = 128 
     @title = new UITextComponent(this, "")
-    @title.moveTo(@x - @titleWidth, @y + labelPaddingY)
+    @title.moveTo(- @titleWidth, labelPaddingY)
     @title.width = @titleWidth
 
     #@moveTo(x, y)
-    @knob.moveTo(@x, @y + @knob.width / 2)
-    @label.moveTo(@x + @width + labelPaddingX, @y + labelPaddingY)
+    @knob.moveTo(0, @knob.width / 2)
+    @label.moveTo(@getWidth() + labelPaddingX, labelPaddingY)
 
     @knob.addEventListener('touchstart', (e) ->
     )
 
     @knob.addEventListener('touchmove', (e) =>
-      x = e.x
-      if x < @x then x = @x
-      if x > (@x + @width) then x = @x + @width
+      x = e.x - @getAbsolutePosition().x
+      if x < 0 then x = 0 
+      if x > @getWidth() then x = @getWidth()
 
       value = @positionToValue(x)
       @scroll(value)
@@ -32,13 +32,15 @@ class Slider extends UISpriteComponent
     @knob.addEventListener('touchend', (e) ->)
 
     @addEventListener('touchstart', (e) ->
-      value = @positionToValue(e.x)
+      x = e.x - @getAbsolutePosition().x
+      value = @positionToValue(x)
       @scroll(value)
     )
     @scroll(@value)
 
     LayerUtil.setOrder(this, LayerOrder.dialogUI)
 
+    @addChild(@sprite)
     @addChild(@knob)
     @addChild(@label)
     @addChild(@title)
@@ -74,14 +76,16 @@ class Slider extends UISpriteComponent
   valueToPosition : (value) ->
     range = @max - @min
     val = value - @min
-    x = @x + @width * (val / range) 
+    x = @getWidth() * (val / range) 
 
   positionToValue : (x) ->
-    normValue = (x - @x) / @width
+    normValue = x / @getWidth()
     @min + normValue * (@max - @min)
 
-class SliderKnob extends UISpriteComponent
+class SliderKnob extends Sprite 
   constructor : (@parent) ->
-   super(Resources.get("sliderKnob"))
-   LayerUtil.setOrder(this, LayerOrder.dialogUI)
+    image = Resources.get("sliderKnob")
+    super(image.width, image.height)
+    @image = image
+    LayerUtil.setOrder(this, LayerOrder.dialogUI)
 

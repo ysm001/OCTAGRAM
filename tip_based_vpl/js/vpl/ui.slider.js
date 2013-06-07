@@ -21,31 +21,35 @@ Slider = (function(_super) {
     labelPaddingX = 12;
     this.titleWidth = 128;
     this.title = new UITextComponent(this, "");
-    this.title.moveTo(this.x - this.titleWidth, this.y + labelPaddingY);
+    this.title.moveTo(-this.titleWidth, labelPaddingY);
     this.title.width = this.titleWidth;
-    this.knob.moveTo(this.x, this.y + this.knob.width / 2);
-    this.label.moveTo(this.x + this.width + labelPaddingX, this.y + labelPaddingY);
+    this.knob.moveTo(0, this.knob.width / 2);
+    this.label.moveTo(this.getWidth() + labelPaddingX, labelPaddingY);
     this.knob.addEventListener('touchstart', function(e) {});
     this.knob.addEventListener('touchmove', function(e) {
       var x;
 
-      x = e.x;
-      if (x < _this.x) {
-        x = _this.x;
+      x = e.x - _this.getAbsolutePosition().x;
+      if (x < 0) {
+        x = 0;
       }
-      if (x > (_this.x + _this.width)) {
-        x = _this.x + _this.width;
+      if (x > _this.getWidth()) {
+        x = _this.getWidth();
       }
       value = _this.positionToValue(x);
       return _this.scroll(value);
     });
     this.knob.addEventListener('touchend', function(e) {});
     this.addEventListener('touchstart', function(e) {
-      value = this.positionToValue(e.x);
+      var x;
+
+      x = e.x - this.getAbsolutePosition().x;
+      value = this.positionToValue(x);
       return this.scroll(value);
     });
     this.scroll(this.value);
     LayerUtil.setOrder(this, LayerOrder.dialogUI);
+    this.addChild(this.sprite);
     this.addChild(this.knob);
     this.addChild(this.label);
     this.addChild(this.title);
@@ -97,29 +101,33 @@ Slider = (function(_super) {
 
     range = this.max - this.min;
     val = value - this.min;
-    return x = this.x + this.width * (val / range);
+    return x = this.getWidth() * (val / range);
   };
 
   Slider.prototype.positionToValue = function(x) {
     var normValue;
 
-    normValue = (x - this.x) / this.width;
+    normValue = x / this.getWidth();
     return this.min + normValue * (this.max - this.min);
   };
 
   return Slider;
 
-})(UISpriteComponent);
+})(SpriteGroup);
 
 SliderKnob = (function(_super) {
   __extends(SliderKnob, _super);
 
   function SliderKnob(parent) {
+    var image;
+
     this.parent = parent;
-    SliderKnob.__super__.constructor.call(this, Resources.get("sliderKnob"));
+    image = Resources.get("sliderKnob");
+    SliderKnob.__super__.constructor.call(this, image.width, image.height);
+    this.image = image;
     LayerUtil.setOrder(this, LayerOrder.dialogUI);
   }
 
   return SliderKnob;
 
-})(UISpriteComponent);
+})(Sprite);

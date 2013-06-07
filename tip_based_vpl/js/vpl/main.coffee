@@ -40,6 +40,7 @@ class LayerOrder
   @dialogIcon    = 58
   @dialogEffect  = 59
   @top           = 100
+
   
 class GlobalUI
   @frame
@@ -66,6 +67,7 @@ class TipBasedVPL extends Game
     @fps = 24
     Resources.base = resourceBase
     Resources.load(@)
+    LayerUtil.initialize(200)
 
   addInstruction : (instruction, icon) ->
     TipTable.addInstruction(instruction, icon)
@@ -88,7 +90,7 @@ class TipBasedVPL extends Game
 
     for tip in TipTable.tips then GlobalUI.side.addTip(tip)
 
-    GlobalUI.side.show()
+    #GlobalUI.side.show()
 
   onload : () ->
     x = 16
@@ -106,12 +108,18 @@ class TipBasedVPL extends Game
       Environment.ScreenWidth, 
       Environment.ScreenWidth - Environment.EditorWidth - x,
       "")
-    GlobalUI.frame.show()
-    GlobalUI.help.show()
+    #GlobalUI.frame.show()
+    #GlobalUI.help.show()
     selector = new ParameterConfigPanel(Environment.EditorWidth + x/2, 0)
 
     GlobalUI.side = new SideTipSelector(Environment.EditorWidth + x/2, 0)
     GlobalUI.configPanel = new UIPanel(selector)
     GlobalUI.configPanel.setTitle(TextResource.msg.title["configurator"])
     selector.parent = GlobalUI.configPanel
+
+    Game.instance.currentScene.addChild(back)
+    Game.instance.currentScene.addChild(board)
+    Game.instance.currentScene.addChild(GlobalUI.frame)
+    Game.instance.currentScene.addChild(GlobalUI.side)
+    Game.instance.currentScene.addChild(GlobalUI.help)
 

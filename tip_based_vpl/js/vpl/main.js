@@ -118,6 +118,7 @@ TipBasedVPL = (function(_super) {
     this.fps = 24;
     Resources.base = resourceBase;
     Resources.load(this);
+    LayerUtil.initialize(200);
   }
 
   TipBasedVPL.prototype.addInstruction = function(instruction, icon) {
@@ -142,16 +143,17 @@ TipBasedVPL = (function(_super) {
   };
 
   TipBasedVPL.prototype.loadInstruction = function() {
-    var tip, _i, _len, _ref;
+    var tip, _i, _len, _ref, _results;
 
     this.clearInstructions();
     this.addPresetInstructions();
     _ref = TipTable.tips;
+    _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       tip = _ref[_i];
-      GlobalUI.side.addTip(tip);
+      _results.push(GlobalUI.side.addTip(tip));
     }
-    return GlobalUI.side.show();
+    return _results;
   };
 
   TipBasedVPL.prototype.onload = function() {
@@ -166,13 +168,16 @@ TipBasedVPL = (function(_super) {
     executer = new Executer(board);
     GlobalUI.frame = new Frame(0, 0);
     GlobalUI.help = new HelpPanel(0, Environment.EditorHeight + y, Environment.ScreenWidth, Environment.ScreenWidth - Environment.EditorWidth - x, "");
-    GlobalUI.frame.show();
-    GlobalUI.help.show();
     selector = new ParameterConfigPanel(Environment.EditorWidth + x / 2, 0);
     GlobalUI.side = new SideTipSelector(Environment.EditorWidth + x / 2, 0);
     GlobalUI.configPanel = new UIPanel(selector);
     GlobalUI.configPanel.setTitle(TextResource.msg.title["configurator"]);
-    return selector.parent = GlobalUI.configPanel;
+    selector.parent = GlobalUI.configPanel;
+    Game.instance.currentScene.addChild(back);
+    Game.instance.currentScene.addChild(board);
+    Game.instance.currentScene.addChild(GlobalUI.frame);
+    Game.instance.currentScene.addChild(GlobalUI.side);
+    return Game.instance.currentScene.addChild(GlobalUI.help);
   };
 
   return TipBasedVPL;

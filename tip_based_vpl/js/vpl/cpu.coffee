@@ -1,7 +1,7 @@
 #####################################################
 # CPU 
 #####################################################
-class Cpu extends Sprite
+class Cpu extends Group
   constructor : (x, y, @xnum, @ynum, startIdx) ->
     super(Resources.get("dummy"))
     @tipTable = []
@@ -39,11 +39,11 @@ class Cpu extends Sprite
   replaceTip : (newTip, xidx, yidx) ->
     if !@getTip(xidx, yidx).immutable
       oldTip = @getTip(xidx, yidx) 
-      oldTip.hide()
+      oldTip.hide(this)
 
       newTip.moveTo(oldTip.x, oldTip.y)
       newTip.setIndex(xidx, yidx)
-      newTip.show()
+      newTip.show(this)
       CodeTip.selectedEffect.parent = newTip if CodeTip.selectedEffect.parent == oldTip
 
       @setTip(xidx, yidx, newTip)
@@ -77,7 +77,7 @@ class Cpu extends Sprite
         tip.moveTo(x+margin+j*space, y+margin+i*space)
 
         tip.setIndex(j, i)
-        tip.show() 
+        tip.show(this) 
         @tipTable[i][j] = tip
 
     @putStartTip(@sx, @sy)
@@ -123,8 +123,8 @@ class Cpu extends Sprite
   changeTransitionDirEventHandler : (e) ->
     tip = TipFactory.createEmptyTip()
     src = {
-      x: e.transition.src.x + tip.width / 2,
-      y: e.transition.src.y + tip.height / 2
+      x: e.transition.src.x + tip.getWidth() / 2,
+      y: e.transition.src.y + tip.getHeight() / 2
     }
     theta = e.transition.calcRotation(src, e)
     dir = e.transition.rotateToDirection(theta)

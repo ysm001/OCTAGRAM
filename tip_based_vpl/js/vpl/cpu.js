@@ -59,10 +59,10 @@ Cpu = (function(_super) {
 
     if (!this.getTip(xidx, yidx).immutable) {
       oldTip = this.getTip(xidx, yidx);
-      oldTip.hide();
+      oldTip.hide(this);
       newTip.moveTo(oldTip.x, oldTip.y);
       newTip.setIndex(xidx, yidx);
-      newTip.show();
+      newTip.show(this);
       if (CodeTip.selectedEffect.parent === oldTip) {
         CodeTip.selectedEffect.parent = newTip;
       }
@@ -102,7 +102,7 @@ Cpu = (function(_super) {
         tip = this.isWall(j, i) ? TipFactory.createWallTip(this.sx, this.sy) : TipFactory.createEmptyTip();
         tip.moveTo(x + margin + j * space, y + margin + i * space);
         tip.setIndex(j, i);
-        tip.show();
+        tip.show(this);
         this.tipTable[i][j] = tip;
       }
     }
@@ -167,8 +167,8 @@ Cpu = (function(_super) {
 
     tip = TipFactory.createEmptyTip();
     src = {
-      x: e.transition.src.x + tip.width / 2,
-      y: e.transition.src.y + tip.height / 2
+      x: e.transition.src.x + tip.getWidth() / 2,
+      y: e.transition.src.y + tip.getHeight() / 2
     };
     theta = e.transition.calcRotation(src, e);
     dir = e.transition.rotateToDirection(theta);
@@ -235,4 +235,4 @@ Cpu = (function(_super) {
 
   return Cpu;
 
-})(Sprite);
+})(Group);

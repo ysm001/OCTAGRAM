@@ -9,20 +9,22 @@ class SelectedEffect extends Sprite
     @visible = false
     @dragMode = false
 
+    @touchEnabled = false
+    ###
     @addEventListener('touchstart', (e) => @parent.dispatchEvent(e))
     @addEventListener('touchmove', (e) => @parent.dispatchEvent(e))
     @addEventListener('touchend', (e) => @parent.dispatchEvent(e))
+    ###
 
     LayerUtil.setOrder(this, LayerOrder.tipEffect)
 
   show : (parent) ->
-    @parent = parent
-    @moveTo(@parent.x, @parent.y)
+    #@parent = parent
 
-    @hide() if @visible
+    #@hide() if @visible
     @visible = true
 
-    Game.instance.currentScene.addChild(this)
+    parent.addChild(this)
 
   hide : () ->
     @visible = false
@@ -41,12 +43,13 @@ class ExecutionEffect extends Sprite
 
     LayerUtil.setOrder(this, LayerOrder.tipEffect)
 
-  show : () ->
-    @moveTo(@parent.x, @parent.y)
+  show : (parent) ->
+    #@moveTo(@parent.x, @parent.y)
 
     @tl.clear()
     @opacity = 1
-    Game.instance.currentScene.addChild(this) if !@busy && !@visible
+    #Game.instance.currentScene.addChild(this) if !@busy && !@visible
+    parent.addChild(this) if !@busy && !@visible
     @visible = true
 
   hide : () ->
@@ -55,7 +58,7 @@ class ExecutionEffect extends Sprite
       @busy = true
       @tl.fadeOut(ExecutionEffect.fadeTime).then(
         () =>
-          Game.instance.currentScene.removeChild(this)
+          @parentNode.removeChild(this)
           @busy = false
           @visible = false
           )

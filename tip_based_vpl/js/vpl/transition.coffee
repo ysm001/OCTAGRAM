@@ -28,8 +28,8 @@ class TipTransition extends Sprite
   calcPosition : (src, dst) ->
     dx = dst.x - src.x
     dy = dst.y - src.y
-    x = src.x + dx/2 + @image.width/2
-    y = src.y + dy/2 + @image.height/2
+    x = dx/2 + @image.width/2
+    y = dy/2 + @image.height/2
     {x:x, y:y}
 
   calcRotation : (src, dst) ->
@@ -52,8 +52,8 @@ class TipTransition extends Sprite
 
   onDirectionChanged : (e) ->
 
-  hide : () -> Game.instance.currentScene.removeChild(this)
-  show : () -> Game.instance.currentScene.addChild(this)
+  hide : (parent) -> @parentNode.removeChild(this)
+  show : (parent) -> parent.addChild(this)
 
 #####################################################
 # 通常遷移のCV 

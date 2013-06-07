@@ -44,11 +44,28 @@ TipUtil = (function() {
 LayerUtil = (function() {
   function LayerUtil() {}
 
-  LayerUtil.setOrder = function(obj, order) {
-    if (obj._element == null) {
-      obj._element = document.createElement("div");
+  LayerUtil.layers = [];
+
+  LayerUtil.initialize = function(layerNum) {
+    var i, layer, _i, _ref, _results;
+
+    this.layerNum = layerNum;
+    this.layers = [];
+    _results = [];
+    for (i = _i = 0, _ref = this.layerNum; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      layer = new Group();
+      LayerUtil.layers.push(layer);
+      _results.push(Game.instance.currentScene.addChild(layer));
     }
-    return obj._element.style.zIndex = order;
+    return _results;
+  };
+
+  LayerUtil.setOrder = function(obj, order) {
+    /*
+    obj._element = document.createElement("div") if !obj._element?
+    obj._element.style.zIndex = order
+    */
+
   };
 
   return LayerUtil;

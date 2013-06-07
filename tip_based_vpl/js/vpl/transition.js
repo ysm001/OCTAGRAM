@@ -40,8 +40,8 @@ TipTransition = (function(_super) {
 
     dx = dst.x - src.x;
     dy = dst.y - src.y;
-    x = src.x + dx / 2 + this.image.width / 2;
-    y = src.y + dy / 2 + this.image.height / 2;
+    x = dx / 2 + this.image.width / 2;
+    y = dy / 2 + this.image.height / 2;
     return {
       x: x,
       y: y
@@ -83,12 +83,12 @@ TipTransition = (function(_super) {
 
   TipTransition.prototype.onDirectionChanged = function(e) {};
 
-  TipTransition.prototype.hide = function() {
-    return Game.instance.currentScene.removeChild(this);
+  TipTransition.prototype.hide = function(parent) {
+    return this.parentNode.removeChild(this);
   };
 
-  TipTransition.prototype.show = function() {
-    return Game.instance.currentScene.addChild(this);
+  TipTransition.prototype.show = function(parent) {
+    return parent.addChild(this);
   };
 
   return TipTransition;
