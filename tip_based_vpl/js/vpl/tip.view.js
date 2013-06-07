@@ -181,19 +181,26 @@ CodeTip = (function(_super) {
       }
       GlobalUI.configPanel.show(this);
       return GlobalUI.configPanel.onClosed = function(closedWithOK) {
-        var _j, _len1, _ref1, _results;
+        var _j, _k, _len1, _len2, _ref1, _ref2, _results, _results1;
 
         if (closedWithOK) {
           _this.updateIcon();
-          return _this.setDescription(_this.code.mkDescription());
-        } else {
+          _this.setDescription(_this.code.mkDescription());
           _ref1 = _this.parameters;
           _results = [];
           for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
             param = _ref1[i];
-            _results.push(param.setValue(backup[i]));
+            _results.push(param.onParameterComplete());
           }
           return _results;
+        } else {
+          _ref2 = _this.parameters;
+          _results1 = [];
+          for (i = _k = 0, _len2 = _ref2.length; _k < _len2; i = ++_k) {
+            param = _ref2[i];
+            _results1.push(param.setValue(backup[i]));
+          }
+          return _results1;
         }
       };
     }
@@ -531,6 +538,8 @@ TipParameter = (function() {
   };
 
   TipParameter.prototype.onValueChanged = function() {};
+
+  TipParameter.prototype.onParameterComplete = function() {};
 
   TipParameter.prototype.mkLabel = function() {};
 

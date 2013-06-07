@@ -37,6 +37,9 @@ Instruction = (function() {
     param.onValueChanged = function() {
       return _this.onParameterChanged(param);
     };
+    param.onParameterComplete = function() {
+      return _this.onParameterComplete(param);
+    };
     param.mkLabel = function() {
       return _this.mkLabel(param);
     };
@@ -52,6 +55,8 @@ Instruction = (function() {
   Instruction.prototype.getIcon = function() {};
 
   Instruction.prototype.onParameterChanged = function(parameter) {};
+
+  Instruction.prototype.onParameterComplete = function(parameter) {};
 
   Instruction.prototype.copy = function(obj) {
     var param, _i, _len, _ref;

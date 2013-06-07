@@ -125,6 +125,8 @@ class CodeTip extends Sprite
         if closedWithOK 
           @updateIcon() 
           @setDescription(@code.mkDescription())
+          for param, i in @parameters
+            param.onParameterComplete()
         else 
           for param, i in @parameters
             param.setValue(backup[i])
@@ -322,6 +324,7 @@ class TipParameter
   getValue : () -> @value
 
   onValueChanged : () ->
+  onParameterComplete : () ->
   mkLabel : () ->
 
   clone : () -> @copy(new TipParameter(@valueName, @value, @min, @max, @step))

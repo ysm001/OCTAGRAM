@@ -18,6 +18,7 @@ class Instruction
 
   addParameter : (param) -> 
     param.onValueChanged = () => @onParameterChanged(param)
+    param.onParameterComplete = () => @onParameterComplete(param)
     param.mkLabel = () => @mkLabel(param)
     @parameters.push(param)
 
@@ -26,6 +27,8 @@ class Instruction
   getIcon : () -> 
 
   onParameterChanged : (parameter) ->
+  onParameterComplete : (parameter) ->
+
   copy : (obj) ->
     obj.isAsynchronous = @isAsynchronous
     obj.parameters = []
