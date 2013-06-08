@@ -125,11 +125,11 @@ class CodeTip extends Sprite
         if closedWithOK 
           @updateIcon() 
           @setDescription(@code.mkDescription())
-          for param, i in @parameters
-            param.onParameterComplete()
         else 
           for param, i in @parameters
             param.setValue(backup[i])
+        for param, i in @parameters
+          param.onParameterComplete()
 
   isSelected : () -> CodeTip.selectedInstance == this
 
