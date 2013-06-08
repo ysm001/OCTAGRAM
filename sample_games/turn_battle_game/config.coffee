@@ -50,7 +50,7 @@ class Config.R
         STATUS_BARRIER : "#{R.RESOURCE_DIR}/item/status_barrier.png"
     @TIP :
         ARROW : "#{R.RESOURCE_DIR}/tip/arrow.png"
-        LIFE : "#{R.RESOURCE_DIR}/tip/arrow.png"
+        LIFE : "#{R.RESOURCE_DIR}/tip/life.png"
         PICKUP_BULLET : "#{R.RESOURCE_DIR}/tip/plus_bullet.png"
         SHOT_BULLET : "#{R.RESOURCE_DIR}/tip/shot_bullet.png"
         SEARCH_BARRIER : "#{R.RESOURCE_DIR}/tip/search_barrier.png"
