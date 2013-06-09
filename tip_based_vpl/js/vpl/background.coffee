@@ -17,6 +17,3 @@ class TipBackground extends Group
         map.image = image 
         map.moveTo(x+j*space, y+i*space)
         @addChild(map)
-
-        #LayerUtil.setOrder(map, LayerOrder.background)
-        #Game.instance.currentScene.addChild(map)

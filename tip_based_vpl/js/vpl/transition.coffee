@@ -17,8 +17,6 @@ class TipTransition extends Sprite
       @onDirectionChanged(evt)
     )
 
-    LayerUtil.setOrder(this, LayerOrder.transition)
-
   link : (src, dst) ->
     pos = @calcPosition(src, dst)
     theta = @calcRotation(src, dst)
@@ -40,6 +38,7 @@ class TipTransition extends Sprite
     theta = Math.acos(cos) * 180 / Math.PI
     if dy < 0 then theta *= -1
     theta
+
   rotateToDirection : (theta) ->
     if       -22.5 < theta <=   22.5 then Direction.right
     else if   22.5 < theta <=   67.5 then Direction.rightDown

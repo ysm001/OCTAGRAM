@@ -7,53 +7,51 @@ Slider = (function(_super) {
   __extends(Slider, _super);
 
   function Slider(min, max, step, value) {
-    var labelPaddingX, labelPaddingY,
-      _this = this;
+    var labelPaddingX, labelPaddingY;
 
     this.min = min;
     this.max = max;
     this.step = step;
     this.value = value;
     Slider.__super__.constructor.call(this, Resources.get("slider"));
-    this.knob = new SliderKnob(this);
-    this.label = new UITextComponent(this, "");
+    this.titleWidth = 128;
     labelPaddingY = 4;
     labelPaddingX = 12;
-    this.titleWidth = 128;
-    this.title = new UITextComponent(this, "");
-    this.title.moveTo(-this.titleWidth, labelPaddingY);
-    this.title.width = this.titleWidth;
+    this.knob = new SliderKnob(this);
+    this.label = new TextLabel("");
+    this.title = new TextLabel("");
     this.knob.moveTo(0, this.knob.width / 2);
+    this.title.moveTo(-this.titleWidth, labelPaddingY);
     this.label.moveTo(this.getWidth() + labelPaddingX, labelPaddingY);
-    this.knob.addEventListener('touchstart', function(e) {});
-    this.knob.addEventListener('touchmove', function(e) {
-      var x;
-
-      x = e.x - _this.getAbsolutePosition().x;
-      if (x < 0) {
-        x = 0;
-      }
-      if (x > _this.getWidth()) {
-        x = _this.getWidth();
-      }
-      value = _this.positionToValue(x);
-      return _this.scroll(value);
-    });
-    this.knob.addEventListener('touchend', function(e) {});
-    this.addEventListener('touchstart', function(e) {
-      var x;
-
-      x = e.x - this.getAbsolutePosition().x;
-      value = this.positionToValue(x);
-      return this.scroll(value);
-    });
+    this.title.width = this.titleWidth;
     this.scroll(this.value);
-    LayerUtil.setOrder(this, LayerOrder.dialogUI);
     this.addChild(this.sprite);
     this.addChild(this.knob);
     this.addChild(this.label);
     this.addChild(this.title);
   }
+
+  Slider.prototype.ontouchstart = function(e) {
+    var value, x;
+
+    x = e.x - this.getAbsolutePosition().x;
+    value = this.positionToValue(x);
+    return this.scroll(value);
+  };
+
+  Slider.prototype.ontouchmove = function(e) {
+    var value, x;
+
+    x = e.x - this.getAbsolutePosition().x;
+    if (x < 0) {
+      x = 0;
+    }
+    if (x > this.getWidth()) {
+      x = this.getWidth();
+    }
+    value = this.positionToValue(x);
+    return this.scroll(value);
+  };
 
   Slider.prototype.setTitle = function(title) {
     return this.title.text = title;
@@ -77,7 +75,7 @@ Slider = (function(_super) {
 
     this.value = this.adjustValue(value);
     x = this.valueToPosition(this.value);
-    this.knob.moveTo(x - this.knob.width / 2, this.y + this.knob.height / 2);
+    this.knob.moveTo(x - this.knob.width / 2, this.knob.height / 2);
     return this.onValueChanged();
   };
 
@@ -119,15 +117,11 @@ SliderKnob = (function(_super) {
   __extends(SliderKnob, _super);
 
   function SliderKnob(parent) {
-    var image;
-
     this.parent = parent;
-    image = Resources.get("sliderKnob");
-    SliderKnob.__super__.constructor.call(this, image.width, image.height);
-    this.image = image;
-    LayerUtil.setOrder(this, LayerOrder.dialogUI);
+    SliderKnob.__super__.constructor.call(this, Resources.get("sliderKnob"));
+    this.touchEnabled = false;
   }
 
   return SliderKnob;
 
-})(Sprite);
+})(ImageSprite);

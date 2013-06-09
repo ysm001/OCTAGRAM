@@ -1,29 +1,14 @@
 #####################################################
 # チップ選択時のエフェクト
 #####################################################
-class SelectedEffect extends Sprite
+class SelectedEffect extends ImageSprite
   constructor : () ->
-    image = Resources.get("selectedEffect")
-    super(image.width, image.height)
-    @image = image
+    super(Resources.get("selectedEffect"))
     @visible = false
-    @dragMode = false
-
     @touchEnabled = false
-    ###
-    @addEventListener('touchstart', (e) => @parent.dispatchEvent(e))
-    @addEventListener('touchmove', (e) => @parent.dispatchEvent(e))
-    @addEventListener('touchend', (e) => @parent.dispatchEvent(e))
-    ###
-
-    LayerUtil.setOrder(this, LayerOrder.tipEffect)
 
   show : (parent) ->
-    #@parent = parent
-
-    #@hide() if @visible
     @visible = true
-
     parent.addChild(this)
 
   hide : () ->
@@ -39,16 +24,10 @@ class ExecutionEffect extends Sprite
     @visible = false
     @busy = false
     @tl.setTimeBased()
-    #@addEventListener('touchstart', => @hide())
-
-    LayerUtil.setOrder(this, LayerOrder.tipEffect)
 
   show : (parent) ->
-    #@moveTo(@parent.x, @parent.y)
-
     @tl.clear()
     @opacity = 1
-    #Game.instance.currentScene.addChild(this) if !@busy && !@visible
     parent.addChild(this) if !@busy && !@visible
     @visible = true
 

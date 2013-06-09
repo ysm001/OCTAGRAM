@@ -26,13 +26,16 @@ class TipUtil
      else if code instanceof NopTip    then TextResource.msg["nop"]
 
 class LayerUtil
-  @layers = []
+  #@layers = []
+
+  ###
   @initialize : (@layerNum) ->
     @layers = []
     for i in [0..@layerNum]
       layer = new Group()
       LayerUtil.layers.push(layer)
       Game.instance.currentScene.addChild(layer)
+  ###
 
   @setOrder : (obj, order) ->
     #LayerUtil.layers[order].addChild(obj)
@@ -47,6 +50,7 @@ class EventUtil
     evt.initUIEvent(eventName, true, true)
     evt
 
+###
 clone = (src) ->
   if src?
     if src.constructor is String then return src
@@ -60,3 +64,4 @@ clone = (src) ->
       ret[key] = clone(src[key])
 
     ret
+###

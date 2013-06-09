@@ -19,46 +19,20 @@ class Environment
   @EditorY = 16
   @startX = 4
   @startY = -1
-
-class LayerOrder
-  @background    = 10
-  @transition    = 15
-  @tip           = 20
-  @tipIcon       = 21
-  @tipEffect     = 22
-  @frame         = 30
-  @frameUI       = 31
-  @frameUIIcon   = 32
-  @frameUIArrow  = 33
-  @frameUIEffect = 34
-  @messageWindow = 40
-  @messageText   = 45
-  @dialog        = 50
-  @dialogButton  = 55
-  @dialogUI      = 56
-  @dialogText    = 57
-  @dialogIcon    = 58
-  @dialogEffect  = 59
-  @top           = 100
-
-  
+ 
 class GlobalUI
   @frame
   @help
-  #@panel
   @configPanel
   @side
 
 class TipTable
   @tips = []
   @addTip : (tip, icon) -> 
-    #tip.setIcon(new Icon(icon)) if icon?
     @tips.push(tip)
 
   @addInstruction : (inst, icon) ->
     tip = TipFactory.createInstructionTip(inst) 
-    #tip.setIcon(new Icon(icon)) if icon?
-    #tip.icon = new Icon(icon) if icon?
     TipTable.addTip(tip)
 
 class TipBasedVPL extends Game
@@ -67,7 +41,6 @@ class TipBasedVPL extends Game
     @fps = 24
     Resources.base = resourceBase
     Resources.load(@)
-    LayerUtil.initialize(200)
 
   addInstruction : (instruction, icon) ->
     TipTable.addInstruction(instruction, icon)
@@ -90,8 +63,6 @@ class TipBasedVPL extends Game
 
     for tip in TipTable.tips then GlobalUI.side.addTip(tip)
 
-    #GlobalUI.side.show()
-
   onload : () ->
     x = 16
     y = 16
@@ -108,8 +79,6 @@ class TipBasedVPL extends Game
       Environment.ScreenWidth, 
       Environment.ScreenWidth - Environment.EditorWidth - x,
       "")
-    #GlobalUI.frame.show()
-    #GlobalUI.help.show()
     selector = new ParameterConfigPanel(Environment.EditorWidth + x/2, 0)
 
     GlobalUI.side = new SideTipSelector(Environment.EditorWidth + x/2, 0)

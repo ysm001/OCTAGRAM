@@ -7,21 +7,9 @@ SelectedEffect = (function(_super) {
   __extends(SelectedEffect, _super);
 
   function SelectedEffect() {
-    var image;
-
-    image = Resources.get("selectedEffect");
-    SelectedEffect.__super__.constructor.call(this, image.width, image.height);
-    this.image = image;
+    SelectedEffect.__super__.constructor.call(this, Resources.get("selectedEffect"));
     this.visible = false;
-    this.dragMode = false;
     this.touchEnabled = false;
-    /*
-    @addEventListener('touchstart', (e) => @parent.dispatchEvent(e))
-    @addEventListener('touchmove', (e) => @parent.dispatchEvent(e))
-    @addEventListener('touchend', (e) => @parent.dispatchEvent(e))
-    */
-
-    LayerUtil.setOrder(this, LayerOrder.tipEffect);
   }
 
   SelectedEffect.prototype.show = function(parent) {
@@ -36,7 +24,7 @@ SelectedEffect = (function(_super) {
 
   return SelectedEffect;
 
-})(Sprite);
+})(ImageSprite);
 
 ExecutionEffect = (function(_super) {
   __extends(ExecutionEffect, _super);
@@ -53,7 +41,6 @@ ExecutionEffect = (function(_super) {
     this.visible = false;
     this.busy = false;
     this.tl.setTimeBased();
-    LayerUtil.setOrder(this, LayerOrder.tipEffect);
   }
 
   ExecutionEffect.prototype.show = function(parent) {

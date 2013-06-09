@@ -2,48 +2,6 @@
 # CV(Control View)関連 
 #####################################################
 
-class SpriteGroup extends Group
-  constructor : (image) -> 
-    super()
-    @sprite = new Sprite(image.width, image.height)
-    @sprite.image = image
-
-  getAbsolutePosition : () ->
-    pos = {x: @x, y: @y}
-    parent = @parentNode
-    while parent? && !(parent instanceof Scene)
-      pos.x += parent.x
-      pos.y += parent.y
-      parent = parent.parentNode
-    pos
-
-  setOpacity : (opacity) ->
-    for child in @childNodes
-      if child instanceof Sprite
-        child.opacity = opacity
-      else if child instanceof SpriteGroup
-        child.setOpacity(opacity)
-
-  setVisible : (visible) ->
-    for child in @childNodes
-      if child instanceof Sprite
-        child.visible = visible
-      else if child instanceof SpriteGroup
-        child.setVisible(opacity)
-    
-  getWidth : () -> @sprite.width
-  getHeight : () -> @sprite.height
-
-class GroupedSprite extends Sprite
-  getAbsolutePosition : () ->
-    pos = {x: @x, y: @y}
-    parent = @parentNode
-    while parent? && !(parent instanceof Scene)
-      pos.x += parent.x
-      pos.y += parent.y
-      parent = parent.parentNode
-    pos
-
 #####################################################
 # 進行方向 
 #####################################################
@@ -78,12 +36,10 @@ class CodeTip extends SpriteGroup#Sprite
   constructor : (@code) ->
     super(TipUtil.tipToImage(@code))
     @immutable   = @code instanceof WallTip || @code instanceof StartTip
-    @description = @code.mkDescription()#TipUtil.tipToMessage(@code) 
+    @description = @code.mkDescription() 
     @isTransitionSelect = false
     
-    #super(image.width, image.height)
-    #@image = image 
-    @icon = @getIcon()#if @code.getIcon? then @code.getIcon() else null
+    @icon = @getIcon()
 
     @dragMode = false
     @isFirstClick = false
@@ -105,7 +61,6 @@ class CodeTip extends SpriteGroup#Sprite
         @select()
     )
 
-    # ここで、チップの範囲外だったらdragしないようにする
     @addEventListener('touchmove', (e) => 
       if !@isTransitionSelect
         if !@dragMode && !@immutable 
@@ -120,12 +75,8 @@ class CodeTip extends SpriteGroup#Sprite
       CodeTip.selectedInstance = this
     )
 
-    #@updateIcon()
-
     @executionEffect = new ExecutionEffect(this)
     CodeTip.selectedEffect = new SelectedEffect() if !CodeTip.selectedEffect?
-
-    LayerUtil.setOrder(this, LayerOrder.tip)
 
   isInnerTip : (x, y) ->
     pos = @getAbsolutePosition()
@@ -145,8 +96,6 @@ class CodeTip extends SpriteGroup#Sprite
     GlobalUI.help.setText("")
     @hideSelectedEffect()
 
-  #addParameter : (param) -> @parameters.push(param)
-
   execute : () -> if @code? then @code.execute() else null
   doubleClicked : () -> @showConfigWindow() 
   createGhost : () ->
@@ -155,26 +104,22 @@ class CodeTip extends SpriteGroup#Sprite
     tip.sprite.opacity = 0.5
     tip.icon.opacity = 0.5 if tip.icon?
     tip.moveTo(@x, @y)
-    #tip.clearEventListener()
     tip.sprite.touchEnabled = false
     tip
 
   dragStart : (e) -> 
-    #console.log "start"
     CodeTip.clonedTip = @createGhost()
     CodeTip.clonedTip.show(@parentNode)
     @dragStartX = e.x
     @dragStartY = e.y
 
   dragged : (e) -> 
-    #console.log "dragged"
     if CodeTip.clonedTip?
       dx = e.x - @dragStartX
       dy = e.y - @dragStartY
       CodeTip.clonedTip.moveTo(@x + dx, @y + dy)
 
   dragEnd : (e) -> 
-    #console.log "end"
     @dragMode = false
     if CodeTip.clonedTip?
       evt = document.createEvent('UIEvent', false)
@@ -213,7 +158,6 @@ class CodeTip extends SpriteGroup#Sprite
             param.setValue(backup[i])
 
   isSelected : () -> 
-    #CodeTip.selectedInstance == this
     CodeTip.selectedEffect.parentNode == this
 
   showExecutionEffect : () -> @executionEffect.show(this)
@@ -240,36 +184,14 @@ class CodeTip extends SpriteGroup#Sprite
     @icon = icon
     @icon.fitPosition()
 
-  #getIcon : (icon) -> @icon
-
   onDescriptionChanged : () ->
     if @isSelected() then GlobalUI.help.setText(@description)
 
   setIndex : (idxX, idxY) -> @code.index = {x: idxX, y: idxY}
   getIndex : () -> @code.index
 
-  ###
-  moveTo : (x, y) ->
-    super(x, y)
-    @icon.fitPosition() if @icon?
-    #CodeTip.selectedEffect.moveTo(x, y) if @isSelected()
-
-  moveBy : (x, y) ->
-    super(x, y)
-    @icon.fitPosition() if @icon?
-    #CodeTip.selectedEffect.moveBy(x, y) if @isSelected()
-  ###
-
-  show : (parent) -> 
-    #Game.instance.currentScene.addChild(this)
-    parent.addChild(this) if parent?
-    #@icon.show(this) if @icon?
-    #@updateIcon()
-
-  hide : (parent) ->
-    #Game.instance.currentScene.removeChild(this)
-    @parentNode.removeChild(this) if @parentNode?
-    #@icon.hide() if @icon?
+  show : (parent) -> parent.addChild(this) if parent?
+  hide : (parent) -> @parentNode.removeChild(this) if @parentNode?
 
   clone : () -> new CodeTip(@code.clone())
 
@@ -298,12 +220,6 @@ class SingleTransitionCodeTip extends CodeTip
     if !next? then null
     else Direction.toDirection(next.x - @code.index.x, 
       next.y - @code.index.y)
-
-  ###
-  hide : () -> 
-    super()
-    # @trans.hide(this) if @trans?
-  ###
 
   clone : () -> @copy(new SingleTransitionCodeTip(@code.clone()))
 
@@ -340,11 +256,6 @@ class BranchTransitionCodeTip extends CodeTip
    else Direction.toDirection(next.x - @code.index.x, 
      next.y - @code.index.y)
 
-  hide : () ->
-    super()
-    #@conseqTrans.hide() if @conseqTrans?
-    #@alterTrans.hide() if @alterTrans?
-
   clone : () -> @copy(new BranchTransitionCodeTip(@code.clone()))
 
 #####################################################
@@ -367,40 +278,13 @@ class Icon extends Sprite
     @image = icon
     @parent = null
     @hidden = true
-    LayerUtil.setOrder(this, LayerOrder.tipIcon)
-    #LayerUtil.setOrder(this, LayerOrder.frameUIIcon) 
 
     @touchEnabled = false
-    ###
-    @addEventListener('touchstart', (e)-> @parent.dispatchEvent(e))
-    @addEventListener('touchmove', (e)-> @parent.dispatchEvent(e))
-    @addEventListener('touchend', (e)-> @parent.dispatchEvent(e))
-    ###
 
   fitPosition : () ->
     if @parentNode?
-      ###
-      @moveTo(@parent.x + @parent.width/2 - @width/2, 
-        @parent.y + @parent.height/2 - @height/2)
-      ###
       @moveTo(@parentNode.getWidth()/2 - @width/2, 
         @parentNode.getWidth()/2 - @height/2)
-
-  show : (parent) ->
-    ###
-    if @hidden
-      @hidden = false
-      @parent = parent if parent?
-      @fitPosition()
-      Game.instance.currentScene.addChild(this)
-    ###
-
-  hide : () -> 
-    ###
-    if !@hidden
-      @hidden = true
-      Game.instance.currentScene.removeChild(this)
-    ###
 
   clone : () -> 
     obj = new Icon(@image, @width, @height)
