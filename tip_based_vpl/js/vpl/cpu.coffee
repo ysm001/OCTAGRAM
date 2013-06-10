@@ -1,7 +1,7 @@
 #####################################################
 # CPU 
 #####################################################
-class Cpu extends Sprite
+class Cpu extends Group
   constructor : (x, y, @xnum, @ynum, startIdx) ->
     super(Resources.get("dummy"))
     @tipTable = []
@@ -9,13 +9,6 @@ class Cpu extends Sprite
     @sy = -1
 
     @createTips(x, y)
-
-    document.addEventListener("changeTransitionDir", (e) => 
-      @changeTransitionDirEventHandler(e))
-    document.addEventListener('insertNewTip', (e) =>
-      @insertNewTip(e.x, e.y, e.tip))
-    document.addEventListener('copyTip', (e) =>
-      @insertTipOnNearestPosition(e.tip))
 
   putTip : (sx, sy, dir, newTip) ->
     dx = sx + dir.x
@@ -39,12 +32,13 @@ class Cpu extends Sprite
   replaceTip : (newTip, xidx, yidx) ->
     if !@getTip(xidx, yidx).immutable
       oldTip = @getTip(xidx, yidx) 
-      oldTip.hide()
+      selected = oldTip.isSelected()
+      oldTip.hide(this)
 
       newTip.moveTo(oldTip.x, oldTip.y)
       newTip.setIndex(xidx, yidx)
-      newTip.show()
-      CodeTip.selectedEffect.parent = newTip if CodeTip.selectedEffect.parent == oldTip
+      newTip.show(this)
+      if selected then newTip.select()
 
       @setTip(xidx, yidx, newTip)
       true
@@ -52,6 +46,7 @@ class Cpu extends Sprite
 
   addTip : (sx, sy, dir, newTip) -> 
     @replaceTip(newTip, sx + dir.x, sy + dir.y)
+
   putStartTip : (x, y) ->
     start = new SingleTransitionCodeTip(new StartTip)
     returnTip = TipFactory.createReturnTip(@sx, @sy) 
@@ -77,7 +72,7 @@ class Cpu extends Sprite
         tip.moveTo(x+margin+j*space, y+margin+i*space)
 
         tip.setIndex(j, i)
-        tip.show() 
+        tip.show(this) 
         @tipTable[i][j] = tip
 
     @putStartTip(@sx, @sy)
@@ -99,15 +94,15 @@ class Cpu extends Sprite
     else
       @putSingleTip(x, y, newTip)
 
-  getNearestIndex : (tip) ->
+  getNearestIndex : (x, y) ->
     minDist = 0xffffffff
     minX = -1
     minY = -1
     for i in [-1...@ynum+1]
       for j in [-1...@xnum+1]
         tmp = @getTip(j, i)
-        dx = tmp.x - tip.x
-        dy = tmp.y - tip.y
+        dx = tmp.x - x
+        dy = tmp.y - y
         dist = dx*dx + dy*dy
         if dist < minDist
           minDist = dist
@@ -115,31 +110,9 @@ class Cpu extends Sprite
           minY = i
     {x: minX, y: minY}
 
-  insertTipOnNearestPosition : (tip) ->
-    nearest = @getNearestIndex(tip)
-    #@insertNewTip(nearest.x, nearest.y, tip)
+  insertTipOnNearestPosition : (x, y, tip) ->
+    nearest = @getNearestIndex(x, y)
     @insertNewTip(nearest.x, nearest.y, tip)
-
-  changeTransitionDirEventHandler : (e) ->
-    tip = TipFactory.createEmptyTip()
-    src = {
-      x: e.transition.src.x + tip.width / 2,
-      y: e.transition.src.y + tip.height / 2
-    }
-    theta = e.transition.calcRotation(src, e)
-    dir = e.transition.rotateToDirection(theta)
-    srcIdx = e.transition.src.getIndex()
-    nx  = srcIdx.x + dir.x
-    ny  = srcIdx.y + dir.y
-    dst = @getTip(nx, ny)
-    if dst != e.transition.dst
-      e.transition.dst = dst
-      if e.transition.src.setConseq?
-        if e.transition instanceof AlterTransition
-          e.transition.src.setAlter(nx, ny, dst)
-        else 
-          e.transition.src.setConseq(nx, ny, dst)
-      else e.transition.src.setNext(nx, ny, dst)
 
   getTip : (x, y) -> @tipTable[y][x]
   setTip : (x, y, tip) -> @tipTable[y][x] = tip
@@ -152,5 +125,3 @@ class Cpu extends Sprite
   isStart : (x, y) -> (x == @sx && y == @sy)
   isWall  : (x, y) -> @isOuter(x, y) && !@isStart(x, y)
   isEmpty : (x, y) -> @getTip(x, y).code instanceof EmptyTip
-
-

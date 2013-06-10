@@ -5,59 +5,24 @@
 # -- canvasに直す
 # -- クラス分け
 #####################################################
-
-# for debug
-board = null
-executer = null
-
 class Environment
   @ScreenWidth = 640 
   @ScreenHeight = 640 
   @EditorWidth = 480
   @EditorHeight = 480
+
   @EditorX = 16
   @EditorY = 16
+
   @startX = 4
   @startY = -1
 
-class LayerOrder
-  @background    = 10
-  @transition    = 15
-  @tip           = 20
-  @tipIcon       = 21
-  @tipEffect     = 22
-  @frame         = 30
-  @frameUI       = 31
-  @frameUIIcon   = 32
-  @frameUIArrow  = 33
-  @frameUIEffect = 34
-  @messageWindow = 40
-  @messageText   = 45
-  @dialog        = 50
-  @dialogButton  = 55
-  @dialogUI      = 56
-  @dialogText    = 57
-  @dialogIcon    = 58
-  @dialogEffect  = 59
-  @top           = 100
-  
-class GlobalUI
-  @frame
-  @help
-  #@panel
-  @configPanel
-  @side
-
 class TipTable
   @tips = []
-  @addTip : (tip, icon) -> 
-    #tip.setIcon(new Icon(icon)) if icon?
-    @tips.push(tip)
-
-  @addInstruction : (inst, icon) ->
+  @clear : () -> @tips = []
+  @addTip : (tip) -> @tips.push(tip)
+  @addInstruction : (inst) ->
     tip = TipFactory.createInstructionTip(inst) 
-    #tip.setIcon(new Icon(icon)) if icon?
-    #tip.icon = new Icon(icon) if icon?
     TipTable.addTip(tip)
 
 class TipBasedVPL extends Game
@@ -67,28 +32,26 @@ class TipBasedVPL extends Game
     Resources.base = resourceBase
     Resources.load(this)
 
-  addInstruction : (instruction, icon) ->
-    TipTable.addInstruction(instruction, icon)
+  addInstruction : (instruction) ->
+    TipTable.addInstruction(instruction)
 
   addPresetInstructions : () ->
     returnTip = TipFactory.createReturnTip(Environment.startX, Environment.startY)
     stopTip   = TipFactory.createStopTip() 
     nopTip  = TipFactory.createNopTip()
     inst = new RandomBranchInstruction()
+
     TipTable.addInstruction(inst, Resources.get("iconRandom"))
     TipTable.addTip(returnTip)
     TipTable.addTip(stopTip)
     TipTable.addTip(nopTip, Resources.get("iconNop"))
 
-  #clearInstructions : () -> @TipTable.tips = []
+  clearInstructions : () -> TipTable.clear()
 
   loadInstruction : () ->
-    #@clearInstructions()
     @addPresetInstructions()
 
-    for tip in TipTable.tips then GlobalUI.side.addTip(tip)
-
-    GlobalUI.side.show()
+    for tip in TipTable.tips then Game.instance.vpl.ui.side.addTip(tip)
 
   onload : () ->
     x = 16
@@ -96,23 +59,28 @@ class TipBasedVPL extends Game
     xnum = 8
     ynum = 8
 
-    new TipBackground(x, y, xnum, ynum)
+    back = new TipBackground(x, y, xnum, ynum)
     Game.instance.vpl = {}
+    Game.instance.vpl.ui = {}
     Game.instance.vpl.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX)
-    Game.instance.vpl.executer = executer = new Executer(Game.instance.vpl.cpu)
+    Game.instance.vpl.executer = new Executer(Game.instance.vpl.cpu)
 
-    GlobalUI.frame = new Frame(0, 0)
-    GlobalUI.help = new HelpPanel(0, 
+    Game.instance.vpl.ui.frame = new Frame(0, 0)
+    Game.instance.vpl.ui.help = new HelpPanel(0, 
       Environment.EditorHeight + y, 
       Environment.ScreenWidth, 
       Environment.ScreenWidth - Environment.EditorWidth - x,
       "")
-    GlobalUI.frame.show()
-    GlobalUI.help.show()
     selector = new ParameterConfigPanel(Environment.EditorWidth + x/2, 0)
 
-    GlobalUI.side = new SideTipSelector(Environment.EditorWidth + x/2, 0)
-    GlobalUI.configPanel = new UIPanel(selector)
-    GlobalUI.configPanel.setTitle(TextResource.msg.title["configurator"])
-    selector.parent = GlobalUI.configPanel
+    Game.instance.vpl.ui.side = new SideTipSelector(Environment.EditorWidth + x/2, 0)
+    Game.instance.vpl.ui.configPanel = new UIPanel(selector)
+    Game.instance.vpl.ui.configPanel.setTitle(TextResource.msg.title["configurator"])
+    selector.parent = Game.instance.vpl.ui.configPanel
+
+    Game.instance.currentScene.addChild(back)
+    Game.instance.currentScene.addChild(Game.instance.vpl.cpu)
+    Game.instance.currentScene.addChild(Game.instance.vpl.ui.frame)
+    Game.instance.currentScene.addChild(Game.instance.vpl.ui.side)
+    Game.instance.currentScene.addChild(Game.instance.vpl.ui.help)
 

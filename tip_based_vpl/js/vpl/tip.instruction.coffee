@@ -17,8 +17,8 @@ class Instruction
   setAsynchronous : (async = true) -> @isAsynchronous = async
 
   addParameter : (param) -> 
-    param.onValueChanged = () => @onParameterChanged(param)
     param.onParameterComplete = () => @onParameterComplete(param)
+    param.onValueChanged = () => @onParameterChanged(param)
     param.mkLabel = () => @mkLabel(param)
     @parameters.push(param)
 

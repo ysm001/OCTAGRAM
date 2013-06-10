@@ -1,6 +1,3 @@
-# test data
-counter = 0
-
 generateTestCode = () ->
     player = Game.instance.scene.world.player
     # instructions

@@ -33,22 +33,57 @@ ParameterConfigPanel = (function(_super) {
   __extends(ParameterConfigPanel, _super);
 
   function ParameterConfigPanel() {
-    ParameterConfigPanel.__super__.constructor.call(this, Resources.get("dummy"));
+    ParameterConfigPanel.__super__.constructor.call(this);
   }
 
   ParameterConfigPanel.prototype.addParameter = function(parameter) {
     var slider;
 
     slider = new ParameterSlider(parameter);
-    slider.moveTo(this.x + slider.titleWidth, this.y + this.children.length * slider.height);
+    slider.moveTo(slider.titleWidth, this.childNodes.length * slider.getHeight());
     slider.setTitle(parameter.valueName);
     return this.addChild(slider);
   };
 
-  ParameterConfigPanel.prototype.clear = function() {
-    return this.children = [];
+  ParameterConfigPanel.prototype.show = function(tip) {
+    var backup, i, param, _i, _len, _ref,
+      _this = this;
+
+    if (tip.parameters != null) {
+      backup = {};
+      _ref = tip.parameters;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        param = _ref[i];
+        backup[i] = param.getValue();
+        if (param._onValueChanged != null) {
+          param._onValueChanged = param.onValueChanged;
+          param.onValueChanged = function() {
+            this._onValueChanged();
+            return tip.setDescription(tip.code.mkDescription());
+          };
+        }
+        this.addParameter(param);
+      }
+      Game.instance.vpl.ui.configPanel.setContent(this);
+      Game.instance.vpl.ui.configPanel.show(tip);
+      return Game.instance.vpl.ui.configPanel.onClosed = function(closedWithOK) {
+        var _j, _len1, _ref1;
+
+        if (closedWithOK) {
+          tip.icon = tip.getIcon();
+          tip.setDescription(tip.code.mkDescription());
+        } else {
+          _ref1 = tip.parameters;
+          for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+            param = _ref1[i];
+            param.setValue(backup[i]);
+          }
+        }
+        return param.onParameterComplete();
+      };
+    }
   };
 
   return ParameterConfigPanel;
 
-})(UISpriteComponent);
+})(Group);

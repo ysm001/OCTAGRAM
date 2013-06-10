@@ -4,6 +4,7 @@
     for arg in arguments
         document.write('<script type="text/javascript" src="'+d+arg+'"></script>')
 )(
+	"vpl/sprite.group.js",
 	"vpl/tip.model.js",
 	"vpl/tip.instruction.js",
 	"vpl/tip.instruction.stack.js",
@@ -13,6 +14,8 @@
 	"vpl/tip.effect.js",
 	"vpl/transition.js",
 	"vpl/tip.view.js",
+	"vpl/tip.icon.js",
+	"vpl/tip.parameter.js",
 	"vpl/tip.factory.js",
 	"vpl/instruction.preset.js",
 	"vpl/ui.js",
@@ -21,6 +24,7 @@
 	"vpl/cpu.executer.js",
 	"vpl/error-checker.js",
 	"vpl/ui.slider.js",
+	"vpl/ui.sidebar.js",
 	"vpl/ui.config.js",
 	"vpl/main.js"
 )

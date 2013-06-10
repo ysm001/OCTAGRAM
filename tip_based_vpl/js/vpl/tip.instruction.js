@@ -34,11 +34,11 @@ Instruction = (function() {
   Instruction.prototype.addParameter = function(param) {
     var _this = this;
 
-    param.onValueChanged = function() {
-      return _this.onParameterChanged(param);
-    };
     param.onParameterComplete = function() {
       return _this.onParameterComplete(param);
+    };
+    param.onValueChanged = function() {
+      return _this.onParameterChanged(param);
     };
     param.mkLabel = function() {
       return _this.mkLabel(param);

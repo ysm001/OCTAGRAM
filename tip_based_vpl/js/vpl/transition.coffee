@@ -7,18 +7,6 @@ class TipTransition extends Sprite
     @image = image
     @link(@src, @dst)
 
-    @addEventListener('touchmove', (e) ->
-      evt = document.createEvent('UIEvent', false)
-      evt.initUIEvent('changeTransitionDir', true, true)
-      evt.x = e.x
-      evt.y = e.y
-      evt.transition = this
-      document.dispatchEvent(evt)
-      @onDirectionChanged(evt)
-    )
-
-    LayerUtil.setOrder(this, LayerOrder.transition)
-
   link : (src, dst) ->
     pos = @calcPosition(src, dst)
     theta = @calcRotation(src, dst)
@@ -28,8 +16,8 @@ class TipTransition extends Sprite
   calcPosition : (src, dst) ->
     dx = dst.x - src.x
     dy = dst.y - src.y
-    x = src.x + dx/2 + @image.width/2
-    y = src.y + dy/2 + @image.height/2
+    x = dx/2 + @image.width/2
+    y = dy/2 + @image.height/2
     {x:x, y:y}
 
   calcRotation : (src, dst) ->
@@ -40,6 +28,7 @@ class TipTransition extends Sprite
     theta = Math.acos(cos) * 180 / Math.PI
     if dy < 0 then theta *= -1
     theta
+
   rotateToDirection : (theta) ->
     if       -22.5 < theta <=   22.5 then Direction.right
     else if   22.5 < theta <=   67.5 then Direction.rightDown
@@ -50,10 +39,34 @@ class TipTransition extends Sprite
     else if  -67.5 < theta <=  -22.5 then Direction.rightUp
     else if theta > 157.5 || theta <= -157.5 <= 22.5 then Direction.left
 
-  onDirectionChanged : (e) ->
+  ontouchmove : (e) ->
+    tip = TipFactory.createEmptyTip()
 
-  hide : () -> Game.instance.currentScene.removeChild(this)
-  show : () -> Game.instance.currentScene.addChild(this)
+    src = {
+      x: @src.x + tip.getWidth() / 2,
+      y: @src.y + tip.getHeight() / 2
+    }
+
+    theta  = @calcRotation(src, e)
+    dir    = @rotateToDirection(theta)
+    srcIdx = @src.getIndex()
+
+    nx  = srcIdx.x + dir.x
+    ny  = srcIdx.y + dir.y
+
+    dst = Game.instance.vpl.cpu.getTip(nx, ny)
+
+    if dst != @dst
+      @dst = dst
+      if @src.setConseq?
+        if @instanceof AlterTransition
+          @src.setAlter(nx, ny, dst)
+        else 
+          @src.setConseq(nx, ny, dst)
+      else @src.setNext(nx, ny, dst)
+
+  hide : (parent) -> @parentNode.removeChild(this)
+  show : (parent) -> parent.addChild(this)
 
 #####################################################
 # 通常遷移のCV 

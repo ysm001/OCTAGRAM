@@ -12,18 +12,6 @@ TipTransition = (function(_super) {
     TipTransition.__super__.constructor.call(this, image.width, image.height);
     this.image = image;
     this.link(this.src, this.dst);
-    this.addEventListener('touchmove', function(e) {
-      var evt;
-
-      evt = document.createEvent('UIEvent', false);
-      evt.initUIEvent('changeTransitionDir', true, true);
-      evt.x = e.x;
-      evt.y = e.y;
-      evt.transition = this;
-      document.dispatchEvent(evt);
-      return this.onDirectionChanged(evt);
-    });
-    LayerUtil.setOrder(this, LayerOrder.transition);
   }
 
   TipTransition.prototype.link = function(src, dst) {
@@ -40,8 +28,8 @@ TipTransition = (function(_super) {
 
     dx = dst.x - src.x;
     dy = dst.y - src.y;
-    x = src.x + dx / 2 + this.image.width / 2;
-    y = src.y + dy / 2 + this.image.height / 2;
+    x = dx / 2 + this.image.width / 2;
+    y = dy / 2 + this.image.height / 2;
     return {
       x: x,
       y: y
@@ -81,14 +69,40 @@ TipTransition = (function(_super) {
     }
   };
 
-  TipTransition.prototype.onDirectionChanged = function(e) {};
+  TipTransition.prototype.ontouchmove = function(e) {
+    var dir, dst, nx, ny, src, srcIdx, theta, tip;
 
-  TipTransition.prototype.hide = function() {
-    return Game.instance.currentScene.removeChild(this);
+    tip = TipFactory.createEmptyTip();
+    src = {
+      x: this.src.x + tip.getWidth() / 2,
+      y: this.src.y + tip.getHeight() / 2
+    };
+    theta = this.calcRotation(src, e);
+    dir = this.rotateToDirection(theta);
+    srcIdx = this.src.getIndex();
+    nx = srcIdx.x + dir.x;
+    ny = srcIdx.y + dir.y;
+    dst = Game.instance.vpl.cpu.getTip(nx, ny);
+    if (dst !== this.dst) {
+      this.dst = dst;
+      if (this.src.setConseq != null) {
+        if (this["instanceof"](AlterTransition)) {
+          return this.src.setAlter(nx, ny, dst);
+        } else {
+          return this.src.setConseq(nx, ny, dst);
+        }
+      } else {
+        return this.src.setNext(nx, ny, dst);
+      }
+    }
   };
 
-  TipTransition.prototype.show = function() {
-    return Game.instance.currentScene.addChild(this);
+  TipTransition.prototype.hide = function(parent) {
+    return this.parentNode.removeChild(this);
+  };
+
+  TipTransition.prototype.show = function(parent) {
+    return parent.addChild(this);
   };
 
   return TipTransition;

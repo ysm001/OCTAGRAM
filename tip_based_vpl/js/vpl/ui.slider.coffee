@@ -1,47 +1,44 @@
-class Slider extends UISpriteComponent
+class Slider extends SpriteGroup
   constructor : (@min, @max, @step, @value) ->
     super(Resources.get("slider"))
-    @knob = new SliderKnob(this)
-    #@value = 0
 
-    @label = new UITextComponent(this, "")#new Label("")
+    @titleWidth = 128 
     labelPaddingY = 4
     labelPaddingX = 12
 
-    @titleWidth = 128 
-    @title = new UITextComponent(this, "")
-    @title.moveTo(@x - @titleWidth, @y + labelPaddingY)
+    @knob = new ImageSprite(Resources.get("sliderKnob"))
+    @knob.touchEnabled = false
+
+    @label = new TextLabel("")
+    @title = new TextLabel("")
+
+    @knob.moveTo(0, @knob.width / 2)
+    @title.moveTo(-@titleWidth, labelPaddingY)
+    @label.moveTo(@getWidth() + labelPaddingX, labelPaddingY)
+
     @title.width = @titleWidth
 
-    #@moveTo(x, y)
-    @knob.moveTo(@x, @y + @knob.width / 2)
-    @label.moveTo(@x + @width + labelPaddingX, @y + labelPaddingY)
-
-    @knob.addEventListener('touchstart', (e) ->
-    )
-
-    @knob.addEventListener('touchmove', (e) =>
-      x = e.x
-      if x < @x then x = @x
-      if x > (@x + @width) then x = @x + @width
-
-      value = @positionToValue(x)
-      @scroll(value)
-    )
-
-    @knob.addEventListener('touchend', (e) ->)
-
-    @addEventListener('touchstart', (e) ->
-      value = @positionToValue(e.x)
-      @scroll(value)
-    )
     @scroll(@value)
 
-    LayerUtil.setOrder(this, LayerOrder.dialogUI)
-
+    @addChild(@sprite)
     @addChild(@knob)
     @addChild(@label)
     @addChild(@title)
+
+  ontouchstart : (e) ->
+    x = e.x - @getAbsolutePosition().x
+    value = @positionToValue(x)
+    @scroll(value)
+
+  ontouchmove : (e) ->
+    x = e.x - @getAbsolutePosition().x
+    if x < 0 then x = 0 
+    if x > @getWidth() then x = @getWidth()
+
+    value = @positionToValue(x)
+    @scroll(value)
+
+  onValueChanged : () -> @setText(@value)
 
   setTitle : (title) -> @title.text = title
 
@@ -49,14 +46,12 @@ class Slider extends UISpriteComponent
     @value = value
     @onValueChanged()
 
-  onValueChanged : () -> @setText(@value)
-
   setText : (text) -> @label.text = text
 
   scroll : (value) ->
     @value = @adjustValue(value)
     x = @valueToPosition(@value)
-    @knob.moveTo(x - @knob.width/2, @y + @knob.height / 2)
+    @knob.moveTo(x - @knob.width/2, @knob.height / 2)
     @onValueChanged()
 
   adjustValue : (value) ->
@@ -74,14 +69,9 @@ class Slider extends UISpriteComponent
   valueToPosition : (value) ->
     range = @max - @min
     val = value - @min
-    x = @x + @width * (val / range) 
+    x = @getWidth() * (val / range) 
 
   positionToValue : (x) ->
-    normValue = (x - @x) / @width
+    normValue = x / @getWidth()
     @min + normValue * (@max - @min)
-
-class SliderKnob extends UISpriteComponent
-  constructor : (@parent) ->
-   super(Resources.get("sliderKnob"))
-   LayerUtil.setOrder(this, LayerOrder.dialogUI)
 

@@ -1,61 +1,42 @@
 #####################################################
 # チップ選択時のエフェクト
 #####################################################
-class SelectedEffect extends Sprite
+class SelectedEffect extends ImageSprite
   constructor : () ->
-    image = Resources.get("selectedEffect")
-    super(image.width, image.height)
-    @image = image
+    super(Resources.get("selectedEffect"))
     @visible = false
-    @dragMode = false
-
-    @addEventListener('touchstart', (e) => @parent.dispatchEvent(e))
-    @addEventListener('touchmove', (e) => @parent.dispatchEvent(e))
-    @addEventListener('touchend', (e) => @parent.dispatchEvent(e))
-
-    LayerUtil.setOrder(this, LayerOrder.tipEffect)
+    @touchEnabled = false
 
   show : (parent) ->
-    @parent = parent
-    @moveTo(@parent.x, @parent.y)
-
-    @hide() if @visible
     @visible = true
-
-    Game.instance.currentScene.addChild(this)
+    parent.addChild(this)
 
   hide : () ->
     @visible = false
-    Game.instance.currentScene.removeChild(this)
+    @parentNode.removeChild(this)
 
-class ExecutionEffect extends Sprite
+class ExecutionEffect extends ImageSprite
   @fadeTime = 400
-  constructor : (@parent) ->
-    image = Resources.get("execEffect")
-    super(image.width, image.height)
-    @image = image
+
+  constructor : () ->
+    super(Resources.get("execEffect"))
     @visible = false
     @busy = false
     @tl.setTimeBased()
-    #@addEventListener('touchstart', => @hide())
 
-    LayerUtil.setOrder(this, LayerOrder.tipEffect)
-
-  show : () ->
-    @moveTo(@parent.x, @parent.y)
-
+  show : (parent) ->
     @tl.clear()
     @opacity = 1
-    Game.instance.currentScene.addChild(this) if !@busy && !@visible
+    parent.addChild(this) if !@busy && !@visible
     @visible = true
 
   hide : () ->
     if @visible
       @tl.clear()
       @busy = true
-      @tl.fadeOut(ExecutionEffect.fadeTime).then(
-        () =>
-          Game.instance.currentScene.removeChild(this)
-          @busy = false
-          @visible = false
-          )
+      @tl.fadeOut(ExecutionEffect.fadeTime).then(@_hide)
+
+  _hide : () =>
+    @busy = false
+    @visible = false
+    @parentNode.removeChild(this)

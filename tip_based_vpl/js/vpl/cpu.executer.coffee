@@ -22,7 +22,6 @@ class Executer
     if !tip.isAsynchronous() 
       setTimeout(@execNext, Executer.latency)
 
-
   execute : () ->
     tip = @cpu.getStartTip()
     @_execute(tip)
