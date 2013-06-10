@@ -3,7 +3,7 @@ counter = 0
 
 generateTestCode = () ->
 
-executeTestCode = () -> executer.execute()
+executeTestCode = () -> Game.instance.vpl.executer.execute()
 
 ###
 class CounterIncrementInstruction extends ActionInstruction

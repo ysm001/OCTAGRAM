@@ -53,6 +53,7 @@ class Cpu extends Group
 
   addTip : (sx, sy, dir, newTip) -> 
     @replaceTip(newTip, sx + dir.x, sy + dir.y)
+
   putStartTip : (x, y) ->
     start = new SingleTransitionCodeTip(new StartTip)
     returnTip = TipFactory.createReturnTip(@sx, @sy) 
@@ -118,21 +119,25 @@ class Cpu extends Group
 
   insertTipOnNearestPosition : (tip) ->
     nearest = @getNearestIndex(tip)
-    #@insertNewTip(nearest.x, nearest.y, tip)
     @insertNewTip(nearest.x, nearest.y, tip)
 
   changeTransitionDirEventHandler : (e) ->
     tip = TipFactory.createEmptyTip()
+
     src = {
       x: e.transition.src.x + tip.getWidth() / 2,
       y: e.transition.src.y + tip.getHeight() / 2
     }
+
     theta = e.transition.calcRotation(src, e)
     dir = e.transition.rotateToDirection(theta)
     srcIdx = e.transition.src.getIndex()
+
     nx  = srcIdx.x + dir.x
     ny  = srcIdx.y + dir.y
+
     dst = @getTip(nx, ny)
+
     if dst != e.transition.dst
       e.transition.dst = dst
       if e.transition.src.setConseq?

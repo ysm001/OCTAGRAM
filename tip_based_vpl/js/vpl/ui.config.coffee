@@ -14,13 +14,8 @@ class ParameterSlider extends Slider
     @setText(@parameter.mkLabel())
 
 class ParameterConfigPanel extends Group 
-  #constructor : () ->
-    #super(Resources.get("dummy"))
-
   addParameter : (parameter) -> 
     slider = new ParameterSlider(parameter)
     slider.moveTo(slider.titleWidth, @childNodes.length * slider.getHeight())
     slider.setTitle(parameter.valueName)
     @addChild(slider)
-
-  #clear : () -> @children = []

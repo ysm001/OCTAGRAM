@@ -1,4 +1,4 @@
-class Slider extends SpriteGroup#UISpriteComponent
+class Slider extends SpriteGroup
   constructor : (@min, @max, @step, @value) ->
     super(Resources.get("slider"))
 

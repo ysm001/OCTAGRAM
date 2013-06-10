@@ -8,8 +8,7 @@ class TipTransition extends Sprite
     @link(@src, @dst)
 
     @addEventListener('touchmove', (e) ->
-      evt = document.createEvent('UIEvent', false)
-      evt.initUIEvent('changeTransitionDir', true, true)
+      evt = EventUtil.createEvent('changeTransitionDir')
       evt.x = e.x
       evt.y = e.y
       evt.transition = this

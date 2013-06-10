@@ -40,11 +40,6 @@ class SideTipSelector extends SpriteGroup
     @tipGroup.addChild(uiTip)
     @updateVisibility()
 
-  hideOuter : (tip) ->
-    opacity = if @isOut(tip) then 0 else 1
-    tip.opacity = opacity 
-    tip.icon.opacity = opacity if tip.icon? 
-
   updateVisibility : () ->
     for tip, i in @tipGroup.childNodes
       tip.setVisible(!@isOuterIndex(i))

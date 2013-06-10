@@ -60,16 +60,6 @@ SideTipSelector = (function(_super) {
     return this.updateVisibility();
   };
 
-  SideTipSelector.prototype.hideOuter = function(tip) {
-    var opacity;
-
-    opacity = this.isOut(tip) ? 0 : 1;
-    tip.opacity = opacity;
-    if (tip.icon != null) {
-      return tip.icon.opacity = opacity;
-    }
-  };
-
   SideTipSelector.prototype.updateVisibility = function() {
     var i, tip, _i, _len, _ref, _results;
 

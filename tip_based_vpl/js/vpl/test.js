@@ -6,7 +6,7 @@ counter = 0;
 generateTestCode = function() {};
 
 executeTestCode = function() {
-  return executer.execute();
+  return Game.instance.vpl.executer.execute();
 };
 
 /*

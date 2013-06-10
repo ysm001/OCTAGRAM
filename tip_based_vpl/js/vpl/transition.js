@@ -15,8 +15,7 @@ TipTransition = (function(_super) {
     this.addEventListener('touchmove', function(e) {
       var evt;
 
-      evt = document.createEvent('UIEvent', false);
-      evt.initUIEvent('changeTransitionDir', true, true);
+      evt = EventUtil.createEvent('changeTransitionDir');
       evt.x = e.x;
       evt.y = e.y;
       evt.transition = this;

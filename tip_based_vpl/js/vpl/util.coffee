@@ -25,43 +25,8 @@ class TipUtil
      else if code instanceof WallTip   then TextResource.msg["wall"]
      else if code instanceof NopTip    then TextResource.msg["nop"]
 
-class LayerUtil
-  #@layers = []
-
-  ###
-  @initialize : (@layerNum) ->
-    @layers = []
-    for i in [0..@layerNum]
-      layer = new Group()
-      LayerUtil.layers.push(layer)
-      Game.instance.currentScene.addChild(layer)
-  ###
-
-  @setOrder : (obj, order) ->
-    #LayerUtil.layers[order].addChild(obj)
-    ###
-    obj._element = document.createElement("div") if !obj._element?
-    obj._element.style.zIndex = order
-    ###
-
 class EventUtil
-  createEvent : (eventName) ->
+  @createEvent : (eventName) ->
     evt = document.createEvent('UIEvent', false)
     evt.initUIEvent(eventName, true, true)
     evt
-
-###
-clone = (src) ->
-  if src?
-    if src.constructor is String then return src
-    ret = 
-      if src.constructor is Array then []
-      else if src.constructor is Object then {}
-      else src#src.constructor()
-    #if !ret? then ret = src
-
-    for key of src
-      ret[key] = clone(src[key])
-
-    ret
-###

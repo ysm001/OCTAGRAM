@@ -15,6 +15,9 @@ class Direction
   @rightUp   = new Point( 1,-1)
   @rightDown = new Point( 1, 1)
 
+  @toDirection : (x, y) -> new Point(x, y)
+
+###
   @toDirection : (x, y) -> 
     if x == -1 && y ==  0 then Direction.left
     else if x ==  1 && y ==  0 then Direction.right
@@ -24,11 +27,12 @@ class Direction
     else if x == -1 && y ==  1 then Direction.leftDown
     else if x ==  1 && y == -1 then Direction.rightUp
     else if x ==  1 && y ==  1 then Direction.rightDown
+###
 
 #####################################################
 # チップのCV 
 #####################################################
-class CodeTip extends SpriteGroup#Sprite
+class CodeTip extends SpriteGroup
   @selectedEffect = null 
   @selectedInstance = null
   @clonedTip = null
@@ -88,12 +92,12 @@ class CodeTip extends SpriteGroup#Sprite
     x>xs && x<xe && y>ys && y<ye
 
   select : () =>
-    GlobalUI.help.setText(@description)
+    Game.instance.vpl.ui.help.setText(@description)
     @isFirstClick = !@isSelected()
     @showSelectedEffect()
 
   unselect : () ->
-    GlobalUI.help.setText("")
+    Game.instance.vpl.ui.help.setText("")
     @hideSelectedEffect()
 
   execute : () -> if @code? then @code.execute() else null
@@ -145,10 +149,10 @@ class CodeTip extends SpriteGroup#Sprite
 
         content.addParameter(param)
 
-      GlobalUI.configPanel.setContent(content)
-      GlobalUI.configPanel.show(this)
+      Game.instance.vpl.ui.configPanel.setContent(content)
+      Game.instance.vpl.ui.configPanel.show(this)
 
-      GlobalUI.configPanel.onClosed = (closedWithOK) =>
+      Game.instance.vpl.ui.configPanel.onClosed = (closedWithOK) =>
         if closedWithOK 
           #@updateIcon() 
           @icon = @getIcon()
@@ -176,16 +180,16 @@ class CodeTip extends SpriteGroup#Sprite
         if icon? then new Icon(icon) else null
     @icon
 
-  setDescription : (desc) ->
-    @description = desc
-    @onDescriptionChanged()
-
   setIcon : (icon) -> 
     @icon = icon
     @icon.fitPosition()
 
+  setDescription : (desc) ->
+    @description = desc
+    @onDescriptionChanged()
+
   onDescriptionChanged : () ->
-    if @isSelected() then GlobalUI.help.setText(@description)
+    if @isSelected() then Game.instance.vpl.ui.help.setText(@description)
 
   setIndex : (idxX, idxY) -> @code.index = {x: idxX, y: idxY}
   getIndex : () -> @code.index
@@ -201,6 +205,15 @@ class CodeTip extends SpriteGroup#Sprite
 
     obj
 
+class GhostCodeTip extends CodeTip
+  constructor : (tip) ->
+    super(tip.code)
+    tip.copy(this)
+
+    @sprite.opacity = 0.5
+    @icon.opacity = 0.5 if tip.icon?
+    @moveTo(tip.x, tip.y)
+    @sprite.touchEnabled = false
 #####################################################
 # SingleTransitionTipのCV 
 #####################################################
@@ -291,33 +304,5 @@ class Icon extends Sprite
     obj.frame = @frame 
     obj
 
-#####################################################
-# SingleTransitionTipのCV 
-#####################################################
-class TipParameter
-  constructor : (@valueName, @value, @min, @max, @step, @id) ->
-    @text = ""
-
-  setValue : (value) ->
-    @value = value
-    @text = toString()
-    @onValueChanged()
-
-  getValue : () -> @value
-
-  onValueChanged : () ->
-  mkLabel : () ->
-
-  clone : () -> @copy(new TipParameter(@valueName, @value, @min, @max, @step))
-  copy : (obj) ->
-    obj.valueName = @valueName
-    obj.value = @value
-    obj.min = @min
-    obj.max = @max
-    obj.step = @step
-    obj.id = @id
-    obj
-
-  toString : () -> @value.toString()
 
 
