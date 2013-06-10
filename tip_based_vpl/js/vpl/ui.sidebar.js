@@ -4,93 +4,83 @@ var SideTipSelector,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 SideTipSelector = (function(_super) {
+  var VISIBLE_TIP_COUNT;
+
   __extends(SideTipSelector, _super);
 
-  function SideTipSelector(x, y, parent) {
-    var _this = this;
+  VISIBLE_TIP_COUNT = 8;
 
-    this.parent = parent;
-    SideTipSelector.__super__.constructor.call(this, Resources.get("sidebar"));
-    this.tipGroup = new Group();
-    this.padding = 56;
-    this.capacity = 8;
-    this.scrollPosition = 0;
-    this.topArrow = new ImageSprite(Resources.get("arrow"));
-    this.bottomArrow = new ImageSprite(Resources.get("arrow"));
-    this.topArrow.rotate(-90);
-    this.bottomArrow.rotate(90);
+  function SideTipSelector(x, y) {
+    var background, bottomArrow, tipHeight, topArrow,
+      _this = this;
+
+    SideTipSelector.__super__.constructor.call(this, 160, 500);
     this.moveTo(x, y);
-    this.topArrow.moveTo(this.sprite.width / 2 - this.topArrow.width / 2, 0);
-    this.bottomArrow.moveTo(this.getWidth() / 2 - this.bottomArrow.width / 2, this.getHeight() - this.bottomArrow.height);
-    this.addChild(this.sprite);
+    this.scrollPosition = 0;
+    background = new ImageSprite(Resources.get('sidebar'));
+    this.addChild(background);
+    tipHeight = Resources.get("emptyTip").height;
+    topArrow = new ImageSprite(Resources.get('arrow'));
+    topArrow.rotate(-90);
+    topArrow.moveTo((this.width - topArrow.width) / 2, 0);
+    topArrow.on(Event.TOUCH_START, function() {
+      if (_this.scrollPosition <= 0) {
+        return;
+      }
+      _this.scrollPosition -= 1;
+      _this.tipGroup.moveBy(0, tipHeight);
+      return _this._updateVisibility();
+    });
+    this.addChild(topArrow);
+    bottomArrow = new ImageSprite(Resources.get('arrow'));
+    bottomArrow.rotate(90);
+    bottomArrow.moveTo((this.width - bottomArrow.width) / 2, this.height - bottomArrow.height);
+    bottomArrow.on(Event.TOUCH_START, function() {
+      if (_this.scrollPosition > _this._getTipCount() - VISIBLE_TIP_COUNT - 1) {
+        return;
+      }
+      _this.scrollPosition += 1;
+      _this.tipGroup.moveBy(0, -tipHeight);
+      return _this._updateVisibility();
+    });
+    this.addChild(bottomArrow);
+    this.tipGroup = new EntityGroup(64, 0);
+    this.tipGroup.backgroundColor = '#ff0000';
+    this.tipGroup.moveTo(topArrow.x, topArrow.y + topArrow.height);
     this.addChild(this.tipGroup);
-    this.addChild(this.topArrow);
-    this.addChild(this.bottomArrow);
-    this.topArrow.addEventListener('touchstart', function() {
-      return _this.scrollDown();
-    });
-    this.bottomArrow.addEventListener('touchstart', function() {
-      return _this.scrollUp();
-    });
   }
 
   SideTipSelector.prototype.addTip = function(tip) {
-    var uiTip;
+    var tipCount, uiTip;
 
+    tipCount = this._getTipCount();
     uiTip = tip.clone();
-    uiTip.moveTo(this.padding, this.padding + this.getTipNum() * tip.getHeight());
-    uiTip.setVisible(false);
-    this.tipGroup.addChild(uiTip);
-    return this.updateVisibility();
-  };
-
-  SideTipSelector.prototype.updateVisibility = function() {
-    var i, tip, _i, _len, _ref, _results;
-
-    _ref = this.tipGroup.childNodes;
-    _results = [];
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      tip = _ref[i];
-      _results.push(tip.setVisible(!this.isOuterIndex(i)));
+    if (tipCount >= VISIBLE_TIP_COUNT) {
+      uiTip.setVisible(false);
     }
-    return _results;
+    uiTip.moveTo(8, -6 + tipCount * tip.getHeight());
+    return this.tipGroup.addChild(uiTip);
   };
 
-  SideTipSelector.prototype.getTipNum = function() {
+  SideTipSelector.prototype._getTipCount = function() {
     return this.tipGroup.childNodes.length;
   };
 
-  SideTipSelector.prototype.isUpScrollable = function() {
-    var rest;
+  SideTipSelector.prototype._updateVisibility = function() {
+    var update,
+      _this = this;
 
-    rest = this.getTipNum() - this.scrollPosition;
-    return rest > this.capacity;
-  };
-
-  SideTipSelector.prototype.isOuterIndex = function(index) {
-    return index < this.scrollPosition || index >= (this.capacity + this.scrollPosition);
-  };
-
-  SideTipSelector.prototype.isDownScrollable = function() {
-    return this.scrollPosition > 0;
-  };
-
-  SideTipSelector.prototype.scrollUp = function() {
-    if (this.isUpScrollable()) {
-      this.scrollPosition += 1;
-      this.tipGroup.moveBy(0, -Resources.get("emptyTip").height);
-      return this.updateVisibility();
-    }
-  };
-
-  SideTipSelector.prototype.scrollDown = function() {
-    if (this.isDownScrollable()) {
-      this.scrollPosition -= 1;
-      this.tipGroup.moveBy(0, Resources.get("emptyTip").height);
-      return this.updateVisibility();
-    }
+    update = function(index, flag) {
+      if ((0 <= index && index < _this._getTipCount())) {
+        return _this.tipGroup.childNodes[index].setVisible(flag);
+      }
+    };
+    update(this.scrollPosition - 1, false);
+    update(this.scrollPosition + VISIBLE_TIP_COUNT, false);
+    update(this.scrollPosition, true);
+    return update(this.scrollPosition + VISIBLE_TIP_COUNT - 1, true);
   };
 
   return SideTipSelector;
 
-})(SpriteGroup);
+})(EntityGroup);

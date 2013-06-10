@@ -1,64 +1,76 @@
-class SideTipSelector extends SpriteGroup
-  constructor : (x, y, @parent) -> 
-    super(Resources.get("sidebar"))
-   
-    @tipGroup = new Group()
-    @padding = 56 
-    @capacity = 8 
-    @scrollPosition = 0
+class SideTipSelector extends EntityGroup
+  VISIBLE_TIP_COUNT = 8
 
-    @topArrow = new ImageSprite(Resources.get("arrow")) 
-    @bottomArrow = new ImageSprite(Resources.get("arrow")) 
-    @topArrow.rotate(-90)
-    @bottomArrow.rotate(90)
+  constructor: (x, y) ->
+    super(160, 500)
 
     @moveTo(x, y)
+    @scrollPosition = 0
 
-    @topArrow.moveTo(@sprite.width/2 - @topArrow.width/2, 0)
-    @bottomArrow.moveTo(@getWidth()/2 - @bottomArrow.width/2, 
-      @getHeight() - @bottomArrow.height)
 
-    @addChild(@sprite)
+    # create background
+    background = new ImageSprite(Resources.get('sidebar'))
+    @addChild(background)
+
+
+    tipHeight = Resources.get("emptyTip").height
+
+    # create top arrow
+    topArrow = new ImageSprite(Resources.get('arrow'))
+    topArrow.rotate(-90)
+    topArrow.moveTo((@width - topArrow.width) / 2, 0)
+    topArrow.on(Event.TOUCH_START, =>
+      return if @scrollPosition <= 0
+      @scrollPosition -= 1
+      @tipGroup.moveBy(0, tipHeight)
+      @_updateVisibility()
+    )
+    @addChild(topArrow)
+
+
+    # create bottom arrow
+    bottomArrow = new ImageSprite(Resources.get('arrow'))
+    bottomArrow.rotate(90)
+    bottomArrow.moveTo((@width - bottomArrow.width)/2, @height - bottomArrow.height)
+    bottomArrow.on(Event.TOUCH_START, =>
+      return if @scrollPosition > @_getTipCount() - VISIBLE_TIP_COUNT - 1
+      @scrollPosition += 1
+      @tipGroup.moveBy(0, -tipHeight)
+      @_updateVisibility()
+    )
+    @addChild(bottomArrow)
+
+
+    # create tip group
+    @tipGroup = new EntityGroup(64, 0)
+    @tipGroup.backgroundColor = '#ff0000'
+    @tipGroup.moveTo(topArrow.x, topArrow.y + topArrow.height)
     @addChild(@tipGroup)
-    @addChild(@topArrow)
-    @addChild(@bottomArrow)
 
-    @topArrow.addEventListener('touchstart', () => @scrollDown())
-    @bottomArrow.addEventListener('touchstart', () => @scrollUp())
 
-  addTip : (tip) -> 
+  addTip: (tip) ->
+    tipCount = @_getTipCount()
+
     uiTip = tip.clone()
-    uiTip.moveTo(@padding, @padding + @getTipNum() * tip.getHeight())
-    uiTip.setVisible(false)
+    uiTip.setVisible(false) if tipCount >= VISIBLE_TIP_COUNT
+    uiTip.moveTo(8, -6 + tipCount * tip.getHeight())
 
     @tipGroup.addChild(uiTip)
-    @updateVisibility()
 
-  updateVisibility : () ->
-    for tip, i in @tipGroup.childNodes
-      tip.setVisible(!@isOuterIndex(i))
 
-  getTipNum : () -> @tipGroup.childNodes.length
+  _getTipCount: ->
+    @tipGroup.childNodes.length
 
-  isUpScrollable : () -> 
-    rest = @getTipNum() - @scrollPosition
-    rest > @capacity
 
-  isOuterIndex : (index) ->
-    index < @scrollPosition || index >= (@capacity + @scrollPosition)
+  _updateVisibility: ->
+    update = (index, flag) =>
+      @tipGroup.childNodes[index].setVisible(flag) if 0 <= index < @_getTipCount()
 
-  isDownScrollable : () -> @scrollPosition > 0
+    # hide outside
+    update(@scrollPosition - 1, false)
+    update(@scrollPosition + VISIBLE_TIP_COUNT, false)
 
-  scrollUp : () ->
-    if @isUpScrollable()
-      @scrollPosition += 1
-      @tipGroup.moveBy(0, -Resources.get("emptyTip").height)
-      @updateVisibility()
-
-  scrollDown : () ->
-    if @isDownScrollable()
-      @scrollPosition -= 1
-      @tipGroup.moveBy(0, Resources.get("emptyTip").height)
-      @updateVisibility()
-
+    # show inside
+    update(@scrollPosition, true)
+    update(@scrollPosition + VISIBLE_TIP_COUNT - 1, true)
 
