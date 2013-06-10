@@ -7,8 +7,6 @@ Cpu = (function(_super) {
   __extends(Cpu, _super);
 
   function Cpu(x, y, xnum, ynum, startIdx) {
-    var _this = this;
-
     this.xnum = xnum;
     this.ynum = ynum;
     Cpu.__super__.constructor.call(this, Resources.get("dummy"));
@@ -16,15 +14,6 @@ Cpu = (function(_super) {
     this.sx = startIdx;
     this.sy = -1;
     this.createTips(x, y);
-    document.addEventListener("changeTransitionDir", function(e) {
-      return _this.changeTransitionDirEventHandler(e);
-    });
-    document.addEventListener('insertNewTip', function(e) {
-      return _this.insertNewTip(e.x, e.y, e.tip);
-    });
-    document.addEventListener('copyTip', function(e) {
-      return _this.insertTipOnNearestPosition(e.tip);
-    });
   }
 
   Cpu.prototype.putTip = function(sx, sy, dir, newTip) {
@@ -131,7 +120,7 @@ Cpu = (function(_super) {
     }
   };
 
-  Cpu.prototype.getNearestIndex = function(tip) {
+  Cpu.prototype.getNearestIndex = function(x, y) {
     var dist, dx, dy, i, j, minDist, minX, minY, tmp, _i, _j, _ref, _ref1;
 
     minDist = 0xffffffff;
@@ -140,8 +129,8 @@ Cpu = (function(_super) {
     for (i = _i = -1, _ref = this.ynum + 1; -1 <= _ref ? _i < _ref : _i > _ref; i = -1 <= _ref ? ++_i : --_i) {
       for (j = _j = -1, _ref1 = this.xnum + 1; -1 <= _ref1 ? _j < _ref1 : _j > _ref1; j = -1 <= _ref1 ? ++_j : --_j) {
         tmp = this.getTip(j, i);
-        dx = tmp.x - tip.x;
-        dy = tmp.y - tip.y;
+        dx = tmp.x - x;
+        dy = tmp.y - y;
         dist = dx * dx + dy * dy;
         if (dist < minDist) {
           minDist = dist;
@@ -156,39 +145,11 @@ Cpu = (function(_super) {
     };
   };
 
-  Cpu.prototype.insertTipOnNearestPosition = function(tip) {
+  Cpu.prototype.insertTipOnNearestPosition = function(x, y, tip) {
     var nearest;
 
-    nearest = this.getNearestIndex(tip);
+    nearest = this.getNearestIndex(x, y);
     return this.insertNewTip(nearest.x, nearest.y, tip);
-  };
-
-  Cpu.prototype.changeTransitionDirEventHandler = function(e) {
-    var dir, dst, nx, ny, src, srcIdx, theta, tip;
-
-    tip = TipFactory.createEmptyTip();
-    src = {
-      x: e.transition.src.x + tip.getWidth() / 2,
-      y: e.transition.src.y + tip.getHeight() / 2
-    };
-    theta = e.transition.calcRotation(src, e);
-    dir = e.transition.rotateToDirection(theta);
-    srcIdx = e.transition.src.getIndex();
-    nx = srcIdx.x + dir.x;
-    ny = srcIdx.y + dir.y;
-    dst = this.getTip(nx, ny);
-    if (dst !== e.transition.dst) {
-      e.transition.dst = dst;
-      if (e.transition.src.setConseq != null) {
-        if (e.transition instanceof AlterTransition) {
-          return e.transition.src.setAlter(nx, ny, dst);
-        } else {
-          return e.transition.src.setConseq(nx, ny, dst);
-        }
-      } else {
-        return e.transition.src.setNext(nx, ny, dst);
-      }
-    }
   };
 
   Cpu.prototype.getTip = function(x, y) {

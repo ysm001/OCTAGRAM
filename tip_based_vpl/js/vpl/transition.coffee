@@ -7,15 +7,6 @@ class TipTransition extends Sprite
     @image = image
     @link(@src, @dst)
 
-    @addEventListener('touchmove', (e) ->
-      evt = EventUtil.createEvent('changeTransitionDir')
-      evt.x = e.x
-      evt.y = e.y
-      evt.transition = this
-      document.dispatchEvent(evt)
-      @onDirectionChanged(evt)
-    )
-
   link : (src, dst) ->
     pos = @calcPosition(src, dst)
     theta = @calcRotation(src, dst)
@@ -48,7 +39,31 @@ class TipTransition extends Sprite
     else if  -67.5 < theta <=  -22.5 then Direction.rightUp
     else if theta > 157.5 || theta <= -157.5 <= 22.5 then Direction.left
 
-  onDirectionChanged : (e) ->
+  ontouchmove : (e) ->
+    tip = TipFactory.createEmptyTip()
+
+    src = {
+      x: @src.x + tip.getWidth() / 2,
+      y: @src.y + tip.getHeight() / 2
+    }
+
+    theta  = @calcRotation(src, e)
+    dir    = @rotateToDirection(theta)
+    srcIdx = @src.getIndex()
+
+    nx  = srcIdx.x + dir.x
+    ny  = srcIdx.y + dir.y
+
+    dst = Game.instance.vpl.cpu.getTip(nx, ny)
+
+    if dst != @dst
+      @dst = dst
+      if @src.setConseq?
+        if @instanceof AlterTransition
+          @src.setAlter(nx, ny, dst)
+        else 
+          @src.setConseq(nx, ny, dst)
+      else @src.setNext(nx, ny, dst)
 
   hide : (parent) -> @parentNode.removeChild(this)
   show : (parent) -> parent.addChild(this)

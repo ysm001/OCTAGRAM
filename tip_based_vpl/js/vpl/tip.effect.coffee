@@ -13,14 +13,13 @@ class SelectedEffect extends ImageSprite
 
   hide : () ->
     @visible = false
-    Game.instance.currentScene.removeChild(this)
+    @parentNode.removeChild(this)
 
-class ExecutionEffect extends Sprite
+class ExecutionEffect extends ImageSprite
   @fadeTime = 400
-  constructor : (@parent) ->
-    image = Resources.get("execEffect")
-    super(image.width, image.height)
-    @image = image
+
+  constructor : () ->
+    super(Resources.get("execEffect"))
     @visible = false
     @busy = false
     @tl.setTimeBased()
@@ -35,9 +34,9 @@ class ExecutionEffect extends Sprite
     if @visible
       @tl.clear()
       @busy = true
-      @tl.fadeOut(ExecutionEffect.fadeTime).then(
-        () =>
-          @parentNode.removeChild(this)
-          @busy = false
-          @visible = false
-          )
+      @tl.fadeOut(ExecutionEffect.fadeTime).then(@_hide)
+
+  _hide : () =>
+    @busy = false
+    @visible = false
+    @parentNode.removeChild(this)

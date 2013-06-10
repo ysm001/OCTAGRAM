@@ -10,13 +10,6 @@ class Cpu extends Group
 
     @createTips(x, y)
 
-    document.addEventListener("changeTransitionDir", (e) => 
-      @changeTransitionDirEventHandler(e))
-    document.addEventListener('insertNewTip', (e) =>
-      @insertNewTip(e.x, e.y, e.tip))
-    document.addEventListener('copyTip', (e) =>
-      @insertTipOnNearestPosition(e.tip))
-
   putTip : (sx, sy, dir, newTip) ->
     dx = sx + dir.x
     dy = sy + dir.y
@@ -101,15 +94,15 @@ class Cpu extends Group
     else
       @putSingleTip(x, y, newTip)
 
-  getNearestIndex : (tip) ->
+  getNearestIndex : (x, y) ->
     minDist = 0xffffffff
     minX = -1
     minY = -1
     for i in [-1...@ynum+1]
       for j in [-1...@xnum+1]
         tmp = @getTip(j, i)
-        dx = tmp.x - tip.x
-        dy = tmp.y - tip.y
+        dx = tmp.x - x
+        dy = tmp.y - y
         dist = dx*dx + dy*dy
         if dist < minDist
           minDist = dist
@@ -117,35 +110,9 @@ class Cpu extends Group
           minY = i
     {x: minX, y: minY}
 
-  insertTipOnNearestPosition : (tip) ->
-    nearest = @getNearestIndex(tip)
+  insertTipOnNearestPosition : (x, y, tip) ->
+    nearest = @getNearestIndex(x, y)
     @insertNewTip(nearest.x, nearest.y, tip)
-
-  changeTransitionDirEventHandler : (e) ->
-    tip = TipFactory.createEmptyTip()
-
-    src = {
-      x: e.transition.src.x + tip.getWidth() / 2,
-      y: e.transition.src.y + tip.getHeight() / 2
-    }
-
-    theta = e.transition.calcRotation(src, e)
-    dir = e.transition.rotateToDirection(theta)
-    srcIdx = e.transition.src.getIndex()
-
-    nx  = srcIdx.x + dir.x
-    ny  = srcIdx.y + dir.y
-
-    dst = @getTip(nx, ny)
-
-    if dst != e.transition.dst
-      e.transition.dst = dst
-      if e.transition.src.setConseq?
-        if e.transition instanceof AlterTransition
-          e.transition.src.setAlter(nx, ny, dst)
-        else 
-          e.transition.src.setConseq(nx, ny, dst)
-      else e.transition.src.setNext(nx, ny, dst)
 
   getTip : (x, y) -> @tipTable[y][x]
   setTip : (x, y, tip) -> @tipTable[y][x] = tip

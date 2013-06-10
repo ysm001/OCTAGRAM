@@ -17,32 +17,20 @@ class Direction
 
   @toDirection : (x, y) -> new Point(x, y)
 
-###
-  @toDirection : (x, y) -> 
-    if x == -1 && y ==  0 then Direction.left
-    else if x ==  1 && y ==  0 then Direction.right
-    else if x ==  0 && y == -1 then Direction.up
-    else if x ==  0 && y ==  1 then Direction.down
-    else if x == -1 && y == -1 then Direction.leftUp
-    else if x == -1 && y ==  1 then Direction.leftDown
-    else if x ==  1 && y == -1 then Direction.rightUp
-    else if x ==  1 && y ==  1 then Direction.rightDown
-###
-
 #####################################################
 # チップのCV 
 #####################################################
 class CodeTip extends SpriteGroup
   @selectedEffect = null 
-  @selectedInstance = null
+  #@selectedInstance = null
   @clonedTip = null
 
   constructor : (@code) ->
     super(TipUtil.tipToImage(@code))
     @immutable   = @code instanceof WallTip || @code instanceof StartTip
     @description = @code.mkDescription() 
+
     @isTransitionSelect = false
-    
     @icon = @getIcon()
 
     @dragMode = false
@@ -55,29 +43,6 @@ class CodeTip extends SpriteGroup
     if @icon?
       @addChild(@icon)
       @icon.fitPosition()
-
-    @addEventListener('touchstart', (e) =>
-      @isTransitionSelect = !@isInnerTip(e.x, e.y)
-      if !@isTransitionSelect
-        if @dragMode && CodeTip.clonedTip? 
-          CodeTip.clonedTip.hide()
-        @dragMode = false
-        @select()
-    )
-
-    @addEventListener('touchmove', (e) => 
-      if !@isTransitionSelect
-        if !@dragMode && !@immutable 
-          @dragMode = true
-          @dragStart(e)
-        @dragged(e) 
-    )
-    @addEventListener('touchend', (e) => 
-      if !@immutable
-        if !@dragMode && @isSelected() && !@isFirstClick then @doubleClicked()
-        else if @dragMode then @dragEnd(e)
-      CodeTip.selectedInstance = this
-    )
 
     @executionEffect = new ExecutionEffect(this)
     CodeTip.selectedEffect = new SelectedEffect() if !CodeTip.selectedEffect?
@@ -101,7 +66,7 @@ class CodeTip extends SpriteGroup
     @hideSelectedEffect()
 
   execute : () -> if @code? then @code.execute() else null
-  doubleClicked : () -> @showConfigWindow() 
+
   createGhost : () ->
     CodeTip.clonedTip.hide() if CodeTip.clonedTip?
     tip = @clone()
@@ -110,6 +75,27 @@ class CodeTip extends SpriteGroup
     tip.moveTo(@x, @y)
     tip.sprite.touchEnabled = false
     tip
+
+  ontouchstart : (e) =>
+    @isTransitionSelect = !@isInnerTip(e.x, e.y)
+    if !@isTransitionSelect
+      if @dragMode && CodeTip.clonedTip? 
+        CodeTip.clonedTip.hide()
+      @dragMode = false
+      @select()
+
+  ontouchmove : (e) => 
+    if !@isTransitionSelect
+      if !@dragMode && !@immutable 
+        @dragMode = true
+        @dragStart(e)
+      @dragged(e) 
+
+  ontouchend : (e) => 
+    if !@immutable
+      if !@dragMode && @isSelected() && !@isFirstClick then @doubleClicked()
+      else if @dragMode then @dragEnd(e)
+    CodeTip.selectedInstance = this
 
   dragStart : (e) -> 
     CodeTip.clonedTip = @createGhost()
@@ -126,14 +112,11 @@ class CodeTip extends SpriteGroup
   dragEnd : (e) -> 
     @dragMode = false
     if CodeTip.clonedTip?
-      evt = document.createEvent('UIEvent', false)
-      evt.initUIEvent('copyTip', true, true)
-      evt.tip = CodeTip.clonedTip
-      pos = evt.tip.getAbsolutePosition()
-      evt.tip.x = pos.x
-      evt.tip.y = pos.y
+      pos = CodeTip.clonedTip.getAbsolutePosition()
       CodeTip.clonedTip.hide()
-      document.dispatchEvent(evt)
+      Game.instance.vpl.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip)
+
+  doubleClicked : () -> @showConfigWindow() 
 
   showConfigWindow : () -> 
     if @parameters?
@@ -172,6 +155,10 @@ class CodeTip extends SpriteGroup
 
   isAsynchronous : () -> @code.isAsynchronous? && @code.isAsynchronous()
 
+  setIcon : (icon) -> 
+    @icon = icon
+    @icon.fitPosition()
+
   getIcon : () ->
     @icon = 
       if @code.getIcon? then @code.getIcon() 
@@ -179,10 +166,6 @@ class CodeTip extends SpriteGroup
         icon = TipUtil.tipToIcon(@code)
         if icon? then new Icon(icon) else null
     @icon
-
-  setIcon : (icon) -> 
-    @icon = icon
-    @icon.fitPosition()
 
   setDescription : (desc) ->
     @description = desc
@@ -205,15 +188,6 @@ class CodeTip extends SpriteGroup
 
     obj
 
-class GhostCodeTip extends CodeTip
-  constructor : (tip) ->
-    super(tip.code)
-    tip.copy(this)
-
-    @sprite.opacity = 0.5
-    @icon.opacity = 0.5 if tip.icon?
-    @moveTo(tip.x, tip.y)
-    @sprite.touchEnabled = false
 #####################################################
 # SingleTransitionTipのCV 
 #####################################################
@@ -279,30 +253,6 @@ class JumpTransitionCodeTip extends CodeTip
   setNext : (x, y) -> @code.setNext({x:x, y:y})
   clone : () -> @copy(new JumpTransitionCodeTip(@code.clone()))
 
-#####################################################
-# SingleTransitionTipのCV 
-#####################################################
-class Icon extends Sprite
-  constructor : (icon, width, height) ->
-    w = if width? then width else icon.width
-    h = if height? then height else icon.height
-    super(w, h)
-
-    @image = icon
-    @parent = null
-    @hidden = true
-
-    @touchEnabled = false
-
-  fitPosition : () ->
-    if @parentNode?
-      @moveTo(@parentNode.getWidth()/2 - @width/2, 
-        @parentNode.getWidth()/2 - @height/2)
-
-  clone : () -> 
-    obj = new Icon(@image, @width, @height)
-    obj.frame = @frame 
-    obj
 
 
 

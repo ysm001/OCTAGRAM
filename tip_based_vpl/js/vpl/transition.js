@@ -12,16 +12,6 @@ TipTransition = (function(_super) {
     TipTransition.__super__.constructor.call(this, image.width, image.height);
     this.image = image;
     this.link(this.src, this.dst);
-    this.addEventListener('touchmove', function(e) {
-      var evt;
-
-      evt = EventUtil.createEvent('changeTransitionDir');
-      evt.x = e.x;
-      evt.y = e.y;
-      evt.transition = this;
-      document.dispatchEvent(evt);
-      return this.onDirectionChanged(evt);
-    });
   }
 
   TipTransition.prototype.link = function(src, dst) {
@@ -79,7 +69,33 @@ TipTransition = (function(_super) {
     }
   };
 
-  TipTransition.prototype.onDirectionChanged = function(e) {};
+  TipTransition.prototype.ontouchmove = function(e) {
+    var dir, dst, nx, ny, src, srcIdx, theta, tip;
+
+    tip = TipFactory.createEmptyTip();
+    src = {
+      x: this.src.x + tip.getWidth() / 2,
+      y: this.src.y + tip.getHeight() / 2
+    };
+    theta = this.calcRotation(src, e);
+    dir = this.rotateToDirection(theta);
+    srcIdx = this.src.getIndex();
+    nx = srcIdx.x + dir.x;
+    ny = srcIdx.y + dir.y;
+    dst = Game.instance.vpl.cpu.getTip(nx, ny);
+    if (dst !== this.dst) {
+      this.dst = dst;
+      if (this.src.setConseq != null) {
+        if (this["instanceof"](AlterTransition)) {
+          return this.src.setAlter(nx, ny, dst);
+        } else {
+          return this.src.setConseq(nx, ny, dst);
+        }
+      } else {
+        return this.src.setNext(nx, ny, dst);
+      }
+    }
+  };
 
   TipTransition.prototype.hide = function(parent) {
     return this.parentNode.removeChild(this);

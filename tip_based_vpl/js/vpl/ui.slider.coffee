@@ -6,7 +6,9 @@ class Slider extends SpriteGroup
     labelPaddingY = 4
     labelPaddingX = 12
 
-    @knob = new SliderKnob(this)
+    @knob = new ImageSprite(Resources.get("sliderKnob"))
+    @knob.touchEnabled = false
+
     @label = new TextLabel("")
     @title = new TextLabel("")
 
@@ -36,13 +38,13 @@ class Slider extends SpriteGroup
     value = @positionToValue(x)
     @scroll(value)
 
+  onValueChanged : () -> @setText(@value)
+
   setTitle : (title) -> @title.text = title
 
   setValue : (value) ->
     @value = value
     @onValueChanged()
-
-  onValueChanged : () -> @setText(@value)
 
   setText : (text) -> @label.text = text
 
@@ -72,9 +74,4 @@ class Slider extends SpriteGroup
   positionToValue : (x) ->
     normValue = x / @getWidth()
     @min + normValue * (@max - @min)
-
-class SliderKnob extends ImageSprite 
-  constructor : (@parent) ->
-    super(Resources.get("sliderKnob"))
-    @touchEnabled = false
 

@@ -1,28 +1,22 @@
-class SideSelectorArrow extends GroupedSprite
-  constructor : (@parent) ->
-    image = Resources.get("arrow")
-    super(image.width, image.height)
-    @image = image
-
 class SideTipSelector extends SpriteGroup
   constructor : (x, y, @parent) -> 
     super(Resources.get("sidebar"))
    
     @tipGroup = new Group()
-
-    @moveTo(x, y)
     @padding = 56 
     @capacity = 8 
     @scrollPosition = 0
 
-    @topArrow = new SideSelectorArrow() 
-    @bottomArrow = new SideSelectorArrow() 
+    @topArrow = new ImageSprite(Resources.get("arrow")) 
+    @bottomArrow = new ImageSprite(Resources.get("arrow")) 
     @topArrow.rotate(-90)
     @bottomArrow.rotate(90)
 
+    @moveTo(x, y)
+
     @topArrow.moveTo(@sprite.width/2 - @topArrow.width/2, 0)
-    @bottomArrow.moveTo(@sprite.width/2 - @bottomArrow.width/2, 
-      @sprite.height - @bottomArrow.height)
+    @bottomArrow.moveTo(@getWidth()/2 - @bottomArrow.width/2, 
+      @getHeight() - @bottomArrow.height)
 
     @addChild(@sprite)
     @addChild(@tipGroup)
@@ -44,14 +38,14 @@ class SideTipSelector extends SpriteGroup
     for tip, i in @tipGroup.childNodes
       tip.setVisible(!@isOuterIndex(i))
 
-  isOuterIndex : (index) ->
-    index < @scrollPosition || index >= (@capacity + @scrollPosition)
-
   getTipNum : () -> @tipGroup.childNodes.length
 
   isUpScrollable : () -> 
     rest = @getTipNum() - @scrollPosition
     rest > @capacity
+
+  isOuterIndex : (index) ->
+    index < @scrollPosition || index >= (@capacity + @scrollPosition)
 
   isDownScrollable : () -> @scrollPosition > 0
 
