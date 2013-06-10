@@ -29,7 +29,7 @@ class ParameterConfigPanel extends Group
       for param, i in tip.parameters
         backup[i] = param.getValue()
 
-        if param._onValueChanged?
+        if !param._onValueChanged?
           param._onValueChanged = param.onValueChanged
           param.onValueChanged = () ->
             @_onValueChanged()

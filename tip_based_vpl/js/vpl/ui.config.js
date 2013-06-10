@@ -55,7 +55,7 @@ ParameterConfigPanel = (function(_super) {
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         param = _ref[i];
         backup[i] = param.getValue();
-        if (param._onValueChanged != null) {
+        if (param._onValueChanged == null) {
           param._onValueChanged = param.onValueChanged;
           param.onValueChanged = function() {
             this._onValueChanged();
