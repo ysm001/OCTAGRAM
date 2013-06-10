@@ -120,8 +120,8 @@ class CodeTip extends SpriteGroup
   doubleClicked : () -> @showConfigWindow() 
 
   showConfigWindow : () -> 
-    content = new ParameterConfigPanel()
-    content.show(this)
+    panel = new ParameterConfigPanel()
+    panel.show(this)
 
   isSelected : () -> 
     CodeTip.selectedEffect.parentNode == this

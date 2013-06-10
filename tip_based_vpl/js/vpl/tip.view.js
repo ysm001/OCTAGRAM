@@ -174,10 +174,10 @@ CodeTip = (function(_super) {
   };
 
   CodeTip.prototype.showConfigWindow = function() {
-    var content;
+    var panel;
 
-    content = new ParameterConfigPanel();
-    return content.show(this);
+    panel = new ParameterConfigPanel();
+    return panel.show(this);
   };
 
   CodeTip.prototype.isSelected = function() {

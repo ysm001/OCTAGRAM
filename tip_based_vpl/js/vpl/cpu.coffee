@@ -125,5 +125,3 @@ class Cpu extends Group
   isStart : (x, y) -> (x == @sx && y == @sy)
   isWall  : (x, y) -> @isOuter(x, y) && !@isStart(x, y)
   isEmpty : (x, y) -> @getTip(x, y).code instanceof EmptyTip
-
-
