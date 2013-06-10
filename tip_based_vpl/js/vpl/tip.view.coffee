@@ -22,7 +22,6 @@ class Direction
 #####################################################
 class CodeTip extends SpriteGroup
   @selectedEffect = null 
-  #@selectedInstance = null
   @clonedTip = null
 
   constructor : (@code) ->
@@ -35,11 +34,13 @@ class CodeTip extends SpriteGroup
 
     @dragMode = false
     @isFirstClick = false
-    CodeTip.clonedTip = null
     @dragStartX = 0
     @dragStartY = 0
+
     @parameters = if @code.instruction? then @code.instruction.parameters 
+
     @addChild(@sprite)
+
     if @icon?
       @addChild(@icon)
       @icon.fitPosition()
@@ -49,11 +50,11 @@ class CodeTip extends SpriteGroup
 
   isInnerTip : (x, y) ->
     pos = @getAbsolutePosition()
-    half = @getWidth()
+    range = @getWidth()
     xs = pos.x
-    xe = pos.x + half
+    xe = pos.x + range 
     ys = pos.y
-    ye = pos.y + half
+    ye = pos.y + range
     x>xs && x<xe && y>ys && y<ye
 
   select : () =>
@@ -69,9 +70,9 @@ class CodeTip extends SpriteGroup
 
   createGhost : () ->
     CodeTip.clonedTip.hide() if CodeTip.clonedTip?
+
     tip = @clone()
-    tip.sprite.opacity = 0.5
-    tip.icon.opacity = 0.5 if tip.icon?
+    tip.setOpacity(0.5)
     tip.moveTo(@x, @y)
     tip.sprite.touchEnabled = false
     tip
@@ -113,36 +114,14 @@ class CodeTip extends SpriteGroup
     @dragMode = false
     if CodeTip.clonedTip?
       pos = CodeTip.clonedTip.getAbsolutePosition()
-      CodeTip.clonedTip.hide()
       Game.instance.vpl.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip)
+      CodeTip.clonedTip.hide()
 
   doubleClicked : () -> @showConfigWindow() 
 
   showConfigWindow : () -> 
-    if @parameters?
-      backup = {}
-      content = new ParameterConfigPanel()
-      
-      for param, i in @parameters
-        backup[i] = param.getValue()
-        onValueChanged = param.onValueChanged
-        param.onValueChanged = () =>
-          onValueChanged()
-          @setDescription(@code.mkDescription())
-
-        content.addParameter(param)
-
-      Game.instance.vpl.ui.configPanel.setContent(content)
-      Game.instance.vpl.ui.configPanel.show(this)
-
-      Game.instance.vpl.ui.configPanel.onClosed = (closedWithOK) =>
-        if closedWithOK 
-          #@updateIcon() 
-          @icon = @getIcon()
-          @setDescription(@code.mkDescription())
-        else 
-          for param, i in @parameters
-            param.setValue(backup[i])
+    content = new ParameterConfigPanel()
+    content.show(this)
 
   isSelected : () -> 
     CodeTip.selectedEffect.parentNode == this
@@ -252,7 +231,3 @@ class JumpTransitionCodeTip extends CodeTip
   constructor : (code) -> super(code)
   setNext : (x, y) -> @code.setNext({x:x, y:y})
   clone : () -> @copy(new JumpTransitionCodeTip(@code.clone()))
-
-
-
-

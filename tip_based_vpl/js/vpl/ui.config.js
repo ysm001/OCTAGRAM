@@ -46,6 +46,44 @@ ParameterConfigPanel = (function(_super) {
     return this.addChild(slider);
   };
 
+  ParameterConfigPanel.prototype.show = function(tip) {
+    var backup, i, onValueChanged, param, _i, _len, _ref1,
+      _this = this;
+
+    if (tip.parameters != null) {
+      backup = {};
+      _ref1 = tip.parameters;
+      for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
+        param = _ref1[i];
+        backup[i] = param.getValue();
+        onValueChanged = param.onValueChanged;
+        param.onValueChanged = function() {
+          onValueChanged();
+          return tip.setDescription(tip.code.mkDescription());
+        };
+        this.addParameter(param);
+      }
+      Game.instance.vpl.ui.configPanel.setContent(this);
+      Game.instance.vpl.ui.configPanel.show(tip);
+      return Game.instance.vpl.ui.configPanel.onClosed = function(closedWithOK) {
+        var _j, _len1, _ref2, _results;
+
+        if (closedWithOK) {
+          tip.icon = tip.getIcon();
+          return tip.setDescription(tip.code.mkDescription());
+        } else {
+          _ref2 = tip.parameters;
+          _results = [];
+          for (i = _j = 0, _len1 = _ref2.length; _j < _len1; i = ++_j) {
+            param = _ref2[i];
+            _results.push(param.setValue(backup[i]));
+          }
+          return _results;
+        }
+      };
+    }
+  };
+
   return ParameterConfigPanel;
 
 })(Group);

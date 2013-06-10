@@ -1,5 +1,5 @@
 #####################################################
-# SingleTransitionTipのCV 
+# Icon 
 #####################################################
 class Icon extends Sprite
   constructor : (icon, width, height) ->

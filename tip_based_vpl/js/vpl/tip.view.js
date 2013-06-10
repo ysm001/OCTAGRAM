@@ -51,7 +51,6 @@ CodeTip = (function(_super) {
     this.icon = this.getIcon();
     this.dragMode = false;
     this.isFirstClick = false;
-    CodeTip.clonedTip = null;
     this.dragStartX = 0;
     this.dragStartY = 0;
     this.parameters = this.code.instruction != null ? this.code.instruction.parameters : void 0;
@@ -67,14 +66,14 @@ CodeTip = (function(_super) {
   }
 
   CodeTip.prototype.isInnerTip = function(x, y) {
-    var half, pos, xe, xs, ye, ys;
+    var pos, range, xe, xs, ye, ys;
 
     pos = this.getAbsolutePosition();
-    half = this.getWidth();
+    range = this.getWidth();
     xs = pos.x;
-    xe = pos.x + half;
+    xe = pos.x + range;
     ys = pos.y;
-    ye = pos.y + half;
+    ye = pos.y + range;
     return x > xs && x < xe && y > ys && y < ye;
   };
 
@@ -104,10 +103,7 @@ CodeTip = (function(_super) {
       CodeTip.clonedTip.hide();
     }
     tip = this.clone();
-    tip.sprite.opacity = 0.5;
-    if (tip.icon != null) {
-      tip.icon.opacity = 0.5;
-    }
+    tip.setOpacity(0.5);
     tip.moveTo(this.x, this.y);
     tip.sprite.touchEnabled = false;
     return tip;
@@ -168,8 +164,8 @@ CodeTip = (function(_super) {
     this.dragMode = false;
     if (CodeTip.clonedTip != null) {
       pos = CodeTip.clonedTip.getAbsolutePosition();
-      CodeTip.clonedTip.hide();
-      return Game.instance.vpl.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip);
+      Game.instance.vpl.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip);
+      return CodeTip.clonedTip.hide();
     }
   };
 
@@ -178,42 +174,10 @@ CodeTip = (function(_super) {
   };
 
   CodeTip.prototype.showConfigWindow = function() {
-    var backup, content, i, onValueChanged, param, _i, _len, _ref,
-      _this = this;
+    var content;
 
-    if (this.parameters != null) {
-      backup = {};
-      content = new ParameterConfigPanel();
-      _ref = this.parameters;
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        param = _ref[i];
-        backup[i] = param.getValue();
-        onValueChanged = param.onValueChanged;
-        param.onValueChanged = function() {
-          onValueChanged();
-          return _this.setDescription(_this.code.mkDescription());
-        };
-        content.addParameter(param);
-      }
-      Game.instance.vpl.ui.configPanel.setContent(content);
-      Game.instance.vpl.ui.configPanel.show(this);
-      return Game.instance.vpl.ui.configPanel.onClosed = function(closedWithOK) {
-        var _j, _len1, _ref1, _results;
-
-        if (closedWithOK) {
-          _this.icon = _this.getIcon();
-          return _this.setDescription(_this.code.mkDescription());
-        } else {
-          _ref1 = _this.parameters;
-          _results = [];
-          for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
-            param = _ref1[i];
-            _results.push(param.setValue(backup[i]));
-          }
-          return _results;
-        }
-      };
-    }
+    content = new ParameterConfigPanel();
+    return content.show(this);
   };
 
   CodeTip.prototype.isSelected = function() {
