@@ -59,7 +59,7 @@ class TipTransition extends Sprite
     if dst != @dst
       @dst = dst
       if @src.setConseq?
-        if @instanceof AlterTransition
+        if this instanceof AlterTransition
           @src.setAlter(nx, ny, dst)
         else 
           @src.setConseq(nx, ny, dst)

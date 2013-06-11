@@ -86,7 +86,7 @@ TipTransition = (function(_super) {
     if (dst !== this.dst) {
       this.dst = dst;
       if (this.src.setConseq != null) {
-        if (this["instanceof"](AlterTransition)) {
+        if (this instanceof AlterTransition) {
           return this.src.setAlter(nx, ny, dst);
         } else {
           return this.src.setConseq(nx, ny, dst);
