@@ -87,11 +87,13 @@ class Robot extends Sprite
             when RobotInstruction.SHOT
                 if ret != false
                     msgbox.print R.String.shot(@name)
+                    @animated = true
                 else
                     msgbox.print R.String.CANNOTSHOT
             when RobotInstruction.PICKUP
                 if ret != false
                     msgbox.print R.String.pickup(@name)
+                    @animated = true
                 else
                     msgbox.print R.String.CANNOTPICKUP
         
@@ -136,6 +138,71 @@ class Robot extends Sprite
         @onKeyInput @game.input
         return true
 
+class DebugCommand
+    @direct = [
+        Direct.RIGHT
+        Direct.RIGHT | Direct.UP
+        Direct.RIGHT | Direct.DOWN
+        Direct.LEFT
+        Direct.LEFT | Direct.UP
+        Direct.LEFT | Direct.DOWN
+    ]
+    @playerFrame = [
+        0, 4, 5, 2, 6, 7
+    ]
+    constructor: (@robot) ->
+
+    move: (directIndex) ->
+        @robot.frame = DebugCommand.playerFrame[directIndex]
+        plate = @robot.map.getTargetPoision(@robot.currentPlate, DebugCommand.direct[directIndex])
+        ret = false
+        @robot.prevPlate = @robot.currentPlate
+        if plate? and plate.lock == false
+            pos = plate.getAbsolutePos()
+            @robot.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(() => @onComplete())
+            @robot.currentPlate = plate
+            ret = new Point plate.ix, plate.iy
+        else
+            ret = false
+        @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+        return ret
+
+    type = [
+        BulletType.NORMAL
+        BulletType.WIDE
+        BulletType.DUAL
+    ]
+    itemClass = [
+        NormalBulletItem,
+        WideBulletItem,
+        DualBulletItem
+    ]
+    pickup: (queue, bltIndex) ->
+        blt = BulletFactory.create(type[bltIndex], @robot)
+        ret = queue.enqueue(blt)
+        if ret != false
+            item = new itemClass[bltIndex](@robot.x, @robot.y)
+            @robot.scene.world.addChild item
+            @robot.scene.world.items.push item
+            item.setOnCompleteEvent(() => @onComplete())
+            ret = blt
+        @robot.onCmdComplete(RobotInstruction.PICKUP, ret)
+
+
+    shot: (queue) ->
+        ret = false
+        unless queue.empty()
+            for b in queue.dequeue()
+                b.shot(@robot.x, @robot.y, @robot.getDirect())
+                @robot.scene.world.bullets.push b
+                @robot.scene.world.insertBefore b, @robot
+                b.setOnDestoryEvent(() => @onComplete())
+                ret = b
+        @robot.onCmdComplete(RobotInstruction.SHOT ,ret)
+
+    onComplete: () ->
+        @robot.onAnimateComplete()
+
 class PlayerRobot extends Robot
     @WIDTH = 64
     @HEIGHT = 74
@@ -145,6 +212,41 @@ class PlayerRobot extends Robot
         @name = R.String.PLAYER
         @image = @game.assets[R.CHAR.PLAYER]
         @plateState = Plate.STATE_PLAYER
+        @debugCmd = new DebugCommand(@)
+
+    onKeyInput: (input) ->
+        if @animated == true
+            return
+        if input.w == true and input.p == true
+            #left Up
+            @debugCmd.move(4)
+        else if input.a == true and input.p == true
+            #@cmdQueue.enqueue @cmdPool.moveLeft
+            @debugCmd.move(3)
+        else if input.x == true and input.p == true
+            @debugCmd.move(5)
+            #@cmdQueue.enqueue @cmdPool.moveleftDown
+        else if input.d == true and input.p == true
+            @debugCmd.move(0)
+            #@cmdQueue.enqueue @cmdPool.moveRight
+        else if input.e == true and input.p == true
+            @debugCmd.move(1)
+            #@cmdQueue.enqueue @cmdPool.moveRightUp
+        else if input.c == true and input.p == true
+            @debugCmd.move(2)
+            #@cmdQueue.enqueue @cmdPool.moveRightDown
+        else if input.q == true and input.m == true
+            @debugCmd.pickup(@wideBltQueue,1)
+        else if input.q == true and input.n == true
+            @debugCmd.pickup(@dualBltQueue,2)
+        else if input.q == true and input.l == true
+            @debugCmd.pickup(@bltQueue,0)
+        else if input.s == true and input.m == true
+            @debugCmd.shot(@wideBltQueue)
+        else if input.s == true and input.n == true
+            @debugCmd.shot(@dualBltQueue)
+        else if input.s == true and input.l == true
+            @debugCmd.shot(@bltQueue)
 
     onSetBarrier: (bulletType) ->
         statusBox = @scene.views.footer.statusBox
@@ -172,8 +274,9 @@ class PlayerRobot extends Robot
         switch id
             when RobotInstruction.MOVE
                 if Math.floor(Math.random() * (10)) == 1
-                    plate = @map.getPlateRandom()
-                    plate.setSpot(Spot.getRandomType())
+                    i = 1
+                    #plate = @map.getPlateRandom()
+                    #plate.setSpot(Spot.getRandomType())
             when RobotInstruction.SHOT
                 if ret != false
                     effect = new ShotEffect(@x, @y)
@@ -200,14 +303,38 @@ class PlayerRobot extends Robot
         hpBar.reduce()
 
 class EnemyRobot extends Robot
-    @SIZE = 64
+    @WIDTH = 64
+    @HEIGHT = 74
     @UPDATE_FRAME = 10
     constructor: (parentNode) ->
-        super EnemyRobot.SIZE, EnemyRobot.SIZE, parentNode
+        super EnemyRobot.WIDTH, EnemyRobot.HEIGHT, parentNode
         @name = R.String.ENEMY
         @image = @game.assets[R.CHAR.ENEMY]
         @plateState = Plate.STATE_ENEMY
+        @debugCmd = new DebugCommand(@)
 
     onHpReduce: (views) ->
         hpBar = @scene.views.enemyHpBar
         hpBar.reduce()
+
+    onKeyInput: (input) ->
+        if @animated == true
+            return
+        if input.w == true and input.o == true
+            #left Up
+            @debugCmd.move(4)
+        else if input.a == true and input.o == true
+            #@cmdQueue.enqueue @cmdPool.moveLeft
+            @debugCmd.move(3)
+        else if input.x == true and input.o == true
+            @debugCmd.move(5)
+            #@cmdQueue.enqueue @cmdPool.moveleftDown
+        else if input.d == true and input.o == true
+            @debugCmd.move(0)
+            #@cmdQueue.enqueue @cmdPool.moveRight
+        else if input.e == true and input.o == true
+            @debugCmd.move(1)
+            #@cmdQueue.enqueue @cmdPool.moveRightUp
+        else if input.c == true and input.o == true
+            @debugCmd.move(2)
+            #@cmdQueue.enqueue @cmdPool.moveRightDown

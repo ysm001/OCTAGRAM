@@ -251,11 +251,14 @@ RobotGame = (function(_super) {
     this.keybind(81, 'q');
     this.keybind(69, 'e');
     this.keybind(67, 'c');
+    this.keybind(80, 'p');
     this.keybind(76, 'l');
     this.keybind(77, 'm');
+    this.keybind(78, 'n');
     this.keybind(74, 'j');
     this.keybind(73, 'i');
     this.keybind(75, 'k');
+    this.keybind(79, 'o');
   }
 
   RobotGame.prototype._assetPreload = function() {

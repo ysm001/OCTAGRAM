@@ -157,12 +157,15 @@ class RobotGame extends TipBasedVPL
         @keybind(81, 'q')
         @keybind(69, 'e')
         @keybind(67, 'c')
+        @keybind(80, 'p')
 
         @keybind(76, 'l')
         @keybind(77, 'm')
+        @keybind(78, 'n')
         @keybind(74, 'j')
         @keybind(73, 'i')
         @keybind(75, 'k')
+        @keybind(79, 'o')
 
     _assetPreload: ->
         load = (hash) =>

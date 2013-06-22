@@ -59,10 +59,10 @@ generateTestCode = () ->
     rightDownTip = TipFactory.createInstructionTip(moveRightDownInstruction.clone())
 
     randomBranchInstruction = new RandomBranchInstruction()
-    randomBranchInstruction.threthold = 25
+    randomBranchInstruction.threthold = 5 
     random1Tip = TipFactory.createInstructionTip(randomBranchInstruction)
     randomBranchInstruction = randomBranchInstruction.clone()
-    randomBranchInstruction.threthold = 60
+    randomBranchInstruction.threthold = 80
     random2Tip = TipFactory.createInstructionTip(randomBranchInstruction)
     randomBranchInstruction = randomBranchInstruction.clone()
     randomBranchInstruction.threthold = 80
