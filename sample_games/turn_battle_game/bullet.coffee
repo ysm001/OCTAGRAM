@@ -1,4 +1,3 @@
-
 class SpritePool
     constructor: (@createFunc, @maxAllocSize ,@maxPoolSize) ->
         @sprites = []

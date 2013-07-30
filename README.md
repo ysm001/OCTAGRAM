@@ -1,6 +1,9 @@
-Tip Based Visual Programming Language Library
+OCTAGON
 ==================================================
 
-# sample game　
----------------------
-## ターン制のゲーム
+Tip Based Visual Programming Language Framework for enchant.js game
+
+Written By CoffeeScript
+
+# Sample Games
+## Game AI Battle Game 
