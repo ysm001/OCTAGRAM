@@ -187,6 +187,7 @@ class SingleTransitionCodeTip extends CodeTip
     else Direction.toDirection(next.x - @code.index.x, 
       next.y - @code.index.y)
 
+  #clone : () -> @copy(new SingleTransitionCodeTip(@code.clone()))
   clone : () -> @copy(new SingleTransitionCodeTip(@code.clone()))
 
 #####################################################
