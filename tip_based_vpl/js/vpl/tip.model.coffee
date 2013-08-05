@@ -129,5 +129,3 @@ class ActionTip extends SingleTransitionTip
     @getTransition("next")
 
   clone : () -> tip = @copy(new ActionTip(@getNext()))
-
-
