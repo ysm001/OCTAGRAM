@@ -1,4 +1,4 @@
-OCTGRAM
+OCTAZZLE
 ==================================================
 
 Tip Based Visual Programming Language Framework for enchant.js game
