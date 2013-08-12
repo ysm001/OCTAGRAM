@@ -5,7 +5,7 @@ class Executer
     @next = null
     @current = null
 
-    document.addEventListener("completeExecution", (e) => @execNext())
+    document.addEventListener("completeExecution", (e) => @execNext(e))
 
   getNext : () -> if @next? then @cpu.getTip(@next.x, @next.y) else null
 
@@ -19,6 +19,7 @@ class Executer
     if !@next?
       @current.hideExecutionEffect()
       @current = null
+
     if !tip.isAsynchronous() 
       setTimeout(@execNext, Executer.latency)
 
@@ -28,6 +29,12 @@ class Executer
 
   execNext : (e) =>
     nextTip = @getNext()
+
+    # asynchronous branch
+    if @current? && @current.isAsynchronous() && e.result?
+      console.log("a")
+      @next = if e.result then @current.code.getConseq() else @current.code.getAlter() 
+      nextTip = @getNext()
 
     if nextTip?
       if nextTip == @current

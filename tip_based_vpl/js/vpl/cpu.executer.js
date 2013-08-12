@@ -12,7 +12,7 @@ Executer = (function() {
     this.next = null;
     this.current = null;
     document.addEventListener("completeExecution", function(e) {
-      return _this.execNext();
+      return _this.execNext(e);
     });
   }
 
@@ -49,6 +49,11 @@ Executer = (function() {
   Executer.prototype.execNext = function(e) {
     var nextTip;
     nextTip = this.getNext();
+    if ((this.current != null) && this.current.isAsynchronous() && (e.result != null)) {
+      console.log("a");
+      this.next = e.result ? this.current.code.getConseq() : this.current.code.getAlter();
+      nextTip = this.getNext();
+    }
     if (nextTip != null) {
       if (nextTip === this.current) {
         console.log("error : invalid execution timing.");
