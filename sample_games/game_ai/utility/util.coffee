@@ -11,10 +11,11 @@ class Direct
   @DOWN = bit << 3
 
 class Point
-  constructor:(@x, @y) ->
+  constructor : (@x, @y) ->
 
-  length: () ->
+  length : () ->
     Math.sqrt(@x*@x+@y*@y)
+
 
 class Util
 
@@ -27,6 +28,11 @@ class Util
     len2 = Math.sqrt(vec2.x * vec2.x + vec2.y * vec2.y)
     tmp * Math.acos(dot/(len1*len2))
 
+
+  @lengthPointToPoint : (p1, p2) ->
+    x = Math.abs(p1.x - p2.x)
+    y = Math.abs(p1.y - p2.y)
+    Math.sqrt(x*x + y*y)
 
   @toDeg: (r) ->
     r * 180.0 / (Math.atan(1.0) * 4.0)

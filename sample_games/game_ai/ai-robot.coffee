@@ -6,6 +6,7 @@
     document.write('<script type="text/javascript" src="'+d+arg+'"></script>')
 )(
   "third_party/underscore-min.js",
+  "third_party/mt.js",
   "config.js",
   "utility/debug.js",
   "utility/util.js",
@@ -13,7 +14,7 @@
   "bullet.js",
   "item.js",
   "robot.js",
-  "enchantAI/instruction.js",
+  "enchantAI/instr.js",
   "view.js",
   "main.js"
 )

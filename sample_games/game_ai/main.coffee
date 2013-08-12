@@ -1,6 +1,8 @@
 
 R = Config.R
 
+Random = new MersenneTwister()
+
 class ViewGroup extends Group
   constructor: (x, y, scene) ->
     super
@@ -68,14 +70,16 @@ class RobotWorld extends Group
     plate = @map.getPlate(1,1)
     @enemy.moveToPlate(plate)
 
+    Game.instance.addInstruction(new RandomMoveInstruction(@player))
     Game.instance.addInstruction(new MoveInstruction(@player))
-    Game.instance.addInstruction(new ShotInstruction(@player))
-    Game.instance.addInstruction(new PickupInstruction(@player))
-    Game.instance.addInstruction(new HpBranchInstruction(@player))
-    Game.instance.addInstruction(new HoldBulletBranchInstruction(@player))
-    Game.instance.addInstruction(new SearchDirectRobotBranchInstruction(@player))
-    Game.instance.addInstruction(new SearchDirectItemBranchInstruction(@player))
-    Game.instance.addInstruction(new CurrentDirectBranchInstruction(@player))
+    Game.instance.addInstruction(new TurnScanInstruction(@player, @enemy))
+    #Game.instance.addInstruction(new ShotInstruction(@player))
+    #Game.instance.addInstruction(new PickupInstruction(@player))
+    #Game.instance.addInstruction(new HpBranchInstruction(@player))
+    #Game.instance.addInstruction(new HoldBulletBranchInstruction(@player))
+    #Game.instance.addInstruction(new SearchDirectRobotBranchInstruction(@player))
+    #Game.instance.addInstruction(new SearchDirectItemBranchInstruction(@player))
+    #Game.instance.addInstruction(new CurrentDirectBranchInstruction(@player))
     # @swicher = new TurnSwitcher @
 
   initialize: (views)->

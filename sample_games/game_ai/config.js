@@ -150,6 +150,11 @@ Config.R.String = (function() {
         }
       ]
     },
+    RandomMove: {
+      description: function() {
+        return "ランダムに移動します";
+      }
+    },
     Shot: {
       colnum: function() {
         return "弾の種類";

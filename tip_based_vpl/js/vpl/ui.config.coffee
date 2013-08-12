@@ -23,7 +23,7 @@ class ParameterConfigPanel extends Group
     @addChild(slider)
 
   show : (tip) ->
-    if tip.parameters?
+    if tip.parameters? and tip.parameters.length > 0
       backup = {}
       
       for param, i in tip.parameters
@@ -47,4 +47,4 @@ class ParameterConfigPanel extends Group
         else 
           for param, i in tip.parameters
             param.setValue(backup[i])
-        param.onParameterComplete()
+            param.onParameterComplete()

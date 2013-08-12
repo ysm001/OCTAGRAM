@@ -1,5 +1,6 @@
 R = Config.R
 MoveStr = R.String.INSTRUCTION.Move
+RandomMoveStr = R.String.INSTRUCTION.RandomMove
 ShotStr = R.String.INSTRUCTION.Shot
 PickupStr = R.String.INSTRUCTION.Pickup
 HpStr = R.String.INSTRUCTION.Hp
@@ -7,14 +8,14 @@ HoldBulletStr = R.String.INSTRUCTION.HoldBulleft
 SearchingRobotDirectStr = R.String.INSTRUCTION.SearchingRobotDirect
 SearchingItemDirectStr = R.String.INSTRUCTION.SearchingItemDirect
 CurrentDirectStr =  R.String.INSTRUCTION.CurrentDirect
-Debug.dump CurrentDirectStr
 
 class RobotInstruction
   @MOVE = "move"
+  @TURN = "turnscan"
   @SHOT = "shot"
   @PICKUP = "pickup"
 
-class MoveInstruction extends ActionInstruction
+class AbstractMoveInstruction extends ActionInstruction
   @direct = [
     Direct.RIGHT
     Direct.RIGHT | Direct.UP
@@ -23,25 +24,12 @@ class MoveInstruction extends ActionInstruction
     Direct.LEFT | Direct.UP
     Direct.LEFT | Direct.DOWN
   ]
+
   @frame = [
     0, 4, 5, 2, 6, 7
   ]
-  constructor : (@robot) ->
+  constructor : () ->
     super
-    @_id = 0
-    @setAsynchronous(true)
-    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    parameter = new TipParameter(MoveStr.colnum(), 0, 0, 5, 1)
-    @addParameter(parameter)
-    @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
-
-  action : () -> 
-    ret = true
-    @robot.frame = MoveInstruction.frame[@_id]
-    plate = @robot.map.getTargetPoision(@robot.currentPlate, MoveInstruction.direct[@_id])
-    ret = @_move plate
-    @setAsynchronous(ret != false)
-    @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
   _move: (plate) ->
     ret = false
@@ -55,16 +43,75 @@ class MoveInstruction extends ActionInstruction
       ret = false
     return ret
 
+###
+  Random Move
+###
+class RandomMoveInstruction extends AbstractMoveInstruction
+
+  constructor : (@robot) ->
+    super
+    @_id = 0
+    @setAsynchronous(true)
+    @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
+
+  action : () ->
+    ret = true
+    rand = Random.nextInt() % AbstractMoveInstruction.frame.length
+    @robot.frame = AbstractMoveInstruction.frame[rand]
+    plate = @robot.map.getTargetPoision(@robot.currentPlate, AbstractMoveInstruction.direct[rand])
+    ret = @_move plate
+    @setAsynchronous(ret != false)
+    @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+
+
   onComplete: () ->
     @robot.onAnimateComplete()
     super
 
-  clone : () -> 
+  clone : () ->
+    obj = @copy(new RandomMoveInstruction(@robot))
+    obj._id = @_id
+    return obj
+
+  mkDescription: () ->
+    RandomMoveStr.description()
+
+  getIcon: () ->
+    @icon.frame = 0
+    return @icon
+
+###
+  Move
+###
+class MoveInstruction extends AbstractMoveInstruction
+
+  constructor : (@robot) ->
+    super
+    @_id = 0
+    @setAsynchronous(true)
+    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
+    parameter = new TipParameter(MoveStr.colnum(), 0, 0, 5, 1)
+    @addParameter(parameter)
+    @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
+
+  action : () ->
+    ret = true
+    @robot.frame = AbstractMoveInstruction.frame[@_id]
+    plate = @robot.map.getTargetPoision(@robot.currentPlate, AbstractMoveInstruction.direct[@_id])
+    ret = @_move plate
+    @setAsynchronous(ret != false)
+    @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+
+  onComplete: () ->
+    @robot.onAnimateComplete()
+    super
+
+  clone : () ->
     obj = @copy(new MoveInstruction(@robot))
     obj._id = @_id
     return obj
 
-  onParameterChanged : (parameter) -> 
+  onParameterChanged : (parameter) ->
     @_id = parameter.value
 
   mkDescription: () ->
@@ -76,6 +123,13 @@ class MoveInstruction extends ActionInstruction
   getIcon: () ->
     @icon.frame = @_id
     return @icon
+
+class TurnScanInstruction extends ActionInstruction
+
+  constructor : (@robot) ->
+    super
+    @setAsynchronous(true)
+
 
 class ShotInstruction extends ActionInstruction
   bltQueue = null
@@ -94,7 +148,7 @@ class ShotInstruction extends ActionInstruction
     @addParameter(parameter)
     @setAsynchronous(true)
 
-  action : () -> 
+  action : () ->
     ret = false
     queue = bltQueue[@_id]
     unless queue.empty()
@@ -111,10 +165,10 @@ class ShotInstruction extends ActionInstruction
     @robot.onAnimateComplete()
     super
 
-  onParameterChanged : (parameter) -> 
+  onParameterChanged : (parameter) ->
     @_id = parameter.value
 
-  clone : () -> 
+  clone : () ->
     obj = @copy(new ShotInstruction(@robot))
     obj._id = @_id
     return obj
@@ -173,10 +227,10 @@ class PickupInstruction extends ActionInstruction
     @robot.onAnimateComplete()
     super()
 
-  onParameterChanged : (parameter) -> 
+  onParameterChanged : (parameter) ->
     @_id = parameter.value
 
-  clone : () -> 
+  clone : () ->
     obj = @copy(new PickupInstruction(@robot))
     obj._id = @_id
     return obj

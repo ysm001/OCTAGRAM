@@ -50,6 +50,8 @@ class Bullet extends Sprite
     super w, h
     @rotate 90
 
+  _getRotate: (direct) ->
+
   shot: (@x, @y, @direct=Direct.RIGHT) ->
 
   setOnDestoryEvent: (@event) ->
@@ -69,6 +71,15 @@ class Bullet extends Sprite
       @event @ if @event?
       @animated = false
       @parentNode.removeChild @
+
+  withinRange: (offset, target, direct=Direct.RIGHT) ->
+    rotate = @_getRotate(direct)
+    for i in [1..@length]
+      point = Util.toCartesianCoordinates(68*i, Util.toRad(rotate))
+      point.x = toi(point.x) + offset.x
+      point.y = toi(point.y) + offset.y
+      return true if Util.lengthPointToPoint(point, target) <= 32
+    return false
 
 ###
   grouping Bullet Class
@@ -112,7 +123,11 @@ class BulletGroup extends Group
       @event(@) if @event?
       for i in @bullets
         i.onDestroy()
-
+  
+  withinRange: (offset, target, direct=Direct.RIGHT) ->
+    for i in @bullets
+      return true if i.withinRange(offset, target, direct) == true
+    return false
 
 ###
   straight forward 2 plates
@@ -120,37 +135,42 @@ class BulletGroup extends Group
 class NormalBullet extends Bullet
   @WIDTH = 64
   @HEIGHT = 64
-  LENGHT = 4
   MAX_FRAME = 15
 
   constructor: () ->
+    @length = 4
     super NormalBullet.WIDTH, NormalBullet.HEIGHT, BulletType.NORMAL
     @image = Game.instance.assets[R.BULLET.NORMAL]
+
+  _getRotate: (direct) ->
+    rotate = 0
+    if (direct & Direct.LEFT) != 0
+      rotate += 180
+
+    if (direct & Direct.UP) != 0
+      if (direct & Direct.LEFT) != 0
+        rotate += 60
+      else
+        rotate -= 60
+    else if (direct & Direct.DOWN) != 0
+      if (direct & Direct.LEFT) != 0
+        rotate -= 60
+      else
+        rotate += 60
+    rotate
 
   shot: (@x, @y, @direct=Direct.RIGHT) ->
     @animated = true
     if @_rorateDeg?
-      @rotate -@_rorateDeg
+      @rotate(-@_rorateDeg)
+      console.log @_rorateDeg
 
-    rotate = 0
-    if (@direct & Direct.LEFT) != 0
-      rotate += 180
-
-    if (@direct & Direct.UP) != 0
-      if (@direct & Direct.LEFT) != 0
-        rotate += 60
-      else
-        rotate -= 60
-    else if (@direct & Direct.DOWN) != 0
-      if (@direct & Direct.LEFT) != 0
-        rotate -= 60
-      else
-        rotate += 60
-
+    rotate = @_getRotate(@direct)
     @rotate rotate
     @_rorateDeg = rotate
-    point = Util.toCartesianCoordinates(68*LENGHT, Util.toRad(rotate))
+    point = Util.toCartesianCoordinates(68*@length, Util.toRad(rotate))
     @tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @onDestroy())
+
 
 ###
   spread in 2 directions`
@@ -158,30 +178,26 @@ class NormalBullet extends Bullet
 class WideBulletPart extends Bullet
   @WIDTH = 64
   @HEIGHT = 64
-  MAX_FRAME = 10
-  LENGHT = 2
+  MAX_FRAME = 20
 
   constructor: (@parent, @left=true) ->
     super WideBulletPart.WIDTH, WideBulletPart.HEIGHT, BulletType.WIDE
+    @length = 2
     @image = Game.instance.assets[R.BULLET.WIDE]
     @frame = 1
 
-  shot: (@x, @y, @direct=Direct.RIGHT) ->
-    @animated = true
-    if @_rorateDeg?
-      @rotate -@_rorateDeg
-
+  _getRotate: (direct) ->
     rotate = 0
-    if (@direct & Direct.LEFT) != 0
+    if (direct & Direct.LEFT) != 0
       rotate += 180
 
-    if (@direct & Direct.UP) != 0
-      if (@direct & Direct.LEFT) != 0
+    if (direct & Direct.UP) != 0
+      if (direct & Direct.LEFT) != 0
         rotate += 60
       else
         rotate -= 60
-    else if (@direct & Direct.DOWN) != 0
-      if (@direct & Direct.LEFT) != 0
+    else if (direct & Direct.DOWN) != 0
+      if (direct & Direct.LEFT) != 0
         rotate -= 60
       else
         rotate += 60
@@ -190,9 +206,17 @@ class WideBulletPart extends Bullet
       rotate -= 60
     else
       rotate += 60
+    rotate
+
+  shot: (@x, @y, @direct=Direct.RIGHT) ->
+    @animated = true
+    if @_rorateDeg?
+      @rotate(-@_rorateDeg)
+
+    rotate = @_getRotate(@direct)
     @rotate rotate
     @_rorateDeg = rotate
-    point = Util.toCartesianCoordinates(68*LENGHT, Util.toRad(rotate))
+    point = Util.toCartesianCoordinates(68*@length, Util.toRad(rotate))
     @tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @parent.onDestroy())
     
 class WideBullet extends BulletGroup
@@ -206,19 +230,15 @@ class WideBullet extends BulletGroup
 class DualBulletPart extends Bullet
   @WIDTH = 64
   @HEIGHT = 64
-  MAX_FRAME = 10
-  LENGHT = 2
+  MAX_FRAME = 20
 
   constructor: (@parent, @back=true) ->
     super DualBulletPart.WIDTH, DualBulletPart.HEIGHT, BulletType.DUAL
+    @length = 2
     @image = Game.instance.assets[R.BULLET.DUAL]
     @frame = 1
 
-  shot: (@x, @y, @direct=Direct.RIGHT) ->
-    @animated = true
-    if @_rorateDeg?
-      @rotate -@_rorateDeg
-
+  _getRotate : (direct) ->
     rotate = 0
     if (@direct & Direct.LEFT) != 0
       rotate += 180
@@ -236,9 +256,17 @@ class DualBulletPart extends Bullet
 
     if @back == true
       rotate += 180
+    rotate
+
+  shot: (@x, @y, @direct=Direct.RIGHT) ->
+    @animated = true
+    if @_rorateDeg?
+      @rotate -@_rorateDeg
+
+    rotate = @_getRotate(@direct)
     @rotate rotate
     @_rorateDeg = rotate
-    point = Util.toCartesianCoordinates(68*LENGHT, Util.toRad(rotate))
+    point = Util.toCartesianCoordinates(68*@length, Util.toRad(rotate))
     @tl.moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(() -> @parent.onDestroy())
 
 class DualBullet extends BulletGroup

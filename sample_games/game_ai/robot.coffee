@@ -23,6 +23,9 @@ class ItemQueue
   empty: () ->
     @collection.length == 0
 
+  index: (i) ->
+    @collection[i]
+
   size: () ->
     @collection.length
 
@@ -51,6 +54,10 @@ class Robot extends Sprite
     @bltQueue = new ItemQueue [], 5
     @wideBltQueue = new ItemQueue [], 5
     @dualBltQueue = new ItemQueue [], 5
+    @bulletQueue =
+      normal : @bltQueue
+      wide   : @wideBltQueue
+      dual   : @dualBltQueue
     @barrierMap = new BarrierMap @
     @map = Map.instance
     @plateState = 0

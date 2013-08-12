@@ -75,9 +75,9 @@ class Config.R.String
     return "#{s}は(#{x},#{y})に移動しました"
 
   @INSTRUCTION :
-    Move : 
+    Move :
       colnum : () -> "移動方向"
-      label : [ 
+      label : [
         () -> "右"
         () -> "右上"
         () -> "右下"
@@ -93,9 +93,11 @@ class Config.R.String
         (step) -> "左上に#{step}マス移動します"
         (step) -> "左下に#{step}マス移動します"
       ]
-    Shot : 
+    RandomMove :
+      description : () -> "ランダムに移動します"
+    Shot :
       colnum : () -> "弾の種類"
-      label : [ 
+      label : [
         () -> "ストレート"
         () -> "ワイド"
         () -> "デュアル"
