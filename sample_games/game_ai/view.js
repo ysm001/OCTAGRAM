@@ -428,12 +428,12 @@ Map = (function(_super) {
   Map.prototype.update = function() {
     /*
     if @age % 10 == 0
-        x = Math.floor(Math.random() * (Map.WIDTH))
-        y = Math.floor(Math.random() * (Map.HEIGHT)) 
-        Debug.log "#{x}, #{y}"
-        type = Spot.getRandomType()
-        Debug.dump @plateMatrix[x][y]
-        @plateMatrix[x][y].setSpot type
+      x = Math.floor(Math.random() * (Map.WIDTH))
+      y = Math.floor(Math.random() * (Map.HEIGHT)) 
+      Debug.log "#{x}, #{y}"
+      type = Spot.getRandomType()
+      Debug.dump @plateMatrix[x][y]
+      @plateMatrix[x][y].setSpot type
     */
 
   };

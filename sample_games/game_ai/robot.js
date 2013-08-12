@@ -7,7 +7,7 @@ var BarrierMap, DebugCommand, EnemyRobot, ItemQueue, PlayerRobot, R, Robot,
 R = Config.R;
 
 /*
-    store bullet objects
+  store bullet objects
 */
 
 

@@ -139,8 +139,8 @@ Bullet = (function(_super) {
 })(Sprite);
 
 /*
-    grouping Bullet Class
-    behave like Bullet Class
+  grouping Bullet Class
+  behave like Bullet Class
 */
 
 
@@ -238,7 +238,7 @@ BulletGroup = (function(_super) {
 })(Group);
 
 /*
-    straight forward 2 plates
+  straight forward 2 plates
 */
 
 
@@ -300,7 +300,7 @@ NormalBullet = (function(_super) {
 })(Bullet);
 
 /*
-    spread in 2 directions`
+  spread in 2 directions`
 */
 
 
