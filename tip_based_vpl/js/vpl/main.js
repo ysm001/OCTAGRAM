@@ -45,6 +45,38 @@ TipTable = (function() {
     return TipTable.addTip(tip);
   };
 
+  TipTable.findByInst = function(instName) {
+    var tip;
+    return ((function() {
+      var _i, _len, _ref, _results;
+      _ref = this.tips;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        tip = _ref[_i];
+        if ((tip.code.instruction != null) && tip.code.instruction.constructor.name === instName) {
+          _results.push(tip);
+        }
+      }
+      return _results;
+    }).call(this))[0];
+  };
+
+  TipTable.findByCode = function(codeName) {
+    var tip;
+    return ((function() {
+      var _i, _len, _ref, _results;
+      _ref = this.tips;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        tip = _ref[_i];
+        if (tip.code.constructor.name === codeName) {
+          _results.push(tip);
+        }
+      }
+      return _results;
+    }).call(this))[0];
+  };
+
   return TipTable;
 
 })();

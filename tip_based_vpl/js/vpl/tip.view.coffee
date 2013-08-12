@@ -167,6 +167,15 @@ class CodeTip extends SpriteGroup
 
     obj
 
+  serialize : () -> 
+    {
+      name: @constructor.name
+      code: @code.serialize()
+    }
+  deserialize : (serializedVal) ->
+    @code.deserialize(serializedVal.code)
+    @setDescription(@code.mkDescription())
+
 #####################################################
 # SingleTransitionTipのCV 
 #####################################################

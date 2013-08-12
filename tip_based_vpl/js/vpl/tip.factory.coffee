@@ -9,6 +9,7 @@ class TipFactory
     tip.setNext(sx, sy) 
     tip
 
+  @createStartTip   : () -> new SingleTransitionCodeTip(new StartTip())
   @createStopTip    : (sx, sy) -> new CodeTip(new StopTip())
   @createEmptyTip   : (sx, sy) -> new CodeTip(new EmptyTip())
   @createActionTip  : (code) -> new SingleTransitionCodeTip(code)

@@ -29,11 +29,32 @@ TipParameter = (function() {
   TipParameter.prototype.mkLabel = function() {};
 
   TipParameter.prototype.clone = function() {
-    return $.extend(true, {}, this);
+    return this.copy(new TipParameter(this.valueName, this.value, this.min, this.max, this.step));
+  };
+
+  TipParameter.prototype.copy = function(obj) {
+    obj.valueName = this.valueName;
+    obj.value = this.value;
+    obj.min = this.min;
+    obj.max = this.max;
+    obj.step = this.step;
+    obj.id = this.id;
+    return obj;
   };
 
   TipParameter.prototype.toString = function() {
     return this.value.toString();
+  };
+
+  TipParameter.prototype.serialize = function() {
+    return {
+      valueName: this.valueName,
+      value: this.value
+    };
+  };
+
+  TipParameter.prototype.deserialize = function(serializedVal) {
+    return this.setValue(serializedVal.value);
   };
 
   return TipParameter;

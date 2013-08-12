@@ -47,4 +47,4 @@ class ParameterConfigPanel extends Group
         else 
           for param, i in tip.parameters
             param.setValue(backup[i])
-        param.onParameterComplete()
+            param.onParameterComplete()

@@ -52,6 +52,19 @@ Tip = (function() {
     return TipUtil.tipToMessage(this);
   };
 
+  Tip.prototype.serialize = function() {
+    return {
+      name: this.constructor.name,
+      index: this.index,
+      transitions: this.transitions
+    };
+  };
+
+  Tip.prototype.deserialize = function(serializedVal) {
+    this.transitions = serializedVal.transitions;
+    return this.index = serializedVal.index;
+  };
+
   return Tip;
 
 })();

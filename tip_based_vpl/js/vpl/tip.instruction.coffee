@@ -26,6 +26,8 @@ class Instruction
   mkLabel : (value) -> value
   getIcon : () -> 
 
+  setConstructorArgs : (args...) -> @constructorArgs = args
+
   onParameterChanged : (parameter) ->
   onParameterComplete : (parameter) ->
 
@@ -36,6 +38,14 @@ class Instruction
     obj
 
   clone : () -> @copy(new Instruction())
+
+  serialize : () -> {
+    name: @constructor.name
+    parameters : (param.serialize() for param in @parameters)
+  }
+  deserialize : (serializedVal) ->
+    for param in serializedVal.parameters
+      (target for target in @parameters when target.valueName == param.valueName)[0].deserialize(param)
 
 class ActionInstruction extends Instruction
   constructor : () ->
@@ -59,6 +69,15 @@ class CustomInstructionActionTip extends ActionTip
   clone : () -> 
     @copy(new CustomInstructionActionTip(@instruction.clone(), @getNext()))
 
+  serialize : () -> 
+    serialized = super
+    serialized["instruction"] = @instruction.serialize()
+    serialized
+
+  deserialize : (serializedVal) ->
+    super(serializedVal)
+    @instruction.deserialize(serializedVal.instruction)
+
 class CustomInstructionBranchTip extends BranchTip
   constructor : (@instruction, conseq, alter) -> 
     super(conseq, alter)
@@ -70,3 +89,12 @@ class CustomInstructionBranchTip extends BranchTip
 
   clone : () -> 
     @copy(new CustomInstructionBranchTip(@instruction.clone(), @getConseq, @getAlter()))
+
+  serialize : () -> 
+    serialized = super
+    serialized["instruction"] = @instruction.serialize()
+    serialized
+
+  deserialize : (serializedVal) ->
+    super(serializedVal)
+    @instruction.deserialize(serializedVal.instruction)

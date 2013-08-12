@@ -114,6 +114,30 @@ class Cpu extends Group
     nearest = @getNearestIndex(x, y)
     @insertNewTip(nearest.x, nearest.y, tip)
 
+  serialize : () ->
+    serialized = []
+    for i in [-1...@ynum+1]
+      for j in [-1...@xnum+1]
+        serialized.push({
+          x: j
+          y: i
+          tip: @getTip(j, i).serialize()
+        })
+    serialized
+
+  deserialize : (serializedVal) ->
+    for serializedTip in serializedVal
+      tip = 
+        if serializedTip.tip.code.name == "WallTip" then TipFactory.createWallTip(@sx, @sy)
+        else if serializedTip.tip.code.name == "StartTip" then TipFactory.createStartTip() 
+        else if serializedTip.tip.code.name == "EmptyTip" then TipFactory.createEmptyTip()
+        else if !serializedTip.tip.code.instruction?
+          TipTable.findByCode(serializedTip.tip.code.name).clone()
+        else
+          TipTable.findByInst(serializedTip.tip.code.instruction.name).clone()
+      tip.deserialize(serializedTip.tip)
+      @insertNewTip(serializedTip.x, serializedTip.y, tip)
+
   getTip : (x, y) -> @tipTable[y][x]
   setTip : (x, y, tip) -> @tipTable[y][x] = tip
   getStartTip : () -> @getTip(@sx, @sy)

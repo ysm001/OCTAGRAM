@@ -144,6 +144,33 @@ Cpu = (function(_super) {
     return this.insertNewTip(nearest.x, nearest.y, tip);
   };
 
+  Cpu.prototype.serialize = function() {
+    var i, j, serialized, _i, _j, _ref, _ref1;
+    serialized = [];
+    for (i = _i = -1, _ref = this.ynum + 1; -1 <= _ref ? _i < _ref : _i > _ref; i = -1 <= _ref ? ++_i : --_i) {
+      for (j = _j = -1, _ref1 = this.xnum + 1; -1 <= _ref1 ? _j < _ref1 : _j > _ref1; j = -1 <= _ref1 ? ++_j : --_j) {
+        serialized.push({
+          x: j,
+          y: i,
+          tip: this.getTip(j, i).serialize()
+        });
+      }
+    }
+    return serialized;
+  };
+
+  Cpu.prototype.deserialize = function(serializedVal) {
+    var serializedTip, tip, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = serializedVal.length; _i < _len; _i++) {
+      serializedTip = serializedVal[_i];
+      tip = serializedTip.tip.code.name === "WallTip" ? TipFactory.createWallTip(this.sx, this.sy) : serializedTip.tip.code.name === "StartTip" ? TipFactory.createStartTip() : serializedTip.tip.code.name === "EmptyTip" ? TipFactory.createEmptyTip() : serializedTip.tip.code.instruction == null ? TipTable.findByCode(serializedTip.tip.code.name).clone() : TipTable.findByInst(serializedTip.tip.code.instruction.name).clone();
+      tip.deserialize(serializedTip.tip);
+      _results.push(this.insertNewTip(serializedTip.x, serializedTip.y, tip));
+    }
+    return _results;
+  };
+
   Cpu.prototype.getTip = function(x, y) {
     return this.tipTable[y][x];
   };
