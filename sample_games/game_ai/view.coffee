@@ -86,8 +86,8 @@ class Spot
   @TYPE_DUAL_BULLET = 3
   @SIZE = 3
 
-  constructor: (type, point) ->
-    switch type
+  constructor: (@type, point) ->
+    switch @type
       when Spot.TYPE_NORMAL_BULLET
         @effect = new SpotNormalEffect(point.x, point.y + 5)
         @resultFunc = (robot, plate) ->
@@ -224,6 +224,13 @@ class Map extends Group
       func(ret, i)
       ret = @getTargetPoision(ret, direct)
       i++
+
+  eachSurroundingPlate : (plate, func) ->
+    Direct.each((direct) =>
+      target = @getTargetPoision(plate, direct)
+      if target?
+        func(target, direct)
+    )
 
   isExistObject: (plate, direct=Direct.RIGHT, lenght) ->
     ret = plate

@@ -6,7 +6,7 @@ toi = function(i) {
 };
 
 Direct = (function() {
-  var bit;
+  var bit, _directs;
 
   function Direct() {}
 
@@ -19,6 +19,18 @@ Direct = (function() {
   Direct.UP = bit << 2;
 
   Direct.DOWN = bit << 3;
+
+  _directs = [Direct.RIGHT, Direct.RIGHT | Direct.DOWN, Direct.LEFT | Direct.DOWN, Direct.LEFT, Direct.LEFT | Direct.UP, Direct.RIGHT | Direct.UP];
+
+  Direct.each = function(func) {
+    var i, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = _directs.length; _i < _len; _i++) {
+      i = _directs[_i];
+      _results.push(func(i));
+    }
+    return _results;
+  };
 
   return Direct;
 
@@ -40,6 +52,10 @@ Point = (function() {
 
 Util = (function() {
   function Util() {}
+
+  Util.toMillisec = function(frame) {
+    return frame * 1000 / Game.instance.fps;
+  };
 
   Util.includedAngle = function(vec1, vec2) {
     var dot, len1, len2, tmp;

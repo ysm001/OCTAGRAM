@@ -9,6 +9,17 @@ class Direct
   @RIGHT = bit << 1
   @UP = bit << 2
   @DOWN = bit << 3
+  _directs = [
+    Direct.RIGHT
+    Direct.RIGHT | Direct.DOWN
+    Direct.LEFT | Direct.DOWN
+    Direct.LEFT
+    Direct.LEFT | Direct.UP
+    Direct.RIGHT | Direct.UP
+  ]
+  @each : (func) ->
+    for i in _directs
+      func(i)
 
 class Point
   constructor : (@x, @y) ->
@@ -18,6 +29,9 @@ class Point
 
 
 class Util
+
+  @toMillisec : (frame) ->
+    frame * 1000 / Game.instance.fps
 
   @includedAngle: (vec1, vec2) ->
     tmp = 1

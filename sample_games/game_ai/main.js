@@ -107,8 +107,11 @@ RobotWorld = (function(_super) {
     Game.instance.addInstruction(new MoveInstruction(this.player));
     Game.instance.addInstruction(new ShotInstruction(this.player));
     Game.instance.addInstruction(new PickupInstruction(this.player));
-    Game.instance.addInstruction(new TurnScanInstruction(this.player, this.enemy));
-    Game.instance.addInstruction(new ScanInstructon(this.player, this.enemy));
+    Game.instance.addInstruction(new ItemScanMoveInstruction(this.player, this.enemy));
+    Game.instance.addInstruction(new TurnEnemyScanInstruction(this.player, this.enemy));
+    Game.instance.addInstruction(new EnemyScanInstructon(this.player, this.enemy));
+    Game.instance.addInstruction(new HpBranchInstruction(this.player));
+    Game.instance.addInstruction(new HoldBulletBranchInstruction(this.player));
   }
 
   RobotWorld.prototype.initialize = function(views) {};
