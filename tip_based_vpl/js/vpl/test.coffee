@@ -113,3 +113,6 @@ generateTestCode = () ->
     #Game.instance.vpl.cpu.putSingleTip(6,0,stopTip)
 
 executeTestCode = () -> Game.instance.vpl.executer.execute()
+
+saveTestCode = () -> Game.instance.vpl.cpu.save("test")
+loadTestCode = () -> Game.instance.vpl.cpu.load("test")

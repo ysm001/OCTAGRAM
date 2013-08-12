@@ -16,16 +16,19 @@ class TipParameter
   onParameterComplete : () ->
   mkLabel : () ->
 
-  clone : () -> $.extend(true, {}, @)
-  #clone : () -> @copy(new TipParameter(@valueName, @value, @min, @max, @step))
-  #
-  #copy : (obj) ->
-  #  obj.valueName = @valueName
-  #  obj.value = @value
-  #  obj.min = @min
-  #  obj.max = @max
-  #  obj.step = @step
-  #  obj.id = @id
-  #  obj
+  #clone : () -> $.extend(true, {}, @)
+  clone : () -> @copy(new TipParameter(@valueName, @value, @min, @max, @step))
+  
+  copy : (obj) ->
+    obj.valueName = @valueName
+    obj.value = @value
+    obj.min = @min
+    obj.max = @max
+    obj.step = @step
+    obj.id = @id
+    obj
 
   toString : () -> @value.toString()
+
+  serialize : () -> {valueName: @valueName, value: @value}
+  deserialize : (serializedVal) -> @setValue(serializedVal.value)

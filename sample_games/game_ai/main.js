@@ -105,7 +105,10 @@ RobotWorld = (function(_super) {
     this.enemy.moveToPlate(plate);
     Game.instance.addInstruction(new RandomMoveInstruction(this.player));
     Game.instance.addInstruction(new MoveInstruction(this.player));
+    Game.instance.addInstruction(new ShotInstruction(this.player));
+    Game.instance.addInstruction(new PickupInstruction(this.player));
     Game.instance.addInstruction(new TurnScanInstruction(this.player, this.enemy));
+    Game.instance.addInstruction(new ScanInstructon(this.player, this.enemy));
   }
 
   RobotWorld.prototype.initialize = function(views) {};

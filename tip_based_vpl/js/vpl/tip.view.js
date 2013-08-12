@@ -258,6 +258,18 @@ CodeTip = (function(_super) {
     return obj;
   };
 
+  CodeTip.prototype.serialize = function() {
+    return {
+      name: this.constructor.name,
+      code: this.code.serialize()
+    };
+  };
+
+  CodeTip.prototype.deserialize = function(serializedVal) {
+    this.code.deserialize(serializedVal.code);
+    return this.setDescription(this.code.mkDescription());
+  };
+
   return CodeTip;
 
 })(SpriteGroup);

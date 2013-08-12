@@ -72,9 +72,10 @@ class RobotWorld extends Group
 
     Game.instance.addInstruction(new RandomMoveInstruction(@player))
     Game.instance.addInstruction(new MoveInstruction(@player))
+    Game.instance.addInstruction(new ShotInstruction(@player))
+    Game.instance.addInstruction(new PickupInstruction(@player))
     Game.instance.addInstruction(new TurnScanInstruction(@player, @enemy))
-    #Game.instance.addInstruction(new ShotInstruction(@player))
-    #Game.instance.addInstruction(new PickupInstruction(@player))
+    Game.instance.addInstruction(new ScanInstructon(@player, @enemy))
     #Game.instance.addInstruction(new HpBranchInstruction(@player))
     #Game.instance.addInstruction(new HoldBulletBranchInstruction(@player))
     #Game.instance.addInstruction(new SearchDirectRobotBranchInstruction(@player))

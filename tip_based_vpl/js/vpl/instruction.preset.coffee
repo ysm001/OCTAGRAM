@@ -7,9 +7,12 @@ class RandomBranchInstruction extends BranchInstruction
 
     @addParameter(parameter)
 
+    #@setAsynchronous(true)
+
   action : () -> 
     r = Math.random()
-    #console.log("if random val < " + @threthold, r*100 < @threthold)
+    #func = () =>@onComplete(r*100 < @threthold) 
+    #setTimeout(func, 500)
     r*100 < @threthold
 
   clone : () -> 

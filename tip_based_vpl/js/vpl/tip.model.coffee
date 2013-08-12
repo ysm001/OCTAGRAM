@@ -28,6 +28,15 @@ class Tip
 
   mkDescription : () -> TipUtil.tipToMessage(this) 
 
+  serialize : () ->
+    name:  @constructor.name
+    index: @index
+    transitions: @transitions
+
+  deserialize : (serializedVal) ->
+    @transitions = serializedVal.transitions
+    @index = serializedVal.index
+
 #####################################################
 # Emptyチップ
 # 何も命令の入っていないチップ

@@ -1,7 +1,11 @@
 #####################################################
 # TODO
 # -リファクタリング
-# -保存機能
+# - 保存機能
+# - パラメータのみ保存(TipParameter)
+# - チップテーブル作っておいて、初期状態はそっからコピー
+# - 保存しておいたパラメータを使って復元
+# - 必要なのは、チップテーブを参照するためのクラス名とパラメータ
 #####################################################
 class Environment
   @ScreenWidth = 640 
@@ -22,6 +26,9 @@ class TipTable
   @addInstruction : (inst) ->
     tip = TipFactory.createInstructionTip(inst) 
     TipTable.addTip(tip)
+
+  @findByInst : (instName) -> (tip for tip in @tips when tip.code.instruction? && tip.code.instruction.constructor.name == instName)[0]
+  @findByCode : (codeName) -> (tip for tip in @tips when tip.code.constructor.name == codeName)[0]
 
 class TipBasedVPL extends Game
   constructor : (w, h, resourceBase) ->
