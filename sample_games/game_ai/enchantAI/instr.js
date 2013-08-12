@@ -511,7 +511,7 @@ PickupInstruction = (function(_super) {
     this.robot = robot;
     PickupInstruction.__super__.constructor.apply(this, arguments);
     this.tipInfo = new TipInfo(function(labels) {
-      return "" + labels[0] + "バレットを撃つ";
+      return "" + labels[0] + "バレットを一つ溜める";
     });
     column = "弾丸の種類";
     labels = {

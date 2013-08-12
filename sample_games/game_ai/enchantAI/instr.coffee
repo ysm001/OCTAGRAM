@@ -368,7 +368,7 @@ class PickupInstruction extends ActionInstruction
   constructor: (@robot) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレットを撃つ"
+      "#{labels[0]}バレットを一つ溜める"
     )
     # parameter 1
     column = "弾丸の種類"
