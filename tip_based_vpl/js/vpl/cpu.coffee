@@ -7,6 +7,7 @@ class Cpu extends Group
     @tipTable = []
     @sx = startIdx
     @sy = -1
+    @storage = new LocalStorage();
 
     @createTips(x, y)
 
@@ -137,6 +138,9 @@ class Cpu extends Group
           TipTable.findByInst(serializedTip.tip.code.instruction.name).clone()
       tip.deserialize(serializedTip.tip)
       @insertNewTip(serializedTip.x, serializedTip.y, tip)
+
+  save : (fileName) -> @storage.save(fileName, @serialize())
+  load : (fileName) -> @deserialize(@storage.load(fileName))
 
   getTip : (x, y) -> @tipTable[y][x]
   setTip : (x, y, tip) -> @tipTable[y][x] = tip

@@ -10,11 +10,15 @@ Instruction = (function() {
     this.parameters = [];
   }
 
-  Instruction.prototype.onComplete = function() {
+  Instruction.prototype.onComplete = function(result) {
     var evt;
+    if (result == null) {
+      result = null;
+    }
     evt = document.createEvent('UIEvent', false);
     evt.initUIEvent('completeExecution', true, true);
     evt.tip = this;
+    evt.result = result;
     return document.dispatchEvent(evt);
   };
 

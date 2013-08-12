@@ -13,6 +13,7 @@ Cpu = (function(_super) {
     this.tipTable = [];
     this.sx = startIdx;
     this.sy = -1;
+    this.storage = new LocalStorage();
     this.createTips(x, y);
   }
 
@@ -169,6 +170,14 @@ Cpu = (function(_super) {
       _results.push(this.insertNewTip(serializedTip.x, serializedTip.y, tip));
     }
     return _results;
+  };
+
+  Cpu.prototype.save = function(fileName) {
+    return this.storage.save(fileName, this.serialize());
+  };
+
+  Cpu.prototype.load = function(fileName) {
+    return this.deserialize(this.storage.load(fileName));
   };
 
   Cpu.prototype.getTip = function(x, y) {
