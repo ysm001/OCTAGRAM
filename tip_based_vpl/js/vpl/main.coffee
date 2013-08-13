@@ -50,6 +50,18 @@ class TipBasedVPL extends Game
     TipTable.addTip(returnTip)
     TipTable.addTip(stopTip)
     TipTable.addTip(nopTip, Resources.get("iconNop"))
+    TipTable.addInstruction(new StackAddInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackSubInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackMulInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackDivInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackModInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackXorInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackGrtInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackSwpInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackNotInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackDupInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackRotInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackBnzInstruction(), Resources.get("iconRandom"))
 
   clearInstructions : () -> TipTable.clear()
 
