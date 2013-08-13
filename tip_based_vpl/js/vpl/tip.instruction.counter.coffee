@@ -55,7 +55,7 @@ class CounterDecrementInstruction extends ActionInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "カウンター" + @id + "を" + @step + "増加させます。"
+    "カウンター" + @id + "を" + @step + "減少させます。"
 
   clone : () -> @copy(new CounterDecrementInstruction(@counters))
 

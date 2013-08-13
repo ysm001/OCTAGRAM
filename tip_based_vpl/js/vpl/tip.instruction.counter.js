@@ -112,7 +112,7 @@ CounterDecrementInstruction = (function(_super) {
   };
 
   CounterDecrementInstruction.prototype.mkDescription = function() {
-    return "カウンター" + this.id + "を" + this.step + "増加させます。";
+    return "カウンター" + this.id + "を" + this.step + "減少させます。";
   };
 
   CounterDecrementInstruction.prototype.clone = function() {
