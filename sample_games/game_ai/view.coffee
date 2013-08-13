@@ -403,6 +403,71 @@ class StatusBarrier extends Sprite
   reset: () ->
     @frame = @type
 
+class StatusBarrierGroup extends Group
+
+  constructor : (x, y) ->
+    super
+    @normal  = new StatusBarrier(30, 0, 1)
+    @wide    = new StatusBarrier(55, 0, 3)
+    @dual    = new StatusBarrier(80, 0, 5)
+
+    @addChild @normal
+    @addChild @wide
+    @addChild @dual
+
+    document.addEventListener("setBarrier", @set)
+    document.addEventListener("resetBarrier", @reset)
+
+  set : (evt) =>
+    switch evt.bulletType
+      when BulletType.NORMAL
+        @normal.set()
+      when BulletType.WIDE
+        @wide.set()
+      when BulletType.DUAL
+        @dual.set()
+
+  reset : (evt) =>
+    switch evt.bulletType
+      when BulletType.NORMAL
+        @normal.reset()
+      when BulletType.WIDE
+        @wide.reset()
+      when BulletType.DUAL
+        @dual.reset()
+
+class RemainingBulletsGroup extends Group
+
+  constructor : (x, y) ->
+    super
+    @normal = new RemainingBullets(30, 30, 1)
+    @wide   = new RemainingBullets(30, 30 + RemainingBullet.SIZE, 3)
+    @dual   = new RemainingBullets(30, 30 + RemainingBullet.SIZE * 2, 5)
+
+    @addChild @normal
+    @addChild @wide
+    @addChild @dual
+    document.addEventListener("enqueueBullet", @enqueue)
+    document.addEventListener("dequeueBullet", @dequeue)
+
+  enqueue : (evt) =>
+    switch evt.bulletType
+      when BulletType.NORMAL
+        @normal.increment()
+      when BulletType.WIDE
+        @wide.increment()
+      when BulletType.DUAL
+        @dual.increment()
+
+  dequeue : (evt) =>
+    switch evt.bulletType
+      when BulletType.NORMAL
+        @normal.decrement()
+      when BulletType.WIDE
+        @wide.decrement()
+      when BulletType.DUAL
+        @dual.decrement()
+
 class StatusBox extends Group
 
   constructor: (x,y) ->
@@ -420,19 +485,28 @@ class StatusBox extends Group
     #@label.x = 30
     #@label.y = 0
     #@addChild @label
-    @statusNormalBarrier = new StatusBarrier(30, 0, 1)
-    @statusWideBarrier = new StatusBarrier(55, 0, 3)
-    @statusDualBarrier = new StatusBarrier(80, 0, 5)
-    @normalRemain = new RemainingBullets 30, 30, 1
-    @wideRemain = new RemainingBullets 30, @normalRemain.y + RemainingBullet.SIZE, 3
-    @dualRemain = new RemainingBullets 30, @wideRemain.y + RemainingBullet.SIZE, 5
+    
+    #@statusNormalBarrier = new StatusBarrier(30, 0, 1)
+    #@statusWideBarrier = new StatusBarrier(55, 0, 3)
+    #@statusDualBarrier = new StatusBarrier(80, 0, 5)
 
-    @addChild @statusNormalBarrier
-    @addChild @statusWideBarrier
-    @addChild @statusDualBarrier
-    @addChild @normalRemain
-    @addChild @wideRemain
-    @addChild @dualRemain
+    #@normalRemain = new RemainingBullets 30, 30, 1
+    #@wideRemain = new RemainingBullets 30, @normalRemain.y + RemainingBullet.SIZE, 3
+    #@dualRemain = new RemainingBullets 30, @wideRemain.y + RemainingBullet.SIZE, 5
+
+    #@addChild @statusNormalBarrier
+    #@addChild @statusWideBarrier
+    #@addChild @statusDualBarrier
+    #@addChild @normalRemain
+    #@addChild @wideRemain
+    #@addChild @dualRemain
+    
+    @barrier = new StatusBarrierGroup()
+    @remain = new RemainingBulletsGroup()
+
+    @addChild @barrier
+    @addChild @remain
+    
 
 class Footer extends Group
   constructor: (x,y) ->

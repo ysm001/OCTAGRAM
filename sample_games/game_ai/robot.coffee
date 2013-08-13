@@ -256,28 +256,13 @@ class PlayerRobot extends Robot
       @debugCmd.shot(@bltQueue)
 
   onSetBarrier: (bulletType) ->
-    statusBox = @scene.views.footer.statusBox
-    switch bulletType
-      when BulletType.NORMAL
-        statusBox.statusNormalBarrier.set()
-      when BulletType.WIDE
-        statusBox.statusWideBarrier.set()
-      when BulletType.DUAL
-        statusBox.statusDualBarrier.set()
+    Util.dispatchEvent("setBarrier", {bulletType:bulletType})
 
   onResetBarrier: (bulletType) ->
-    statusBox = @scene.views.footer.statusBox
-    switch bulletType
-      when BulletType.NORMAL
-        statusBox.statusNormalBarrier.reset()
-      when BulletType.WIDE
-        statusBox.statusWideBarrier.reset()
-      when BulletType.DUAL
-        statusBox.statusDualBarrier.reset()
+    Util.dispatchEvent("resetBarrier", {bulletType:bulletType})
 
   onCmdComplete: (id, ret) ->
     super id, ret
-    statusBox = @scene.views.footer.statusBox
     switch id
       when RobotInstruction.MOVE
         if Math.floor(Math.random() * (10)) == 1
@@ -289,19 +274,19 @@ class PlayerRobot extends Robot
           effect = new ShotEffect(@x, @y)
           @scene.addChild effect
           if ret instanceof WideBullet
-            statusBox.wideRemain.decrement()
+            Util.dispatchEvent("dequeueBullet", {bulletType:BulletType.WIDE})
           else if ret instanceof NormalBullet
-            statusBox.normalRemain.decrement()
+            Util.dispatchEvent("dequeueBullet", {bulletType:BulletType.NORMAL})
           else if ret instanceof DualBullet
-            statusBox.dualRemain.decrement()
+            Util.dispatchEvent("dequeueBullet", {bulletType:BulletType.DUAL})
       when RobotInstruction.PICKUP
         if ret != false
           if ret instanceof WideBullet
-            statusBox.wideRemain.increment()
+            Util.dispatchEvent("enqueueBullet", {bulletType:BulletType.WIDE})
           else if ret instanceof NormalBullet
-            statusBox.normalRemain.increment()
+            Util.dispatchEvent("enqueueBullet", {bulletType:BulletType.NORMAL})
           else if ret instanceof DualBullet
-            statusBox.dualRemain.increment()
+            Util.dispatchEvent("enqueueBullet", {bulletType:BulletType.DUAL})
 
 
   onHpReduce: (views) ->

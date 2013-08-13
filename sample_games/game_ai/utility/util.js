@@ -88,6 +88,17 @@ Util = (function() {
     return new Point(r * Math.cos(rad), r * Math.sin(rad));
   };
 
+  Util.dispatchEvent = function(name, hash) {
+    var evt, k, v;
+    evt = document.createEvent('UIEvent', false);
+    evt.initUIEvent(name, true, true);
+    for (k in hash) {
+      v = hash[k];
+      evt[k] = v;
+    }
+    return document.dispatchEvent(evt);
+  };
+
   return Util;
 
 })();

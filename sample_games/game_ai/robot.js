@@ -335,35 +335,20 @@ PlayerRobot = (function(_super) {
   };
 
   PlayerRobot.prototype.onSetBarrier = function(bulletType) {
-    var statusBox;
-    statusBox = this.scene.views.footer.statusBox;
-    switch (bulletType) {
-      case BulletType.NORMAL:
-        return statusBox.statusNormalBarrier.set();
-      case BulletType.WIDE:
-        return statusBox.statusWideBarrier.set();
-      case BulletType.DUAL:
-        return statusBox.statusDualBarrier.set();
-    }
+    return Util.dispatchEvent("setBarrier", {
+      bulletType: bulletType
+    });
   };
 
   PlayerRobot.prototype.onResetBarrier = function(bulletType) {
-    var statusBox;
-    statusBox = this.scene.views.footer.statusBox;
-    switch (bulletType) {
-      case BulletType.NORMAL:
-        return statusBox.statusNormalBarrier.reset();
-      case BulletType.WIDE:
-        return statusBox.statusWideBarrier.reset();
-      case BulletType.DUAL:
-        return statusBox.statusDualBarrier.reset();
-    }
+    return Util.dispatchEvent("resetBarrier", {
+      bulletType: bulletType
+    });
   };
 
   PlayerRobot.prototype.onCmdComplete = function(id, ret) {
-    var effect, i, statusBox;
+    var effect, i;
     PlayerRobot.__super__.onCmdComplete.call(this, id, ret);
-    statusBox = this.scene.views.footer.statusBox;
     switch (id) {
       case RobotInstruction.MOVE:
         if (Math.floor(Math.random() * 10.) === 1) {
@@ -375,22 +360,34 @@ PlayerRobot = (function(_super) {
           effect = new ShotEffect(this.x, this.y);
           this.scene.addChild(effect);
           if (ret instanceof WideBullet) {
-            return statusBox.wideRemain.decrement();
+            return Util.dispatchEvent("dequeueBullet", {
+              bulletType: BulletType.WIDE
+            });
           } else if (ret instanceof NormalBullet) {
-            return statusBox.normalRemain.decrement();
+            return Util.dispatchEvent("dequeueBullet", {
+              bulletType: BulletType.NORMAL
+            });
           } else if (ret instanceof DualBullet) {
-            return statusBox.dualRemain.decrement();
+            return Util.dispatchEvent("dequeueBullet", {
+              bulletType: BulletType.DUAL
+            });
           }
         }
         break;
       case RobotInstruction.PICKUP:
         if (ret !== false) {
           if (ret instanceof WideBullet) {
-            return statusBox.wideRemain.increment();
+            return Util.dispatchEvent("enqueueBullet", {
+              bulletType: BulletType.WIDE
+            });
           } else if (ret instanceof NormalBullet) {
-            return statusBox.normalRemain.increment();
+            return Util.dispatchEvent("enqueueBullet", {
+              bulletType: BulletType.NORMAL
+            });
           } else if (ret instanceof DualBullet) {
-            return statusBox.dualRemain.increment();
+            return Util.dispatchEvent("enqueueBullet", {
+              bulletType: BulletType.DUAL
+            });
           }
         }
     }

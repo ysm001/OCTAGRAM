@@ -57,6 +57,13 @@ class Util
   @toCartesianCoordinates: (r, rad) ->
     return new Point(r * Math.cos(rad), r * Math.sin(rad))
 
+  @dispatchEvent : (name, hash) ->
+    evt = document.createEvent('UIEvent', false)
+    evt.initUIEvent(name, true, true)
+    for k, v of hash
+      evt[k] = v
+    document.dispatchEvent(evt)
+
 
 class Stack
 
