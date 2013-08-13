@@ -96,7 +96,12 @@ TipBasedVPL = (function(_super) {
   };
 
   TipBasedVPL.prototype.addPresetInstructions = function() {
-    var inst, nopTip, returnTip, stopTip;
+    var counters, i, inst, nopTip, returnTip, stack, stopTip, _i;
+    stack = new StackMachine();
+    counters = [];
+    for (i = _i = 0; _i < 100; i = ++_i) {
+      counters[i] = new Counter();
+    }
     returnTip = TipFactory.createReturnTip(Environment.startX, Environment.startY);
     stopTip = TipFactory.createStopTip();
     nopTip = TipFactory.createNopTip();
@@ -105,18 +110,23 @@ TipBasedVPL = (function(_super) {
     TipTable.addTip(returnTip);
     TipTable.addTip(stopTip);
     TipTable.addTip(nopTip, Resources.get("iconNop"));
-    TipTable.addInstruction(new StackAddInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackSubInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackMulInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackDivInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackModInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackXorInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackGrtInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackSwpInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackNotInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackDupInstruction(), Resources.get("iconRandom"));
-    TipTable.addInstruction(new StackRotInstruction(), Resources.get("iconRandom"));
-    return TipTable.addInstruction(new StackBnzInstruction(), Resources.get("iconRandom"));
+    TipTable.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"));
+    TipTable.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"));
+    TipTable.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"));
+    TipTable.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"));
+    TipTable.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"));
+    return TipTable.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"));
   };
 
   TipBasedVPL.prototype.clearInstructions = function() {

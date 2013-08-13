@@ -1,11 +1,8 @@
 #####################################################
 # TODO
 # -リファクタリング
-# - 保存機能
-# - パラメータのみ保存(TipParameter)
-# - チップテーブル作っておいて、初期状態はそっからコピー
-# - 保存しておいたパラメータを使って復元
-# - 必要なのは、チップテーブを参照するためのクラス名とパラメータ
+# - データ構造の可視化
+# -- スタックの中身やカウンタなど
 #####################################################
 class Environment
   @ScreenWidth = 640 
@@ -41,6 +38,11 @@ class TipBasedVPL extends Game
     TipTable.addInstruction(instruction)
 
   addPresetInstructions : () ->
+    stack = new StackMachine()
+    counters = []
+    for i in [0...100] 
+      counters[i] = new Counter()
+
     returnTip = TipFactory.createReturnTip(Environment.startX, Environment.startY)
     stopTip   = TipFactory.createStopTip() 
     nopTip  = TipFactory.createNopTip()
@@ -50,18 +52,23 @@ class TipBasedVPL extends Game
     TipTable.addTip(returnTip)
     TipTable.addTip(stopTip)
     TipTable.addTip(nopTip, Resources.get("iconNop"))
-    TipTable.addInstruction(new StackAddInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackSubInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackMulInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackDivInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackModInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackXorInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackGrtInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackSwpInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackNotInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackDupInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackRotInstruction(), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackBnzInstruction(), Resources.get("iconRandom"))
+    TipTable.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
+    TipTable.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))
+    TipTable.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"))
+    TipTable.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"))
+    TipTable.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"))
 
   clearInstructions : () -> TipTable.clear()
 

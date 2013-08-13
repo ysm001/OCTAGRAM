@@ -139,6 +139,7 @@ StackAddInstruction = (function(_super) {
 
   function StackAddInstruction(stack) {
     this.stack = stack;
+    StackAddInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackAddInstruction.prototype.action = function() {
@@ -146,7 +147,7 @@ StackAddInstruction = (function(_super) {
   };
 
   StackAddInstruction.prototype.clone = function() {
-    return new StackAddInstruction(this.stack);
+    return this.copy(new StackAddInstruction(this.stack));
   };
 
   StackAddInstruction.prototype.getIcon = function() {
@@ -166,6 +167,7 @@ StackSubInstruction = (function(_super) {
 
   function StackSubInstruction(stack) {
     this.stack = stack;
+    StackSubInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackSubInstruction.prototype.action = function() {
@@ -173,7 +175,7 @@ StackSubInstruction = (function(_super) {
   };
 
   StackSubInstruction.prototype.clone = function() {
-    return new StackSubInstruction(this.stack);
+    return this.copy(new StackSubInstruction(this.stack));
   };
 
   StackSubInstruction.prototype.getIcon = function() {
@@ -193,6 +195,7 @@ StackMulInstruction = (function(_super) {
 
   function StackMulInstruction(stack) {
     this.stack = stack;
+    StackMulInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackMulInstruction.prototype.action = function() {
@@ -200,7 +203,7 @@ StackMulInstruction = (function(_super) {
   };
 
   StackMulInstruction.prototype.clone = function() {
-    return new StackMulInstruction(this.stack);
+    return this.copy(new StackMulInstruction(this.stack));
   };
 
   StackMulInstruction.prototype.getIcon = function() {
@@ -220,6 +223,7 @@ StackDivInstruction = (function(_super) {
 
   function StackDivInstruction(stack) {
     this.stack = stack;
+    StackDivInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackDivInstruction.prototype.action = function() {
@@ -227,7 +231,7 @@ StackDivInstruction = (function(_super) {
   };
 
   StackDivInstruction.prototype.clone = function() {
-    return new StackDivInstruction(this.stack);
+    return this.copy(new StackDivInstruction(this.stack));
   };
 
   StackDivInstruction.prototype.getIcon = function() {
@@ -247,6 +251,7 @@ StackModInstruction = (function(_super) {
 
   function StackModInstruction(stack) {
     this.stack = stack;
+    StackModInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackModInstruction.prototype.action = function() {
@@ -254,7 +259,7 @@ StackModInstruction = (function(_super) {
   };
 
   StackModInstruction.prototype.clone = function() {
-    return new StackModInstruction(this.stack);
+    return this.copy(new StackModInstruction(this.stack));
   };
 
   StackModInstruction.prototype.getIcon = function() {
@@ -274,6 +279,7 @@ StackXorInstruction = (function(_super) {
 
   function StackXorInstruction(stack) {
     this.stack = stack;
+    StackXorInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackXorInstruction.prototype.action = function() {
@@ -281,7 +287,7 @@ StackXorInstruction = (function(_super) {
   };
 
   StackXorInstruction.prototype.clone = function() {
-    return new StackXorInstruction(this.stack);
+    return this.copy(new StackXorInstruction(this.stack));
   };
 
   StackXorInstruction.prototype.getIcon = function() {
@@ -301,6 +307,7 @@ StackGrtInstruction = (function(_super) {
 
   function StackGrtInstruction(stack) {
     this.stack = stack;
+    StackGrtInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackGrtInstruction.prototype.action = function() {
@@ -308,7 +315,7 @@ StackGrtInstruction = (function(_super) {
   };
 
   StackGrtInstruction.prototype.clone = function() {
-    return new StackGrtInstruction(this.stack);
+    return this.copy(new StackGrtInstruction(this.stack));
   };
 
   StackGrtInstruction.prototype.getIcon = function() {
@@ -328,6 +335,7 @@ StackSwpInstruction = (function(_super) {
 
   function StackSwpInstruction(stack) {
     this.stack = stack;
+    StackSwpInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackSwpInstruction.prototype.action = function() {
@@ -355,6 +363,7 @@ StackNotInstruction = (function(_super) {
 
   function StackNotInstruction(stack) {
     this.stack = stack;
+    StackNotInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackNotInstruction.prototype.action = function() {
@@ -362,7 +371,7 @@ StackNotInstruction = (function(_super) {
   };
 
   StackNotInstruction.prototype.clone = function() {
-    return new StackNotInstruction(this.stack);
+    return this.copy(new StackNotInstruction(this.stack));
   };
 
   StackNotInstruction.prototype.getIcon = function() {
@@ -382,6 +391,7 @@ StackDupInstruction = (function(_super) {
 
   function StackDupInstruction(stack) {
     this.stack = stack;
+    StackDupInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackDupInstruction.prototype.action = function() {
@@ -389,7 +399,7 @@ StackDupInstruction = (function(_super) {
   };
 
   StackDupInstruction.prototype.clone = function() {
-    return new StackDupInstruction(this.stack);
+    return this.copy(new StackDupInstruction(this.stack));
   };
 
   StackDupInstruction.prototype.getIcon = function() {
@@ -409,6 +419,7 @@ StackRotInstruction = (function(_super) {
 
   function StackRotInstruction(stack) {
     this.stack = stack;
+    StackRotInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackRotInstruction.prototype.action = function() {
@@ -416,7 +427,7 @@ StackRotInstruction = (function(_super) {
   };
 
   StackRotInstruction.prototype.clone = function() {
-    return new StackRotInstruction(this.stack);
+    return this.copy(new StackRotInstruction(this.stack));
   };
 
   StackRotInstruction.prototype.getIcon = function() {
@@ -436,6 +447,7 @@ StackBnzInstruction = (function(_super) {
 
   function StackBnzInstruction(stack) {
     this.stack = stack;
+    StackBnzInstruction.__super__.constructor.apply(this, arguments);
   }
 
   StackBnzInstruction.prototype.action = function() {
@@ -443,7 +455,7 @@ StackBnzInstruction = (function(_super) {
   };
 
   StackBnzInstruction.prototype.clone = function() {
-    return new StackBnzInstruction(this.stack);
+    return this.copy(new StackBnzInstruction(this.stack));
   };
 
   StackBnzInstruction.prototype.getIcon = function() {
