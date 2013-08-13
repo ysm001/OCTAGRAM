@@ -20,7 +20,7 @@ class Executer
       @current.hideExecutionEffect()
       @current = null
 
-    if !tip.isAsynchronous() 
+    if !tip.isAsynchronous()
       setTimeout(@execNext, Executer.latency)
 
   execute : () ->
@@ -32,8 +32,7 @@ class Executer
 
     # asynchronous branch
     if @current? && @current.isAsynchronous() && e.result?
-      console.log("a")
-      @next = if e.result then @current.code.getConseq() else @current.code.getAlter() 
+      @next = if e.result then @current.code.getConseq() else @current.code.getAlter()
       nextTip = @getNext()
 
     if nextTip?

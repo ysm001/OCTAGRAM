@@ -176,27 +176,14 @@ RobotWorld = (function(_super) {
   };
 
   RobotWorld.prototype.updateRobots = function() {
-    var animated, i, _i, _j, _len, _len1, _ref, _ref1, _results;
-    animated = false;
-    _ref = [this.bullets, this.robots, this.items];
+    var i, _i, _len, _ref, _results;
+    _ref = this.robots;
+    _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       i = _ref[_i];
-      animated = this._isAnimated(i, function(x) {
-        return x.animated;
-      });
-      if (animated === true) {
-        break;
-      }
+      _results.push(i.update());
     }
-    if (animated === false) {
-      _ref1 = this.robots;
-      _results = [];
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        i = _ref1[_j];
-        _results.push(i.update());
-      }
-      return _results;
-    }
+    return _results;
   };
 
   RobotWorld.prototype.update = function(views) {

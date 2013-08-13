@@ -189,6 +189,61 @@ Robot = (function(_super) {
     }
   };
 
+  Robot.prototype.shot = function(bulletType, onComplete) {
+    var b, bltQueue, ret, _i, _len, _ref;
+    switch (bulletType) {
+      case BulletType.NORMAL:
+        bltQueue = this.bulletQueue.normal;
+        break;
+      case BulletType.WIDE:
+        bltQueue = this.bulletQueue.wide;
+        break;
+      case BulletType.DUAL:
+        bltQueue = this.bulletQueue.dual;
+    }
+    if (!bltQueue.empty()) {
+      _ref = bltQueue.dequeue();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        b = _ref[_i];
+        b.shot(this.x, this.y, this.getDirect());
+        this.scene.world.bullets.push(b);
+        this.scene.world.insertBefore(b, this);
+        b.setOnDestoryEvent(onComplete);
+        ret = b;
+      }
+    }
+    return ret;
+  };
+
+  Robot.prototype.pickup = function(bulletType, onComplete) {
+    var blt, bltQueue, item, itemClass, ret;
+    ret = false;
+    blt = BulletFactory.create(bulletType, this);
+    switch (bulletType) {
+      case BulletType.NORMAL:
+        bltQueue = this.bulletQueue.normal;
+        itemClass = NormalBulletItem;
+        break;
+      case BulletType.WIDE:
+        bltQueue = this.bulletQueue.wide;
+        itemClass = WideBulletItem;
+        break;
+      case BulletType.DUAL:
+        bltQueue = this.bulletQueue.dual;
+        itemClass = DualBulletItem;
+    }
+    if (bltQueue != null) {
+      ret = bltQueue.enqueue(blt);
+    }
+    if (ret !== false) {
+      item = new itemClass(this.x, this.y);
+      this.scene.world.addChild(item);
+      item.setOnCompleteEvent(onComplete);
+      ret = blt;
+    }
+    return ret;
+  };
+
   Robot.prototype.damege = function() {
     this.hp -= 1;
     return this.onHpReduce();

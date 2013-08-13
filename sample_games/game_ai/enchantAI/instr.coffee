@@ -359,22 +359,7 @@ class ShotInstruction extends ActionInstruction
     @setAsynchronous(true)
 
   action : () ->
-    ret = false
-    switch @typeParam.value
-      when BulletType.NORMAL
-        bltQueue = @robot.bulletQueue.normal
-      when BulletType.WIDE
-        bltQueue = @robot.bulletQueue.wide
-      when BulletType.DUAL
-        bltQueue = @robot.bulletQueue.dual
-
-    unless bltQueue.empty()
-      for b in bltQueue.dequeue()
-        b.shot(@robot.x, @robot.y, @robot.getDirect())
-        @robot.scene.world.bullets.push b
-        @robot.scene.world.insertBefore b, @robot
-        b.setOnDestoryEvent(() => @onComplete())
-        ret = b
+    ret = @robot.shot(@typeParam.value, () => @onComplete())
     @setAsynchronous(ret != false)
     @robot.onCmdComplete(RobotInstruction.SHOT ,ret)
 
@@ -421,26 +406,7 @@ class PickupInstruction extends ActionInstruction
     @setAsynchronous(true)
 
   action: () ->
-    ret = false
-    type = @typeParam.value
-    blt = BulletFactory.create(type, @robot)
-    switch @typeParam.value
-      when BulletType.NORMAL
-        bltQueue = @robot.bulletQueue.normal
-        itemClass = NormalBulletItem
-      when BulletType.WIDE
-        bltQueue = @robot.bulletQueue.wide
-        itemClass = WideBulletItem
-      when BulletType.DUAL
-        bltQueue = @robot.bulletQueue.dual
-        itemClass = DualBulletItem
-    ret = bltQueue.enqueue(blt) if bltQueue?
-    if ret != false
-      item = new itemClass(@robot.x, @robot.y)
-      @robot.scene.world.addChild item
-      @robot.scene.world.items.push item
-      item.setOnCompleteEvent(() => @onComplete())
-      ret = blt
+    ret = @robot.pickup(@typeParam.value, () => @onComplete())
     @setAsynchronous(ret != false)
     @robot.onCmdComplete(RobotInstruction.PICKUP, ret)
 

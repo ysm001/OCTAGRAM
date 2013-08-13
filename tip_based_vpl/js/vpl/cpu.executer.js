@@ -50,7 +50,6 @@ Executer = (function() {
     var nextTip;
     nextTip = this.getNext();
     if ((this.current != null) && this.current.isAsynchronous() && (e.result != null)) {
-      console.log("a");
       this.next = e.result ? this.current.code.getConseq() : this.current.code.getAlter();
       nextTip = this.getNext();
     }

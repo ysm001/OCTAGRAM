@@ -122,14 +122,16 @@ class RobotWorld extends Group
     return animated
 
   updateRobots: () ->
-    animated = false
-    for i in [@bullets, @robots, @items]
-      animated = @_isAnimated(i, (x) -> x.animated)
-      break if animated == true
+    i.update() for i in @robots
 
-    if animated is false
-      for i in @robots
-        i.update()
+    #animated = false
+    #for i in [@bullets, @robots, @items]
+    #  animated = @_isAnimated(i, (x) -> x.animated)
+    #  break if animated == true
+
+    #if animated is false
+    #  for i in @robots
+    #    i.update()
 
   update: (views)->
     #@swicher.update()

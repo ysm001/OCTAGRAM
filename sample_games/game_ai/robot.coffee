@@ -133,6 +133,45 @@ class Robot extends Sprite
       when 7
         Direct.DOWN | Direct.LEFT
 
+  shot : (bulletType, onComplete) ->
+    switch bulletType
+      when BulletType.NORMAL
+        bltQueue = @bulletQueue.normal
+      when BulletType.WIDE
+        bltQueue = @bulletQueue.wide
+      when BulletType.DUAL
+        bltQueue = @bulletQueue.dual
+
+    unless bltQueue.empty()
+      for b in bltQueue.dequeue()
+        b.shot(@x, @y, @getDirect())
+        @scene.world.bullets.push b
+        @scene.world.insertBefore b, @
+        b.setOnDestoryEvent(onComplete)
+        ret = b
+    ret
+
+  pickup : (bulletType, onComplete) ->
+    ret = false
+    blt = BulletFactory.create(bulletType, @)
+    switch bulletType
+      when BulletType.NORMAL
+        bltQueue = @bulletQueue.normal
+        itemClass = NormalBulletItem
+      when BulletType.WIDE
+        bltQueue = @bulletQueue.wide
+        itemClass = WideBulletItem
+      when BulletType.DUAL
+        bltQueue = @bulletQueue.dual
+        itemClass = DualBulletItem
+    ret = bltQueue.enqueue(blt) if bltQueue?
+    if ret != false
+      item = new itemClass(@x, @y)
+      @scene.world.addChild item
+      item.setOnCompleteEvent(onComplete)
+      ret = blt
+    ret
+
   damege: () ->
     @hp -= 1
     @onHpReduce()
@@ -267,8 +306,6 @@ class PlayerRobot extends Robot
       when RobotInstruction.MOVE
         if Math.floor(Math.random() * (10)) == 1
           i = 1
-          #plate = @map.getPlateRandom()
-          #plate.setSpot(Spot.getRandomType())
       when RobotInstruction.SHOT
         if ret != false
           effect = new ShotEffect(@x, @y)

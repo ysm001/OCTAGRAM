@@ -14,7 +14,7 @@ class Item extends Sprite
 
 class NormalBulletItem extends Item
   @SIZE = 64
-  FRAME = 20
+  FRAME = 40
 
   constructor:(x, y) ->
     super NormalBulletItem.SIZE, NormalBulletItem.SIZE
@@ -25,7 +25,7 @@ class NormalBulletItem extends Item
 
 class WideBulletItem extends Item
   @SIZE = 64
-  FRAME = 20
+  FRAME = 40
 
   constructor:(x, y) ->
     super WideBulletItem.SIZE, WideBulletItem.SIZE
@@ -36,7 +36,7 @@ class WideBulletItem extends Item
     
 class DualBulletItem extends Item
   @SIZE = 64
-  FRAME = 20
+  FRAME = 40
 
   constructor:(x, y) ->
     super DualBulletItem.SIZE, DualBulletItem.SIZE

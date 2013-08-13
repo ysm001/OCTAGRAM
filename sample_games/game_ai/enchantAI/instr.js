@@ -499,32 +499,11 @@ ShotInstruction = (function(_super) {
   }
 
   ShotInstruction.prototype.action = function() {
-    var b, bltQueue, ret, _i, _len, _ref,
+    var ret,
       _this = this;
-    ret = false;
-    switch (this.typeParam.value) {
-      case BulletType.NORMAL:
-        bltQueue = this.robot.bulletQueue.normal;
-        break;
-      case BulletType.WIDE:
-        bltQueue = this.robot.bulletQueue.wide;
-        break;
-      case BulletType.DUAL:
-        bltQueue = this.robot.bulletQueue.dual;
-    }
-    if (!bltQueue.empty()) {
-      _ref = bltQueue.dequeue();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        b = _ref[_i];
-        b.shot(this.robot.x, this.robot.y, this.robot.getDirect());
-        this.robot.scene.world.bullets.push(b);
-        this.robot.scene.world.insertBefore(b, this.robot);
-        b.setOnDestoryEvent(function() {
-          return _this.onComplete();
-        });
-        ret = b;
-      }
-    }
+    ret = this.robot.shot(this.typeParam.value, function() {
+      return _this.onComplete();
+    });
     this.setAsynchronous(ret !== false);
     return this.robot.onCmdComplete(RobotInstruction.SHOT, ret);
   };
@@ -588,36 +567,11 @@ PickupInstruction = (function(_super) {
   }
 
   PickupInstruction.prototype.action = function() {
-    var blt, bltQueue, item, itemClass, ret, type,
+    var ret,
       _this = this;
-    ret = false;
-    type = this.typeParam.value;
-    blt = BulletFactory.create(type, this.robot);
-    switch (this.typeParam.value) {
-      case BulletType.NORMAL:
-        bltQueue = this.robot.bulletQueue.normal;
-        itemClass = NormalBulletItem;
-        break;
-      case BulletType.WIDE:
-        bltQueue = this.robot.bulletQueue.wide;
-        itemClass = WideBulletItem;
-        break;
-      case BulletType.DUAL:
-        bltQueue = this.robot.bulletQueue.dual;
-        itemClass = DualBulletItem;
-    }
-    if (bltQueue != null) {
-      ret = bltQueue.enqueue(blt);
-    }
-    if (ret !== false) {
-      item = new itemClass(this.robot.x, this.robot.y);
-      this.robot.scene.world.addChild(item);
-      this.robot.scene.world.items.push(item);
-      item.setOnCompleteEvent(function() {
-        return _this.onComplete();
-      });
-      ret = blt;
-    }
+    ret = this.robot.pickup(this.typeParam.value, function() {
+      return _this.onComplete();
+    });
     this.setAsynchronous(ret !== false);
     return this.robot.onCmdComplete(RobotInstruction.PICKUP, ret);
   };
