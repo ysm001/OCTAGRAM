@@ -59,61 +59,85 @@ class StackMachine
     str
 
 class StackAddInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.add()
-  clone : () -> new StackAddInstruction(@stack)
+  clone : () -> @copy(new StackAddInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x+yの値をプッシュする。"
 
 class StackSubInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.sub()
-  clone : () -> new StackSubInstruction(@stack)
+  clone : () -> @copy(new StackSubInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x-yの値をプッシュする。"
 
 class StackMulInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.mul()
-  clone : () -> new StackMulInstruction(@stack)
+  clone : () -> @copy(new StackMulInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x+yの値をプッシュする。"
 
 class StackDivInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.div()
-  clone : () -> new StackDivInstruction(@stack)
+  clone : () -> @copy(new StackDivInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x/yの値をプッシュする。"
 
 class StackModInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.mod()
-  clone : () -> new StackModInstruction(@stack)
+  clone : () -> @copy(new StackModInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, xをyで割った時の余りをプッシュする。"
 
 class StackXorInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.xor()
-  clone : () -> new StackXorInstruction(@stack)
+  clone : () -> @copy(new StackXorInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, xとyの排他的論理和の値をプッシュする。"
 
 class StackGrtInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.grt()
-  clone : () -> new StackGrtInstruction(@stack)
+  clone : () -> @copy(new StackGrtInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x>yならば1をプッシュする。<br>そうでなければ0をプッシュする。"
 
-class StackSwapInstruction extends ActionInstruction
-  constructor : (@stack) ->
+class StackSwpInstruction extends ActionInstruction
+  constructor : (@stack) -> super
   action : () -> @stack.swap()
-  clone : () -> new StackSwapInstruction(@stack)
+  clone : () -> new StackSwpInstruction(@stack)
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, y, xの順でプッシュする。"
 
 class StackNotInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.not()
-  clone : () -> new StackNotInstruction(@stack)
+  clone : () -> @copy(new StackNotInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xが0ならば1をプッシュする。<br>そうでなければ0をプッシュする。"
 
 class StackDupInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.dup()
-  clone : () -> new StackDupInstruction(@stack)
+  clone : () -> @copy(new StackDupInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xを2回プッシュする。"
 
 class StackRotInstruction extends ActionInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.rot()
-  clone : () -> new StackRotInstruction(@stack)
+  clone : () -> @copy(new StackRotInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, y, zをポップして, y, z, xの順でプッシュする。"
 
 class StackBnzInstruction extends BranchInstruction
-  constructor : (@stack) ->
+  constructor : (@stack) -> super
   action : () -> @stack.bnz()
-  clone : () -> new StackBnzInstruction(@stack)
+  clone : () -> @copy(new StackBnzInstruction(@stack))
+  getIcon : () ->  new Icon(Resources.get("iconRandom"))
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xが1ならば青矢印に進む。<br>そうでなければ赤矢印に進む。" 
