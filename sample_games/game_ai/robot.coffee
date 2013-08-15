@@ -51,13 +51,10 @@ class Robot extends Sprite
     @game = Game.instance
     @animated = false
     @hp = Robot.MAX_HP
-    @bltQueue = new ItemQueue [], 5
-    @wideBltQueue = new ItemQueue [], 5
-    @dualBltQueue = new ItemQueue [], 5
     @bulletQueue =
-      normal : @bltQueue
-      wide   : @wideBltQueue
-      dual   : @dualBltQueue
+      normal : new ItemQueue [], 5
+      wide   : new ItemQueue [], 5
+      dual   : new ItemQueue [], 5
     @barrierMap = new BarrierMap @
     @map = Map.instance
     @plateState = 0
@@ -67,8 +64,6 @@ class Robot extends Sprite
     pos = plate.getAbsolutePos()
     @moveTo pos.x, pos.y
   
-  onViewUpdate: (views) ->
-
   onHpReduce: (views) ->
 
   onKeyInput: (input) ->
@@ -133,6 +128,21 @@ class Robot extends Sprite
       when 7
         Direct.DOWN | Direct.LEFT
 
+  move : (plate, onComplete) ->
+    ret = false
+    @prevPlate = @currentPlate
+    # plate is exists and not locked
+    if plate? and plate.lock == false
+      pos = plate.getAbsolutePos()
+      @tl.moveTo(pos.x, pos.y,
+        PlayerRobot.UPDATE_FRAME).then(onComplete)
+      @currentPlate = plate
+      ret = new Point plate.ix, plate.iy
+    else
+      ret = false
+    return ret
+    
+
   shot : (bulletType, onComplete) ->
     switch bulletType
       when BulletType.NORMAL
@@ -168,6 +178,7 @@ class Robot extends Sprite
     if ret != false
       item = new itemClass(@x, @y)
       @scene.world.addChild item
+      @scene.world.items.push item
       item.setOnCompleteEvent(onComplete)
       ret = blt
     ret

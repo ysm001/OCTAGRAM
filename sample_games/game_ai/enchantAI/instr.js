@@ -71,24 +71,6 @@ AbstractMoveInstruction = (function(_super) {
     AbstractMoveInstruction.__super__.constructor.apply(this, arguments);
   }
 
-  AbstractMoveInstruction.prototype._move = function(plate) {
-    var pos, ret,
-      _this = this;
-    ret = false;
-    this.robot.prevPlate = this.robot.currentPlate;
-    if ((plate != null) && plate.lock === false) {
-      pos = plate.getAbsolutePos();
-      this.robot.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(function() {
-        return _this.onComplete();
-      });
-      this.robot.currentPlate = plate;
-      ret = new Point(plate.ix, plate.iy);
-    } else {
-      ret = false;
-    }
-    return ret;
-  };
-
   AbstractMoveInstruction.prototype.onComplete = function() {
     this.robot.onAnimateComplete();
     return AbstractMoveInstruction.__super__.onComplete.apply(this, arguments);
@@ -158,14 +140,17 @@ RandomMoveInstruction = (function(_super) {
   }
 
   RandomMoveInstruction.prototype.action = function() {
-    var direct, plate, rand, ret;
+    var direct, plate, rand, ret,
+      _this = this;
     ret = false;
     while (!ret) {
       rand = Random.nextInt() % InstrCommon.getDirectSize();
       direct = InstrCommon.getRobotDirect(rand);
       this.robot.frame = direct.frame;
       plate = this.robot.map.getTargetPoision(this.robot.currentPlate, direct.value);
-      ret = this._move(plate);
+      ret = this.robot.move(plate, function() {
+        return _this.onComplete();
+      });
     }
     this.setAsynchronous(ret !== false);
     return this.robot.onCmdComplete(RobotInstruction.MOVE, ret);
@@ -216,12 +201,15 @@ MoveInstruction = (function(_super) {
   }
 
   MoveInstruction.prototype.action = function() {
-    var direct, plate, ret;
+    var direct, plate, ret,
+      _this = this;
     ret = true;
     direct = InstrCommon.getRobotDirect(this.directParam.value);
     this.robot.frame = direct.frame;
     plate = this.robot.map.getTargetPoision(this.robot.currentPlate, direct.value);
-    ret = this._move(plate);
+    ret = this.robot.move(plate, function() {
+      return _this.onComplete();
+    });
     this.setAsynchronous(ret !== false);
     return this.robot.onCmdComplete(RobotInstruction.MOVE, ret);
   };
@@ -301,7 +289,6 @@ TurnEnemyScanInstruction = (function(_super) {
         if (v.size() > 0) {
           bullet = v.index(0);
           if (bullet.withinRange(this.robot, this.opponent, direct.value)) {
-            Debug.log("find out opponent");
             this.onComplete(true);
             return;
           }
@@ -316,7 +303,6 @@ TurnEnemyScanInstruction = (function(_super) {
   TurnEnemyScanInstruction.prototype.action = function() {
     var count, directIndex;
     count = this.lengthParam.value + 1;
-    console.log(count);
     directIndex = InstrCommon.getDirectIndex(this.robot.getDirect());
     return setTimeout(this._turn, (1000 * 15) / 30, directIndex, 0, count);
   };
@@ -384,7 +370,9 @@ ItemScanMoveInstruction = (function(_super) {
       });
       if (target != null) {
         _this.robot.frame = InstrCommon.getFrame(targetDirect);
-        _this._move(target);
+        ret = _this.robot.move(target, function() {
+          return _this.onComplete();
+        });
         return _this.robot.onCmdComplete(RobotInstruction.MOVE, ret);
       } else {
         return setTimeout((function() {

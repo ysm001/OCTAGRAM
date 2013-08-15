@@ -94,13 +94,10 @@ Robot = (function(_super) {
     this.game = Game.instance;
     this.animated = false;
     this.hp = Robot.MAX_HP;
-    this.bltQueue = new ItemQueue([], 5);
-    this.wideBltQueue = new ItemQueue([], 5);
-    this.dualBltQueue = new ItemQueue([], 5);
     this.bulletQueue = {
-      normal: this.bltQueue,
-      wide: this.wideBltQueue,
-      dual: this.dualBltQueue
+      normal: new ItemQueue([], 5),
+      wide: new ItemQueue([], 5),
+      dual: new ItemQueue([], 5)
     };
     this.barrierMap = new BarrierMap(this);
     this.map = Map.instance;
@@ -111,8 +108,6 @@ Robot = (function(_super) {
     pos = plate.getAbsolutePos();
     this.moveTo(pos.x, pos.y);
   }
-
-  Robot.prototype.onViewUpdate = function(views) {};
 
   Robot.prototype.onHpReduce = function(views) {};
 
@@ -189,6 +184,21 @@ Robot = (function(_super) {
     }
   };
 
+  Robot.prototype.move = function(plate, onComplete) {
+    var pos, ret;
+    ret = false;
+    this.prevPlate = this.currentPlate;
+    if ((plate != null) && plate.lock === false) {
+      pos = plate.getAbsolutePos();
+      this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(onComplete);
+      this.currentPlate = plate;
+      ret = new Point(plate.ix, plate.iy);
+    } else {
+      ret = false;
+    }
+    return ret;
+  };
+
   Robot.prototype.shot = function(bulletType, onComplete) {
     var b, bltQueue, ret, _i, _len, _ref;
     switch (bulletType) {
@@ -238,6 +248,7 @@ Robot = (function(_super) {
     if (ret !== false) {
       item = new itemClass(this.x, this.y);
       this.scene.world.addChild(item);
+      this.scene.world.items.push(item);
       item.setOnCompleteEvent(onComplete);
       ret = blt;
     }

@@ -53,20 +53,6 @@ class AbstractMoveInstruction extends ActionInstruction
   constructor : () ->
     super
 
-  _move: (plate) ->
-    ret = false
-    @robot.prevPlate = @robot.currentPlate
-    # plate is exists and not locked
-    if plate? and plate.lock == false
-      pos = plate.getAbsolutePos()
-      @robot.tl.moveTo(pos.x, pos.y,
-        PlayerRobot.UPDATE_FRAME).then(() => @onComplete())
-      @robot.currentPlate = plate
-      ret = new Point plate.ix, plate.iy
-    else
-      ret = false
-    return ret
-
   onComplete: () ->
     @robot.onAnimateComplete()
     super
@@ -113,7 +99,7 @@ class RandomMoveInstruction extends AbstractMoveInstruction
       direct = InstrCommon.getRobotDirect(rand)
       @robot.frame = direct.frame
       plate = @robot.map.getTargetPoision(@robot.currentPlate, direct.value)
-      ret = @_move plate
+      ret = @robot.move(plate, () => @onComplete())
     @setAsynchronous(ret != false)
     @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
@@ -154,7 +140,7 @@ class MoveInstruction extends AbstractMoveInstruction
     direct = InstrCommon.getRobotDirect(@directParam.value)
     @robot.frame = direct.frame
     plate = @robot.map.getTargetPoision(@robot.currentPlate, direct.value)
-    ret = @_move plate
+    ret = @robot.move(plate, () => @onComplete())
     @setAsynchronous(ret != false)
     @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
@@ -219,7 +205,6 @@ class TurnEnemyScanInstruction extends BranchInstruction
         if v.size() > 0
           bullet = v.index(0)
           if bullet.withinRange(@robot, @opponent, direct.value)
-            Debug.log "find out opponent"
             @onComplete(true)
             return
       setTimeout(@_turn
@@ -231,7 +216,6 @@ class TurnEnemyScanInstruction extends BranchInstruction
 
   action : () ->
     count = @lengthParam.value + 1
-    console.log count
     directIndex = InstrCommon.getDirectIndex(@robot.getDirect())
     setTimeout(@_turn, (1000*15)/30, directIndex, 0, count)
 
@@ -278,7 +262,7 @@ class ItemScanMoveInstruction extends AbstractMoveInstruction
           targetDirect = direct
       if target?
         @robot.frame = InstrCommon.getFrame(targetDirect)
-        @_move target
+        ret = @robot.move(target, () => @onComplete())
         @robot.onCmdComplete(RobotInstruction.MOVE, ret)
       else
         setTimeout((() => @onComplete()), Util.toMillisec(PlayerRobot.UPDATE_FRAME))
