@@ -48,7 +48,6 @@ class Robot extends SpriteModel
   constructor: (width, height, parentNode) ->
     super width, height
     @name = "robot"
-    @game = Game.instance
     @animated = false
     @hp = Robot.MAX_HP
     @bulletQueue =
@@ -192,7 +191,7 @@ class Robot extends SpriteModel
     @x = Math.round @x
     @y = Math.round @y
 
-    @onKeyInput @game.input
+    @onKeyInput Game.instance.input
     return true
 
 class DebugCommand
@@ -267,7 +266,7 @@ class PlayerRobot extends Robot
   constructor: (parentNode) ->
     super PlayerRobot.WIDTH, PlayerRobot.HEIGHT, parentNode
     @name = R.String.PLAYER
-    @image = @game.assets[R.CHAR.PLAYER]
+    @image = Game.instance.assets[R.CHAR.PLAYER]
     @plateState = Plate.STATE_PLAYER
     @debugCmd = new DebugCommand(@)
 
@@ -349,7 +348,7 @@ class EnemyRobot extends Robot
   constructor: (parentNode) ->
     super EnemyRobot.WIDTH, EnemyRobot.HEIGHT, parentNode
     @name = R.String.ENEMY
-    @image = @game.assets[R.CHAR.ENEMY]
+    @image = Game.instance.assets[R.CHAR.ENEMY]
     @plateState = Plate.STATE_ENEMY
     @debugCmd = new DebugCommand(@)
 

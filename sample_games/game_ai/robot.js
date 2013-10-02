@@ -91,7 +91,6 @@ Robot = (function(_super) {
     var plate, pos;
     Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
-    this.game = Game.instance;
     this.animated = false;
     this.hp = Robot.MAX_HP;
     this.bulletQueue = {
@@ -263,7 +262,7 @@ Robot = (function(_super) {
   Robot.prototype.update = function() {
     this.x = Math.round(this.x);
     this.y = Math.round(this.y);
-    this.onKeyInput(this.game.input);
+    this.onKeyInput(Game.instance.input);
     return true;
   };
 
@@ -364,7 +363,7 @@ PlayerRobot = (function(_super) {
   function PlayerRobot(parentNode) {
     PlayerRobot.__super__.constructor.call(this, PlayerRobot.WIDTH, PlayerRobot.HEIGHT, parentNode);
     this.name = R.String.PLAYER;
-    this.image = this.game.assets[R.CHAR.PLAYER];
+    this.image = Game.instance.assets[R.CHAR.PLAYER];
     this.plateState = Plate.STATE_PLAYER;
     this.debugCmd = new DebugCommand(this);
   }
@@ -482,7 +481,7 @@ EnemyRobot = (function(_super) {
   function EnemyRobot(parentNode) {
     EnemyRobot.__super__.constructor.call(this, EnemyRobot.WIDTH, EnemyRobot.HEIGHT, parentNode);
     this.name = R.String.ENEMY;
-    this.image = this.game.assets[R.CHAR.ENEMY];
+    this.image = Game.instance.assets[R.CHAR.ENEMY];
     this.plateState = Plate.STATE_ENEMY;
     this.debugCmd = new DebugCommand(this);
   }
