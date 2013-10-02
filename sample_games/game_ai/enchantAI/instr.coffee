@@ -54,7 +54,6 @@ class AbstractMoveInstruction extends ActionInstruction
     super
 
   onComplete: () ->
-    @robot.onAnimateComplete()
     super
 
 class TipInfo
@@ -348,7 +347,6 @@ class ShotInstruction extends ActionInstruction
     @robot.onCmdComplete(RobotInstruction.SHOT ,ret)
 
   onComplete: () ->
-    @robot.onAnimateComplete()
     super()
 
   clone : () ->
@@ -395,7 +393,6 @@ class PickupInstruction extends ActionInstruction
     @robot.onCmdComplete(RobotInstruction.PICKUP, ret)
 
   onComplete: () ->
-    @robot.onAnimateComplete()
     super()
 
   clone : () ->

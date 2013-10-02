@@ -72,7 +72,6 @@ AbstractMoveInstruction = (function(_super) {
   }
 
   AbstractMoveInstruction.prototype.onComplete = function() {
-    this.robot.onAnimateComplete();
     return AbstractMoveInstruction.__super__.onComplete.apply(this, arguments);
   };
 
@@ -497,7 +496,6 @@ ShotInstruction = (function(_super) {
   };
 
   ShotInstruction.prototype.onComplete = function() {
-    this.robot.onAnimateComplete();
     return ShotInstruction.__super__.onComplete.call(this);
   };
 
@@ -565,7 +563,6 @@ PickupInstruction = (function(_super) {
   };
 
   PickupInstruction.prototype.onComplete = function() {
-    this.robot.onAnimateComplete();
     return PickupInstruction.__super__.onComplete.call(this);
   };
 
