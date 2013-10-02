@@ -27,8 +27,6 @@ class ViewGroup extends Group
     #@addChild @nextBtn
 
   update: (world) ->
-    for i in world.robots
-      i.onViewUpdate(@)
     @map.update()
 
 class TurnSwitcher

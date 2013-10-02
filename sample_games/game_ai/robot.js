@@ -269,7 +269,7 @@ Robot = (function(_super) {
 
   return Robot;
 
-})(Sprite);
+})(SpriteModel);
 
 DebugCommand = (function() {
   var itemClass, type;

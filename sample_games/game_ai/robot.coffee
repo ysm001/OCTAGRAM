@@ -43,7 +43,7 @@ class BarrierMap extends Object
     return if @[key]? then true else false
 
 
-class Robot extends Sprite
+class Robot extends SpriteModel
   @MAX_HP = 4
   constructor: (width, height, parentNode) ->
     super width, height
