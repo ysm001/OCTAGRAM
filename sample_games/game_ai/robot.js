@@ -81,9 +81,39 @@ BarrierMap = (function(_super) {
 })(Object);
 
 Robot = (function(_super) {
+  var DIRECT_FRAME, FRAME_DIRECT;
+
   __extends(Robot, _super);
 
   Robot.MAX_HP = 4;
+
+  DIRECT_FRAME = {};
+
+  DIRECT_FRAME[Direct.RIGHT] = 0;
+
+  DIRECT_FRAME[Direct.RIGHT | Direct.DOWN] = 5;
+
+  DIRECT_FRAME[Direct.LEFT | Direct.DOWN] = 7;
+
+  DIRECT_FRAME[Direct.LEFT] = 2;
+
+  DIRECT_FRAME[Direct.LEFT | Direct.UP] = 6;
+
+  DIRECT_FRAME[Direct.RIGHT | Direct.UP] = 4;
+
+  FRAME_DIRECT = {};
+
+  FRAME_DIRECT[0] = Direct.RIGHT;
+
+  FRAME_DIRECT[5] = Direct.RIGHT | Direct.DOWN;
+
+  FRAME_DIRECT[7] = Direct.LEFT | Direct.DOWN;
+
+  FRAME_DIRECT[2] = Direct.LEFT;
+
+  FRAME_DIRECT[6] = Direct.LEFT | Direct.UP;
+
+  FRAME_DIRECT[4] = Direct.RIGHT | Direct.UP;
 
   function Robot(width, height, parentNode) {
     var plate, pos;
@@ -99,11 +129,104 @@ Robot = (function(_super) {
     this.map = Map.instance;
     this.plateState = 0;
     parentNode.addChild(this);
-    plate = this.map.getPlate(0, 0);
+    plate = Map.instance.getPlate(0, 0);
     this.prevPlate = this.currentPlate = plate;
     pos = plate.getAbsolutePos();
     this.moveTo(pos.x, pos.y);
   }
+
+  Robot.prototype.properties = {
+    direct: {
+      get: function() {
+        return FRAME_DIRECT[this.frame];
+      },
+      set: function(direct) {
+        return this.frame = DIRECT_FRAME[direct];
+      }
+    }
+  };
+
+  Robot.prototype.move = function(direct, onComplete) {
+    var plate, pos, ret;
+    ret = false;
+    plate = Map.instance.getTargetPoision(this.currentPlate, direct);
+    this.frame = this.directFrame(direct);
+    this.prevPlate = this.currentPlate;
+    if ((plate != null) && plate.lock === false) {
+      pos = plate.getAbsolutePos();
+      this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(onComplete);
+      this.currentPlate = plate;
+      ret = new Point(plate.ix, plate.iy);
+    } else {
+      ret = false;
+    }
+    return ret;
+  };
+
+  Robot.prototype.shot = function(bulletType, onComplete) {
+    var b, bltQueue, ret, _i, _len, _ref;
+    switch (bulletType) {
+      case BulletType.NORMAL:
+        bltQueue = this.bulletQueue.normal;
+        break;
+      case BulletType.WIDE:
+        bltQueue = this.bulletQueue.wide;
+        break;
+      case BulletType.DUAL:
+        bltQueue = this.bulletQueue.dual;
+    }
+    if (!bltQueue.empty()) {
+      _ref = bltQueue.dequeue();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        b = _ref[_i];
+        b.shot(this.x, this.y, this.direct);
+        this.scene.world.bullets.push(b);
+        this.scene.world.insertBefore(b, this);
+        b.setOnDestoryEvent(onComplete);
+        ret = b;
+      }
+    }
+    return ret;
+  };
+
+  Robot.prototype.pickup = function(bulletType, onComplete) {
+    var blt, bltQueue, item, itemClass, ret;
+    ret = false;
+    blt = BulletFactory.create(bulletType, this);
+    switch (bulletType) {
+      case BulletType.NORMAL:
+        bltQueue = this.bulletQueue.normal;
+        itemClass = NormalBulletItem;
+        break;
+      case BulletType.WIDE:
+        bltQueue = this.bulletQueue.wide;
+        itemClass = WideBulletItem;
+        break;
+      case BulletType.DUAL:
+        bltQueue = this.bulletQueue.dual;
+        itemClass = DualBulletItem;
+    }
+    if (bltQueue != null) {
+      ret = bltQueue.enqueue(blt);
+    }
+    if (ret !== false) {
+      item = new itemClass(this.x, this.y);
+      this.scene.world.addChild(item);
+      this.scene.world.items.push(item);
+      item.setOnCompleteEvent(onComplete);
+      ret = blt;
+    }
+    return ret;
+  };
+
+  Robot.prototype.turn = function(onComplete) {
+    if (onComplete == null) {
+      onComplete = function() {};
+    }
+    return setTimeout((function() {
+      return onComplete(this);
+    }), Util.toMillisec(15));
+  };
 
   Robot.prototype.onHpReduce = function(views) {};
 
@@ -155,98 +278,6 @@ Robot = (function(_super) {
     return this.moveTo(pos.x, pos.y);
   };
 
-  Robot.prototype.getDirect = function() {
-    switch (this.frame) {
-      case 0:
-        return Direct.RIGHT;
-      case 1:
-        return Direct.UP;
-      case 2:
-        return Direct.LEFT;
-      case 3:
-        return Direct.DOWN;
-      case 4:
-        return Direct.UP | Direct.RIGHT;
-      case 5:
-        return Direct.DOWN | Direct.RIGHT;
-      case 6:
-        return Direct.UP | Direct.LEFT;
-      case 7:
-        return Direct.DOWN | Direct.LEFT;
-    }
-  };
-
-  Robot.prototype.move = function(plate, onComplete) {
-    var pos, ret;
-    ret = false;
-    this.prevPlate = this.currentPlate;
-    if ((plate != null) && plate.lock === false) {
-      pos = plate.getAbsolutePos();
-      this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(onComplete);
-      this.currentPlate = plate;
-      ret = new Point(plate.ix, plate.iy);
-    } else {
-      ret = false;
-    }
-    return ret;
-  };
-
-  Robot.prototype.shot = function(bulletType, onComplete) {
-    var b, bltQueue, ret, _i, _len, _ref;
-    switch (bulletType) {
-      case BulletType.NORMAL:
-        bltQueue = this.bulletQueue.normal;
-        break;
-      case BulletType.WIDE:
-        bltQueue = this.bulletQueue.wide;
-        break;
-      case BulletType.DUAL:
-        bltQueue = this.bulletQueue.dual;
-    }
-    if (!bltQueue.empty()) {
-      _ref = bltQueue.dequeue();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        b = _ref[_i];
-        b.shot(this.x, this.y, this.getDirect());
-        this.scene.world.bullets.push(b);
-        this.scene.world.insertBefore(b, this);
-        b.setOnDestoryEvent(onComplete);
-        ret = b;
-      }
-    }
-    return ret;
-  };
-
-  Robot.prototype.pickup = function(bulletType, onComplete) {
-    var blt, bltQueue, item, itemClass, ret;
-    ret = false;
-    blt = BulletFactory.create(bulletType, this);
-    switch (bulletType) {
-      case BulletType.NORMAL:
-        bltQueue = this.bulletQueue.normal;
-        itemClass = NormalBulletItem;
-        break;
-      case BulletType.WIDE:
-        bltQueue = this.bulletQueue.wide;
-        itemClass = WideBulletItem;
-        break;
-      case BulletType.DUAL:
-        bltQueue = this.bulletQueue.dual;
-        itemClass = DualBulletItem;
-    }
-    if (bltQueue != null) {
-      ret = bltQueue.enqueue(blt);
-    }
-    if (ret !== false) {
-      item = new itemClass(this.x, this.y);
-      this.scene.world.addChild(item);
-      this.scene.world.items.push(item);
-      item.setOnCompleteEvent(onComplete);
-      ret = blt;
-    }
-    return ret;
-  };
-
   Robot.prototype.damege = function() {
     this.hp -= 1;
     return this.onHpReduce();
@@ -257,6 +288,10 @@ Robot = (function(_super) {
     this.y = Math.round(this.y);
     this.onKeyInput(Game.instance.input);
     return true;
+  };
+
+  Robot.prototype.directFrame = function(direct) {
+    return DIRECT_FRAME[direct];
   };
 
   return Robot;

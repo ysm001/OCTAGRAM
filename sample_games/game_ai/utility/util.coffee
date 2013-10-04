@@ -20,6 +20,10 @@ class Direct
   @each : (func) ->
     for i in _directs
       func(i)
+  
+  @next: (direct) ->
+    for i,v in _directs
+      return direct[i % _directs.length] v == direct
 
 class Point
   constructor : (@x, @y) ->

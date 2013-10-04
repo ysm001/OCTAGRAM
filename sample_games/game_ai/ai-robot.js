@@ -10,3 +10,18 @@
   }
   return _results;
 })("third_party/underscore-min.js", "third_party/mt.js", "config.js", "utility/util.js", "utility/debug.js", "effect.js", "bullet.js", "item.js", "robot.js", "enchantAI/instr.js", "view.js", "main.js");
+
+(function() {
+  var classes, cls, _i, _len, _results;
+  classes = [enchant.model.SpriteModel, enchant.model.GroupModel];
+  _results = [];
+  for (_i = 0, _len = classes.length; _i < _len; _i++) {
+    cls = classes[_i];
+    cls.prototype.__constructor = cls.prototype.constructor;
+    _results.push(cls.prototype.constructor = function() {
+      Object.defineProperties(this, this.properties);
+      return this.__constructor.apply(this, arguments);
+    });
+  }
+  return _results;
+})();

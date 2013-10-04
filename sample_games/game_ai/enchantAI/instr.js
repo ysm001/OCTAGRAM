@@ -139,15 +139,13 @@ RandomMoveInstruction = (function(_super) {
   }
 
   RandomMoveInstruction.prototype.action = function() {
-    var direct, plate, rand, ret,
+    var direct, rand, ret,
       _this = this;
     ret = false;
     while (!ret) {
       rand = Random.nextInt() % InstrCommon.getDirectSize();
       direct = InstrCommon.getRobotDirect(rand);
-      this.robot.frame = direct.frame;
-      plate = this.robot.map.getTargetPoision(this.robot.currentPlate, direct.value);
-      ret = this.robot.move(plate, function() {
+      ret = this.robot.move(direct.value, function() {
         return _this.onComplete();
       });
     }
@@ -200,13 +198,11 @@ MoveInstruction = (function(_super) {
   }
 
   MoveInstruction.prototype.action = function() {
-    var direct, plate, ret,
+    var direct, ret,
       _this = this;
     ret = true;
     direct = InstrCommon.getRobotDirect(this.directParam.value);
-    this.robot.frame = direct.frame;
-    plate = this.robot.map.getTargetPoision(this.robot.currentPlate, direct.value);
-    ret = this.robot.move(plate, function() {
+    ret = this.robot.move(direct.value, function() {
       return _this.onComplete();
     });
     this.setAsynchronous(ret !== false);
@@ -302,7 +298,7 @@ TurnEnemyScanInstruction = (function(_super) {
   TurnEnemyScanInstruction.prototype.action = function() {
     var count, directIndex;
     count = this.lengthParam.value + 1;
-    directIndex = InstrCommon.getDirectIndex(this.robot.getDirect());
+    directIndex = InstrCommon.getDirectIndex(this.robot.direct);
     return setTimeout(this._turn, (1000 * 15) / 30, directIndex, 0, count);
   };
 
@@ -368,8 +364,7 @@ ItemScanMoveInstruction = (function(_super) {
         }
       });
       if (target != null) {
-        _this.robot.frame = InstrCommon.getFrame(targetDirect);
-        ret = _this.robot.move(target, function() {
+        ret = _this.robot.move(targetDirect, function() {
           return _this.onComplete();
         });
         return _this.robot.onCmdComplete(RobotInstruction.MOVE, ret);
@@ -427,7 +422,7 @@ EnemyScanInstructon = (function(_super) {
     var bullet;
     bullet = BulletFactory.create(this.typeParam.value, this.robot);
     if (bullet != null) {
-      return bullet.withinRange(this.robot, this.opponent, this.robot.getDirect());
+      return bullet.withinRange(this.robot, this.opponent, this.robot.direct);
     } else {
       return false;
     }

@@ -35,8 +35,8 @@
  * sp.y = 32;
  *
  * sp.setup("key", "test");
- * sp.on("key", function(data){ console.log("fire1:" + data) });
- * sp.on("key", function(data){ console.log("fire2:" + data) });
+ * sp.addObserver("key", function(data){ console.log("fire1:" + data) });
+ * sp.addObserver("key", function(data){ console.log("fire2:" + data) });
  * sp.set("key", 16);
  * # fire1:16
  * # fire1:16
@@ -249,13 +249,13 @@
          * 監視対象のフィールドにリスナーを設定する
          * @usage
          *    値の場合:
-         *    model.on("key", function(data){ console.log("fire: " + data); });
+         *    model.addObserver("key", function(data){ console.log("fire: " + data); });
          *    model.key = "test"; // or model.set("key", "test")
          *    // fire: test
          *    // => "test"
          *
          *    配列の場合:
-         *    model.on("arr", function(data, method){ console.log(method + " : " + data); });
+         *    model.addObserver("arr", function(data, method){ console.log(method + " : " + data); });
          *    model.arr.push("test");
          *    // push : test
          *    // => "test"
@@ -268,7 +268,7 @@
          * @param listener
          *  監視対象のフィールドが更新された時によばれるリスナー
          */
-        on: function(key, listener) {
+        addObserver: function(key, listener) {
             if (this[this._prefix + key] instanceof Observable) {
                 this[this._prefix + key].subscribe(listener);
             }
@@ -281,7 +281,7 @@
          * @param listener
          *  監視対象にすでに登録されているリスナー
          */
-        off: function(key, listener) {
+        removeObserver: function(key, listener) {
             if (this[this._prefix + key] instanceof Observable) {
                 this[this._prefix + key].unsubscribe(listener);
             }

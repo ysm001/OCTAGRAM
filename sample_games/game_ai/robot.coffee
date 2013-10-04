@@ -41,9 +41,25 @@ class BarrierMap extends Object
   isset:(key) ->
     return if @[key]? then true else false
 
-
 class Robot extends SpriteModel
   @MAX_HP = 4
+
+  DIRECT_FRAME                             = {}
+  DIRECT_FRAME[Direct.RIGHT]               = 0
+  DIRECT_FRAME[Direct.RIGHT | Direct.DOWN] = 5
+  DIRECT_FRAME[Direct.LEFT | Direct.DOWN]  = 7
+  DIRECT_FRAME[Direct.LEFT]                = 2
+  DIRECT_FRAME[Direct.LEFT | Direct.UP]    = 6
+  DIRECT_FRAME[Direct.RIGHT | Direct.UP]   = 4
+
+  FRAME_DIRECT    = {}
+  FRAME_DIRECT[0] = Direct.RIGHT
+  FRAME_DIRECT[5] = Direct.RIGHT | Direct.DOWN
+  FRAME_DIRECT[7] = Direct.LEFT | Direct.DOWN
+  FRAME_DIRECT[2] = Direct.LEFT
+  FRAME_DIRECT[6] = Direct.LEFT | Direct.UP
+  FRAME_DIRECT[4] = Direct.RIGHT | Direct.UP
+  
   constructor: (width, height, parentNode) ->
     super width, height
     @name = "robot"
@@ -55,11 +71,79 @@ class Robot extends SpriteModel
     @barrierMap = new BarrierMap @
     @map = Map.instance
     @plateState = 0
+
     parentNode.addChild @
-    plate = @map.getPlate(0,0)
+    plate = Map.instance.getPlate(0,0)
     @prevPlate = @currentPlate = plate
     pos = plate.getAbsolutePos()
     @moveTo pos.x, pos.y
+
+  properties:
+    direct:
+      get:() -> FRAME_DIRECT[@frame]
+      set:(direct) -> @frame = DIRECT_FRAME[direct]
+
+  move: (direct, onComplete) ->
+    ret = false
+    plate = Map.instance.getTargetPoision(@currentPlate, direct)
+    @frame = @directFrame(direct)
+    @prevPlate = @currentPlate
+    # plate is exists and not locked
+    if plate? and plate.lock == false
+      pos = plate.getAbsolutePos()
+      @tl.moveTo(pos.x, pos.y,
+        PlayerRobot.UPDATE_FRAME).then(onComplete)
+      @currentPlate = plate
+      ret = new Point plate.ix, plate.iy
+    else
+      ret = false
+    return ret
+
+  shot : (bulletType, onComplete) ->
+    switch bulletType
+      when BulletType.NORMAL
+        bltQueue = @bulletQueue.normal
+      when BulletType.WIDE
+        bltQueue = @bulletQueue.wide
+      when BulletType.DUAL
+        bltQueue = @bulletQueue.dual
+
+    unless bltQueue.empty()
+      for b in bltQueue.dequeue()
+        b.shot(@x, @y, @direct)
+        @scene.world.bullets.push b
+        @scene.world.insertBefore b, @
+        b.setOnDestoryEvent(onComplete)
+        ret = b
+    ret
+
+  pickup : (bulletType, onComplete) ->
+    ret = false
+    blt = BulletFactory.create(bulletType, @)
+    switch bulletType
+      when BulletType.NORMAL
+        bltQueue = @bulletQueue.normal
+        itemClass = NormalBulletItem
+      when BulletType.WIDE
+        bltQueue = @bulletQueue.wide
+        itemClass = WideBulletItem
+      when BulletType.DUAL
+        bltQueue = @bulletQueue.dual
+        itemClass = DualBulletItem
+    ret = bltQueue.enqueue(blt) if bltQueue?
+    if ret != false
+      item = new itemClass(@x, @y)
+      @scene.world.addChild item
+      @scene.world.items.push item
+      item.setOnCompleteEvent(onComplete)
+      ret = blt
+    ret
+
+  turn: (onComplete = () ->) ->
+    setTimeout((() ->
+      onComplete(@)),
+      Util.toMillisec(15)
+    )
   
   onHpReduce: (views) ->
 
@@ -101,82 +185,6 @@ class Robot extends SpriteModel
     pos = plate.getAbsolutePos()
     @moveTo pos.x, pos.y
 
-  # return the direction the robot
-  # is faceing
-  getDirect: () ->
-    switch @frame
-      when 0
-        Direct.RIGHT
-      when 1
-        Direct.UP
-      when 2
-        Direct.LEFT
-      when 3
-        Direct.DOWN
-      when 4
-        Direct.UP | Direct.RIGHT
-      when 5
-        Direct.DOWN | Direct.RIGHT
-      when 6
-        Direct.UP | Direct.LEFT
-      when 7
-        Direct.DOWN | Direct.LEFT
-
-  move : (plate, onComplete) ->
-    ret = false
-    @prevPlate = @currentPlate
-    # plate is exists and not locked
-    if plate? and plate.lock == false
-      pos = plate.getAbsolutePos()
-      @tl.moveTo(pos.x, pos.y,
-        PlayerRobot.UPDATE_FRAME).then(onComplete)
-      @currentPlate = plate
-      ret = new Point plate.ix, plate.iy
-    else
-      ret = false
-    return ret
-    
-
-  shot : (bulletType, onComplete) ->
-    switch bulletType
-      when BulletType.NORMAL
-        bltQueue = @bulletQueue.normal
-      when BulletType.WIDE
-        bltQueue = @bulletQueue.wide
-      when BulletType.DUAL
-        bltQueue = @bulletQueue.dual
-
-    unless bltQueue.empty()
-      for b in bltQueue.dequeue()
-        b.shot(@x, @y, @getDirect())
-        @scene.world.bullets.push b
-        @scene.world.insertBefore b, @
-        b.setOnDestoryEvent(onComplete)
-        ret = b
-    ret
-
-  pickup : (bulletType, onComplete) ->
-    ret = false
-    blt = BulletFactory.create(bulletType, @)
-    switch bulletType
-      when BulletType.NORMAL
-        bltQueue = @bulletQueue.normal
-        itemClass = NormalBulletItem
-      when BulletType.WIDE
-        bltQueue = @bulletQueue.wide
-        itemClass = WideBulletItem
-      when BulletType.DUAL
-        bltQueue = @bulletQueue.dual
-        itemClass = DualBulletItem
-    ret = bltQueue.enqueue(blt) if bltQueue?
-    if ret != false
-      item = new itemClass(@x, @y)
-      @scene.world.addChild item
-      @scene.world.items.push item
-      item.setOnCompleteEvent(onComplete)
-      ret = blt
-    ret
-
   damege: () ->
     @hp -= 1
     @onHpReduce()
@@ -189,6 +197,8 @@ class Robot extends SpriteModel
     @onKeyInput Game.instance.input
     return true
 
+  directFrame: (direct) ->
+    DIRECT_FRAME[direct]
 
 class PlayerRobot extends Robot
   @WIDTH = 64

@@ -96,9 +96,7 @@ class RandomMoveInstruction extends AbstractMoveInstruction
     while !ret
       rand = Random.nextInt() % InstrCommon.getDirectSize()
       direct = InstrCommon.getRobotDirect(rand)
-      @robot.frame = direct.frame
-      plate = @robot.map.getTargetPoision(@robot.currentPlate, direct.value)
-      ret = @robot.move(plate, () => @onComplete())
+      ret = @robot.move(direct.value, () => @onComplete())
     @setAsynchronous(ret != false)
     @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
@@ -137,9 +135,7 @@ class MoveInstruction extends AbstractMoveInstruction
   action : () ->
     ret = true
     direct = InstrCommon.getRobotDirect(@directParam.value)
-    @robot.frame = direct.frame
-    plate = @robot.map.getTargetPoision(@robot.currentPlate, direct.value)
-    ret = @robot.move(plate, () => @onComplete())
+    ret = @robot.move(direct.value, () => @onComplete())
     @setAsynchronous(ret != false)
     @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
@@ -215,7 +211,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
 
   action : () ->
     count = @lengthParam.value + 1
-    directIndex = InstrCommon.getDirectIndex(@robot.getDirect())
+    directIndex = InstrCommon.getDirectIndex(@robot.direct)
     setTimeout(@_turn, (1000*15)/30, directIndex, 0, count)
 
   clone : () ->
@@ -260,8 +256,7 @@ class ItemScanMoveInstruction extends AbstractMoveInstruction
           target = plate
           targetDirect = direct
       if target?
-        @robot.frame = InstrCommon.getFrame(targetDirect)
-        ret = @robot.move(target, () => @onComplete())
+        ret = @robot.move(targetDirect, () => @onComplete())
         @robot.onCmdComplete(RobotInstruction.MOVE, ret)
       else
         setTimeout((() => @onComplete()), Util.toMillisec(PlayerRobot.UPDATE_FRAME))
@@ -300,7 +295,7 @@ class EnemyScanInstructon extends BranchInstruction
   action : () ->
     bullet = BulletFactory.create(@typeParam.value, @robot)
     if bullet?
-      return bullet.withinRange(@robot, @opponent, @robot.getDirect())
+      return bullet.withinRange(@robot, @opponent, @robot.direct)
     else
       return false
 

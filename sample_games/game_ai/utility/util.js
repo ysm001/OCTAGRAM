@@ -32,6 +32,14 @@ Direct = (function() {
     return _results;
   };
 
+  Direct.next = function(direct) {
+    var i, v, _i, _len;
+    for (v = _i = 0, _len = _directs.length; _i < _len; v = ++_i) {
+      i = _directs[v];
+      return direct[i % _directs.length](v === direct);
+    }
+  };
+
   return Direct;
 
 })();

@@ -19,3 +19,11 @@
   "main.js"
 )
 
+(() ->
+  classes = [ enchant.model.SpriteModel, enchant.model.GroupModel ]
+  for cls in classes
+    cls.prototype.__constructor = cls.prototype.constructor
+    cls.prototype.constructor = () ->
+      Object.defineProperties this, @properties
+      @__constructor.apply(this, arguments)
+)()
