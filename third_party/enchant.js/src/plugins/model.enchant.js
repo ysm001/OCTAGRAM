@@ -74,8 +74,8 @@
                 return this._value;
             },
             set: function(value) {
-                this._value = value;
                 this._publish(value);
+                this._value = value;
             }
         },
 

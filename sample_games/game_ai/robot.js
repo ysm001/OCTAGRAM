@@ -156,6 +156,7 @@ Robot = (function(_super) {
       this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(onComplete);
       this.currentPlate = plate;
       ret = new Point(plate.ix, plate.iy);
+      this.dispatchEvent(new RobotEvent('move', ret));
     } else {
       ret = false;
     }
@@ -181,6 +182,7 @@ Robot = (function(_super) {
         b.shot(this.x, this.y, this.direct);
         setTimeout(onComplete, Util.toMillisec(b.maxFrame));
         ret = b;
+        this.dispatchEvent(new RobotEvent('shot'));
       }
     }
     return ret;
@@ -239,15 +241,9 @@ Robot = (function(_super) {
     switch (id) {
       case RobotInstruction.MOVE:
         this.prevPlate.onRobotAway(this);
-        this.currentPlate.onRobotRide(this);
-        if (ret !== false) {
-          msgbox.print(R.String.move(this.name, ret.x + 1, ret.y + 1));
-          return this.animated = true;
-        } else {
-          return msgbox.print(R.String.CANNOTMOVE);
-        }
-        break;
+        return this.currentPlate.onRobotRide(this);
       case RobotInstruction.SHOT:
+        return;
         if (ret !== false) {
           msgbox.print(R.String.shot(this.name));
           return this.animated = true;
@@ -256,6 +252,7 @@ Robot = (function(_super) {
         }
         break;
       case RobotInstruction.PICKUP:
+        return;
         if (ret !== false) {
           msgbox.print(R.String.pickup(this.name));
           return this.animated = true;

@@ -3,6 +3,12 @@
 toi = (i) ->
   parseInt(i)
 
+
+class RobotEvent extends enchant.Event
+
+  constructor: (type, @params = {}) ->
+    super(type)
+
 class Direct
   bit = 1
   @LEFT = bit << 0

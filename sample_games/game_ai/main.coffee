@@ -3,9 +3,9 @@ R = Config.R
 
 Random = new MersenneTwister()
 
-class ViewGroup extends Group
+class ViewWorld extends Group
   constructor: (x, y, scene) ->
-    super
+    super()
     scene.addChild @
     @x = x
     @y = y
@@ -21,10 +21,14 @@ class ViewGroup extends Group
     @addChild @map
 
     @footer = new Footer(25, @map.y + @map.height)
-    @msgbox = @footer.msgbox
     @addChild @footer
     #@nextBtn = new NextButton @msgbox.x + MsgBox.WIDTH + 8, @msgbox.y
     #@addChild @nextBtn
+  
+  initEvent: (world) ->
+    @footer.initEvent(world)
+    @playerHpBar.initEvent(world)
+    @enemyHpBar.initEvent(world)
 
   update: (world) ->
     @map.update()
@@ -69,6 +73,12 @@ class RobotWorld extends GroupModel
     scene.addChild @
     @addChild player
     @addChild enemy
+
+  properties:
+    player:
+      get:() -> @_robots[0]
+    enemy:
+      get:() -> @_robots[1]
 
   initialize: (views)->
 
@@ -121,9 +131,9 @@ class RobotWorld extends GroupModel
 class RobotScene extends Scene
   constructor: (@game) ->
     super @
-    @views = new ViewGroup Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
+    @views = new ViewWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
     @world = new RobotWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
-    @world.initialize @views
+    @views.initEvent @world
 
   onenterframe: ->
     @update()

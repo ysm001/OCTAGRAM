@@ -95,6 +95,7 @@ class Robot extends SpriteModel
         PlayerRobot.UPDATE_FRAME).then(onComplete)
       @currentPlate = plate
       ret = new Point plate.ix, plate.iy
+      @dispatchEvent(new RobotEvent('move', ret))
     else
       ret = false
     return ret
@@ -113,6 +114,7 @@ class Robot extends SpriteModel
         b.shot(@x, @y, @direct)
         setTimeout(onComplete, Util.toMillisec(b.maxFrame))
         ret = b
+        @dispatchEvent(new RobotEvent('shot'))
     ret
 
   pickup: (bulletType, onComplete) ->
@@ -156,18 +158,15 @@ class Robot extends SpriteModel
       when RobotInstruction.MOVE
         @prevPlate.onRobotAway(@)
         @currentPlate.onRobotRide(@)
-        if ret != false
-          msgbox.print R.String.move(@name, ret.x+1, ret.y+1)
-          @animated = true
-        else
-          msgbox.print R.String.CANNOTMOVE
       when RobotInstruction.SHOT
+        return
         if ret != false
           msgbox.print R.String.shot(@name)
           @animated = true
         else
           msgbox.print R.String.CANNOTSHOT
       when RobotInstruction.PICKUP
+        return
         if ret != false
           msgbox.print R.String.pickup(@name)
           @animated = true

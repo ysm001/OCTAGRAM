@@ -1,6 +1,26 @@
 R = Config.R
 
-class Background extends Sprite
+class ViewGroup extends Group
+
+  constructor: (x, y) ->
+    super(x,y)
+    @_childs = []
+
+  addView: (view) ->
+    @_childs.push(view)
+    @addChild(view)
+
+  initEvent: (world) ->
+    view.initEvent(world) for view in @_childs
+
+class ViewSprite extends Sprite
+
+  constructor: (x, y) ->
+    super(x,y)
+
+  initEvent: (world) ->
+
+class Background extends ViewSprite
   @SIZE = 640
   constructor: (x, y) ->
     super Background.SIZE, Background.SIZE
@@ -23,7 +43,7 @@ class HpBar extends Bar
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.HP_YELLOW]
 
 
-class HpEnclosePart extends Sprite
+class HpEnclosePart extends ViewSprite
   @WIDTH = HpBar.MAX_VALUE / 4
   @HEIGHT = HpBar.HEIGHT
   constructor: (x, y, i) ->
@@ -38,7 +58,7 @@ class HpEnclosePart extends Sprite
       @frame = 1
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.HP_ENCLOSE]
 
-class HpEnclose extends Group
+class HpEnclose extends ViewGroup
   @WIDTH = HpBar.MAX_VALUE
   @HEIGHT = HpBar.HEIGHT
   constructor: (x, y) ->
@@ -48,7 +68,7 @@ class HpEnclose extends Group
     for i in [0..3]
       @addChild new HpEnclosePart(i*HpEnclosePart.WIDTH ,0, i)
 
-class PlayerHp extends Group
+class PlayerHp extends ViewGroup
   @YELLOW = 1
   @BLUE = 2
   @MAX_HP = 4
@@ -67,7 +87,7 @@ class PlayerHp extends Group
   reduce: () ->
     @hp.value -= @hp.maxValue / PlayerHp.MAX_HP if @hp.value > 0
 
-class Header extends Group
+class Header extends ViewGroup
   @WIDTH = 600
   constructor: (x, y) ->
     super
@@ -117,7 +137,7 @@ class Spot
   @getRandomType: () ->
     return Math.floor(Math.random() * (Spot.SIZE)) + 1
 
-class Plate extends Sprite
+class Plate extends ViewSprite
   @HEIGHT = 74
   @WIDTH = 64
   @STATE_NORMAL = 0
@@ -174,7 +194,7 @@ class Plate extends Sprite
       @spot = null
       @spotEnabled = false
 
-class Map extends Group
+class Map extends ViewGroup
   @WIDTH = 9
   @HEIGHT = 7
   @UNIT_HEIGHT = Plate.HEIGHT
@@ -293,7 +313,7 @@ class Map extends Group
       @plateMatrix[x][y].setSpot type
     ###
 
-class Button extends Sprite
+class Button extends ViewSprite
   @WIDTH = 120
   @HEIGHT = 50
   constructor: (x,y) ->
@@ -315,7 +335,7 @@ class NextButton extends Button
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.NEXT_BUTTON]
 
 
-class MsgWindow extends Sprite
+class MsgWindow extends ViewSprite
   @WIDTH = 320
   @HEIGHT = 128
   constructor: (x,y) ->
@@ -324,7 +344,7 @@ class MsgWindow extends Sprite
     @y = y
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.MSGBOX]
 
-class MsgBox extends Group
+class MsgBox extends ViewGroup
 
   constructor: (x,y) ->
     super MsgWindow.WIDTH, MsgWindow.HEIGHT
@@ -340,10 +360,19 @@ class MsgBox extends Group
     @addChild @label
     @label.width = MsgWindow.WIDTH * 0.9
 
+  initEvent: (world) ->
+    world.player.addEventListener 'move', (evt) =>
+      player = evt.target
+      point = evt.params
+      if point != false
+        @print R.String.move(player.name, point.x+1, point.y+1)
+      else
+        @print R.String.CANNOTMOVE
+
   print: (msg) ->
     @label.text = "#{msg}"
 
-class StatusWindow extends Sprite
+class StatusWindow extends ViewSprite
   @WIDTH = 160
   @HEIGHT = 128
   constructor: (x,y) ->
@@ -353,7 +382,7 @@ class StatusWindow extends Sprite
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.STATUS_BOX]
 
 
-class RemainingBullet extends Sprite
+class RemainingBullet extends ViewSprite
   @SIZE = 24
   constructor: (x, y, frame) ->
     super RemainingBullet.SIZE, RemainingBullet.SIZE
@@ -362,7 +391,7 @@ class RemainingBullet extends Sprite
     @frame = frame
     @image = Game.instance.assets[R.ITEM.STATUS_BULLET]
 
-class RemainingBullets extends Group
+class RemainingBullets extends ViewGroup
   @HEIGHT = 30
   @WIDTH = 120
 
@@ -377,7 +406,6 @@ class RemainingBullets extends Group
       @array.push b
       @addChild b
 
-
   increment: () ->
     if @size < 5
       @array[@size].frame = @type - 1
@@ -388,7 +416,7 @@ class RemainingBullets extends Group
       @size--
       @array[@size].frame = @type
 
-class StatusBarrier extends Sprite
+class StatusBarrier extends ViewSprite
   @SIZE = 24
   constructor: (x, y, @type) ->
     super StatusBarrier.SIZE, StatusBarrier.SIZE
@@ -403,7 +431,7 @@ class StatusBarrier extends Sprite
   reset: () ->
     @frame = @type
 
-class StatusBarrierGroup extends Group
+class StatusBarrierGroup extends ViewGroup
 
   constructor : (x, y) ->
     super
@@ -436,7 +464,7 @@ class StatusBarrierGroup extends Group
       when BulletType.DUAL
         @dual.reset()
 
-class RemainingBulletsGroup extends Group
+class RemainingBulletsGroup extends ViewGroup
 
   constructor : (x, y) ->
     super
@@ -449,6 +477,10 @@ class RemainingBulletsGroup extends Group
     @addChild @dual
     document.addEventListener("enqueueBullet", @enqueue)
     document.addEventListener("dequeueBullet", @dequeue)
+
+  initEvent: (world) ->
+    world.player.addEventListener 'pickup', (evt) =>
+    world.player.addEventListener 'shot', (evt) =>
 
   enqueue : (evt) =>
     switch evt.bulletType
@@ -468,53 +500,20 @@ class RemainingBulletsGroup extends Group
       when BulletType.DUAL
         @dual.decrement()
 
-class StatusBox extends Group
+class StatusBox extends ViewGroup
 
   constructor: (x,y) ->
     super StatusWindow.WIDTH, StatusWindow.HEIGHT
     @x = x
     @y = y
-    #@window = new StatusWindow 0, 0
-    #@addChild @window
-    #@scoreLabel = new ScoreLabel(20, 0)
-    #@scoreLabel.score = 100
-    #@addChild @scoreLabel
-    #@label = new Label("残弾数")
-    #@label.font = "12px 'Meiryo UI'"
-    #@label.color = '#FFF'
-    #@label.x = 30
-    #@label.y = 0
-    #@addChild @label
     
-    #@statusNormalBarrier = new StatusBarrier(30, 0, 1)
-    #@statusWideBarrier = new StatusBarrier(55, 0, 3)
-    #@statusDualBarrier = new StatusBarrier(80, 0, 5)
+    @addView(new StatusBarrierGroup())
+    @addView(new RemainingBulletsGroup())
 
-    #@normalRemain = new RemainingBullets 30, 30, 1
-    #@wideRemain = new RemainingBullets 30, @normalRemain.y + RemainingBullet.SIZE, 3
-    #@dualRemain = new RemainingBullets 30, @wideRemain.y + RemainingBullet.SIZE, 5
-
-    #@addChild @statusNormalBarrier
-    #@addChild @statusWideBarrier
-    #@addChild @statusDualBarrier
-    #@addChild @normalRemain
-    #@addChild @wideRemain
-    #@addChild @dualRemain
-    
-    @barrier = new StatusBarrierGroup()
-    @remain = new RemainingBulletsGroup()
-
-    @addChild @barrier
-    @addChild @remain
-    
-
-class Footer extends Group
+class Footer extends ViewGroup
   constructor: (x,y) ->
     super
     @x = x
     @y = y
-    @msgbox = new MsgBox 20, 0
-    @addChild @msgbox
-    @statusBox = new StatusBox x+MsgWindow.WIDTH+32, 16
-    @addChild @statusBox
-
+    @addView(new MsgBox(20, 0))
+    @addView(new StatusBox(x+MsgWindow.WIDTH+32, 16))
