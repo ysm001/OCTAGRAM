@@ -119,7 +119,7 @@ Robot = (function(_super) {
     var plate, pos;
     Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
-    this.hp = Robot.MAX_HP;
+    this.setup("hp", Robot.MAX_HP);
     this.bulletQueue = {
       normal: new ItemQueue([], 5),
       wide: new ItemQueue([], 5),

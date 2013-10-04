@@ -29,27 +29,9 @@ class ViewGroup extends Group
   update: (world) ->
     @map.update()
 
-class TurnSwitcher
-  constructor: (@world) ->
-    @i = 0
-
-  update: ->
-    animated = bullet = false
-    for i in @world.bullets
-      bullet = i.animated
-      break if bullet == true
-    for i in @world.robots
-      animated = i.isAnimated()
-      break if animated == true
-
-    if bullet is false and animated is false
-      if @world.robots[@i].update()
-        @i++
-        @i = 0 if @i == @world.robots.length
-
-class RobotWorld extends Group
+class RobotWorld extends GroupModel
   constructor: (x, y, scene) ->
-    super
+    super()
     scene.addChild @
     @game = Game.instance
     @map = Map.instance
@@ -80,7 +62,6 @@ class RobotWorld extends Group
     #Game.instance.addInstruction(new SearchDirectRobotBranchInstruction(@player))
     #Game.instance.addInstruction(new SearchDirectItemBranchInstruction(@player))
     #Game.instance.addInstruction(new CurrentDirectBranchInstruction(@player))
-    # @swicher = new TurnSwitcher @
 
   initialize: (views)->
 

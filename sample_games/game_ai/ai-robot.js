@@ -19,6 +19,9 @@
     cls = classes[_i];
     cls.prototype.__constructor = cls.prototype.constructor;
     _results.push(cls.prototype.constructor = function() {
+      if (this.properties == null) {
+        this.properties = {};
+      }
       Object.defineProperties(this, this.properties);
       return this.__constructor.apply(this, arguments);
     });

@@ -24,6 +24,7 @@
   for cls in classes
     cls.prototype.__constructor = cls.prototype.constructor
     cls.prototype.constructor = () ->
+      @properties ?= {}
       Object.defineProperties this, @properties
       @__constructor.apply(this, arguments)
 )()

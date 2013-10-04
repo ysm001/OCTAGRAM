@@ -63,7 +63,8 @@ class Robot extends SpriteModel
   constructor: (width, height, parentNode) ->
     super width, height
     @name = "robot"
-    @hp = Robot.MAX_HP
+    # @hp = Robot.MAX_HP
+    @setup("hp", Robot.MAX_HP)
     @bulletQueue =
       normal : new ItemQueue [], 5
       wide   : new ItemQueue [], 5
