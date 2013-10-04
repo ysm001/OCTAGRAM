@@ -135,6 +135,7 @@ class Robot extends SpriteModel
       item = new itemClass(@x, @y)
       item.setOnCompleteEvent(onComplete)
       ret = blt
+      @dispatchEvent(new RobotEvent('pickup'), ret)
     ret
 
   turn: (onComplete = () ->) ->
@@ -151,19 +152,10 @@ class Robot extends SpriteModel
   onResetBarrier: (bulletType) ->
 
   onCmdComplete: (id, ret) ->
-    msgbox = @scene.views.msgbox
     switch id
       when RobotInstruction.MOVE
         @prevPlate.onRobotAway(@)
         @currentPlate.onRobotRide(@)
-      when RobotInstruction.SHOT
-        return
-      when RobotInstruction.PICKUP
-        return
-        if ret != false
-          msgbox.print R.String.pickup(@name)
-        else
-          msgbox.print R.String.CANNOTPICKUP
     
   moveToPlate: (plate) ->
     @prevPlate.onRobotAway(@)

@@ -605,7 +605,7 @@ MsgBox = (function(_super) {
         return _this.print(R.String.CANNOTMOVE);
       }
     });
-    return world.player.addEventListener('shot', function(evt) {
+    world.player.addEventListener('shot', function(evt) {
       var player, ret;
       player = evt.target;
       ret = evt.params;
@@ -613,6 +613,16 @@ MsgBox = (function(_super) {
         return _this.print(R.String.shot(player.name));
       } else {
         return _this.print(R.String.CANNOTSHOT);
+      }
+    });
+    return world.player.addEventListener('pickup', function(evt) {
+      var player, ret;
+      player = evt.target;
+      ret = evt.params;
+      if (ret !== false) {
+        return _this.print(R.String.pickup(player.name));
+      } else {
+        return _this.print(R.String.CANNOTPICKUP);
       }
     });
   };

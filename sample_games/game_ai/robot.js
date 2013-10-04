@@ -212,6 +212,7 @@ Robot = (function(_super) {
       item = new itemClass(this.x, this.y);
       item.setOnCompleteEvent(onComplete);
       ret = blt;
+      this.dispatchEvent(new RobotEvent('pickup'), ret);
     }
     return ret;
   };
@@ -234,21 +235,10 @@ Robot = (function(_super) {
   Robot.prototype.onResetBarrier = function(bulletType) {};
 
   Robot.prototype.onCmdComplete = function(id, ret) {
-    var msgbox;
-    msgbox = this.scene.views.msgbox;
     switch (id) {
       case RobotInstruction.MOVE:
         this.prevPlate.onRobotAway(this);
         return this.currentPlate.onRobotRide(this);
-      case RobotInstruction.SHOT:
-        break;
-      case RobotInstruction.PICKUP:
-        return;
-        if (ret !== false) {
-          return msgbox.print(R.String.pickup(this.name));
-        } else {
-          return msgbox.print(R.String.CANNOTPICKUP);
-        }
     }
   };
 

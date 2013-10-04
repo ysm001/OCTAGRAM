@@ -376,6 +376,14 @@ class MsgBox extends ViewGroup
       else
         @print R.String.CANNOTSHOT
 
+    world.player.addEventListener 'pickup', (evt) =>
+      player = evt.target
+      ret = evt.params
+      if ret != false
+        @print R.String.pickup(player.name)
+      else
+        @print R.String.CANNOTPICKUP
+
   print: (msg) ->
     @label.text = "#{msg}"
 
