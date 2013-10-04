@@ -60,7 +60,7 @@ class Robot extends SpriteModel
   FRAME_DIRECT[6] = Direct.LEFT | Direct.UP
   FRAME_DIRECT[4] = Direct.RIGHT | Direct.UP
   
-  constructor: (width, height, parentNode) ->
+  constructor: (width, height, @_world) ->
     super width, height
     @name = "robot"
     # @hp = Robot.MAX_HP
@@ -70,10 +70,9 @@ class Robot extends SpriteModel
       wide   : new ItemQueue [], 5
       dual   : new ItemQueue [], 5
     @barrierMap = new BarrierMap @
-    @map = Map.instance
     @plateState = 0
 
-    parentNode.addChild @
+    @_world.addChild @
     plate = Map.instance.getPlate(0,0)
     @prevPlate = @currentPlate = plate
     pos = plate.getAbsolutePos()

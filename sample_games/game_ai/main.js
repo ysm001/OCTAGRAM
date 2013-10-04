@@ -40,33 +40,31 @@ RobotWorld = (function(_super) {
   __extends(RobotWorld, _super);
 
   function RobotWorld(x, y, scene) {
-    var plate;
+    var enemy, plate, player;
     RobotWorld.__super__.constructor.call(this);
+    this._robots = [];
+    this.setup("bullets", []);
+    this.setup("items", []);
+    player = new PlayerRobot(this);
+    plate = Map.instance.getPlate(6, 4);
+    player.moveToPlate(plate);
+    enemy = new EnemyRobot(this);
+    plate = Map.instance.getPlate(1, 1);
+    enemy.moveToPlate(plate);
+    Game.instance.addInstruction(new RandomMoveInstruction(player));
+    Game.instance.addInstruction(new MoveInstruction(player));
+    Game.instance.addInstruction(new ShotInstruction(player));
+    Game.instance.addInstruction(new PickupInstruction(player));
+    Game.instance.addInstruction(new ItemScanMoveInstruction(player, enemy));
+    Game.instance.addInstruction(new TurnEnemyScanInstruction(player, enemy));
+    Game.instance.addInstruction(new EnemyScanInstructon(player, enemy));
+    Game.instance.addInstruction(new HpBranchInstruction(player));
+    Game.instance.addInstruction(new HoldBulletBranchInstruction(player));
+    this._robots.push(player);
+    this._robots.push(enemy);
     scene.addChild(this);
-    this.game = Game.instance;
-    this.map = Map.instance;
-    this.robots = [];
-    this.bullets = [];
-    this.items = [];
-    this.player = new PlayerRobot(this);
-    this.addChild(this.player);
-    this.robots.push(this.player);
-    plate = this.map.getPlate(6, 4);
-    this.player.moveToPlate(plate);
-    this.enemy = new EnemyRobot(this);
-    this.addChild(this.enemy);
-    this.robots.push(this.enemy);
-    plate = this.map.getPlate(1, 1);
-    this.enemy.moveToPlate(plate);
-    Game.instance.addInstruction(new RandomMoveInstruction(this.player));
-    Game.instance.addInstruction(new MoveInstruction(this.player));
-    Game.instance.addInstruction(new ShotInstruction(this.player));
-    Game.instance.addInstruction(new PickupInstruction(this.player));
-    Game.instance.addInstruction(new ItemScanMoveInstruction(this.player, this.enemy));
-    Game.instance.addInstruction(new TurnEnemyScanInstruction(this.player, this.enemy));
-    Game.instance.addInstruction(new EnemyScanInstructon(this.player, this.enemy));
-    Game.instance.addInstruction(new HpBranchInstruction(this.player));
-    Game.instance.addInstruction(new HoldBulletBranchInstruction(this.player));
+    this.addChild(player);
+    this.addChild(enemy);
   }
 
   RobotWorld.prototype.initialize = function(views) {};
@@ -94,7 +92,7 @@ RobotWorld = (function(_super) {
   RobotWorld.prototype.updateBullets = function() {
     var del, i, robot, v, _i, _j, _len, _len1, _ref, _ref1;
     del = -1;
-    _ref = this.robots;
+    _ref = this._robots;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       robot = _ref[_i];
       _ref1 = this.bullets;
@@ -132,7 +130,7 @@ RobotWorld = (function(_super) {
 
   RobotWorld.prototype.updateRobots = function() {
     var i, _i, _len, _ref, _results;
-    _ref = this.robots;
+    _ref = this._robots;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       i = _ref[_i];

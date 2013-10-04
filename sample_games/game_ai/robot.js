@@ -115,8 +115,9 @@ Robot = (function(_super) {
 
   FRAME_DIRECT[4] = Direct.RIGHT | Direct.UP;
 
-  function Robot(width, height, parentNode) {
+  function Robot(width, height, _world) {
     var plate, pos;
+    this._world = _world;
     Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
     this.setup("hp", Robot.MAX_HP);
@@ -126,9 +127,8 @@ Robot = (function(_super) {
       dual: new ItemQueue([], 5)
     };
     this.barrierMap = new BarrierMap(this);
-    this.map = Map.instance;
     this.plateState = 0;
-    parentNode.addChild(this);
+    this._world.addChild(this);
     plate = Map.instance.getPlate(0, 0);
     this.prevPlate = this.currentPlate = plate;
     pos = plate.getAbsolutePos();

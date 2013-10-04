@@ -32,36 +32,32 @@ class ViewGroup extends Group
 class RobotWorld extends GroupModel
   constructor: (x, y, scene) ->
     super()
+    @_robots = []
+    @setup("bullets", [])
+    @setup("items", [])
+
+    player = new PlayerRobot @
+    plate = Map.instance.getPlate(6,4)
+    player.moveToPlate(plate)
+
+    enemy = new EnemyRobot @
+    plate = Map.instance.getPlate(1,1)
+    enemy.moveToPlate(plate)
+
+    Game.instance.addInstruction(new RandomMoveInstruction(player))
+    Game.instance.addInstruction(new MoveInstruction(player))
+    Game.instance.addInstruction(new ShotInstruction(player))
+    Game.instance.addInstruction(new PickupInstruction(player))
+    Game.instance.addInstruction(new ItemScanMoveInstruction(player, enemy))
+    Game.instance.addInstruction(new TurnEnemyScanInstruction(player, enemy))
+    Game.instance.addInstruction(new EnemyScanInstructon(player, enemy))
+    Game.instance.addInstruction(new HpBranchInstruction(player))
+    Game.instance.addInstruction(new HoldBulletBranchInstruction(player))
+    @_robots.push player
+    @_robots.push enemy
     scene.addChild @
-    @game = Game.instance
-    @map = Map.instance
-    @robots = []
-    @bullets = []
-    @items = []
-    @player = new PlayerRobot @
-    @addChild @player
-    @robots.push @player
-    plate = @map.getPlate(6,4)
-    @player.moveToPlate(plate)
-
-    @enemy = new EnemyRobot @
-    @addChild @enemy
-    @robots.push @enemy
-    plate = @map.getPlate(1,1)
-    @enemy.moveToPlate(plate)
-
-    Game.instance.addInstruction(new RandomMoveInstruction(@player))
-    Game.instance.addInstruction(new MoveInstruction(@player))
-    Game.instance.addInstruction(new ShotInstruction(@player))
-    Game.instance.addInstruction(new PickupInstruction(@player))
-    Game.instance.addInstruction(new ItemScanMoveInstruction(@player, @enemy))
-    Game.instance.addInstruction(new TurnEnemyScanInstruction(@player, @enemy))
-    Game.instance.addInstruction(new EnemyScanInstructon(@player, @enemy))
-    Game.instance.addInstruction(new HpBranchInstruction(@player))
-    Game.instance.addInstruction(new HoldBulletBranchInstruction(@player))
-    #Game.instance.addInstruction(new SearchDirectRobotBranchInstruction(@player))
-    #Game.instance.addInstruction(new SearchDirectItemBranchInstruction(@player))
-    #Game.instance.addInstruction(new CurrentDirectBranchInstruction(@player))
+    @addChild player
+    @addChild enemy
 
   initialize: (views)->
 
@@ -80,7 +76,7 @@ class RobotWorld extends GroupModel
 
   updateBullets: () ->
     del = -1
-    for robot in @robots
+    for robot in @_robots
       for v,i in @bullets
         if v != false
           if @collisionBullet(v, robot)
@@ -101,16 +97,7 @@ class RobotWorld extends GroupModel
     return animated
 
   updateRobots: () ->
-    i.update() for i in @robots
-
-    #animated = false
-    #for i in [@bullets, @robots, @items]
-    #  animated = @_isAnimated(i, (x) -> x.animated)
-    #  break if animated == true
-
-    #if animated is false
-    #  for i in @robots
-    #    i.update()
+    i.update() for i in @_robots
 
   update: (views)->
     #@swicher.update()
