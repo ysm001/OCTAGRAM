@@ -111,8 +111,8 @@ class Robot extends SpriteModel
     unless bltQueue.empty()
       for b in bltQueue.dequeue()
         b.shot(@x, @y, @direct)
-        @scene.world.bullets.push b
-        @scene.world.insertBefore b, @
+        @_world.bullets.push b
+        # @scene.world.insertBefore b, @
         # b.setOnDestoryEvent(onComplete)
         setTimeout(onComplete, Util.toMillisec(b.maxFrame))
         ret = b
@@ -134,8 +134,8 @@ class Robot extends SpriteModel
     ret = bltQueue.enqueue(blt) if bltQueue?
     if ret != false
       item = new itemClass(@x, @y)
-      @scene.world.addChild item
-      @scene.world.items.push item
+      @_world.addChild item
+      @_world.items.push item
       item.setOnCompleteEvent(onComplete)
       ret = blt
     ret

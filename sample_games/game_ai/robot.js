@@ -180,8 +180,7 @@ Robot = (function(_super) {
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         b = _ref[_i];
         b.shot(this.x, this.y, this.direct);
-        this.scene.world.bullets.push(b);
-        this.scene.world.insertBefore(b, this);
+        this._world.bullets.push(b);
         setTimeout(onComplete, Util.toMillisec(b.maxFrame));
         ret = b;
       }
@@ -211,8 +210,8 @@ Robot = (function(_super) {
     }
     if (ret !== false) {
       item = new itemClass(this.x, this.y);
-      this.scene.world.addChild(item);
-      this.scene.world.items.push(item);
+      this._world.addChild(item);
+      this._world.items.push(item);
       item.setOnCompleteEvent(onComplete);
       ret = blt;
     }

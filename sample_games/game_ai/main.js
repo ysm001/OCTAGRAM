@@ -40,11 +40,17 @@ RobotWorld = (function(_super) {
   __extends(RobotWorld, _super);
 
   function RobotWorld(x, y, scene) {
-    var enemy, plate, player;
+    var enemy, plate, player,
+      _this = this;
     RobotWorld.__super__.constructor.call(this);
     this._robots = [];
     this.setup("bullets", []);
     this.setup("items", []);
+    this.addObserver("bullets", function(data, method) {
+      if (method === "push") {
+        return _this.insertBefore(data, _this._robots[0]);
+      }
+    });
     player = new PlayerRobot(this);
     plate = Map.instance.getPlate(6, 4);
     player.moveToPlate(plate);
@@ -74,7 +80,8 @@ RobotWorld = (function(_super) {
   };
 
   RobotWorld.prototype.updateItems = function() {
-    var del, i, v, _i, _len, _ref;
+    var del, i, v, _i, _len, _ref,
+      _this = this;
     del = -1;
     _ref = this.items;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
@@ -85,12 +92,17 @@ RobotWorld = (function(_super) {
       }
     }
     if (del !== -1) {
-      return this.items = _.compact(this.items);
+      return this.items.some(function(v, i) {
+        if (v === false) {
+          return _this.items.splice(i, 1);
+        }
+      });
     }
   };
 
   RobotWorld.prototype.updateBullets = function() {
-    var del, i, robot, v, _i, _j, _len, _len1, _ref, _ref1;
+    var del, i, robot, v, _i, _j, _len, _len1, _ref, _ref1,
+      _this = this;
     del = -1;
     _ref = this._robots;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -111,7 +123,11 @@ RobotWorld = (function(_super) {
       }
     }
     if (del !== -1) {
-      return this.bullets = _.compact(this.bullets);
+      return this.bullets.some(function(v, i) {
+        if (v === false) {
+          return _this.bullets.splice(i, 1);
+        }
+      });
     }
   };
 

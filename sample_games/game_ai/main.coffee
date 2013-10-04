@@ -36,6 +36,10 @@ class RobotWorld extends GroupModel
     @setup("bullets", [])
     @setup("items", [])
 
+    @addObserver "bullets", (data, method) =>
+      if method == "push"
+        @insertBefore(data, @_robots[0])
+
     player = new PlayerRobot @
     plate = Map.instance.getPlate(6,4)
     player.moveToPlate(plate)
@@ -71,7 +75,8 @@ class RobotWorld extends GroupModel
         del = i
         @items[i] = false
     if del != -1
-      @items = _.compact(@items)
+      @items.some (v, i) =>
+        @items.splice(i, 1) if v == false
     
 
   updateBullets: () ->
@@ -87,7 +92,8 @@ class RobotWorld extends GroupModel
             del = i
             @bullets[i] = false
     if del != -1
-      @bullets = _.compact(@bullets)
+      @bullets.some (v, i) =>
+        @bullets.splice(i, 1) if v == false
 
   _isAnimated: (array, func) ->
     animated = false
