@@ -182,7 +182,7 @@ Robot = (function(_super) {
         b.shot(this.x, this.y, this.direct);
         setTimeout(onComplete, Util.toMillisec(b.maxFrame));
         ret = b;
-        this.dispatchEvent(new RobotEvent('shot'));
+        this.dispatchEvent(new RobotEvent('shot'), ret);
       }
     }
     return ret;
@@ -227,8 +227,6 @@ Robot = (function(_super) {
     }), Util.toMillisec(15));
   };
 
-  Robot.prototype.onHpReduce = function(views) {};
-
   Robot.prototype.onKeyInput = function(input) {};
 
   Robot.prototype.onSetBarrier = function(bulletType) {};
@@ -243,19 +241,11 @@ Robot = (function(_super) {
         this.prevPlate.onRobotAway(this);
         return this.currentPlate.onRobotRide(this);
       case RobotInstruction.SHOT:
-        return;
-        if (ret !== false) {
-          msgbox.print(R.String.shot(this.name));
-          return this.animated = true;
-        } else {
-          return msgbox.print(R.String.CANNOTSHOT);
-        }
         break;
       case RobotInstruction.PICKUP:
         return;
         if (ret !== false) {
-          msgbox.print(R.String.pickup(this.name));
-          return this.animated = true;
+          return msgbox.print(R.String.pickup(this.name));
         } else {
           return msgbox.print(R.String.CANNOTPICKUP);
         }
@@ -273,8 +263,7 @@ Robot = (function(_super) {
   };
 
   Robot.prototype.damege = function() {
-    this.hp -= 1;
-    return this.onHpReduce();
+    return this.hp -= 1;
   };
 
   Robot.prototype.update = function() {
@@ -399,13 +388,6 @@ PlayerRobot = (function(_super) {
     }
   };
 
-  PlayerRobot.prototype.onHpReduce = function(views) {
-    var hpBar, scene;
-    scene = Game.instance.scene;
-    hpBar = scene.views.playerHpBar;
-    return hpBar.reduce();
-  };
-
   return PlayerRobot;
 
 })(Robot);
@@ -426,12 +408,6 @@ EnemyRobot = (function(_super) {
     this.plateState = Plate.STATE_ENEMY;
     this.debugCmd = new DebugCommand(this);
   }
-
-  EnemyRobot.prototype.onHpReduce = function(views) {
-    var hpBar;
-    hpBar = this.scene.views.enemyHpBar;
-    return hpBar.reduce();
-  };
 
   EnemyRobot.prototype.onKeyInput = function(input) {
     if (this.animated === true) {

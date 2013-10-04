@@ -9,26 +9,21 @@ class ViewWorld extends Group
     scene.addChild @
     @x = x
     @y = y
+
     @background = new Background 0, 0
-    @addChild @background
-
     @header = new Header 16, 16
-    @playerHpBar = @header.playerHpBar
-    @enemyHpBar = @header.enemyHpBar
-    @addChild @header
-
     @map = new Map 16, 48
-    @addChild @map
-
     @footer = new Footer(25, @map.y + @map.height)
+
+    @addChild @background
+    @addChild @header
+    @addChild @map
     @addChild @footer
-    #@nextBtn = new NextButton @msgbox.x + MsgBox.WIDTH + 8, @msgbox.y
-    #@addChild @nextBtn
   
   initEvent: (world) ->
     @footer.initEvent(world)
-    @playerHpBar.initEvent(world)
-    @enemyHpBar.initEvent(world)
+    @map.initEvent(world)
+    @header.initEvent(world)
 
   update: (world) ->
     @map.update()

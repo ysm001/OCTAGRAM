@@ -42,7 +42,6 @@ class HpBar extends Bar
       when PlayerHp.YELLOW
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.HP_YELLOW]
 
-
 class HpEnclosePart extends ViewSprite
   @WIDTH = HpBar.MAX_VALUE / 4
   @HEIGHT = HpBar.HEIGHT
@@ -68,7 +67,7 @@ class HpEnclose extends ViewGroup
     for i in [0..3]
       @addChild new HpEnclosePart(i*HpEnclosePart.WIDTH ,0, i)
 
-class PlayerHp extends ViewGroup
+class HpView extends ViewGroup
   @YELLOW = 1
   @BLUE = 2
   @MAX_HP = 4
@@ -78,14 +77,27 @@ class PlayerHp extends ViewGroup
     @addChild @hp
     @underBar = new HpEnclose x, y
     @addChild @underBar
-  direct: (direct) ->
-    #@underBar.scale(-1, 1)
-    #@hp.direction = direct
-    # TODO:
-    # doing by force !!
-    #@hp.x = Header.WIDTH
+
   reduce: () ->
     @hp.value -= @hp.maxValue / PlayerHp.MAX_HP if @hp.value > 0
+
+class EnemyHp extends HpView
+  constructor: (x, y) ->
+    super(x, y, HpView.BLUE)
+
+  initEvent: (world) ->
+    # callback on the HP of enemy changed
+    world.enemy.addObserver "hp", (hp) =>
+      @reduce() if hp < world.enemy.hp
+
+class PlayerHp extends HpView
+  constructor: (x, y) ->
+    super(x, y, HpView.YELLOW)
+
+  initEvent: (world) ->
+    # callback on the HP of player changed
+    world.player.addObserver "hp", (hp) =>
+      @reduce() if hp < player.enemy.hp
 
 class Header extends ViewGroup
   @WIDTH = 600
@@ -93,11 +105,8 @@ class Header extends ViewGroup
     super
     @x = x
     @y = y
-    @playerHpBar = new PlayerHp 16, 0, PlayerHp.YELLOW
-    @addChild @playerHpBar
-    @enemyHpBar = new PlayerHp Header.WIDTH/2 + 16, 0, PlayerHp.BLUE
-    @enemyHpBar.direct "left"
-    @addChild @enemyHpBar
+    @addView(new PlayerHp(16, 0))
+    @addView(new EnemyHp(Header.WIDTH/2 + 16, 0))
 
 class Spot
   
@@ -303,15 +312,6 @@ class Map extends ViewGroup
 
   update: () ->
     return
-    ###
-    if @age % 10 == 0
-      x = Math.floor(Math.random() * (Map.WIDTH))
-      y = Math.floor(Math.random() * (Map.HEIGHT)) 
-      Debug.log "#{x}, #{y}"
-      type = Spot.getRandomType()
-      Debug.dump @plateMatrix[x][y]
-      @plateMatrix[x][y].setSpot type
-    ###
 
 class Button extends ViewSprite
   @WIDTH = 120
@@ -333,7 +333,6 @@ class NextButton extends Button
   constructor: (x,y) ->
     super x, y
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.NEXT_BUTTON]
-
 
 class MsgWindow extends ViewSprite
   @WIDTH = 320
@@ -369,6 +368,14 @@ class MsgBox extends ViewGroup
       else
         @print R.String.CANNOTMOVE
 
+    world.player.addEventListener 'shot', (evt) =>
+      player = evt.target
+      ret = evt.params
+      if ret != false
+        @print R.String.shot(player.name)
+      else
+        @print R.String.CANNOTSHOT
+
   print: (msg) ->
     @label.text = "#{msg}"
 
@@ -380,7 +387,6 @@ class StatusWindow extends ViewSprite
     @x = x
     @y = y
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.STATUS_BOX]
-
 
 class RemainingBullet extends ViewSprite
   @SIZE = 24

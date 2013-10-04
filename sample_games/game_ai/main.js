@@ -16,21 +16,19 @@ ViewWorld = (function(_super) {
     this.x = x;
     this.y = y;
     this.background = new Background(0, 0);
-    this.addChild(this.background);
     this.header = new Header(16, 16);
-    this.playerHpBar = this.header.playerHpBar;
-    this.enemyHpBar = this.header.enemyHpBar;
-    this.addChild(this.header);
     this.map = new Map(16, 48);
-    this.addChild(this.map);
     this.footer = new Footer(25, this.map.y + this.map.height);
+    this.addChild(this.background);
+    this.addChild(this.header);
+    this.addChild(this.map);
     this.addChild(this.footer);
   }
 
   ViewWorld.prototype.initEvent = function(world) {
     this.footer.initEvent(world);
-    this.playerHpBar.initEvent(world);
-    return this.enemyHpBar.initEvent(world);
+    this.map.initEvent(world);
+    return this.header.initEvent(world);
   };
 
   ViewWorld.prototype.update = function(world) {

@@ -114,7 +114,7 @@ class Robot extends SpriteModel
         b.shot(@x, @y, @direct)
         setTimeout(onComplete, Util.toMillisec(b.maxFrame))
         ret = b
-        @dispatchEvent(new RobotEvent('shot'))
+        @dispatchEvent(new RobotEvent('shot'), ret)
     ret
 
   pickup: (bulletType, onComplete) ->
@@ -144,8 +144,6 @@ class Robot extends SpriteModel
       Util.toMillisec(15)
     )
   
-  onHpReduce: (views) ->
-
   onKeyInput: (input) ->
 
   onSetBarrier: (bulletType) ->
@@ -160,16 +158,10 @@ class Robot extends SpriteModel
         @currentPlate.onRobotRide(@)
       when RobotInstruction.SHOT
         return
-        if ret != false
-          msgbox.print R.String.shot(@name)
-          @animated = true
-        else
-          msgbox.print R.String.CANNOTSHOT
       when RobotInstruction.PICKUP
         return
         if ret != false
           msgbox.print R.String.pickup(@name)
-          @animated = true
         else
           msgbox.print R.String.CANNOTPICKUP
     
@@ -183,7 +175,6 @@ class Robot extends SpriteModel
 
   damege: () ->
     @hp -= 1
-    @onHpReduce()
 
   update: ->
     # Why the @ x @ y does it become a floating-point number?
@@ -272,12 +263,6 @@ class PlayerRobot extends Robot
           else if ret instanceof DualBullet
             Util.dispatchEvent("enqueueBullet", {bulletType:BulletType.DUAL})
 
-
-  onHpReduce: (views) ->
-    scene = Game.instance.scene
-    hpBar = scene.views.playerHpBar
-    hpBar.reduce()
-
 class EnemyRobot extends Robot
   @WIDTH = 64
   @HEIGHT = 74
@@ -288,10 +273,6 @@ class EnemyRobot extends Robot
     @image = Game.instance.assets[R.CHAR.ENEMY]
     @plateState = Plate.STATE_ENEMY
     @debugCmd = new DebugCommand(@)
-
-  onHpReduce: (views) ->
-    hpBar = @scene.views.enemyHpBar
-    hpBar.reduce()
 
   onKeyInput: (input) ->
     if @animated == true
