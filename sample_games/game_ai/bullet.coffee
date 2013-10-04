@@ -53,6 +53,7 @@ class Bullet extends Sprite
   _getRotate: (direct) ->
 
   shot: (@x, @y, @direct=Direct.RIGHT) ->
+    RobotWorld.instance.bullets.push(@)
 
   setOnDestoryEvent: (@event) ->
 
@@ -160,6 +161,7 @@ class NormalBullet extends Bullet
     rotate
 
   shot: (@x, @y, @direct=Direct.RIGHT) ->
+    super(@x, @y, @direct)
     @animated = true
     if @_rorateDeg?
       @rotate(-@_rorateDeg)
@@ -208,6 +210,7 @@ class WideBulletPart extends Bullet
     rotate
 
   shot: (@x, @y, @direct=Direct.RIGHT) ->
+    super(@x, @y, @direct)
     @animated = true
     if @_rorateDeg?
       @rotate(-@_rorateDeg)
@@ -258,6 +261,7 @@ class DualBulletPart extends Bullet
     rotate
 
   shot: (@x, @y, @direct=Direct.RIGHT) ->
+    super(@x, @y, @direct)
     @animated = true
     if @_rorateDeg?
       @rotate -@_rorateDeg

@@ -3,6 +3,7 @@ class Item extends Sprite
   constructor:(w, h) ->
     super w, h
     @animated = true
+    RobotWorld.instance.items.push(@)
 
   onComplete: () =>
     @event(@) if @event?

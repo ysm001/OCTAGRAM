@@ -60,7 +60,7 @@ class Robot extends SpriteModel
   FRAME_DIRECT[6] = Direct.LEFT | Direct.UP
   FRAME_DIRECT[4] = Direct.RIGHT | Direct.UP
   
-  constructor: (width, height, @_world) ->
+  constructor: (width, height) ->
     super width, height
     @name = "robot"
     # @hp = Robot.MAX_HP
@@ -72,7 +72,7 @@ class Robot extends SpriteModel
     @barrierMap = new BarrierMap @
     @plateState = 0
 
-    @_world.addChild @
+    RobotWorld.instance.addChild @
     plate = Map.instance.getPlate(0,0)
     @prevPlate = @currentPlate = plate
     pos = plate.getAbsolutePos()
@@ -111,9 +111,6 @@ class Robot extends SpriteModel
     unless bltQueue.empty()
       for b in bltQueue.dequeue()
         b.shot(@x, @y, @direct)
-        @_world.bullets.push b
-        # @scene.world.insertBefore b, @
-        # b.setOnDestoryEvent(onComplete)
         setTimeout(onComplete, Util.toMillisec(b.maxFrame))
         ret = b
     ret
@@ -134,8 +131,6 @@ class Robot extends SpriteModel
     ret = bltQueue.enqueue(blt) if bltQueue?
     if ret != false
       item = new itemClass(@x, @y)
-      @_world.addChild item
-      @_world.items.push item
       item.setOnCompleteEvent(onComplete)
       ret = blt
     ret

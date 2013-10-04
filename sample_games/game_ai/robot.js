@@ -115,9 +115,8 @@ Robot = (function(_super) {
 
   FRAME_DIRECT[4] = Direct.RIGHT | Direct.UP;
 
-  function Robot(width, height, _world) {
+  function Robot(width, height) {
     var plate, pos;
-    this._world = _world;
     Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
     this.setup("hp", Robot.MAX_HP);
@@ -128,7 +127,7 @@ Robot = (function(_super) {
     };
     this.barrierMap = new BarrierMap(this);
     this.plateState = 0;
-    this._world.addChild(this);
+    RobotWorld.instance.addChild(this);
     plate = Map.instance.getPlate(0, 0);
     this.prevPlate = this.currentPlate = plate;
     pos = plate.getAbsolutePos();
@@ -180,7 +179,6 @@ Robot = (function(_super) {
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         b = _ref[_i];
         b.shot(this.x, this.y, this.direct);
-        this._world.bullets.push(b);
         setTimeout(onComplete, Util.toMillisec(b.maxFrame));
         ret = b;
       }
@@ -210,8 +208,6 @@ Robot = (function(_super) {
     }
     if (ret !== false) {
       item = new itemClass(this.x, this.y);
-      this._world.addChild(item);
-      this._world.items.push(item);
       item.setOnCompleteEvent(onComplete);
       ret = blt;
     }

@@ -31,7 +31,10 @@ class ViewGroup extends Group
 
 class RobotWorld extends GroupModel
   constructor: (x, y, scene) ->
+    if RobotWorld.instance?
+      return RobotWorld.instance
     super()
+    RobotWorld.instance = @
     @_robots = []
     @setup("bullets", [])
     @setup("items", [])
@@ -39,6 +42,10 @@ class RobotWorld extends GroupModel
     @addObserver "bullets", (data, method) =>
       if method == "push"
         @insertBefore(data, @_robots[0])
+
+    @addObserver "items", (data, method) =>
+      if method == "push"
+        @addChild(data)
 
     player = new PlayerRobot @
     plate = Map.instance.getPlate(6,4)

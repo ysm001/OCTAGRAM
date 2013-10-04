@@ -105,6 +105,7 @@ Bullet = (function(_super) {
     this.x = x;
     this.y = y;
     this.direct = direct != null ? direct : Direct.RIGHT;
+    return RobotWorld.instance.bullets.push(this);
   };
 
   Bullet.prototype.setOnDestoryEvent = function(event) {
@@ -311,6 +312,7 @@ NormalBullet = (function(_super) {
     this.x = x;
     this.y = y;
     this.direct = direct != null ? direct : Direct.RIGHT;
+    NormalBullet.__super__.shot.call(this, this.x, this.y, this.direct);
     this.animated = true;
     if (this._rorateDeg != null) {
       this.rotate(-this._rorateDeg);
@@ -383,6 +385,7 @@ WideBulletPart = (function(_super) {
     this.x = x;
     this.y = y;
     this.direct = direct != null ? direct : Direct.RIGHT;
+    WideBulletPart.__super__.shot.call(this, this.x, this.y, this.direct);
     this.animated = true;
     if (this._rorateDeg != null) {
       this.rotate(-this._rorateDeg);
@@ -467,6 +470,7 @@ DualBulletPart = (function(_super) {
     this.x = x;
     this.y = y;
     this.direct = direct != null ? direct : Direct.RIGHT;
+    DualBulletPart.__super__.shot.call(this, this.x, this.y, this.direct);
     this.animated = true;
     if (this._rorateDeg != null) {
       this.rotate(-this._rorateDeg);

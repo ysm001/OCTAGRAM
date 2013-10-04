@@ -42,13 +42,22 @@ RobotWorld = (function(_super) {
   function RobotWorld(x, y, scene) {
     var enemy, plate, player,
       _this = this;
+    if (RobotWorld.instance != null) {
+      return RobotWorld.instance;
+    }
     RobotWorld.__super__.constructor.call(this);
+    RobotWorld.instance = this;
     this._robots = [];
     this.setup("bullets", []);
     this.setup("items", []);
     this.addObserver("bullets", function(data, method) {
       if (method === "push") {
         return _this.insertBefore(data, _this._robots[0]);
+      }
+    });
+    this.addObserver("items", function(data, method) {
+      if (method === "push") {
+        return _this.addChild(data);
       }
     });
     player = new PlayerRobot(this);
