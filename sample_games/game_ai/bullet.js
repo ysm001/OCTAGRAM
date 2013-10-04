@@ -91,8 +91,9 @@ Bullet = (function(_super) {
 
   Bullet.MAX_FRAME = 15;
 
-  function Bullet(w, h, type) {
+  function Bullet(w, h, type, maxFrame) {
     this.type = type;
+    this.maxFrame = maxFrame != null ? maxFrame : Bullet.MAX_FRAME;
     this.onDestroy = __bind(this.onDestroy, this);
     Bullet.__super__.constructor.call(this, w, h);
     this.rotate(90);
@@ -163,9 +164,10 @@ Bullet = (function(_super) {
 BulletGroup = (function(_super) {
   __extends(BulletGroup, _super);
 
-  function BulletGroup(type) {
+  function BulletGroup(type, maxFrame) {
     var _this = this;
     this.type = type;
+    this.maxFrame = maxFrame;
     this.onDestroy = __bind(this.onDestroy, this);
     BulletGroup.__super__.constructor.apply(this, arguments);
     this.bullets = [];
@@ -268,19 +270,17 @@ BulletGroup = (function(_super) {
 
 
 NormalBullet = (function(_super) {
-  var MAX_FRAME;
-
   __extends(NormalBullet, _super);
 
   NormalBullet.WIDTH = 64;
 
   NormalBullet.HEIGHT = 64;
 
-  MAX_FRAME = 15;
+  NormalBullet.MAX_FRAME = 15;
 
   function NormalBullet() {
     this.length = 4;
-    NormalBullet.__super__.constructor.call(this, NormalBullet.WIDTH, NormalBullet.HEIGHT, BulletType.NORMAL);
+    NormalBullet.__super__.constructor.call(this, NormalBullet.WIDTH, NormalBullet.HEIGHT, BulletType.NORMAL, NormalBullet.MAX_FRAME);
     this.image = Game.instance.assets[R.BULLET.NORMAL];
   }
 
@@ -314,13 +314,12 @@ NormalBullet = (function(_super) {
     this.animated = true;
     if (this._rorateDeg != null) {
       this.rotate(-this._rorateDeg);
-      console.log(this._rorateDeg);
     }
     rotate = this._getRotate(this.direct);
     this.rotate(rotate);
     this._rorateDeg = rotate;
     point = Util.toCartesianCoordinates(68 * this.length, Util.toRad(rotate));
-    return this.tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(function() {
+    return this.tl.fadeOut(this.maxFrame).and().moveBy(toi(point.x), toi(point.y), this.maxFrame).then(function() {
       return this.onDestroy();
     });
   };
@@ -335,20 +334,18 @@ NormalBullet = (function(_super) {
 
 
 WideBulletPart = (function(_super) {
-  var MAX_FRAME;
-
   __extends(WideBulletPart, _super);
 
   WideBulletPart.WIDTH = 64;
 
   WideBulletPart.HEIGHT = 64;
 
-  MAX_FRAME = 20;
+  WideBulletPart.MAX_FRAME = 20;
 
   function WideBulletPart(parent, left) {
     this.parent = parent;
     this.left = left != null ? left : true;
-    WideBulletPart.__super__.constructor.call(this, WideBulletPart.WIDTH, WideBulletPart.HEIGHT, BulletType.WIDE);
+    WideBulletPart.__super__.constructor.call(this, WideBulletPart.WIDTH, WideBulletPart.HEIGHT, BulletType.WIDE, WideBulletPart.MAX_FRAME);
     this.length = 2;
     this.image = Game.instance.assets[R.BULLET.WIDE];
     this.frame = 1;
@@ -394,7 +391,7 @@ WideBulletPart = (function(_super) {
     this.rotate(rotate);
     this._rorateDeg = rotate;
     point = Util.toCartesianCoordinates(68 * this.length, Util.toRad(rotate));
-    return this.tl.fadeOut(MAX_FRAME).and().moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(function() {
+    return this.tl.fadeOut(this.maxFrame).and().moveBy(toi(point.x), toi(point.y), this.maxFrame).then(function() {
       return this.parent.onDestroy();
     });
   };
@@ -408,7 +405,7 @@ WideBullet = (function(_super) {
 
   function WideBullet() {
     var i, _i, _len, _ref;
-    WideBullet.__super__.constructor.call(this, BulletType.WIDE);
+    WideBullet.__super__.constructor.call(this, BulletType.WIDE, WideBulletPart.MAX_FRAME);
     this.bullets.push(new WideBulletPart(this, true));
     this.bullets.push(new WideBulletPart(this, false));
     _ref = this.bullets;
@@ -423,20 +420,18 @@ WideBullet = (function(_super) {
 })(BulletGroup);
 
 DualBulletPart = (function(_super) {
-  var MAX_FRAME;
-
   __extends(DualBulletPart, _super);
 
   DualBulletPart.WIDTH = 64;
 
   DualBulletPart.HEIGHT = 64;
 
-  MAX_FRAME = 20;
+  DualBulletPart.MAX_FRAME = 20;
 
   function DualBulletPart(parent, back) {
     this.parent = parent;
     this.back = back != null ? back : true;
-    DualBulletPart.__super__.constructor.call(this, DualBulletPart.WIDTH, DualBulletPart.HEIGHT, BulletType.DUAL);
+    DualBulletPart.__super__.constructor.call(this, DualBulletPart.WIDTH, DualBulletPart.HEIGHT, BulletType.DUAL, DualBulletPart.MAX_FRAME);
     this.length = 2;
     this.image = Game.instance.assets[R.BULLET.DUAL];
     this.frame = 1;
@@ -480,7 +475,7 @@ DualBulletPart = (function(_super) {
     this.rotate(rotate);
     this._rorateDeg = rotate;
     point = Util.toCartesianCoordinates(68 * this.length, Util.toRad(rotate));
-    return this.tl.moveBy(toi(point.x), toi(point.y), MAX_FRAME).then(function() {
+    return this.tl.moveBy(toi(point.x), toi(point.y), this.maxFrame).then(function() {
       return this.parent.onDestroy();
     });
   };
@@ -494,7 +489,7 @@ DualBullet = (function(_super) {
 
   function DualBullet() {
     var i, _i, _len, _ref;
-    DualBullet.__super__.constructor.call(this, BulletType.DUAL);
+    DualBullet.__super__.constructor.call(this, BulletType.DUAL, DualBulletPart.MAX_FRAME);
     this.bullets.push(new DualBulletPart(this, true));
     this.bullets.push(new DualBulletPart(this, false));
     _ref = this.bullets;

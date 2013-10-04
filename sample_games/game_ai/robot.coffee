@@ -99,7 +99,7 @@ class Robot extends SpriteModel
       ret = false
     return ret
 
-  shot : (bulletType, onComplete) ->
+  shot: (bulletType, onComplete) ->
     switch bulletType
       when BulletType.NORMAL
         bltQueue = @bulletQueue.normal
@@ -113,11 +113,12 @@ class Robot extends SpriteModel
         b.shot(@x, @y, @direct)
         @scene.world.bullets.push b
         @scene.world.insertBefore b, @
-        b.setOnDestoryEvent(onComplete)
+        # b.setOnDestoryEvent(onComplete)
+        setTimeout(onComplete, Util.toMillisec(b.maxFrame))
         ret = b
     ret
 
-  pickup : (bulletType, onComplete) ->
+  pickup: (bulletType, onComplete) ->
     ret = false
     blt = BulletFactory.create(bulletType, @)
     switch bulletType
@@ -140,7 +141,8 @@ class Robot extends SpriteModel
     ret
 
   turn: (onComplete = () ->) ->
-    setTimeout((() ->
+    setTimeout((() =>
+      @direct = Direct.next(@direct)
       onComplete(@)),
       Util.toMillisec(15)
     )

@@ -182,7 +182,7 @@ Robot = (function(_super) {
         b.shot(this.x, this.y, this.direct);
         this.scene.world.bullets.push(b);
         this.scene.world.insertBefore(b, this);
-        b.setOnDestoryEvent(onComplete);
+        setTimeout(onComplete, Util.toMillisec(b.maxFrame));
         ret = b;
       }
     }
@@ -220,11 +220,13 @@ Robot = (function(_super) {
   };
 
   Robot.prototype.turn = function(onComplete) {
+    var _this = this;
     if (onComplete == null) {
       onComplete = function() {};
     }
     return setTimeout((function() {
-      return onComplete(this);
+      _this.direct = Direct.next(_this.direct);
+      return onComplete(_this);
     }), Util.toMillisec(15));
   };
 

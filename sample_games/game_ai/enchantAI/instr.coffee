@@ -210,9 +210,21 @@ class TurnEnemyScanInstruction extends BranchInstruction
       @onComplete(false)
 
   action : () ->
-    count = @lengthParam.value + 1
-    directIndex = InstrCommon.getDirectIndex(@robot.direct)
-    setTimeout(@_turn, (1000*15)/30, directIndex, 0, count)
+    count = @lengthParam.value
+    i = 0
+    turnOnComplete = (robot) =>
+      if i < count
+        for k, v of @robot.bulletQueue
+          if v.size() > 0
+            bullet = v.index(0)
+            if bullet.withinRange(@robot, @opponent, @robot.direct)
+              @onComplete(true)
+              return
+        i+=1
+        @robot.turn(turnOnComplete)
+      else
+        @onComplete(false)
+    @robot.turn(turnOnComplete)
 
   clone : () ->
     obj = @copy(new TurnEnemyScanInstruction(@robot, @opponent))

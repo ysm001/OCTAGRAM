@@ -296,10 +296,31 @@ TurnEnemyScanInstruction = (function(_super) {
   };
 
   TurnEnemyScanInstruction.prototype.action = function() {
-    var count, directIndex;
-    count = this.lengthParam.value + 1;
-    directIndex = InstrCommon.getDirectIndex(this.robot.direct);
-    return setTimeout(this._turn, (1000 * 15) / 30, directIndex, 0, count);
+    var count, i, turnOnComplete,
+      _this = this;
+    count = this.lengthParam.value;
+    i = 0;
+    turnOnComplete = function(robot) {
+      var bullet, k, v, _ref;
+      if (i < count) {
+        _ref = _this.robot.bulletQueue;
+        for (k in _ref) {
+          v = _ref[k];
+          if (v.size() > 0) {
+            bullet = v.index(0);
+            if (bullet.withinRange(_this.robot, _this.opponent, _this.robot.direct)) {
+              _this.onComplete(true);
+              return;
+            }
+          }
+        }
+        i += 1;
+        return _this.robot.turn(turnOnComplete);
+      } else {
+        return _this.onComplete(false);
+      }
+    };
+    return this.robot.turn(turnOnComplete);
   };
 
   TurnEnemyScanInstruction.prototype.clone = function() {

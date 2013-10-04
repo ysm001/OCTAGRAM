@@ -22,8 +22,9 @@ class Direct
       func(i)
   
   @next: (direct) ->
-    for i,v in _directs
-      return direct[i % _directs.length] v == direct
+    for v, i in _directs
+      return _directs[(i+1) % _directs.length] if v == direct
+    return direct
 
 class Point
   constructor : (@x, @y) ->
