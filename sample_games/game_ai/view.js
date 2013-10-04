@@ -783,8 +783,6 @@ RemainingBulletsGroup = (function(_super) {
   __extends(RemainingBulletsGroup, _super);
 
   function RemainingBulletsGroup(x, y) {
-    this.dequeue = __bind(this.dequeue, this);
-    this.enqueue = __bind(this.enqueue, this);
     RemainingBulletsGroup.__super__.constructor.apply(this, arguments);
     this.normal = new RemainingBullets(30, 30, 1);
     this.wide = new RemainingBullets(30, 30 + RemainingBullet.SIZE, 3);
@@ -792,36 +790,34 @@ RemainingBulletsGroup = (function(_super) {
     this.addChild(this.normal);
     this.addChild(this.wide);
     this.addChild(this.dual);
-    document.addEventListener("enqueueBullet", this.enqueue);
-    document.addEventListener("dequeueBullet", this.dequeue);
   }
 
   RemainingBulletsGroup.prototype.initEvent = function(world) {
     var _this = this;
-    world.player.addEventListener('pickup', function(evt) {});
-    return world.player.addEventListener('shot', function(evt) {});
-  };
-
-  RemainingBulletsGroup.prototype.enqueue = function(evt) {
-    switch (evt.bulletType) {
-      case BulletType.NORMAL:
-        return this.normal.increment();
-      case BulletType.WIDE:
-        return this.wide.increment();
-      case BulletType.DUAL:
-        return this.dual.increment();
-    }
-  };
-
-  RemainingBulletsGroup.prototype.dequeue = function(evt) {
-    switch (evt.bulletType) {
-      case BulletType.NORMAL:
-        return this.normal.decrement();
-      case BulletType.WIDE:
-        return this.wide.decrement();
-      case BulletType.DUAL:
-        return this.dual.decrement();
-    }
+    world.player.addEventListener('pickup', function(evt) {
+      var effect, player;
+      player = evt.target;
+      effect = new ShotEffect(player.x, player.y);
+      _this.addChild(effect);
+      switch (evt.params.type) {
+        case BulletType.NORMAL:
+          return _this.normal.increment();
+        case BulletType.WIDE:
+          return _this.wide.increment();
+        case BulletType.DUAL:
+          return _this.dual.increment();
+      }
+    });
+    return world.player.addEventListener('shot', function(evt) {
+      switch (evt.params.type) {
+        case BulletType.NORMAL:
+          return _this.normal.decrement();
+        case BulletType.WIDE:
+          return _this.wide.decrement();
+        case BulletType.DUAL:
+          return _this.dual.decrement();
+      }
+    });
   };
 
   return RemainingBulletsGroup;

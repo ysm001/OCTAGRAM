@@ -156,10 +156,10 @@ Robot = (function(_super) {
       this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(onComplete);
       this.currentPlate = plate;
       ret = new Point(plate.ix, plate.iy);
-      this.dispatchEvent(new RobotEvent('move', ret));
     } else {
       ret = false;
     }
+    this.dispatchEvent(new RobotEvent('move', ret));
     return ret;
   };
 
@@ -175,16 +175,19 @@ Robot = (function(_super) {
       case BulletType.DUAL:
         bltQueue = this.bulletQueue.dual;
     }
+    ret = false;
     if (!bltQueue.empty()) {
       _ref = bltQueue.dequeue();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         b = _ref[_i];
         b.shot(this.x, this.y, this.direct);
         setTimeout(onComplete, Util.toMillisec(b.maxFrame));
-        ret = b;
-        this.dispatchEvent(new RobotEvent('shot'), ret);
+        ret = {
+          type: bulletType
+        };
       }
     }
+    this.dispatchEvent(new RobotEvent('shot', ret));
     return ret;
   };
 
@@ -211,9 +214,11 @@ Robot = (function(_super) {
     if (ret !== false) {
       item = new itemClass(this.x, this.y);
       item.setOnCompleteEvent(onComplete);
-      ret = blt;
-      this.dispatchEvent(new RobotEvent('pickup'), ret);
+      ret = {
+        type: bulletType
+      };
     }
+    this.dispatchEvent(new RobotEvent('pickup', ret));
     return ret;
   };
 
@@ -332,50 +337,7 @@ PlayerRobot = (function(_super) {
   };
 
   PlayerRobot.prototype.onCmdComplete = function(id, ret) {
-    var effect, i;
-    PlayerRobot.__super__.onCmdComplete.call(this, id, ret);
-    switch (id) {
-      case RobotInstruction.MOVE:
-        if (Math.floor(Math.random() * 10.) === 1) {
-          return i = 1;
-        }
-        break;
-      case RobotInstruction.SHOT:
-        if (ret !== false) {
-          effect = new ShotEffect(this.x, this.y);
-          this.scene.addChild(effect);
-          if (ret instanceof WideBullet) {
-            return Util.dispatchEvent("dequeueBullet", {
-              bulletType: BulletType.WIDE
-            });
-          } else if (ret instanceof NormalBullet) {
-            return Util.dispatchEvent("dequeueBullet", {
-              bulletType: BulletType.NORMAL
-            });
-          } else if (ret instanceof DualBullet) {
-            return Util.dispatchEvent("dequeueBullet", {
-              bulletType: BulletType.DUAL
-            });
-          }
-        }
-        break;
-      case RobotInstruction.PICKUP:
-        if (ret !== false) {
-          if (ret instanceof WideBullet) {
-            return Util.dispatchEvent("enqueueBullet", {
-              bulletType: BulletType.WIDE
-            });
-          } else if (ret instanceof NormalBullet) {
-            return Util.dispatchEvent("enqueueBullet", {
-              bulletType: BulletType.NORMAL
-            });
-          } else if (ret instanceof DualBullet) {
-            return Util.dispatchEvent("enqueueBullet", {
-              bulletType: BulletType.DUAL
-            });
-          }
-        }
-    }
+    return PlayerRobot.__super__.onCmdComplete.call(this, id, ret);
   };
 
   return PlayerRobot;

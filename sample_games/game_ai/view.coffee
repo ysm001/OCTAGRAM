@@ -489,30 +489,28 @@ class RemainingBulletsGroup extends ViewGroup
     @addChild @normal
     @addChild @wide
     @addChild @dual
-    document.addEventListener("enqueueBullet", @enqueue)
-    document.addEventListener("dequeueBullet", @dequeue)
 
   initEvent: (world) ->
     world.player.addEventListener 'pickup', (evt) =>
+      player = evt.target
+      effect = new ShotEffect(player.x, player.y)
+      @addChild effect
+      switch evt.params.type
+        when BulletType.NORMAL
+          @normal.increment()
+        when BulletType.WIDE
+          @wide.increment()
+        when BulletType.DUAL
+          @dual.increment()
+
     world.player.addEventListener 'shot', (evt) =>
-
-  enqueue : (evt) =>
-    switch evt.bulletType
-      when BulletType.NORMAL
-        @normal.increment()
-      when BulletType.WIDE
-        @wide.increment()
-      when BulletType.DUAL
-        @dual.increment()
-
-  dequeue : (evt) =>
-    switch evt.bulletType
-      when BulletType.NORMAL
-        @normal.decrement()
-      when BulletType.WIDE
-        @wide.decrement()
-      when BulletType.DUAL
-        @dual.decrement()
+      switch evt.params.type
+        when BulletType.NORMAL
+          @normal.decrement()
+        when BulletType.WIDE
+          @wide.decrement()
+        when BulletType.DUAL
+          @dual.decrement()
 
 class StatusBox extends ViewGroup
 

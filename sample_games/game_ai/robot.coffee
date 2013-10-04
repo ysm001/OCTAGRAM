@@ -95,10 +95,10 @@ class Robot extends SpriteModel
         PlayerRobot.UPDATE_FRAME).then(onComplete)
       @currentPlate = plate
       ret = new Point plate.ix, plate.iy
-      @dispatchEvent(new RobotEvent('move', ret))
     else
       ret = false
-    return ret
+    @dispatchEvent(new RobotEvent('move', ret))
+    ret
 
   shot: (bulletType, onComplete) ->
     switch bulletType
@@ -109,12 +109,13 @@ class Robot extends SpriteModel
       when BulletType.DUAL
         bltQueue = @bulletQueue.dual
 
+    ret = false
     unless bltQueue.empty()
       for b in bltQueue.dequeue()
         b.shot(@x, @y, @direct)
         setTimeout(onComplete, Util.toMillisec(b.maxFrame))
-        ret = b
-        @dispatchEvent(new RobotEvent('shot'), ret)
+        ret = type:bulletType
+    @dispatchEvent(new RobotEvent('shot', ret))
     ret
 
   pickup: (bulletType, onComplete) ->
@@ -134,8 +135,8 @@ class Robot extends SpriteModel
     if ret != false
       item = new itemClass(@x, @y)
       item.setOnCompleteEvent(onComplete)
-      ret = blt
-      @dispatchEvent(new RobotEvent('pickup'), ret)
+      ret = type:bulletType
+    @dispatchEvent(new RobotEvent('pickup', ret))
     ret
 
   turn: (onComplete = () ->) ->
@@ -232,28 +233,6 @@ class PlayerRobot extends Robot
 
   onCmdComplete: (id, ret) ->
     super id, ret
-    switch id
-      when RobotInstruction.MOVE
-        if Math.floor(Math.random() * (10)) == 1
-          i = 1
-      when RobotInstruction.SHOT
-        if ret != false
-          effect = new ShotEffect(@x, @y)
-          @scene.addChild effect
-          if ret instanceof WideBullet
-            Util.dispatchEvent("dequeueBullet", {bulletType:BulletType.WIDE})
-          else if ret instanceof NormalBullet
-            Util.dispatchEvent("dequeueBullet", {bulletType:BulletType.NORMAL})
-          else if ret instanceof DualBullet
-            Util.dispatchEvent("dequeueBullet", {bulletType:BulletType.DUAL})
-      when RobotInstruction.PICKUP
-        if ret != false
-          if ret instanceof WideBullet
-            Util.dispatchEvent("enqueueBullet", {bulletType:BulletType.WIDE})
-          else if ret instanceof NormalBullet
-            Util.dispatchEvent("enqueueBullet", {bulletType:BulletType.NORMAL})
-          else if ret instanceof DualBullet
-            Util.dispatchEvent("enqueueBullet", {bulletType:BulletType.DUAL})
 
 class EnemyRobot extends Robot
   @WIDTH = 64
