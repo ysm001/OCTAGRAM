@@ -218,7 +218,7 @@ RobotGame = (function(_super) {
   __extends(RobotGame, _super);
 
   function RobotGame(width, height) {
-    RobotGame.__super__.constructor.call(this, width, height, "./tip_based_vpl/resource/");
+    RobotGame.__super__.constructor.call(this, width, height, "./js/tip_based_vpl/resource/");
     this._assetPreload();
     this.keybind(87, 'w');
     this.keybind(65, 'a');

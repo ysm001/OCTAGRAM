@@ -15,7 +15,10 @@
   "item.js",
   "robot.js",
   "enchantAI/instr.js",
-  "view.js",
+  "view/view.js",
+  "view/header.js",
+  "view/content.js",
+  "view/footer.js",
   "main.js"
 )
 

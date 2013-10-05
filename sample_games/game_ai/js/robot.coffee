@@ -170,7 +170,7 @@ class Robot extends SpriteModel
     @hp -= 1
 
   update: ->
-    # Why the @ x @ y does it become a floating-point number?
+    # Why the @x @y does it become a floating-point number?
     @x = Math.round @x
     @y = Math.round @y
 

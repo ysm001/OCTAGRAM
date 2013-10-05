@@ -139,7 +139,7 @@ class RobotScene extends Scene
 
 class RobotGame extends TipBasedVPL
   constructor: (width, height) ->
-    super width, height, "./tip_based_vpl/resource/"
+    super width, height, "./js/tip_based_vpl/resource/"
     @_assetPreload()
     @keybind(87, 'w')
     @keybind(65, 'a')
