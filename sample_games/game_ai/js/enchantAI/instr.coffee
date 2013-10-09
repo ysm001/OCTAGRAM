@@ -1,23 +1,8 @@
-class RobotInstruction
-  @MOVE      = "move"
-  @TURN_SCAN = "turnscan"
-  @SHOT      = "shot"
-  @PICKUP    = "pickup"
-
-
-class RobotDirect
-  constructor : (@value, @frame) ->
-
 class InstrCommon
 
-  # direct = [
-  #   Direct.RIGHT
-  #   Direct.RIGHT | Direct.UP
-  #   Direct.RIGHT | Direct.DOWN
-  #   Direct.LEFT
-  #   Direct.LEFT | Direct.UP
-  #   Direct.LEFT | Direct.DOWN
-  # ]
+  class RobotDirect
+    constructor : (@value, @frame) ->
+
   directs = [
     Direct.RIGHT
     Direct.RIGHT | Direct.DOWN
@@ -27,9 +12,6 @@ class InstrCommon
     Direct.RIGHT | Direct.UP
   ]
 
-  # frame = [
-  #   0, 4, 5, 2, 6, 7
-  # ]
   frame = [
     0, 5, 7, 2, 6, 4
   ]
@@ -98,7 +80,7 @@ class RandomMoveInstruction extends AbstractMoveInstruction
       direct = InstrCommon.getRobotDirect(rand)
       ret = @robot.move(direct.value, () => @onComplete())
     @setAsynchronous(ret != false)
-    @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+    # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
   clone : () ->
     obj = @copy(new RandomMoveInstruction(@robot))
@@ -137,7 +119,7 @@ class MoveInstruction extends AbstractMoveInstruction
     direct = InstrCommon.getRobotDirect(@directParam.value)
     ret = @robot.move(direct.value, () => @onComplete())
     @setAsynchronous(ret != false)
-    @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+    # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
   clone : () ->
     obj = @copy(new MoveInstruction(@robot))
@@ -269,7 +251,7 @@ class ItemScanMoveInstruction extends AbstractMoveInstruction
           targetDirect = direct
       if target?
         ret = @robot.move(targetDirect, () => @onComplete())
-        @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+        # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
       else
         setTimeout((() => @onComplete()), Util.toMillisec(PlayerRobot.UPDATE_FRAME))
     ,Util.toMillisec(PlayerRobot.UPDATE_FRAME))
@@ -397,7 +379,7 @@ class PickupInstruction extends ActionInstruction
   action: () ->
     ret = @robot.pickup(@typeParam.value, () => @onComplete())
     @setAsynchronous(ret != false)
-    @robot.onCmdComplete(RobotInstruction.PICKUP, ret)
+    # @robot.onCmdComplete(RobotInstruction.PICKUP, ret)
 
   onComplete: () ->
     super()

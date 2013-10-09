@@ -65,10 +65,10 @@ RobotWorld = (function(_super) {
     });
     player = new PlayerRobot(this);
     plate = Map.instance.getPlate(6, 4);
-    player.moveToPlate(plate);
+    player.moveDirect(plate);
     enemy = new EnemyRobot(this);
     plate = Map.instance.getPlate(1, 1);
-    enemy.moveToPlate(plate);
+    enemy.moveDirect(plate);
     Game.instance.addInstruction(new RandomMoveInstruction(player));
     Game.instance.addInstruction(new MoveInstruction(player));
     Game.instance.addInstruction(new ShotInstruction(player));

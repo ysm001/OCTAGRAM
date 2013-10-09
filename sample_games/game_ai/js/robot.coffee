@@ -83,7 +83,7 @@ class Robot extends SpriteModel
       get:() -> FRAME_DIRECT[@frame]
       set:(direct) -> @frame = DIRECT_FRAME[direct]
 
-  move: (direct, onComplete) ->
+  moveTest: (direct, onComplete) ->
     ret = false
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
     @frame = @directFrame(direct)
@@ -94,10 +94,43 @@ class Robot extends SpriteModel
       @tl.moveTo(pos.x, pos.y,
         PlayerRobot.UPDATE_FRAME).then(onComplete)
       @currentPlate = plate
+      @prevPlate.onRobotAway(@)
+      @currentPlate.onRobotRide(@)
       ret = new Point plate.ix, plate.iy
     else
       ret = false
     @dispatchEvent(new RobotEvent('move', ret))
+    ret
+
+  move: (direct, onComplete) ->
+    plate = Map.instance.getTargetPoision(@currentPlate, direct)
+    @frame = @directFrame(direct)
+    ret = @_move plate, () =>
+      pos = plate.getAbsolutePos()
+      @tl.moveTo(pos.x, pos.y,
+        PlayerRobot.UPDATE_FRAME).then(onComplete)
+    @dispatchEvent(new RobotEvent('move', ret))
+    ret
+
+  moveDirect: (plate) ->
+    ret = @_move plate, () =>
+      pos = plate.getAbsolutePos()
+      @moveTo pos.x, pos.y
+    ret
+
+  _move: (plate, closure) ->
+    ret = false
+    @prevPlate = @currentPlate
+    # plate is exists and not locked
+    if plate? and plate.lock == false
+      pos = plate.getAbsolutePos()
+      closure()
+      @currentPlate = plate
+      @prevPlate.onRobotAway(@)
+      @currentPlate.onRobotRide(@)
+      ret = new Point plate.ix, plate.iy
+    else
+      ret = false
     ret
 
   shot: (bulletType, onComplete) ->
@@ -142,32 +175,19 @@ class Robot extends SpriteModel
   turn: (onComplete = () ->) ->
     setTimeout((() =>
       @direct = Direct.next(@direct)
-      onComplete(@)),
+      onComplete(@)
+      @dispatchEvent(new RobotEvent('turn', {}))),
       Util.toMillisec(15)
     )
-  
+
+  damege: () ->
+    @hp -= 1
+
   onKeyInput: (input) ->
 
   onSetBarrier: (bulletType) ->
 
   onResetBarrier: (bulletType) ->
-
-  onCmdComplete: (id, ret) ->
-    switch id
-      when RobotInstruction.MOVE
-        @prevPlate.onRobotAway(@)
-        @currentPlate.onRobotRide(@)
-    
-  moveToPlate: (plate) ->
-    @prevPlate.onRobotAway(@)
-    @pravState = @currentPlate
-    @currentPlate = plate
-    @currentPlate.onRobotRide(@)
-    pos = plate.getAbsolutePos()
-    @moveTo pos.x, pos.y
-
-  damege: () ->
-    @hp -= 1
 
   update: ->
     # Why the @x @y does it become a floating-point number?

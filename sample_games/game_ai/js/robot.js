@@ -145,7 +145,7 @@ Robot = (function(_super) {
     }
   };
 
-  Robot.prototype.move = function(direct, onComplete) {
+  Robot.prototype.moveTest = function(direct, onComplete) {
     var plate, pos, ret;
     ret = false;
     plate = Map.instance.getTargetPoision(this.currentPlate, direct);
@@ -155,11 +155,55 @@ Robot = (function(_super) {
       pos = plate.getAbsolutePos();
       this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(onComplete);
       this.currentPlate = plate;
+      this.prevPlate.onRobotAway(this);
+      this.currentPlate.onRobotRide(this);
       ret = new Point(plate.ix, plate.iy);
     } else {
       ret = false;
     }
     this.dispatchEvent(new RobotEvent('move', ret));
+    return ret;
+  };
+
+  Robot.prototype.move = function(direct, onComplete) {
+    var plate, ret,
+      _this = this;
+    plate = Map.instance.getTargetPoision(this.currentPlate, direct);
+    this.frame = this.directFrame(direct);
+    ret = this._move(plate, function() {
+      var pos;
+      pos = plate.getAbsolutePos();
+      return _this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(onComplete);
+    });
+    this.dispatchEvent(new RobotEvent('move', ret));
+    return ret;
+  };
+
+  Robot.prototype.moveDirect = function(plate) {
+    var ret,
+      _this = this;
+    ret = this._move(plate, function() {
+      var pos;
+      pos = plate.getAbsolutePos();
+      return _this.moveTo(pos.x, pos.y);
+    });
+    return ret;
+  };
+
+  Robot.prototype._move = function(plate, closure) {
+    var pos, ret;
+    ret = false;
+    this.prevPlate = this.currentPlate;
+    if ((plate != null) && plate.lock === false) {
+      pos = plate.getAbsolutePos();
+      closure();
+      this.currentPlate = plate;
+      this.prevPlate.onRobotAway(this);
+      this.currentPlate.onRobotRide(this);
+      ret = new Point(plate.ix, plate.iy);
+    } else {
+      ret = false;
+    }
     return ret;
   };
 
@@ -229,8 +273,13 @@ Robot = (function(_super) {
     }
     return setTimeout((function() {
       _this.direct = Direct.next(_this.direct);
-      return onComplete(_this);
+      onComplete(_this);
+      return _this.dispatchEvent(new RobotEvent('turn', {}));
     }), Util.toMillisec(15));
+  };
+
+  Robot.prototype.damege = function() {
+    return this.hp -= 1;
   };
 
   Robot.prototype.onKeyInput = function(input) {};
@@ -238,28 +287,6 @@ Robot = (function(_super) {
   Robot.prototype.onSetBarrier = function(bulletType) {};
 
   Robot.prototype.onResetBarrier = function(bulletType) {};
-
-  Robot.prototype.onCmdComplete = function(id, ret) {
-    switch (id) {
-      case RobotInstruction.MOVE:
-        this.prevPlate.onRobotAway(this);
-        return this.currentPlate.onRobotRide(this);
-    }
-  };
-
-  Robot.prototype.moveToPlate = function(plate) {
-    var pos;
-    this.prevPlate.onRobotAway(this);
-    this.pravState = this.currentPlate;
-    this.currentPlate = plate;
-    this.currentPlate.onRobotRide(this);
-    pos = plate.getAbsolutePos();
-    return this.moveTo(pos.x, pos.y);
-  };
-
-  Robot.prototype.damege = function() {
-    return this.hp -= 1;
-  };
 
   Robot.prototype.update = function() {
     this.x = Math.round(this.x);
