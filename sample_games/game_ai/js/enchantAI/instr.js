@@ -362,7 +362,7 @@ ItemScanMoveInstruction = (function(_super) {
       target = null;
       targetDirect = null;
       Map.instance.eachSurroundingPlate(_this.robot.currentPlate, function(plate, direct) {
-        if (target === null && (plate.spot != null) && !_this.robot.barrierMap.isset(plate.spot.type)) {
+        if (target === null && (plate.spot != null)) {
           target = plate;
           return targetDirect = direct;
         }

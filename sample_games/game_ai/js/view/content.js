@@ -20,28 +20,22 @@ Spot = (function() {
       case Spot.TYPE_NORMAL_BULLET:
         this.effect = new SpotNormalEffect(point.x, point.y + 5);
         this.resultFunc = function(robot, plate) {
-          robot.barrierMap[BulletType.NORMAL] = new NormalBarrierEffect();
           point = plate.getAbsolutePos();
-          robot.parentNode.addChild(new NormalEnpowerEffect(point.x, point.y));
-          return robot.onSetBarrier(BulletType.NORMAL);
+          return robot.parentNode.addChild(new NormalEnpowerEffect(point.x, point.y));
         };
         break;
       case Spot.TYPE_WIDE_BULLET:
         this.effect = new SpotWideEffect(point.x, point.y + 5);
         this.resultFunc = function(robot, plate) {
-          robot.barrierMap[BulletType.WIDE] = new WideBarrierEffect();
           point = plate.getAbsolutePos();
-          robot.parentNode.addChild(new WideEnpowerEffect(point.x, point.y));
-          return robot.onSetBarrier(BulletType.WIDE);
+          return robot.parentNode.addChild(new WideEnpowerEffect(point.x, point.y));
         };
         break;
       case Spot.TYPE_DUAL_BULLET:
         this.effect = new SpotDualEffect(point.x, point.y + 5);
         this.resultFunc = function(robot, plate) {
-          robot.barrierMap[BulletType.DUAL] = new DualBarrierEffect();
           point = plate.getAbsolutePos();
-          robot.parentNode.addChild(new DualEnpowerEffect(point.x, point.y));
-          return robot.onSetBarrier(BulletType.DUAL);
+          return robot.parentNode.addChild(new DualEnpowerEffect(point.x, point.y));
         };
     }
   }

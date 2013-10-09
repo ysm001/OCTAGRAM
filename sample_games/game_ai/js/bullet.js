@@ -113,15 +113,10 @@ Bullet = (function(_super) {
   };
 
   Bullet.prototype.hit = function(robot) {
-    var effect, explosion;
-    if (robot.barrierMap.isset(this.type)) {
-      effect = robot.barrierMap.get(this.type);
-      effect.show(robot.x, robot.y, this.scene);
-    } else {
-      robot.damege();
-      explosion = new Explosion(robot.x, robot.y);
-      this.scene.addChild(explosion);
-    }
+    var explosion;
+    robot.damege();
+    explosion = new Explosion(robot.x, robot.y);
+    this.scene.addChild(explosion);
     return this.onDestroy();
   };
 
@@ -205,15 +200,10 @@ BulletGroup = (function(_super) {
   };
 
   BulletGroup.prototype.hit = function(robot) {
-    var effect, explosion;
-    if (robot.barrierMap.isset(this.type)) {
-      effect = robot.barrierMap.get(this.type);
-      effect.show(robot.x, robot.y, this.scene);
-    } else {
-      robot.damege();
-      explosion = new Explosion(robot.x, robot.y);
-      this.scene.addChild(explosion);
-    }
+    var explosion;
+    robot.damege();
+    explosion = new Explosion(robot.x, robot.y);
+    this.scene.addChild(explosion);
     return this.onDestroy();
   };
 

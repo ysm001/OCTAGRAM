@@ -58,13 +58,9 @@ class Bullet extends Sprite
   setOnDestoryEvent: (@event) ->
 
   hit: (robot) ->
-    if robot.barrierMap.isset @type
-      effect = robot.barrierMap.get(@type)
-      effect.show(robot.x, robot.y, @scene)
-    else
-      robot.damege()
-      explosion = new Explosion robot.x, robot.y
-      @scene.addChild explosion
+    robot.damege()
+    explosion = new Explosion robot.x, robot.y
+    @scene.addChild explosion
     @onDestroy()
 
   onDestroy: () =>
@@ -104,13 +100,9 @@ class BulletGroup extends Group
   setOnDestoryEvent: (@event) ->
 
   hit: (robot) ->
-    if robot.barrierMap.isset @type
-      effect = robot.barrierMap.get(@type)
-      effect.show(robot.x, robot.y, @scene)
-    else
-      robot.damege()
-      explosion = new Explosion robot.x, robot.y
-      @scene.addChild explosion
+    robot.damege()
+    explosion = new Explosion robot.x, robot.y
+    @scene.addChild explosion
     @onDestroy()
 
   within: (s, value) ->

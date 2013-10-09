@@ -246,7 +246,7 @@ class ItemScanMoveInstruction extends AbstractMoveInstruction
       target = null
       targetDirect = null
       Map.instance.eachSurroundingPlate @robot.currentPlate, (plate, direct) =>
-        if target is null and plate.spot? and !@robot.barrierMap.isset(plate.spot.type)
+        if target is null and plate.spot?
           target = plate
           targetDirect = direct
       if target?

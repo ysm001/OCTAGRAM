@@ -96,54 +96,6 @@ class RemainingBullets extends ViewGroup
       @size--
       @array[@size].frame = @type
 
-class StatusBarrier extends ViewSprite
-  @SIZE = 24
-  constructor: (x, y, @type) ->
-    super StatusBarrier.SIZE, StatusBarrier.SIZE
-    @x = x
-    @y = y
-    @frame = @type
-    @image = Game.instance.assets[R.ITEM.STATUS_BARRIER]
-
-  set: () ->
-    @frame = @type - 1
-
-  reset: () ->
-    @frame = @type
-
-class StatusBarrierGroup extends ViewGroup
-
-  constructor : (x, y) ->
-    super
-    @normal  = new StatusBarrier(30, 0, 1)
-    @wide    = new StatusBarrier(55, 0, 3)
-    @dual    = new StatusBarrier(80, 0, 5)
-
-    @addChild @normal
-    @addChild @wide
-    @addChild @dual
-
-    document.addEventListener("setBarrier", @set)
-    document.addEventListener("resetBarrier", @reset)
-
-  set : (evt) =>
-    switch evt.bulletType
-      when BulletType.NORMAL
-        @normal.set()
-      when BulletType.WIDE
-        @wide.set()
-      when BulletType.DUAL
-        @dual.set()
-
-  reset : (evt) =>
-    switch evt.bulletType
-      when BulletType.NORMAL
-        @normal.reset()
-      when BulletType.WIDE
-        @wide.reset()
-      when BulletType.DUAL
-        @dual.reset()
-
 class RemainingBulletsGroup extends ViewGroup
 
   constructor : (x, y) ->
@@ -185,7 +137,6 @@ class StatusBox extends ViewGroup
     @x = x
     @y = y
     
-    @addView(new StatusBarrierGroup())
     @addView(new RemainingBulletsGroup())
 
 class Footer extends ViewGroup

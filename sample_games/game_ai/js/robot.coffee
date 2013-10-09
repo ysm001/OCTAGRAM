@@ -28,19 +28,6 @@ class ItemQueue
   size: () ->
     @collection.length
 
-class BarrierMap extends Object
-
-  constructor: (@robot) ->
-
-  get:(key) ->
-    ret = @[key]
-    delete @[key]
-    @robot.onResetBarrier(key)
-    return ret
-
-  isset:(key) ->
-    return if @[key]? then true else false
-
 class Robot extends SpriteModel
   @MAX_HP = 4
 
@@ -69,7 +56,6 @@ class Robot extends SpriteModel
       normal : new ItemQueue [], 5
       wide   : new ItemQueue [], 5
       dual   : new ItemQueue [], 5
-    @barrierMap = new BarrierMap @
     @plateState = 0
 
     RobotWorld.instance.addChild @
@@ -82,6 +68,9 @@ class Robot extends SpriteModel
     direct:
       get:() -> FRAME_DIRECT[@frame]
       set:(direct) -> @frame = DIRECT_FRAME[direct]
+
+  directFrame: (direct) ->
+    DIRECT_FRAME[direct]
 
   move: (direct, onComplete) ->
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
@@ -164,12 +153,6 @@ class Robot extends SpriteModel
   damege: () ->
     @hp -= 1
 
-  onKeyInput: (input) ->
-
-  onSetBarrier: (bulletType) ->
-
-  onResetBarrier: (bulletType) ->
-
   update: ->
     # Why the @x @y does it become a floating-point number?
     @x = Math.round @x
@@ -178,8 +161,7 @@ class Robot extends SpriteModel
     @onKeyInput Game.instance.input
     return true
 
-  directFrame: (direct) ->
-    DIRECT_FRAME[direct]
+  onKeyInput: (input) ->
 
 class PlayerRobot extends Robot
   @WIDTH = 64
@@ -225,12 +207,6 @@ class PlayerRobot extends Robot
       @debugCmd.shot(@dualBltQueue)
     else if input.s == true and input.l == true
       @debugCmd.shot(@bltQueue)
-
-  onSetBarrier: (bulletType) ->
-    Util.dispatchEvent("setBarrier", {bulletType:bulletType})
-
-  onResetBarrier: (bulletType) ->
-    Util.dispatchEvent("resetBarrier", {bulletType:bulletType})
 
   onCmdComplete: (id, ret) ->
     super id, ret
