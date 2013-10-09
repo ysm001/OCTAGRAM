@@ -145,26 +145,6 @@ Robot = (function(_super) {
     }
   };
 
-  Robot.prototype.moveTest = function(direct, onComplete) {
-    var plate, pos, ret;
-    ret = false;
-    plate = Map.instance.getTargetPoision(this.currentPlate, direct);
-    this.frame = this.directFrame(direct);
-    this.prevPlate = this.currentPlate;
-    if ((plate != null) && plate.lock === false) {
-      pos = plate.getAbsolutePos();
-      this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(onComplete);
-      this.currentPlate = plate;
-      this.prevPlate.onRobotAway(this);
-      this.currentPlate.onRobotRide(this);
-      ret = new Point(plate.ix, plate.iy);
-    } else {
-      ret = false;
-    }
-    this.dispatchEvent(new RobotEvent('move', ret));
-    return ret;
-  };
-
   Robot.prototype.move = function(direct, onComplete) {
     var plate, ret,
       _this = this;

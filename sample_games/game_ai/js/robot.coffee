@@ -83,25 +83,6 @@ class Robot extends SpriteModel
       get:() -> FRAME_DIRECT[@frame]
       set:(direct) -> @frame = DIRECT_FRAME[direct]
 
-  moveTest: (direct, onComplete) ->
-    ret = false
-    plate = Map.instance.getTargetPoision(@currentPlate, direct)
-    @frame = @directFrame(direct)
-    @prevPlate = @currentPlate
-    # plate is exists and not locked
-    if plate? and plate.lock == false
-      pos = plate.getAbsolutePos()
-      @tl.moveTo(pos.x, pos.y,
-        PlayerRobot.UPDATE_FRAME).then(onComplete)
-      @currentPlate = plate
-      @prevPlate.onRobotAway(@)
-      @currentPlate.onRobotRide(@)
-      ret = new Point plate.ix, plate.iy
-    else
-      ret = false
-    @dispatchEvent(new RobotEvent('move', ret))
-    ret
-
   move: (direct, onComplete) ->
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
     @frame = @directFrame(direct)
