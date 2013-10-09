@@ -57,35 +57,6 @@ class SpotDualEffect extends SpotEffect
   constructor: (x, y) ->
     super x, y, R.EFFECT.SPOT_DUAL
 
-class BarrierEffect extends Effect
-  @SIZE = 72
-  constructor: (image) ->
-    super BarrierEffect.SIZE, BarrierEffect.SIZE, 14, 2
-    @image = Game.instance.assets[image]
-    @isShow = false
-
-  show: (x, y, parent) ->
-    @x = x - 4
-    @y = y - 4
-    @isShow = true
-    parent.addChild @
-
-  onenterframe: () ->
-    if @isShow == true
-      super
-
-class NormalBarrierEffect extends BarrierEffect
-  constructor:() ->
-    super R.EFFECT.BARRIER_NORMAL
-
-class WideBarrierEffect extends BarrierEffect
-  constructor:() ->
-    super R.EFFECT.BARRIER_WIDE
-
-class DualBarrierEffect extends BarrierEffect
-  constructor:() ->
-    super R.EFFECT.BARRIER_DUAL
-
 class EnpowerEffect extends Effect
   @SIZE = 128
   constructor: (x, y, image) ->

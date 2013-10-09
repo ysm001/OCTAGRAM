@@ -595,20 +595,18 @@ HpBranchInstruction = (function(_super) {
   __extends(HpBranchInstruction, _super);
 
   function HpBranchInstruction(robot) {
-    var column, labels;
+    var column, i, labels, _i, _ref;
     this.robot = robot;
     HpBranchInstruction.__super__.constructor.apply(this, arguments);
     this.tipInfo = new TipInfo(function(labels) {
       return "HPが" + labels[0] + "以上の時青矢印に進む。<br>" + labels[0] + "未満の時は赤矢印に進む。";
     });
     column = "HP";
-    labels = {
-      "1": 1,
-      "2": 2,
-      "3": 3,
-      "4": 4
-    };
-    this.hpParam = new TipParameter(column, 1, 1, 4, 1);
+    labels = {};
+    for (i = _i = 1, _ref = Robot.MAX_HP; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
+      labels[String(i)] = i;
+    }
+    this.hpParam = new TipParameter(column, 1, 1, Robot.MAX_HP, 1);
     this.hpParam.id = "size";
     this.addParameter(this.hpParam);
     this.tipInfo.addParameter(this.hpParam.id, column, labels, 1);

@@ -10,7 +10,7 @@ HpBar = (function(_super) {
 
   HpBar.HEIGHT = 24;
 
-  HpBar.MAX_VALUE = 256;
+  HpBar.MAX_VALUE = 64 * Robot.MAX_HP;
 
   function HpBar(x, y, resource) {
     if (resource == null) {
@@ -36,7 +36,7 @@ HpBar = (function(_super) {
 HpEnclosePart = (function(_super) {
   __extends(HpEnclosePart, _super);
 
-  HpEnclosePart.WIDTH = HpBar.MAX_VALUE / 4;
+  HpEnclosePart.WIDTH = HpBar.MAX_VALUE / Robot.MAX_HP;
 
   HpEnclosePart.HEIGHT = HpBar.HEIGHT;
 
@@ -46,7 +46,7 @@ HpEnclosePart = (function(_super) {
     this.y = y;
     if (i === 0) {
       this.frame = 0;
-    } else if (i === PlayerHp.MAX_HP - 1) {
+    } else if (i === Robot.MAX_HP - 1) {
       this.frame = 2;
     } else {
       this.frame = 1;
@@ -66,11 +66,11 @@ HpEnclose = (function(_super) {
   HpEnclose.HEIGHT = HpBar.HEIGHT;
 
   function HpEnclose(x, y) {
-    var i, _i;
+    var i, _i, _ref;
     HpEnclose.__super__.constructor.call(this, HpEnclose.WIDTH, HpEnclose.HEIGHT);
     this.x = x;
     this.y = y;
-    for (i = _i = 0; _i <= 3; i = ++_i) {
+    for (i = _i = 0, _ref = Robot.MAX_HP; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       this.addChild(new HpEnclosePart(i * HpEnclosePart.WIDTH, 0, i));
     }
   }
@@ -98,7 +98,7 @@ HpView = (function(_super) {
 
   HpView.prototype.reduce = function() {
     if (this.hp.value > 0) {
-      return this.hp.value -= this.hp.maxValue / PlayerHp.MAX_HP;
+      return this.hp.value -= this.hp.maxValue / Robot.MAX_HP;
     }
   };
 
@@ -155,8 +155,8 @@ Header = (function(_super) {
     Header.__super__.constructor.apply(this, arguments);
     this.x = x;
     this.y = y;
-    this.addView(new PlayerHp(16, 0));
-    this.addView(new EnemyHp(Header.WIDTH / 2 + 16, 0));
+    this.addView(new PlayerHp(16 + 32, 0));
+    this.addView(new EnemyHp(Header.WIDTH / 2 + 16 + 32, 0));
   }
 
   return Header;

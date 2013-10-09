@@ -410,9 +410,11 @@ class HpBranchInstruction extends BranchInstruction
     )
      # parameter 2
     column = "HP"
-    labels = {"1":1, "2":2, "3":3, "4":4}
+    labels = {}
+    for i in [1..Robot.MAX_HP]
+      labels[String(i)] = i
     # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @hpParam = new TipParameter(column, 1, 1, 4, 1)
+    @hpParam = new TipParameter(column, 1, 1, Robot.MAX_HP, 1)
     @hpParam.id = "size"
     @addParameter(@hpParam)
     @tipInfo.addParameter(@hpParam.id, column, labels, 1)

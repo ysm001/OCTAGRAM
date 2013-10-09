@@ -2,7 +2,7 @@ R = Config.R
 
 class HpBar extends Bar
   @HEIGHT = 24
-  @MAX_VALUE = 256
+  @MAX_VALUE = 64 * Robot.MAX_HP
   constructor: (x,y,resource=PlayerHp.YELLOW) ->
     super x, y
     @height = HpBar.HEIGHT
@@ -15,7 +15,7 @@ class HpBar extends Bar
         @image = Game.instance.assets[R.BACKGROUND_IMAGE.HP_YELLOW]
 
 class HpEnclosePart extends ViewSprite
-  @WIDTH = HpBar.MAX_VALUE / 4
+  @WIDTH = HpBar.MAX_VALUE / Robot.MAX_HP
   @HEIGHT = HpBar.HEIGHT
   constructor: (x, y, i) ->
     super HpEnclosePart.WIDTH, HpEnclosePart.HEIGHT
@@ -23,7 +23,7 @@ class HpEnclosePart extends ViewSprite
     @y = y
     if i == 0
       @frame = 0
-    else if i == PlayerHp.MAX_HP - 1
+    else if i ==  Robot.MAX_HP - 1
       @frame = 2
     else
       @frame = 1
@@ -36,7 +36,7 @@ class HpEnclose extends ViewGroup
     super HpEnclose.WIDTH, HpEnclose.HEIGHT
     @x = x
     @y = y
-    for i in [0..3]
+    for i in [0...Robot.MAX_HP]
       @addChild new HpEnclosePart(i*HpEnclosePart.WIDTH ,0, i)
 
 class HpView extends ViewGroup
@@ -51,7 +51,7 @@ class HpView extends ViewGroup
     @addChild @underBar
 
   reduce: () ->
-    @hp.value -= @hp.maxValue / PlayerHp.MAX_HP if @hp.value > 0
+    @hp.value -= @hp.maxValue / Robot.MAX_HP if @hp.value > 0
 
 class EnemyHp extends HpView
   constructor: (x, y) ->
@@ -77,5 +77,5 @@ class Header extends ViewGroup
     super
     @x = x
     @y = y
-    @addView(new PlayerHp(16, 0))
-    @addView(new EnemyHp(Header.WIDTH/2 + 16, 0))
+    @addView(new PlayerHp(16 + 32, 0))
+    @addView(new EnemyHp(Header.WIDTH/2 + 16 + 32, 0))
