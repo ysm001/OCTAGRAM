@@ -1,49 +1,49 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no">
-        <meta name="apple-mobile-web-app-capable" content="yes">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
-	<link rel="stylesheet" href="./css/bootstrap.css" />
-	<link rel="stylesheet" href="./css/magic-bootstrap.css" />
-	<link rel="stylesheet" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/bootstrap.css" />
+    <link rel="stylesheet" href="./css/magic-bootstrap.css" />
+    <link rel="stylesheet" href="./css/main.css" />
 
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script type="text/javascript" src="./js/bootstrap.js"></script>
-	<script type="text/javascript" src="./js/third_party/enchant.js/src/enchant.js"></script>
-	<script type="text/javascript" src="./js/third_party/enchant.js/src/plugins/ui.enchant.js"></script>
-	<script type="text/javascript" src="./js/third_party/enchant.js/src/plugins/widget.enchant.js"></script>
-	<script type="text/javascript" src="./js/third_party/enchant.js/src/plugins/model.enchant.js"></script>
-	<script type="text/javascript">
-	    var VPL_JS_BASE = "./";
-	    enchant();
-	    enchant.ui.assets = ['resources/ui/pad.png', 'resources/ui/apad.png', 'resources/ui/icon0.png', 'resources/ui/font0.png'];
-	    </script>
-      <script type="text/javascript" src="./js/tip_based_vpl/js/tip-based-vpl.js"></script>
-      <!--<script type="text/javascript" src="./js/tip_based_vpl/js/octagram.js"></script>-->
-	    <script type="text/javascript" src="./js/ai-robot.js"></script>
-	    <style type="text/css">
-		body {
-		    margin: 0;
-		    padding: 0;
-		}
-	    </style>
-	</head>
-	<body>
-	    <div id="enchant-stage"></div>
-	    <div id="dbg-btns">
-		<form>
-		    <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
-		    <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />
-		    <input type="button" class="btn btn-success" value="save player" name="Save" onClick="savePlayerProgram()" />
-		    <input type="button" class="btn btn-success" value="load player" name="Save" onClick="loadPlayerProgram()" />
-		    <input type="button" class="btn btn-success" value="execute player" name="Execute Test Code" onClick="executePlayerProgram()" />
-		    <input type="button" class="btn btn-danger" value="show enemy" name="Save" onClick="showEnemyProgram()" />
-		    <input type="button" class="btn btn-danger" value="save enemy"  name="Save" onClick="saveEnemyProgram()" />
-		    <input type="button" class="btn btn-danger" value="load enemy"  name="Save" onClick="loadEnemyProgram()" />
-		    <input type="button" class="btn btn-danger" value="execute enemy"  name="Execute Test Code" onClick="executeEnemyProgram()" />
-		</form>
-	    </div>
-	</body>
-    </html>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./js/third_party/enchant.js/src/enchant.js"></script>
+    <script type="text/javascript" src="./js/third_party/enchant.js/src/plugins/ui.enchant.js"></script>
+    <script type="text/javascript" src="./js/third_party/enchant.js/src/plugins/widget.enchant.js"></script>
+    <script type="text/javascript" src="./js/third_party/enchant.js/src/plugins/model.enchant.js"></script>
+    <script type="text/javascript">
+      var VPL_JS_BASE = "./";
+      enchant();
+      enchant.ui.assets = ['resources/ui/pad.png', 'resources/ui/apad.png', 'resources/ui/icon0.png', 'resources/ui/font0.png'];
+    </script>
+    <script type="text/javascript" src="./js/tip_based_vpl/js/tip-based-vpl.js"></script>
+    <!--<script type="text/javascript" src="./js/tip_based_vpl/js/octagram.min.js"></script>-->
+    <script type="text/javascript" src="./js/ai-robot.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="enchant-stage"></div>
+    <div id="dbg-btns">
+      <form>
+        <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
+        <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />
+        <input type="button" class="btn btn-success" value="save player" name="Save" onClick="savePlayerProgram()" />
+        <input type="button" class="btn btn-success" value="load player" name="Save" onClick="loadPlayerProgram()" />
+        <input type="button" class="btn btn-success" value="execute player" name="Execute Test Code" onClick="executePlayerProgram()" />
+        <input type="button" class="btn btn-danger" value="show enemy" name="Save" onClick="showEnemyProgram()" />
+        <input type="button" class="btn btn-danger" value="save enemy"  name="Save" onClick="saveEnemyProgram()" />
+        <input type="button" class="btn btn-danger" value="load enemy"  name="Save" onClick="loadEnemyProgram()" />
+        <input type="button" class="btn btn-danger" value="execute enemy"  name="Execute Test Code" onClick="executeEnemyProgram()" />
+      </form>
+    </div>
+  </body>
+</html>
