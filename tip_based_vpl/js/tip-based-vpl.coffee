@@ -5,6 +5,7 @@
         document.write('<script type="text/javascript" src="'+d+arg+'"></script>')
 )(
 	"vpl/storage.js",
+	"vpl/event.js",
 	"vpl/sprite.group.js",
 	"vpl/tip.model.js",
 	"vpl/tip.instruction.js",

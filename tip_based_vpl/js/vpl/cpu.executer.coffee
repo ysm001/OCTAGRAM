@@ -1,11 +1,9 @@
-class Executer
+class Executer extends EventTarget
   @latency = 30
 
   constructor : (@cpu) ->
     @next = null
     @current = null
-
-    document.addEventListener("completeExecution", (e) => @execNext(e))
 
   getNext : () -> if @next? then @cpu.getTip(@next.x, @next.y) else null
 
@@ -14,11 +12,9 @@ class Executer
     @current = tip
     @current.showExecutionEffect()
 
-    @next = tip.execute()
-
-    if !@next?
-      @current.hideExecutionEffect()
-      @current = null
+    if @current.isAsynchronous()
+      @current.code.instruction.removeEventListener('completeExecution', @execNext) 
+      @current.code.instruction.addEventListener('completeExecution', @execNext) 
 
     if !tip.isAsynchronous()
       setTimeout(@execNext, Executer.latency)
@@ -31,7 +27,7 @@ class Executer
     nextTip = @getNext()
 
     # asynchronous branch
-    if @current? && @current.isAsynchronous() && e.result?
+    if @current? && @current.isAsynchronous() && e && e.result?
       @next = if e.result then @current.code.getConseq() else @current.code.getAlter()
       nextTip = @getNext()
 

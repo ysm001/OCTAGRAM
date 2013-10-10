@@ -31,12 +31,13 @@ class TipSet
 
 class VirtualMachine
   constructor : (x, y, xnum, ynum) ->
+    @id = uniqueID()
     @tipSet = new TipSet()
-    @cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX, @tipSet)
+    @cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX, @)
     @executer = new Executer(@cpu)
 
   addInstruction : (instruction) ->
-    @cpu.tipSet.addInstruction(instruction)
+    @tipSet.addInstruction(instruction)
 
   addPresetInstructions : () ->
     stack = new StackMachine()
@@ -49,27 +50,27 @@ class VirtualMachine
     nopTip  = TipFactory.createNopTip()
     inst = new RandomBranchInstruction()
 
-    @cpu.tipSet.addInstruction(inst, Resources.get("iconRandom"))
-    @cpu.tipSet.addTip(returnTip)
-    @cpu.tipSet.addTip(stopTip)
-    @cpu.tipSet.addTip(nopTip, Resources.get("iconNop"))
-    @cpu.tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"))
-    @cpu.tipSet.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(inst, Resources.get("iconRandom"))
+    @tipSet.addTip(returnTip)
+    @tipSet.addTip(stopTip)
+    @tipSet.addTip(nopTip, Resources.get("iconNop"))
+    @tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"))
 
   clearInstructions : () -> @tipSet.clear()
 
@@ -79,7 +80,7 @@ class VirtualMachine
 
   show : () -> 
     @addPresetInstructions()
-    for tip in @cpu.tipSet.tips then Game.instance.vpl.ui.side.addTip(tip)
+    for tip in @tipSet.tips then Game.instance.vpl.ui.side.addTip(tip)
 
     Game.instance.currentScene.insertBefore(@cpu, Game.instance.vpl.ui.frame)
 

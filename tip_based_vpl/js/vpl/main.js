@@ -83,13 +83,14 @@ TipSet = (function() {
 
 VirtualMachine = (function() {
   function VirtualMachine(x, y, xnum, ynum) {
+    this.id = uniqueID();
     this.tipSet = new TipSet();
-    this.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX, this.tipSet);
+    this.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX, this);
     this.executer = new Executer(this.cpu);
   }
 
   VirtualMachine.prototype.addInstruction = function(instruction) {
-    return this.cpu.tipSet.addInstruction(instruction);
+    return this.tipSet.addInstruction(instruction);
   };
 
   VirtualMachine.prototype.addPresetInstructions = function() {
@@ -103,27 +104,27 @@ VirtualMachine = (function() {
     stopTip = TipFactory.createStopTip();
     nopTip = TipFactory.createNopTip();
     inst = new RandomBranchInstruction();
-    this.cpu.tipSet.addInstruction(inst, Resources.get("iconRandom"));
-    this.cpu.tipSet.addTip(returnTip);
-    this.cpu.tipSet.addTip(stopTip);
-    this.cpu.tipSet.addTip(nopTip, Resources.get("iconNop"));
-    this.cpu.tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"));
-    this.cpu.tipSet.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"));
-    return this.cpu.tipSet.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(inst, Resources.get("iconRandom"));
+    this.tipSet.addTip(returnTip);
+    this.tipSet.addTip(stopTip);
+    this.tipSet.addTip(nopTip, Resources.get("iconNop"));
+    this.tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"));
+    this.tipSet.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"));
+    return this.tipSet.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"));
   };
 
   VirtualMachine.prototype.clearInstructions = function() {
@@ -133,7 +134,7 @@ VirtualMachine = (function() {
   VirtualMachine.prototype.show = function() {
     var tip, _i, _len, _ref;
     this.addPresetInstructions();
-    _ref = this.cpu.tipSet.tips;
+    _ref = this.tipSet.tips;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       tip = _ref[_i];
       Game.instance.vpl.ui.side.addTip(tip);

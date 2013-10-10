@@ -30,3 +30,9 @@ class EventUtil
     evt = document.createEvent('UIEvent', false)
     evt.initUIEvent(eventName, true, true)
     evt
+
+uniqueID = () ->
+  randam = Math.floor(Math.random()*1000)
+  date = new Date()
+  time = date.getTime()
+  randam + time.toString()

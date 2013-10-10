@@ -6,10 +6,10 @@ var Cpu,
 Cpu = (function(_super) {
   __extends(Cpu, _super);
 
-  function Cpu(x, y, xnum, ynum, startIdx, tipSet) {
+  function Cpu(x, y, xnum, ynum, startIdx, vm) {
     this.xnum = xnum;
     this.ynum = ynum;
-    this.tipSet = tipSet;
+    this.vm = vm;
     Cpu.__super__.constructor.call(this, Resources.get("dummy"));
     this.tipTable = [];
     this.sx = startIdx;
@@ -166,7 +166,7 @@ Cpu = (function(_super) {
     _results = [];
     for (_i = 0, _len = serializedVal.length; _i < _len; _i++) {
       serializedTip = serializedVal[_i];
-      tip = serializedTip.tip.code.name === "WallTip" ? TipFactory.createWallTip(this.sx, this.sy) : serializedTip.tip.code.name === "StartTip" ? TipFactory.createStartTip() : serializedTip.tip.code.name === "EmptyTip" ? TipFactory.createEmptyTip() : serializedTip.tip.code.instruction == null ? this.tipSet.findByCode(serializedTip.tip.code.name).clone() : this.tipSet.findByInst(serializedTip.tip.code.instruction.name).clone();
+      tip = serializedTip.tip.code.name === "WallTip" ? TipFactory.createWallTip(this.sx, this.sy) : serializedTip.tip.code.name === "StartTip" ? TipFactory.createStartTip() : serializedTip.tip.code.name === "EmptyTip" ? TipFactory.createEmptyTip() : serializedTip.tip.code.instruction == null ? this.vm.tipSet.findByCode(serializedTip.tip.code.name).clone() : this.vm.tipSet.findByInst(serializedTip.tip.code.instruction.name).clone();
       tip.deserialize(serializedTip.tip);
       _results.push(this.insertNewTip(serializedTip.x, serializedTip.y, tip));
     }

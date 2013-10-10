@@ -1,17 +1,23 @@
 #####################################################
 # Customチップ
 #####################################################
-class Instruction
+class Instruction extends EventTarget
   constructor : () -> 
+    super()
     @isAsynchronous = false
     @parameters = []
 
   onComplete : (result = null) ->
+    ###
     evt = document.createEvent('UIEvent', false)
     evt.initUIEvent('completeExecution', true, true)
+    ###
+    @dispatchEvent(new InstructionEvent('completeExecution', {tip: this, result: result}))
+    ###
     evt.tip = this
     evt.result = result
-    document.dispatchEvent(evt)
+    ###
+    #document.dispatchEvent(evt)
 
   action : () ->
   execute : () -> @action()
