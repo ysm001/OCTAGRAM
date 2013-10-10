@@ -54,7 +54,13 @@ class Config.R
     CURRENT_DIRECT : "#{R.RESOURCE_DIR}/tip/arrow.png"
     REST_BULLET : "#{R.RESOURCE_DIR}/tip/rest_bullet.png"
 
-    #enchant.ui = { assets: [Config.R.PAD, Config.R.APAD, Config.R.FONT0, Config.R.ICON0] }
+class Config.Frame
+  
+  @ROBOT_MOVE : 12
+  @ROBOT_WAIT : 10
+  @ROBOT_TURN : 10
+  @BULLET : 15
+
 class Config.R.String
   
   @PLAYER : "プレイヤー"
@@ -69,3 +75,4 @@ class Config.R.String
     return "#{s}は攻撃しました"
   @move:(s, x, y) ->
     return "#{s}は(#{x},#{y})に移動しました"
+

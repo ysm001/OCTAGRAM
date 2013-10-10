@@ -44,9 +44,8 @@ class BulletType
   @DUAL = 3
 
 class Bullet extends Sprite
-  @MAX_FRAME = 15
 
-  constructor: (w, h, @type, @maxFrame = Bullet.MAX_FRAME) ->
+  constructor: (w, h, @type, @maxFrame = Config.Frame.BULLET) ->
     super w, h
     @rotate 90
 
@@ -133,11 +132,10 @@ class BulletGroup extends Group
 class NormalBullet extends Bullet
   @WIDTH = 64
   @HEIGHT = 64
-  @MAX_FRAME = 15
 
   constructor: () ->
     @length = 4
-    super NormalBullet.WIDTH, NormalBullet.HEIGHT, BulletType.NORMAL, NormalBullet.MAX_FRAME
+    super NormalBullet.WIDTH, NormalBullet.HEIGHT, BulletType.NORMAL
     @image = Game.instance.assets[R.BULLET.NORMAL]
 
   _getRotate: (direct) ->

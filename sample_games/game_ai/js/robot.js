@@ -162,7 +162,7 @@ Robot = (function(_super) {
       _this.currentPlate.dispatchEvent(new RobotEvent('ride', {
         robot: _this
       }));
-      return _this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(function() {
+      return _this.tl.moveTo(pos.x, pos.y, Config.Frame.ROBOT_MOVE).then(function() {
         _this.dispatchEvent(new RobotEvent('move', ret));
         return onComplete();
       });
@@ -253,7 +253,7 @@ Robot = (function(_super) {
       _this.direct = Direct.next(_this.direct);
       onComplete(_this);
       return _this.dispatchEvent(new RobotEvent('turn', {}));
-    }), Util.toMillisec(15));
+    }), Util.toMillisec(Config.Frame.ROBOT_TURN));
   };
 
   Robot.prototype.damege = function() {

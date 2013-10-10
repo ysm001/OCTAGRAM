@@ -88,7 +88,7 @@ class Robot extends SpriteModel
       @prevPlate.dispatchEvent(new RobotEvent('away', robot:@))
       @currentPlate.dispatchEvent(new RobotEvent('ride', robot:@))
       @tl.moveTo(pos.x, pos.y,
-        PlayerRobot.UPDATE_FRAME).then () =>
+        Config.Frame.ROBOT_MOVE).then () =>
           @dispatchEvent(new RobotEvent('move', ret))
           onComplete()
     ret
@@ -140,7 +140,7 @@ class Robot extends SpriteModel
       @direct = Direct.next(@direct)
       onComplete(@)
       @dispatchEvent(new RobotEvent('turn', {}))),
-      Util.toMillisec(15)
+      Util.toMillisec(Config.Frame.ROBOT_TURN)
     )
 
   damege: () ->

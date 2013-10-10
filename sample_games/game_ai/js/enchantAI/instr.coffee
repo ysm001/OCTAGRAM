@@ -79,7 +79,7 @@ class RandomMoveInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-    "移動可能なマスにランダムに移動します。"
+    "移動可能なマスにランダムに移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})"
 
   getIcon: () ->
     @icon.frame = 0
@@ -126,7 +126,7 @@ class ApproachInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-    "敵に近づくように移動します。"
+    "敵に近づくように移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})"
 
   getIcon: () ->
     @icon.frame = 0
@@ -173,7 +173,7 @@ class LeaveInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-    "敵から離れるように移動します。"
+    "敵から離れるように移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})"
 
   getIcon: () ->
     @icon.frame = 0
@@ -238,7 +238,7 @@ class MoveInstruction extends ActionInstruction
     @directParam = new TipParameter(column, 0, 0, 5, 1)
     @directParam.id = "direct"
     @addParameter(@directParam)
-    @tipInfo = new TipInfo((labels) -> "#{labels[0]}に1マス移動します。")
+    @tipInfo = new TipInfo((labels) -> "#{labels[0]}に1マス移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})")
     @tipInfo.addParameter(@directParam.id, column, labels, 0)
 
     @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
@@ -280,7 +280,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
     @setAsynchronous(true)
 
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に所持している弾丸の射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり5フレーム)
+      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に所持している弾丸の射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり#{Config.Frame.ROBOT_TURN}フレーム)
       "
     )
     # parameter 1
@@ -319,7 +319,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
         @onComplete(false)
     setTimeout((() =>
       turnOnComplete(@robot)),
-      Util.toMillisec(15)
+      Util.toMillisec(Config.Frame.ROBOT_TURN)
     )
 
   clone : () ->
@@ -368,14 +368,14 @@ class ItemScanMoveInstruction extends ActionInstruction
         # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
       else
         @onComplete())
-    ,Util.toMillisec(PlayerRobot.UPDATE_FRAME))
+    ,Util.toMillisec(Config.Frame.ROBOT_WAIT))
 
   clone : () ->
     obj = @copy(new ItemScanMoveInstruction(@robot))
     return obj
 
   mkDescription: () ->
-    "周囲1マスを探索し、弾丸を見つけた場合、そのマスへ進みます。<br>  (消費フレーム 40フレーム)"
+    "周囲1マスを探索し、弾丸を見つけた場合、そのマスへ進みます。<br>  (消費フレーム #{Config.Frame.ROBOT_WAIT + Config.Frame.ROBOT_MOVE}フレーム)"
 
   getIcon: () ->
     return @icon
@@ -396,7 +396,7 @@ class ShotInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-     "ストレートバレットを撃ちます。<br>射程距離:前方方向に距離5<br>"
+     "ストレートバレットを撃ちます。<br>射程距離:前方方向に距離5<br>(消費フレーム #{Config.Frame.BULLET}フレーム)"
 
   mkLabel: (parameter) ->
     @tipInfo.getLabel(parameter.id)

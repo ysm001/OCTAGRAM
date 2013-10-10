@@ -128,7 +128,7 @@ RandomMoveInstruction = (function(_super) {
   };
 
   RandomMoveInstruction.prototype.mkDescription = function() {
-    return "移動可能なマスにランダムに移動します。";
+    return "移動可能なマスにランダムに移動します。<br>(消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
   };
 
   RandomMoveInstruction.prototype.getIcon = function() {
@@ -197,7 +197,7 @@ ApproachInstruction = (function(_super) {
   };
 
   ApproachInstruction.prototype.mkDescription = function() {
-    return "敵に近づくように移動します。";
+    return "敵に近づくように移動します。<br>(消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
   };
 
   ApproachInstruction.prototype.getIcon = function() {
@@ -266,7 +266,7 @@ LeaveInstruction = (function(_super) {
   };
 
   LeaveInstruction.prototype.mkDescription = function() {
-    return "敵から離れるように移動します。";
+    return "敵から離れるように移動します。<br>(消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
   };
 
   LeaveInstruction.prototype.getIcon = function() {
@@ -350,7 +350,7 @@ MoveInstruction = (function(_super) {
     this.directParam.id = "direct";
     this.addParameter(this.directParam);
     this.tipInfo = new TipInfo(function(labels) {
-      return "" + labels[0] + "に1マス移動します。";
+      return "" + labels[0] + "に1マス移動します。<br>(消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
     });
     this.tipInfo.addParameter(this.directParam.id, column, labels, 0);
     this.icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32);
@@ -413,7 +413,7 @@ TurnEnemyScanInstruction = (function(_super) {
     TurnEnemyScanInstruction.__super__.constructor.apply(this, arguments);
     this.setAsynchronous(true);
     this.tipInfo = new TipInfo(function(labels) {
-      return "" + labels[0] + "に" + labels[1] + "回ターンします。<br>その途中に所持している弾丸の射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり5フレーム)      ";
+      return "" + labels[0] + "に" + labels[1] + "回ターンします。<br>その途中に所持している弾丸の射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり" + Config.Frame.ROBOT_TURN + "フレーム)      ";
     });
     column = "回転方向";
     labels = ["時計回り", "反時計回り"];
@@ -453,7 +453,7 @@ TurnEnemyScanInstruction = (function(_super) {
     };
     return setTimeout((function() {
       return turnOnComplete(_this.robot);
-    }), Util.toMillisec(15));
+    }), Util.toMillisec(Config.Frame.ROBOT_TURN));
   };
 
   TurnEnemyScanInstruction.prototype.clone = function() {
@@ -524,7 +524,7 @@ ItemScanMoveInstruction = (function(_super) {
       } else {
         return _this.onComplete();
       }
-    }), Util.toMillisec(PlayerRobot.UPDATE_FRAME));
+    }), Util.toMillisec(Config.Frame.ROBOT_WAIT));
   };
 
   ItemScanMoveInstruction.prototype.clone = function() {
@@ -534,7 +534,7 @@ ItemScanMoveInstruction = (function(_super) {
   };
 
   ItemScanMoveInstruction.prototype.mkDescription = function() {
-    return "周囲1マスを探索し、弾丸を見つけた場合、そのマスへ進みます。<br>  (消費フレーム 40フレーム)";
+    return "周囲1マスを探索し、弾丸を見つけた場合、そのマスへ進みます。<br>  (消費フレーム " + (Config.Frame.ROBOT_WAIT + Config.Frame.ROBOT_MOVE) + "フレーム)";
   };
 
   ItemScanMoveInstruction.prototype.getIcon = function() {
@@ -571,7 +571,7 @@ ShotInstruction = (function(_super) {
   };
 
   ShotInstruction.prototype.mkDescription = function() {
-    return "ストレートバレットを撃ちます。<br>射程距離:前方方向に距離5<br>";
+    return "ストレートバレットを撃ちます。<br>射程距離:前方方向に距離5<br>(消費フレーム " + Config.Frame.BULLET + "フレーム)";
   };
 
   ShotInstruction.prototype.mkLabel = function(parameter) {
