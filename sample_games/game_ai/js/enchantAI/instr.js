@@ -518,9 +518,12 @@ ItemScanMoveInstruction = (function(_super) {
         }
       });
       if (target != null) {
-        return ret = _this.robot.move(targetDirect, function() {
+        ret = _this.robot.move(targetDirect, function() {
           return _this.onComplete();
         });
+        if (ret === false) {
+          return _this.onComplete();
+        }
       } else {
         return _this.onComplete();
       }

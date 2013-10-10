@@ -180,7 +180,7 @@ Map = (function(_super) {
       }
       this.plateMatrix.push(list);
     }
-    for (i = _k = 0; _k <= 6; i = ++_k) {
+    for (i = _k = 0; _k <= 7; i = ++_k) {
       this._createRondomSpot();
     }
     this.x = x;

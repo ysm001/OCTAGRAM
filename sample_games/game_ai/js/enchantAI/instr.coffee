@@ -365,6 +365,8 @@ class ItemScanMoveInstruction extends ActionInstruction
           targetDirect = direct
       if target?
         ret = @robot.move(targetDirect, () => @onComplete())
+        if ret == false
+          @onComplete()
         # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
       else
         @onComplete())

@@ -130,7 +130,7 @@ class Map extends ViewGroup
         @addChild plate
       @plateMatrix.push list
 
-    for i in [0..6]
+    for i in [0..7]
       @_createRondomSpot()
 
     @x = x

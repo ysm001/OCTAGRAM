@@ -33,8 +33,8 @@ class Executer extends EventTarget
     nextTip = @getNext()
 
     # asynchronous branch
-    if @current? && @current.isAsynchronous() && e && e.result? && @current instanceof BranchTransitionCodeTip
-      @next = if e.result then @current.code.getConseq() else @current.code.getAlter()
+    if @current? && @current.isAsynchronous() && e && e.params.result? && @current instanceof BranchTransitionCodeTip
+      @next = if e.params.result then @current.code.getConseq() else @current.code.getAlter()
       nextTip = @getNext()
 
     if nextTip?
