@@ -82,20 +82,22 @@ RobotWorld = (function(_super) {
     enemyProgram = Game.instance.octagrams.createInstance();
     this.playerProgramId = playerProgram.id;
     this.enemyProgramId = enemyProgram.id;
-    playerProgram.addInstruction(new RandomMoveInstruction(this._player));
     playerProgram.addInstruction(new MoveInstruction(this._player));
-    playerProgram.addInstruction(new ShotInstruction(this._player));
+    playerProgram.addInstruction(new RandomMoveInstruction(this._player));
+    playerProgram.addInstruction(new ApproachInstruction(this._player, this._enemy));
+    playerProgram.addInstruction(new LeaveInstruction(this._player, this._enemy));
     playerProgram.addInstruction(new ItemScanMoveInstruction(this._player, this._enemy));
+    playerProgram.addInstruction(new ShotInstruction(this._player));
     playerProgram.addInstruction(new TurnEnemyScanInstruction(this._player, this._enemy));
-    playerProgram.addInstruction(new EnemyScanInstructon(this._player, this._enemy));
     playerProgram.addInstruction(new HpBranchInstruction(this._player));
     playerProgram.addInstruction(new HoldBulletBranchInstruction(this._player));
-    enemyProgram.addInstruction(new RandomMoveInstruction(this._enemy));
     enemyProgram.addInstruction(new MoveInstruction(this._enemy));
-    enemyProgram.addInstruction(new ShotInstruction(this._enemy));
+    enemyProgram.addInstruction(new RandomMoveInstruction(this._enemy));
+    enemyProgram.addInstruction(new ApproachInstruction(this._enemy, this._player));
+    enemyProgram.addInstruction(new LeaveInstruction(this._enemy, this._player));
     enemyProgram.addInstruction(new ItemScanMoveInstruction(this._enemy, this._player));
+    enemyProgram.addInstruction(new ShotInstruction(this._enemy));
     enemyProgram.addInstruction(new TurnEnemyScanInstruction(this._enemy, this._player));
-    enemyProgram.addInstruction(new EnemyScanInstructon(this._enemy, this._player));
     enemyProgram.addInstruction(new HpBranchInstruction(this._enemy));
     enemyProgram.addInstruction(new HoldBulletBranchInstruction(this._enemy));
     return Game.instance.octagrams.show(this.playerProgramId);
@@ -114,7 +116,13 @@ RobotWorld = (function(_super) {
     }
   };
 
-  RobotWorld.prototype.initialize = function(views) {};
+  RobotWorld.prototype.initialize = function(views) {
+    var plate;
+    plate = Map.instance.getPlate(6, 4);
+    this.player.moveDirect(plate);
+    plate = Map.instance.getPlate(1, 1);
+    return this.enemy.moveDirect(plate);
+  };
 
   RobotWorld.prototype.collisionBullet = function(bullet, robot) {
     return bullet.holder !== robot && bullet.within(robot, 32);
@@ -215,6 +223,7 @@ RobotScene = (function(_super) {
     this.views = new ViewWorld(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
     this.world = new RobotWorld(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
     this.views.initEvent(this.world);
+    this.world.initialize();
   }
 
   RobotScene.prototype.onenterframe = function() {

@@ -32,6 +32,7 @@ class Robot extends SpriteModel
   @MAX_HP = 3
 
   DIRECT_FRAME                             = {}
+  DIRECT_FRAME[Direct.NONE]                = 0
   DIRECT_FRAME[Direct.RIGHT]               = 0
   DIRECT_FRAME[Direct.RIGHT | Direct.DOWN] = 5
   DIRECT_FRAME[Direct.LEFT | Direct.DOWN]  = 7
@@ -52,10 +53,7 @@ class Robot extends SpriteModel
     @name = "robot"
     # @hp = Robot.MAX_HP
     @setup("hp", Robot.MAX_HP)
-    @bulletQueue =
-      normal : new ItemQueue [], 5
-      wide   : new ItemQueue [], 5
-      dual   : new ItemQueue [], 5
+    @_bulletQueue = new ItemQueue [], 5
     @plateState = 0
 
     RobotWorld.instance.addChild @
@@ -67,24 +65,30 @@ class Robot extends SpriteModel
 
   properties:
     direct:
-      get:() -> FRAME_DIRECT[@frame]
-      set:(direct) -> @frame = DIRECT_FRAME[direct]
+      get:() ->
+        if FRAME_DIRECT[@frame]? then FRAME_DIRECT[@frame] else FRAME_DIRECT[Direct.RIGHT]
+      set:(direct) ->
+        @frame = DIRECT_FRAME[direct] if DIRECT_FRAME[direct]?
     animated:
       get:() -> @_animated
       set:(value) -> @_animated = value
+    pos:
+      get: () -> @currentPlate.pos
+    bulletQueue:
+      get: () -> @_bulletQueue
 
   directFrame: (direct) ->
     DIRECT_FRAME[direct]
 
   move: (direct, onComplete = () ->) ->
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
-    @frame = @directFrame(direct)
+    @direct = direct
     ret = @_move plate, () =>
       pos = plate.getAbsolutePos()
       @prevPlate.dispatchEvent(new RobotEvent('away', robot:@))
       @currentPlate.dispatchEvent(new RobotEvent('ride', robot:@))
       @tl.moveTo(pos.x, pos.y,
-        PlayerRobot.UPDATE_FRAME).then () =>
+        Config.Frame.ROBOT_MOVE).then () =>
           @dispatchEvent(new RobotEvent('move', ret))
           onComplete()
     ret
@@ -110,42 +114,24 @@ class Robot extends SpriteModel
       ret = false
     ret
 
-  shot: (bulletType, onComplete = () ->) ->
-    switch bulletType
-      when BulletType.NORMAL
-        bltQueue = @bulletQueue.normal
-      when BulletType.WIDE
-        bltQueue = @bulletQueue.wide
-      when BulletType.DUAL
-        bltQueue = @bulletQueue.dual
-
+  shot: (onComplete = () ->) ->
     ret = false
-    unless bltQueue.empty()
-      for b in bltQueue.dequeue()
+    unless @bulletQueue.empty()
+      for b in @bulletQueue.dequeue()
         b.shot(@x, @y, @direct)
         setTimeout(onComplete, Util.toMillisec(b.maxFrame))
-        ret = type:bulletType
+        ret = type:BulletType.NORMAL
     @dispatchEvent(new RobotEvent('shot', ret))
     ret
 
-  pickup: (bulletType, onComplete = () ->) ->
+  pickup: (onComplete = () ->) ->
     ret = false
-    blt = BulletFactory.create(bulletType, @)
-    switch bulletType
-      when BulletType.NORMAL
-        bltQueue = @bulletQueue.normal
-        itemClass = NormalBulletItem
-      when BulletType.WIDE
-        bltQueue = @bulletQueue.wide
-        itemClass = WideBulletItem
-      when BulletType.DUAL
-        bltQueue = @bulletQueue.dual
-        itemClass = DualBulletItem
-    ret = bltQueue.enqueue(blt) if bltQueue?
+    blt = BulletFactory.create(BulletType.NORMAL, @)
+    ret = @bulletQueue.enqueue(blt) if @bulletQueue?
     if ret != false
-      item = new itemClass(@x, @y)
+      item = new NormalBulletItem(@x, @y)
       item.setOnCompleteEvent(onComplete)
-      ret = type:bulletType
+      ret = type:BulletType.NORMAL
     @dispatchEvent(new RobotEvent('pickup', ret))
     ret
 
@@ -154,7 +140,7 @@ class Robot extends SpriteModel
       @direct = Direct.next(@direct)
       onComplete(@)
       @dispatchEvent(new RobotEvent('turn', {}))),
-      Util.toMillisec(15)
+      Util.toMillisec(Config.Frame.ROBOT_TURN)
     )
 
   damege: () ->
@@ -197,7 +183,7 @@ class PlayerRobot extends Robot
     else if input.x == true and input.p == true
       @animated = true
       #@cmdQueue.enqueue @cmdPool.moveleftDown
-      ret = @move(Direct.LEFT | Direct.DOWN)
+      ret = @move(Direct.LEFT | Direct.DOWN, @onDebugComplete)
     else if input.d == true and input.p == true
       @animated = true
       ret = @move(Direct.RIGHT, @onDebugComplete)
@@ -211,17 +197,13 @@ class PlayerRobot extends Robot
       ret = @move(Direct.RIGHT | Direct.DOWN, @onDebugComplete)
       #@cmdQueue.enqueue @cmdPool.moveRightDown
     else if input.q == true and input.m == true
-      @debugCmd.pickup(@wideBltQueue,1)
+      @animated = true
+      ret = @pickup(@onDebugComplete)
     else if input.q == true and input.n == true
-      @debugCmd.pickup(@dualBltQueue,2)
-    else if input.q == true and input.l == true
-      @debugCmd.pickup(@bltQueue,0)
-    else if input.s == true and input.m == true
-      @debugCmd.shot(@wideBltQueue)
-    else if input.s == true and input.n == true
-      @debugCmd.shot(@dualBltQueue)
-    else if input.s == true and input.l == true
-      @debugCmd.shot(@bltQueue)
+      @animated = true
+      @animated = true
+      ret = @shot(@onDebugComplete)
+
     if ret == false
       @onDebugComplete()
 

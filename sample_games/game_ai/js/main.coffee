@@ -66,21 +66,23 @@ class RobotWorld extends GroupModel
     @playerProgramId = playerProgram.id
     @enemyProgramId  = enemyProgram.id
 
-    playerProgram.addInstruction(new RandomMoveInstruction(@_player))
     playerProgram.addInstruction(new MoveInstruction(@_player))
-    playerProgram.addInstruction(new ShotInstruction(@_player))
+    playerProgram.addInstruction(new RandomMoveInstruction(@_player))
+    playerProgram.addInstruction(new ApproachInstruction(@_player, @_enemy))
+    playerProgram.addInstruction(new LeaveInstruction(@_player, @_enemy))
     playerProgram.addInstruction(new ItemScanMoveInstruction(@_player, @_enemy))
+    playerProgram.addInstruction(new ShotInstruction(@_player))
     playerProgram.addInstruction(new TurnEnemyScanInstruction(@_player, @_enemy))
-    playerProgram.addInstruction(new EnemyScanInstructon(@_player, @_enemy))
     playerProgram.addInstruction(new HpBranchInstruction(@_player))
     playerProgram.addInstruction(new HoldBulletBranchInstruction(@_player))
 
-    enemyProgram.addInstruction(new RandomMoveInstruction(@_enemy))
     enemyProgram.addInstruction(new MoveInstruction(@_enemy))
-    enemyProgram.addInstruction(new ShotInstruction(@_enemy))
+    enemyProgram.addInstruction(new RandomMoveInstruction(@_enemy))
+    enemyProgram.addInstruction(new ApproachInstruction(@_enemy, @_player))
+    enemyProgram.addInstruction(new LeaveInstruction(@_enemy, @_player))
     enemyProgram.addInstruction(new ItemScanMoveInstruction(@_enemy, @_player))
+    enemyProgram.addInstruction(new ShotInstruction(@_enemy))
     enemyProgram.addInstruction(new TurnEnemyScanInstruction(@_enemy, @_player))
-    enemyProgram.addInstruction(new EnemyScanInstructon(@_enemy, @_player))
     enemyProgram.addInstruction(new HpBranchInstruction(@_enemy))
     enemyProgram.addInstruction(new HoldBulletBranchInstruction(@_enemy))
 
@@ -93,6 +95,11 @@ class RobotWorld extends GroupModel
       get:() -> @_enemy
 
   initialize: (views)->
+    plate = Map.instance.getPlate(6,4)
+    @player.moveDirect(plate)
+
+    plate = Map.instance.getPlate(1,1)
+    @enemy.moveDirect(plate)
 
   collisionBullet: (bullet, robot) ->
     return bullet.holder != robot and bullet.within(robot, 32)
@@ -146,6 +153,7 @@ class RobotScene extends Scene
     @views = new ViewWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
     @world = new RobotWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
     @views.initEvent @world
+    @world.initialize()
 
   onenterframe: ->
     @update()

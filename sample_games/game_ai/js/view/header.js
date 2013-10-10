@@ -136,7 +136,7 @@ PlayerHp = (function(_super) {
   PlayerHp.prototype.initEvent = function(world) {
     var _this = this;
     return world.player.addObserver("hp", function(hp) {
-      if (hp < player.enemy.hp) {
+      if (hp < world.player.hp) {
         return _this.reduce();
       }
     });

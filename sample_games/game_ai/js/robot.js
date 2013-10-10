@@ -63,6 +63,8 @@ Robot = (function(_super) {
 
   DIRECT_FRAME = {};
 
+  DIRECT_FRAME[Direct.NONE] = 0;
+
   DIRECT_FRAME[Direct.RIGHT] = 0;
 
   DIRECT_FRAME[Direct.RIGHT | Direct.DOWN] = 5;
@@ -94,11 +96,7 @@ Robot = (function(_super) {
     Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
     this.setup("hp", Robot.MAX_HP);
-    this.bulletQueue = {
-      normal: new ItemQueue([], 5),
-      wide: new ItemQueue([], 5),
-      dual: new ItemQueue([], 5)
-    };
+    this._bulletQueue = new ItemQueue([], 5);
     this.plateState = 0;
     RobotWorld.instance.addChild(this);
     plate = Map.instance.getPlate(0, 0);
@@ -111,10 +109,16 @@ Robot = (function(_super) {
   Robot.prototype.properties = {
     direct: {
       get: function() {
-        return FRAME_DIRECT[this.frame];
+        if (FRAME_DIRECT[this.frame] != null) {
+          return FRAME_DIRECT[this.frame];
+        } else {
+          return FRAME_DIRECT[Direct.RIGHT];
+        }
       },
       set: function(direct) {
-        return this.frame = DIRECT_FRAME[direct];
+        if (DIRECT_FRAME[direct] != null) {
+          return this.frame = DIRECT_FRAME[direct];
+        }
       }
     },
     animated: {
@@ -123,6 +127,16 @@ Robot = (function(_super) {
       },
       set: function(value) {
         return this._animated = value;
+      }
+    },
+    pos: {
+      get: function() {
+        return this.currentPlate.pos;
+      }
+    },
+    bulletQueue: {
+      get: function() {
+        return this._bulletQueue;
       }
     }
   };
@@ -138,7 +152,7 @@ Robot = (function(_super) {
       onComplete = function() {};
     }
     plate = Map.instance.getTargetPoision(this.currentPlate, direct);
-    this.frame = this.directFrame(direct);
+    this.direct = direct;
     ret = this._move(plate, function() {
       var pos;
       pos = plate.getAbsolutePos();
@@ -148,7 +162,7 @@ Robot = (function(_super) {
       _this.currentPlate.dispatchEvent(new RobotEvent('ride', {
         robot: _this
       }));
-      return _this.tl.moveTo(pos.x, pos.y, PlayerRobot.UPDATE_FRAME).then(function() {
+      return _this.tl.moveTo(pos.x, pos.y, Config.Frame.ROBOT_MOVE).then(function() {
         _this.dispatchEvent(new RobotEvent('move', ret));
         return onComplete();
       });
@@ -188,30 +202,20 @@ Robot = (function(_super) {
     return ret;
   };
 
-  Robot.prototype.shot = function(bulletType, onComplete) {
-    var b, bltQueue, ret, _i, _len, _ref;
+  Robot.prototype.shot = function(onComplete) {
+    var b, ret, _i, _len, _ref;
     if (onComplete == null) {
       onComplete = function() {};
     }
-    switch (bulletType) {
-      case BulletType.NORMAL:
-        bltQueue = this.bulletQueue.normal;
-        break;
-      case BulletType.WIDE:
-        bltQueue = this.bulletQueue.wide;
-        break;
-      case BulletType.DUAL:
-        bltQueue = this.bulletQueue.dual;
-    }
     ret = false;
-    if (!bltQueue.empty()) {
-      _ref = bltQueue.dequeue();
+    if (!this.bulletQueue.empty()) {
+      _ref = this.bulletQueue.dequeue();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         b = _ref[_i];
         b.shot(this.x, this.y, this.direct);
         setTimeout(onComplete, Util.toMillisec(b.maxFrame));
         ret = {
-          type: bulletType
+          type: BulletType.NORMAL
         };
       }
     }
@@ -219,34 +223,21 @@ Robot = (function(_super) {
     return ret;
   };
 
-  Robot.prototype.pickup = function(bulletType, onComplete) {
-    var blt, bltQueue, item, itemClass, ret;
+  Robot.prototype.pickup = function(onComplete) {
+    var blt, item, ret;
     if (onComplete == null) {
       onComplete = function() {};
     }
     ret = false;
-    blt = BulletFactory.create(bulletType, this);
-    switch (bulletType) {
-      case BulletType.NORMAL:
-        bltQueue = this.bulletQueue.normal;
-        itemClass = NormalBulletItem;
-        break;
-      case BulletType.WIDE:
-        bltQueue = this.bulletQueue.wide;
-        itemClass = WideBulletItem;
-        break;
-      case BulletType.DUAL:
-        bltQueue = this.bulletQueue.dual;
-        itemClass = DualBulletItem;
-    }
-    if (bltQueue != null) {
-      ret = bltQueue.enqueue(blt);
+    blt = BulletFactory.create(BulletType.NORMAL, this);
+    if (this.bulletQueue != null) {
+      ret = this.bulletQueue.enqueue(blt);
     }
     if (ret !== false) {
-      item = new itemClass(this.x, this.y);
+      item = new NormalBulletItem(this.x, this.y);
       item.setOnCompleteEvent(onComplete);
       ret = {
-        type: bulletType
+        type: BulletType.NORMAL
       };
     }
     this.dispatchEvent(new RobotEvent('pickup', ret));
@@ -262,7 +253,7 @@ Robot = (function(_super) {
       _this.direct = Direct.next(_this.direct);
       onComplete(_this);
       return _this.dispatchEvent(new RobotEvent('turn', {}));
-    }), Util.toMillisec(15));
+    }), Util.toMillisec(Config.Frame.ROBOT_TURN));
   };
 
   Robot.prototype.damege = function() {
@@ -314,7 +305,7 @@ PlayerRobot = (function(_super) {
       ret = this.move(Direct.LEFT, this.onDebugComplete);
     } else if (input.x === true && input.p === true) {
       this.animated = true;
-      ret = this.move(Direct.LEFT | Direct.DOWN);
+      ret = this.move(Direct.LEFT | Direct.DOWN, this.onDebugComplete);
     } else if (input.d === true && input.p === true) {
       this.animated = true;
       ret = this.move(Direct.RIGHT, this.onDebugComplete);
@@ -325,17 +316,12 @@ PlayerRobot = (function(_super) {
       this.animated = true;
       ret = this.move(Direct.RIGHT | Direct.DOWN, this.onDebugComplete);
     } else if (input.q === true && input.m === true) {
-      this.debugCmd.pickup(this.wideBltQueue, 1);
+      this.animated = true;
+      ret = this.pickup(this.onDebugComplete);
     } else if (input.q === true && input.n === true) {
-      this.debugCmd.pickup(this.dualBltQueue, 2);
-    } else if (input.q === true && input.l === true) {
-      this.debugCmd.pickup(this.bltQueue, 0);
-    } else if (input.s === true && input.m === true) {
-      this.debugCmd.shot(this.wideBltQueue);
-    } else if (input.s === true && input.n === true) {
-      this.debugCmd.shot(this.dualBltQueue);
-    } else if (input.s === true && input.l === true) {
-      this.debugCmd.shot(this.bltQueue);
+      this.animated = true;
+      this.animated = true;
+      ret = this.shot(this.onDebugComplete);
     }
     if (ret === false) {
       return this.onDebugComplete();

@@ -85,6 +85,21 @@ Config.R = (function() {
 
 })();
 
+Config.Frame = (function() {
+  function Frame() {}
+
+  Frame.ROBOT_MOVE = 12;
+
+  Frame.ROBOT_WAIT = 10;
+
+  Frame.ROBOT_TURN = 10;
+
+  Frame.BULLET = 15;
+
+  return Frame;
+
+})();
+
 Config.R.String = (function() {
   function String() {}
 
@@ -108,257 +123,6 @@ Config.R.String = (function() {
 
   String.move = function(s, x, y) {
     return "" + s + "は(" + x + "," + y + ")に移動しました";
-  };
-
-  String.INSTRUCTION = {
-    Move: {
-      colnum: function() {
-        return "移動方向";
-      },
-      label: [
-        function() {
-          return "右";
-        }, function() {
-          return "右上";
-        }, function() {
-          return "右下";
-        }, function() {
-          return "左";
-        }, function() {
-          return "左上";
-        }, function() {
-          return "左下";
-        }
-      ],
-      description: [
-        function(step) {
-          return "右に" + step + "マス移動します";
-        }, function(step) {
-          return "右上に" + step + "マス移動します";
-        }, function(step) {
-          return "右下に" + step + "マス移動します";
-        }, function(step) {
-          return "左に" + step + "マス移動します";
-        }, function(step) {
-          return "左上に" + step + "マス移動します";
-        }, function(step) {
-          return "左下に" + step + "マス移動します";
-        }
-      ]
-    },
-    RandomMove: {
-      description: function() {
-        return "ランダムに移動します";
-      }
-    },
-    Shot: {
-      colnum: function() {
-        return "弾の種類";
-      },
-      label: [
-        function() {
-          return "ストレート";
-        }, function() {
-          return "ワイド";
-        }, function() {
-          return "デュアル";
-        }
-      ],
-      description: [
-        function() {
-          return "自機の前に4マス分弾を発射します";
-        }, function() {
-          return "自機の右前と左前に2マス分弾を発射します";
-        }, function() {
-          return "自機の前後に2マス分弾を発射します";
-        }
-      ]
-    },
-    Pickup: {
-      colnum: function() {
-        return "弾の種類";
-      },
-      label: [
-        function() {
-          return "ストレート";
-        }, function() {
-          return "ワイド";
-        }, function() {
-          return "デュアル";
-        }
-      ],
-      description: [
-        function() {
-          return "ストレートバレッドを拾います";
-        }, function() {
-          return "ワイドバレッドを拾います";
-        }, function() {
-          return "デュアルバレッドを拾います";
-        }
-      ]
-    },
-    Hp: {
-      colnum: function() {
-        return "HP";
-      },
-      description: function(hp) {
-        return "HPが" + hp + "以上の時、青矢印に進みます。<br>HPが" + hp + "未満の時、赤矢印に進みます。";
-      }
-    },
-    HoldBulleft: {
-      id: {
-        kind: "kind",
-        size: "size"
-      },
-      colnum: function(id) {
-        if (id === "kind") {
-          return "弾の種類";
-        } else if (id === "size") {
-          return "弾数";
-        }
-      },
-      label: [
-        function() {
-          return "ストレート";
-        }, function() {
-          return "ワイド";
-        }, function() {
-          return "デュアル";
-        }
-      ],
-      description: [
-        function(size) {
-          return "ストレートバレッドの保持数が" + size + "以上の時、青矢印に進みます。<br>ストレートバレッドの保持数が" + size + "未満の時、赤矢印に進みます。";
-        }, function(size) {
-          return "ワイドバレッドの保持数が" + size + "以上の時、青矢印に進みます。<br>ワイドバレッドの保持数が" + size + "未満の時、赤矢印に進みます。";
-        }, function(size) {
-          return "デュアルバレッドの保持数が" + size + "以上の時、青矢印に進みます。<br>デュアルバレッドの保持数が" + size + "未満の時、赤矢印に進みます。";
-        }
-      ]
-    },
-    SearchingRobotDirect: {
-      id: {
-        direct: "direct",
-        lenght: "lenght"
-      },
-      colnum: function(id) {
-        switch (id) {
-          case "direct":
-            return "方向";
-          case "lenght":
-            return "距離";
-        }
-      },
-      label: [
-        function() {
-          return "右";
-        }, function() {
-          return "右上";
-        }, function() {
-          return "右下";
-        }, function() {
-          return "左";
-        }, function() {
-          return "左上";
-        }, function() {
-          return "左下";
-        }
-      ],
-      description: [
-        function(step) {
-          return "右に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "右上に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "右下に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "左に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "左上に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "左下に" + step + "マス索敵を行い敵が見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }
-      ]
-    },
-    SearchingItemDirect: {
-      id: {
-        direct: "direct",
-        lenght: "lenght"
-      },
-      colnum: function(id) {
-        switch (id) {
-          case "direct":
-            return "方向";
-          case "lenght":
-            return "距離";
-        }
-      },
-      label: [
-        function() {
-          return "右";
-        }, function() {
-          return "右上";
-        }, function() {
-          return "右下";
-        }, function() {
-          return "左";
-        }, function() {
-          return "左上";
-        }, function() {
-          return "左下";
-        }
-      ],
-      description: [
-        function(step) {
-          return "右に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "右上に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "右下に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "左に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "左上に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }, function(step) {
-          return "左下に" + step + "マス索敵を行いバリアアイテムが見つかった場合、青矢印に進みます。<br>見つからなかった場合、赤矢印に進みます。";
-        }
-      ]
-    },
-    CurrentDirect: {
-      colnum: function() {
-        return " 方向";
-      },
-      label: [
-        function() {
-          return "右";
-        }, function() {
-          return "右上";
-        }, function() {
-          return "右下";
-        }, function() {
-          return "左";
-        }, function() {
-          return "左上";
-        }, function() {
-          return "左下";
-        }
-      ],
-      description: [
-        function(step) {
-          return "右を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
-        }, function(step) {
-          return "右上を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
-        }, function(step) {
-          return "右下を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
-        }, function(step) {
-          return "左を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
-        }, function(step) {
-          return "左上を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
-        }, function(step) {
-          return "左下を向いている場合、青矢印に進み、他の方向の場合赤矢印に進みます。";
-        }
-      ]
-    }
   };
 
   return String;

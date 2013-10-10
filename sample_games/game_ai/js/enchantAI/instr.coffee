@@ -30,14 +30,6 @@ class InstrCommon
         return frame[i]
     return 0
 
-class AbstractMoveInstruction extends ActionInstruction
-
-  constructor : () ->
-    super
-
-  onComplete: () ->
-    super
-
 class TipInfo
 
   constructor: (@description) ->
@@ -62,10 +54,10 @@ class TipInfo
     @description(values)
 
 
-###
-  Random Move
-###
-class RandomMoveInstruction extends AbstractMoveInstruction
+class RandomMoveInstruction extends ActionInstruction
+  ###
+    Random Move Instruction
+  ###
 
   constructor : (@robot) ->
     super
@@ -87,16 +79,153 @@ class RandomMoveInstruction extends AbstractMoveInstruction
     return obj
 
   mkDescription: () ->
-    "進むことができるマスにランダムに移動します"
+    "移動可能なマスにランダムに移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})"
 
   getIcon: () ->
     @icon.frame = 0
     return @icon
 
-###
-  Move
-###
-class MoveInstruction extends AbstractMoveInstruction
+class ApproachInstruction extends ActionInstruction
+  ###
+    Approach Instruction
+  ###
+
+  constructor : (@robot, @enemy) ->
+    super
+    @setAsynchronous(true)
+    @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
+
+  action : () ->
+    ret = false
+    enemyPos = @enemy.pos
+    robotPos = @robot.pos
+    robotPos.sub(enemyPos)
+
+    direct = Direct.NONE
+    if robotPos.x > 0
+     direct |=  Direct.LEFT
+    else if robotPos.x < 0
+     direct |=  Direct.RIGHT
+
+    if robotPos.y > 0
+      direct |=  Direct.UP
+      if robotPos.x == 0
+        direct |= Direct.RIGHT
+    else if robotPos.y < 0
+      direct |=  Direct.DOWN
+      if robotPos.x == 0
+        direct |= Direct.LEFT
+
+    if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
+      ret = @robot.move(direct, () => @onComplete())
+    if ret == false
+      @onComplete()
+
+  clone : () ->
+    obj = @copy(new ApproachInstruction(@robot, @enemy))
+    return obj
+
+  mkDescription: () ->
+    "敵に近づくように移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})"
+
+  getIcon: () ->
+    @icon.frame = 0
+    return @icon
+
+class LeaveInstruction extends ActionInstruction
+  ###
+    Leave Instruction
+  ###
+
+  constructor : (@robot, @enemy) ->
+    super
+    @setAsynchronous(true)
+    @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
+
+  action : () ->
+    ret = false
+    enemyPos = @enemy.pos
+    robotPos = @robot.pos
+    robotPos.sub(enemyPos)
+
+    direct = Direct.NONE
+    if robotPos.x >= 0
+     direct |=  Direct.RIGHT
+    else if robotPos.x < 0
+     direct |=  Direct.LEFT
+
+    if robotPos.y >= 0
+      direct |=  Direct.DOWN
+      if robotPos.x == 0
+        direct |= Direct.LEFT
+    else if robotPos.y < 0
+      direct |=  Direct.UP
+      if robotPos.x == 0
+        direct |= Direct.RIGHT
+
+    if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
+      ret = @robot.move(direct, () => @onComplete())
+    if ret == false
+      @onComplete()
+
+  clone : () ->
+    obj = @copy(new LeaveInstruction(@robot, @enemy))
+    return obj
+
+  mkDescription: () ->
+    "敵から離れるように移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})"
+
+  getIcon: () ->
+    @icon.frame = 0
+    return @icon
+
+
+class EnemyDistanceInstruction extends BranchInstruction
+
+  constructor : (@robot, @enemy) ->
+    super
+    @setAsynchronous(true)
+
+    @tipInfo = new TipInfo((labels) ->
+      "敵との距離が#{labels[0]}の場合青い矢印に進みます。<br>そうでなければ、赤い矢印に進みます。
+      "
+    )
+    # parameter 1
+    column = "距離"
+    labels = ["近距離", "中距離", "遠距離"]
+    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
+    @distanceParam = new TipParameter(column, 0, 0, 2, 1)
+    @distanceParam.id = "distance"
+    @addParameter(@distanceParam)
+    @tipInfo.addParameter(@distanceParam.id, column, labels, 0)
+
+    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
+
+  action : () ->
+    true
+
+  clone : () ->
+    obj = @copy(new EnemyDistanceInstruction(@robot, @enemy))
+    obj.distanceParam.value = @distanceParam.value
+    return obj
+
+  onParameterChanged : (parameter) ->
+    @distanceParam = parameter
+    @tipInfo.changeLabel(parameter.id, parameter.value)
+
+  mkDescription: () ->
+    @tipInfo.getDescription()
+
+  mkLabel: (parameter) ->
+    @tipInfo.getLabel(parameter.id)
+
+  getIcon: () ->
+    return @icon
+
+class MoveInstruction extends ActionInstruction
+  ###
+    Move Instruction
+  ###
 
   constructor : (@robot) ->
     super
@@ -109,7 +238,7 @@ class MoveInstruction extends AbstractMoveInstruction
     @directParam = new TipParameter(column, 0, 0, 5, 1)
     @directParam.id = "direct"
     @addParameter(@directParam)
-    @tipInfo = new TipInfo((labels) -> "#{labels[0]}に1マス移動します")
+    @tipInfo = new TipInfo((labels) -> "#{labels[0]}に1マス移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})")
     @tipInfo.addParameter(@directParam.id, column, labels, 0)
 
     @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
@@ -151,7 +280,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
     @setAsynchronous(true)
 
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に所持している弾丸の射程圏内に入っていれば、<br>青い矢印に進む。そうでなければ赤い矢印に進む。<br>(消費フレーム 1回転当たり5フレーム)
+      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に所持している弾丸の射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり#{Config.Frame.ROBOT_TURN}フレーム)
       "
     )
     # parameter 1
@@ -165,48 +294,33 @@ class TurnEnemyScanInstruction extends BranchInstruction
 
     # parameter 2
     column = "回転回数"
-    labels = [0..6]
+    labels = [0..5]
     # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @lengthParam = new TipParameter(column, 0, 0, 6, 1)
+    @lengthParam = new TipParameter(column, 0, 0, 5, 1)
     @lengthParam.id = "length"
     @addParameter(@lengthParam)
     @tipInfo.addParameter(@lengthParam.id, column, labels, 0)
 
     @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
 
-  _turn : (directIndex, i, count) =>
-    if i < count
-      direct = InstrCommon.getRobotDirect(directIndex)
-      @robot.frame = direct.frame
-      for k, v of @robot.bulletQueue
-        if v.size() > 0
-          bullet = v.index(0)
-          if bullet.withinRange(@robot, @opponent, direct.value)
-            @onComplete(true)
-            return
-      setTimeout(@_turn
-        Util.toMillisec(15), (directIndex + 1) % InstrCommon.getDirectSize()
-        i + 1
-        count)
-    else
-      @onComplete(false)
-
   action : () ->
-    count = @lengthParam.value
+    count = @lengthParam.value + 1
     i = 0
     turnOnComplete = (robot) =>
       if i < count
-        for k, v of @robot.bulletQueue
-          if v.size() > 0
-            bullet = v.index(0)
-            if bullet.withinRange(@robot, @opponent, @robot.direct)
-              @onComplete(true)
-              return
+        if @robot.bulletQueue.size() > 0
+          bullet = @robot.bulletQueue.index(0)
+          if bullet.withinRange(@robot, @opponent, @robot.direct)
+            @onComplete(true)
+            return
         i+=1
         @robot.turn(turnOnComplete)
       else
         @onComplete(false)
-    @robot.turn(turnOnComplete)
+    setTimeout((() =>
+      turnOnComplete(@robot)),
+      Util.toMillisec(Config.Frame.ROBOT_TURN)
+    )
 
   clone : () ->
     obj = @copy(new TurnEnemyScanInstruction(@robot, @opponent))
@@ -230,10 +344,10 @@ class TurnEnemyScanInstruction extends BranchInstruction
   getIcon: () ->
     return @icon
 
-###
-  scan item -> go
-###
-class ItemScanMoveInstruction extends AbstractMoveInstruction
+class ItemScanMoveInstruction extends ActionInstruction
+  ###
+    Item Scan
+  ###
 
   constructor : (@robot) ->
     super
@@ -241,7 +355,7 @@ class ItemScanMoveInstruction extends AbstractMoveInstruction
     @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32)
 
   action : () ->
-    setTimeout(() =>
+    setTimeout((() =>
       ret = false
       target = null
       targetDirect = null
@@ -253,60 +367,15 @@ class ItemScanMoveInstruction extends AbstractMoveInstruction
         ret = @robot.move(targetDirect, () => @onComplete())
         # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
       else
-        setTimeout((() => @onComplete()), Util.toMillisec(PlayerRobot.UPDATE_FRAME))
-    ,Util.toMillisec(PlayerRobot.UPDATE_FRAME))
+        @onComplete())
+    ,Util.toMillisec(Config.Frame.ROBOT_WAIT))
 
   clone : () ->
     obj = @copy(new ItemScanMoveInstruction(@robot))
     return obj
 
   mkDescription: () ->
-    "周囲1マスを探索し、そのマスにセットされていないバリアーが存在した場合、そのマスへ進む。<br>(消費フレーム 40フレーム)
-      "
-
-  getIcon: () ->
-    return @icon
-
-
-class EnemyScanInstructon extends BranchInstruction
-
-  constructor: (@robot, @opponent) ->
-    super
-    @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレットが射程圏内に入っていれば、青矢印に進む。<br>そうでなければ赤い矢印に進む"
-    )
-    # parameter 1
-    column = "弾丸の種類"
-    labels = {"1":"ストレート","2":"ワイド","3":"デュアル"}
-    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @typeParam = new TipParameter(column, 1, 1, 3, 1)
-    @typeParam.id = "type"
-    @addParameter(@typeParam)
-    @tipInfo.addParameter(@typeParam.id, column, labels, 1)
-
-    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
-
-  action : () ->
-    bullet = BulletFactory.create(@typeParam.value, @robot)
-    if bullet?
-      return bullet.withinRange(@robot, @opponent, @robot.direct)
-    else
-      return false
-
-  clone : () ->
-    obj = @copy(new EnemyScanInstructon(@robot, @opponent))
-    obj.typeParam.value = @typeParam.value
-    obj
-
-  onParameterChanged : (parameter) ->
-    @typeParam = parameter
-    @tipInfo.changeLabel(parameter.id, parameter.value)
-
-  mkDescription: () ->
-    @tipInfo.getDescription()
-
-  mkLabel: (parameter) ->
-    @tipInfo.getLabel(parameter.id)
+    "周囲1マスを探索し、弾丸を見つけた場合、そのマスへ進みます。<br>  (消費フレーム #{Config.Frame.ROBOT_WAIT + Config.Frame.ROBOT_MOVE}フレーム)"
 
   getIcon: () ->
     return @icon
@@ -315,52 +384,31 @@ class ShotInstruction extends ActionInstruction
 
   constructor: (@robot) ->
     super
-    @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレットを撃つ"
-    )
-    # parameter 1
-    column = "弾丸の種類"
-    labels = {"1":"ストレート","2":"ワイド","3":"デュアル"}
-    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @typeParam = new TipParameter(column, 1, 1, 3, 1)
-    @typeParam.id = "type"
-    @addParameter(@typeParam)
-    @tipInfo.addParameter(@typeParam.id, column, labels, 1)
-
     @icon = new Icon(Game.instance.assets[R.TIP.SHOT_BULLET], 32, 32)
     @setAsynchronous(true)
 
   action : () ->
-    ret = @robot.shot(@typeParam.value, () => @onComplete())
+    ret = @robot.shot(() => @onComplete())
     @setAsynchronous(ret != false)
-
-  onComplete: () ->
-    super()
 
   clone : () ->
     obj = @copy(new ShotInstruction(@robot))
-    obj.typeParam.value = @typeParam.value
     return obj
 
-  onParameterChanged : (parameter) ->
-    @typeParam = parameter
-    @tipInfo.changeLabel(parameter.id, parameter.value)
-
   mkDescription: () ->
-    @tipInfo.getDescription()
+     "ストレートバレットを撃ちます。<br>射程距離:前方方向に距離5<br>(消費フレーム #{Config.Frame.BULLET}フレーム)"
 
   mkLabel: (parameter) ->
     @tipInfo.getLabel(parameter.id)
 
   getIcon: () ->
-    @icon.frame = @typeParam.value - 1
     return @icon
 
 class HpBranchInstruction extends BranchInstruction
   constructor : (@robot) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "HPが#{labels[0]}以上の時青矢印に進む。<br>#{labels[0]}未満の時は赤矢印に進む。"
+      "HPが#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
     )
      # parameter 2
     column = "HP"
@@ -403,18 +451,10 @@ class HoldBulletBranchInstruction extends BranchInstruction
   constructor: (@robot) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレッドの保有弾数が#{labels[1]}以上の時青矢印に進む。<br>#{labels[1]}未満の時は赤矢印に進む。"
+      "ストレートバレッドの保有弾数が#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
     )
-    # parameter 1
-    column = "弾丸の種類"
-    labels = {"1":"ストレート","2":"ワイド","3":"デュアル"}
-    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @typeParam = new TipParameter(column, 1, 1, 3, 1)
-    @typeParam.id = "type"
-    @addParameter(@typeParam)
-    @tipInfo.addParameter(@typeParam.id, column, labels, 1)
 
-    # parameter 2
+    # parameter 1
     column = "保有弾数"
     labels = [0..5]
     # sliderタイトル, 初期値, 最小値, 最大値, 増大値
@@ -426,28 +466,18 @@ class HoldBulletBranchInstruction extends BranchInstruction
     @icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32)
 
   action: () ->
-    switch @typeParam.value
-      when BulletType.NORMAL
-        bltQueue = @robot.bulletQueue.normal
-      when BulletType.WIDE
-        bltQueue = @robot.bulletQueue.wide
-      when BulletType.DUAL
-        bltQueue = @robot.bulletQueue.dual
-    if bltQueue.size() >= @sizeParam.value
+    if @robot.bulletQueue.size() >= @sizeParam.value
       return true
     else
       return false
 
   clone : () ->
     obj = @copy(new HoldBulletBranchInstruction(@robot))
-    obj.typeParam.value = @typeParam.value
     obj.sizeParam.value = @sizeParam.value
     return obj
 
   onParameterChanged : (parameter) ->
-    if parameter.id == @typeParam.id
-      @typeParam = parameter
-    else if parameter.id == @sizeParam.id
+    if parameter.id == @sizeParam.id
       @sizeParam = parameter
     @tipInfo.changeLabel(parameter.id, parameter.value)
 

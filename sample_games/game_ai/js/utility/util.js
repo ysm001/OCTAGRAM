@@ -26,6 +26,8 @@ Direct = (function() {
 
   bit = 1;
 
+  Direct.NONE = 0;
+
   Direct.LEFT = bit << 0;
 
   Direct.RIGHT = bit << 1;
@@ -69,6 +71,18 @@ Point = (function() {
 
   Point.prototype.length = function() {
     return Math.sqrt(this.x * this.x + this.y * this.y);
+  };
+
+  Point.prototype.sub = function(point) {
+    this.x -= point.x;
+    this.y -= point.y;
+    return this;
+  };
+
+  Point.prototype.add = function(point) {
+    this.x += point.x;
+    this.y += point.y;
+    return this;
   };
 
   return Point;

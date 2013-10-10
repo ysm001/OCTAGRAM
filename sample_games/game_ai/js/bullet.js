@@ -89,11 +89,9 @@ BulletType = (function() {
 Bullet = (function(_super) {
   __extends(Bullet, _super);
 
-  Bullet.MAX_FRAME = 15;
-
   function Bullet(w, h, type, maxFrame) {
     this.type = type;
-    this.maxFrame = maxFrame != null ? maxFrame : Bullet.MAX_FRAME;
+    this.maxFrame = maxFrame != null ? maxFrame : Config.Frame.BULLET;
     this.onDestroy = __bind(this.onDestroy, this);
     Bullet.__super__.constructor.call(this, w, h);
     this.rotate(90);
@@ -177,6 +175,21 @@ BulletGroup = (function(_super) {
           animated = animated && i.animated;
         }
         return animated;
+      }
+    });
+    Object.defineProperty(this, "holder", {
+      get: function() {
+        return _this.bullets[0].holder;
+      },
+      set: function(robot) {
+        var v, _i, _len, _ref, _results;
+        _ref = _this.bullets;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          v = _ref[_i];
+          _results.push(v.holder = robot);
+        }
+        return _results;
       }
     });
   }
@@ -267,11 +280,9 @@ NormalBullet = (function(_super) {
 
   NormalBullet.HEIGHT = 64;
 
-  NormalBullet.MAX_FRAME = 15;
-
   function NormalBullet() {
     this.length = 4;
-    NormalBullet.__super__.constructor.call(this, NormalBullet.WIDTH, NormalBullet.HEIGHT, BulletType.NORMAL, NormalBullet.MAX_FRAME);
+    NormalBullet.__super__.constructor.call(this, NormalBullet.WIDTH, NormalBullet.HEIGHT, BulletType.NORMAL);
     this.image = Game.instance.assets[R.BULLET.NORMAL];
   }
 
