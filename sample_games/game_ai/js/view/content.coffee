@@ -125,18 +125,32 @@ class Map extends ViewGroup
           plate = new Plate((tx * Map.UNIT_WIDTH+Map.UNIT_HEIGHT/2), (ty * Map.UNIT_HEIGHT)- ty * offset, tx, ty)
         list.push plate
         @addChild plate
-        rand = Math.floor(Math.random() * 20)
-        switch rand
-          when 0, 1, 2, 3, 4
-            plate.setSpot(Spot.TYPE_NORMAL_BULLET)
       @plateMatrix.push list
+
+    for i in [0..6]
+      @_createRondomSpot()
+
     @x = x
     @y = y
     @width = Map.WIDTH * Map.UNIT_WIDTH
     @height = (Map.HEIGHT-1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 16
 
+  _createRondomSpot: () =>
+      loop
+        tx = Math.floor(Random.nextInt() % Map.WIDTH)
+        ty = Math.floor(Random.nextInt() % Map.HEIGHT)
+        plate = @getPlate(ty, tx)
+        break if plate != null and plate.spotEnabled == false
+      plate.setSpot(Spot.TYPE_NORMAL_BULLET) if plate != null
+
+  initEvent: (world) ->
+    world.player.addEventListener 'pickup', @_createRondomSpot
+    world.enemy.addEventListener 'pickup', @_createRondomSpot
+
   getPlate: (x, y) ->
-    return @plateMatrix[y][x]
+    if 0 <= x < Map.WIDTH and 0 <= y < Map.HEIGHT
+      return @plateMatrix[y][x]
+    return null
 
   getPlateRandom: () ->
     return @plateMatrix[Math.floor(Math.random() * (Map.HEIGHT))][Math.floor(Math.random() * (Map.WIDTH))]
