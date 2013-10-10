@@ -28,15 +28,7 @@ ViewGroup = (function(_super) {
     this.addChild(this.footer);
   }
 
-  ViewGroup.prototype.update = function(world) {
-    var i, _i, _len, _ref;
-    _ref = world.robots;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      i = _ref[_i];
-      i.onViewUpdate(this);
-    }
-    return this.map.update();
-  };
+  ViewGroup.prototype.update = function(world) {};
 
   return ViewGroup;
 

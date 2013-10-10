@@ -1,0 +1,12 @@
+#content {
+    margin: 0 auto;
+    margin-top: 100px;
+    width: 1330px;
+    border:solid 20px #7fcfe2; 
+    border-radius: 25px 25px 25px 25px / 25px 25px 25px 25px;
+}
+
+#dbg-btns {
+    text-align: center;
+}
+
