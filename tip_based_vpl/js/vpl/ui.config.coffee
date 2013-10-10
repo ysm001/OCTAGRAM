@@ -13,9 +13,10 @@ class ParameterSlider extends Slider
     @parameter.setValue(@value)
     @setText(@parameter.mkLabel())
 
-class ParameterConfigPanel extends Group 
-  constructor : () -> 
+class ParameterConfigPanel extends SpriteGroup 
+  constructor : (@target) -> 
     super()
+
   addParameter : (parameter) -> 
     slider = new ParameterSlider(parameter)
     slider.moveTo(slider.titleWidth, @childNodes.length * slider.getHeight())
@@ -37,10 +38,10 @@ class ParameterConfigPanel extends Group
 
         @addParameter(param)
 
-      Game.instance.vpl.ui.configPanel.setContent(this)
-      Game.instance.vpl.ui.configPanel.show(tip)
+      @target.ui.configPanel.setContent(this)
+      @target.ui.configPanel.show(tip)
 
-      Game.instance.vpl.ui.configPanel.onClosed = (closedWithOK) =>
+      @target.ui.configPanel.onClosed = (closedWithOK) =>
         if closedWithOK 
           tip.icon = tip.getIcon()
           tip.setDescription(tip.code.mkDescription())

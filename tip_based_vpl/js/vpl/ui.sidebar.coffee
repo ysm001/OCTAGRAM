@@ -16,36 +16,39 @@ class SideTipSelector extends EntityGroup
     tipHeight = Resources.get("emptyTip").height
 
     # create top arrow
-    topArrow = new ImageSprite(Resources.get('arrow'))
-    topArrow.rotate(-90)
-    topArrow.moveTo((@width - topArrow.width) / 2, 0)
-    topArrow.on(Event.TOUCH_START, =>
+    @topArrow = new ImageSprite(Resources.get('arrow'))
+    @topArrow.rotate(-90)
+    @topArrow.moveTo((@width - @topArrow.width) / 2, 0)
+    @topArrow.on(Event.TOUCH_START, =>
       return if @scrollPosition <= 0
       @scrollPosition -= 1
       @tipGroup.moveBy(0, tipHeight)
       @_updateVisibility()
     )
-    @addChild(topArrow)
+    @addChild(@topArrow)
 
 
     # create bottom arrow
-    bottomArrow = new ImageSprite(Resources.get('arrow'))
-    bottomArrow.rotate(90)
-    bottomArrow.moveTo((@width - bottomArrow.width)/2, @height - bottomArrow.height)
-    bottomArrow.on(Event.TOUCH_START, =>
+    @bottomArrow = new ImageSprite(Resources.get('arrow'))
+    @bottomArrow.rotate(90)
+    @bottomArrow.moveTo((@width - @bottomArrow.width)/2, @height - @bottomArrow.height)
+    @bottomArrow.on(Event.TOUCH_START, =>
       return if @scrollPosition > @_getTipCount() - VISIBLE_TIP_COUNT - 1
       @scrollPosition += 1
       @tipGroup.moveBy(0, -tipHeight)
       @_updateVisibility()
     )
-    @addChild(bottomArrow)
+    @addChild(@bottomArrow)
 
 
     # create tip group
+    @createTipGroup()
+    @addChild(@tipGroup)
+
+  createTipGroup: () ->
     @tipGroup = new EntityGroup(64, 0)
     @tipGroup.backgroundColor = '#ff0000'
-    @tipGroup.moveTo(topArrow.x, topArrow.y + topArrow.height)
-    @addChild(@tipGroup)
+    @tipGroup.moveTo(@topArrow.x, @topArrow.y + @topArrow.height)
 
 
   addTip: (tip) ->
@@ -74,3 +77,9 @@ class SideTipSelector extends EntityGroup
     update(@scrollPosition, true)
     update(@scrollPosition + VISIBLE_TIP_COUNT - 1, true)
 
+  clearTip: () ->
+    @removeChild(@tipGroup)
+    @createTipGroup()
+    @addChild(@tipGroup)
+
+    @scrollPosition = 0

@@ -61,24 +61,36 @@ class RobotWorld extends GroupModel
     @addChild @_enemy
 
   initInstructions: () ->
-    Game.instance.vpl.currentVM.addInstruction(new RandomMoveInstruction(@_player))
-    Game.instance.vpl.currentVM.addInstruction(new MoveInstruction(@_player))
-    Game.instance.vpl.currentVM.addInstruction(new ShotInstruction(@_player))
-    Game.instance.vpl.currentVM.addInstruction(new ItemScanMoveInstruction(@_player, @_enemy))
-    Game.instance.vpl.currentVM.addInstruction(new TurnEnemyScanInstruction(@_player, @_enemy))
-    Game.instance.vpl.currentVM.addInstruction(new EnemyScanInstructon(@_player, @_enemy))
-    Game.instance.vpl.currentVM.addInstruction(new HpBranchInstruction(@_player))
-    Game.instance.vpl.currentVM.addInstruction(new HoldBulletBranchInstruction(@_player))
+    playerProgram = Game.instance.octagrams.createInstance()
+    enemyProgram = Game.instance.octagrams.createInstance()
+    @playerProgramId = playerProgram.id
+    @enemyProgramId  = enemyProgram.id
 
-    # for debug
-    Game.instance.vpl.testVM = new VirtualMachine(0, 0, 8, 8);
-    Game.instance.vpl.testVM.addInstruction(new RandomMoveInstruction(@_enemy))
+    playerProgram.addInstruction(new RandomMoveInstruction(@_player))
+    playerProgram.addInstruction(new MoveInstruction(@_player))
+    playerProgram.addInstruction(new ShotInstruction(@_player))
+    playerProgram.addInstruction(new ItemScanMoveInstruction(@_player, @_enemy))
+    playerProgram.addInstruction(new TurnEnemyScanInstruction(@_player, @_enemy))
+    playerProgram.addInstruction(new EnemyScanInstructon(@_player, @_enemy))
+    playerProgram.addInstruction(new HpBranchInstruction(@_player))
+    playerProgram.addInstruction(new HoldBulletBranchInstruction(@_player))
+
+    enemyProgram.addInstruction(new RandomMoveInstruction(@_enemy))
+    enemyProgram.addInstruction(new MoveInstruction(@_enemy))
+    enemyProgram.addInstruction(new ShotInstruction(@_enemy))
+    enemyProgram.addInstruction(new ItemScanMoveInstruction(@_enemy, @_player))
+    enemyProgram.addInstruction(new TurnEnemyScanInstruction(@_enemy, @_player))
+    enemyProgram.addInstruction(new EnemyScanInstructon(@_enemy, @_player))
+    enemyProgram.addInstruction(new HpBranchInstruction(@_enemy))
+    enemyProgram.addInstruction(new HoldBulletBranchInstruction(@_enemy))
+
+    Game.instance.octagrams.show(@playerProgramId)
 
   properties:
     player:
-      get:() -> @_robots[0]
+      get:() -> @_player
     enemy:
-      get:() -> @_robots[1]
+      get:() -> @_enemy
 
   initialize: (views)->
 
@@ -187,8 +199,7 @@ class RobotGame extends TipBasedVPL
     @assets["apad.png"] = @assets['resources/ui/apad.png']
     @assets["icon0.png"] = @assets['resources/ui/icon0.png']
     @assets["pad.png"] = @assets['resources/ui/pad.png']
-    Game.instance.vpl.currentVM.show()
-    #Game.instance.vpl.vm.loadInstruction()
+    #Game.instance.vpl.currentVM.show()
 
 window.onload = () ->
   game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT

@@ -77,27 +77,39 @@ RobotWorld = (function(_super) {
   }
 
   RobotWorld.prototype.initInstructions = function() {
-    Game.instance.vpl.currentVM.addInstruction(new RandomMoveInstruction(this._player));
-    Game.instance.vpl.currentVM.addInstruction(new MoveInstruction(this._player));
-    Game.instance.vpl.currentVM.addInstruction(new ShotInstruction(this._player));
-    Game.instance.vpl.currentVM.addInstruction(new ItemScanMoveInstruction(this._player, this._enemy));
-    Game.instance.vpl.currentVM.addInstruction(new TurnEnemyScanInstruction(this._player, this._enemy));
-    Game.instance.vpl.currentVM.addInstruction(new EnemyScanInstructon(this._player, this._enemy));
-    Game.instance.vpl.currentVM.addInstruction(new HpBranchInstruction(this._player));
-    Game.instance.vpl.currentVM.addInstruction(new HoldBulletBranchInstruction(this._player));
-    Game.instance.vpl.testVM = new VirtualMachine(0, 0, 8, 8);
-    return Game.instance.vpl.testVM.addInstruction(new RandomMoveInstruction(this._enemy));
+    var enemyProgram, playerProgram;
+    playerProgram = Game.instance.octagrams.createInstance();
+    enemyProgram = Game.instance.octagrams.createInstance();
+    this.playerProgramId = playerProgram.id;
+    this.enemyProgramId = enemyProgram.id;
+    playerProgram.addInstruction(new RandomMoveInstruction(this._player));
+    playerProgram.addInstruction(new MoveInstruction(this._player));
+    playerProgram.addInstruction(new ShotInstruction(this._player));
+    playerProgram.addInstruction(new ItemScanMoveInstruction(this._player, this._enemy));
+    playerProgram.addInstruction(new TurnEnemyScanInstruction(this._player, this._enemy));
+    playerProgram.addInstruction(new EnemyScanInstructon(this._player, this._enemy));
+    playerProgram.addInstruction(new HpBranchInstruction(this._player));
+    playerProgram.addInstruction(new HoldBulletBranchInstruction(this._player));
+    enemyProgram.addInstruction(new RandomMoveInstruction(this._enemy));
+    enemyProgram.addInstruction(new MoveInstruction(this._enemy));
+    enemyProgram.addInstruction(new ShotInstruction(this._enemy));
+    enemyProgram.addInstruction(new ItemScanMoveInstruction(this._enemy, this._player));
+    enemyProgram.addInstruction(new TurnEnemyScanInstruction(this._enemy, this._player));
+    enemyProgram.addInstruction(new EnemyScanInstructon(this._enemy, this._player));
+    enemyProgram.addInstruction(new HpBranchInstruction(this._enemy));
+    enemyProgram.addInstruction(new HoldBulletBranchInstruction(this._enemy));
+    return Game.instance.octagrams.show(this.playerProgramId);
   };
 
   RobotWorld.prototype.properties = {
     player: {
       get: function() {
-        return this._robots[0];
+        return this._player;
       }
     },
     enemy: {
       get: function() {
-        return this._robots[1];
+        return this._enemy;
       }
     }
   };
@@ -272,8 +284,7 @@ RobotGame = (function(_super) {
     this.assets["font0.png"] = this.assets['resources/ui/font0.png'];
     this.assets["apad.png"] = this.assets['resources/ui/apad.png'];
     this.assets["icon0.png"] = this.assets['resources/ui/icon0.png'];
-    this.assets["pad.png"] = this.assets['resources/ui/pad.png'];
-    return Game.instance.vpl.currentVM.show();
+    return this.assets["pad.png"] = this.assets['resources/ui/pad.png'];
   };
 
   return RobotGame;

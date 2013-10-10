@@ -112,14 +112,26 @@ generateTestCode = () ->
     # x, y, チップ
     #Game.instance.vpl.currentVM.cpu.putSingleTip(6,0,stopTip)
 
-executeTestCode = () -> Game.instance.vpl.currentVM.executer.execute()
+getPlayerProgram = () -> Game.instance.octagrams.getInstance(Game.instance.currentScene.world.playerProgramId)
+getEnemyProgram = () -> Game.instance.octagrams.getInstance(Game.instance.currentScene.world.enemyProgramId)
 
-saveTestCode = () -> Game.instance.vpl.currentVM.cpu.save("test")
-loadTestCode = () -> Game.instance.vpl.currentVM.cpu.load("test")
+executePlayerProgram = () -> getPlayerProgram().execute()
+executeEnemyProgram = () -> getEnemyProgram().execute()
+
+savePlayerProgram = () -> getPlayerProgram().save("player")
+saveEnemyProgram = () -> getEnemyProgram().save("enemy")
+
+loadPlayerProgram = () -> getPlayerProgram().load("player")
+loadEnemyProgram = () -> getEnemyProgram().load("enemy")
+
+showPlayerProgram = () -> Game.instance.octagrams.show(Game.instance.currentScene.world.playerProgramId)
+showEnemyProgram = () -> Game.instance.octagrams.show(Game.instance.currentScene.world.enemyProgramId)
 
 test = () ->
-  Game.instance.vpl.testVM.cpu.load("test")
-  Game.instance.vpl.currentVM.cpu.load("test")
+  playerProgram = Game.instance.currentScene.world.playerProgram
+  enemyProgram = Game.instance.currentScene.world.enemyProgram
+  playerProgram.load("test")
+  enemyProgram.load("test")
 
-  Game.instance.vpl.testVM.executer.execute();
-  Game.instance.vpl.currentVM.executer.execute();
+  playerProgram.execute();
+  enemyProgram.execute();

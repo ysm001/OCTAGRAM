@@ -16,6 +16,12 @@ class Executer extends EventTarget
       @current.code.instruction.removeEventListener('completeExecution', @execNext) 
       @current.code.instruction.addEventListener('completeExecution', @execNext) 
 
+    @next = @current.execute()
+
+    if !@next?
+      @current.hideExecutionEffect()
+      @current = null
+
     if !tip.isAsynchronous()
       setTimeout(@execNext, Executer.latency)
 
@@ -38,4 +44,3 @@ class Executer extends EventTarget
         nextTip = @getNext()
 
       @_execute(nextTip)
-

@@ -77,13 +77,13 @@ CodeTip = (function(_super) {
   };
 
   CodeTip.prototype.select = function() {
-    Game.instance.vpl.ui.help.setText(this.description);
+    this.topGroup().ui.help.setText(this.description);
     this.isFirstClick = !this.isSelected();
     return this.showSelectedEffect();
   };
 
   CodeTip.prototype.unselect = function() {
-    Game.instance.vpl.ui.help.setText("");
+    this.topGroup().help.setText("");
     return this.hideSelectedEffect();
   };
 
@@ -160,7 +160,7 @@ CodeTip = (function(_super) {
     this.dragMode = false;
     if (CodeTip.clonedTip != null) {
       pos = CodeTip.clonedTip.getAbsolutePosition();
-      Game.instance.vpl.currentVM.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip);
+      this.topGroup().cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip);
       return CodeTip.clonedTip.hide();
     }
   };
@@ -171,7 +171,7 @@ CodeTip = (function(_super) {
 
   CodeTip.prototype.showConfigWindow = function() {
     var panel;
-    panel = new ParameterConfigPanel();
+    panel = new ParameterConfigPanel(this.topGroup());
     return panel.show(this);
   };
 
@@ -219,7 +219,7 @@ CodeTip = (function(_super) {
 
   CodeTip.prototype.onDescriptionChanged = function() {
     if (this.isSelected()) {
-      return Game.instance.vpl.ui.help.setText(this.description);
+      return this.topGroup().ui.help.setText(this.description);
     }
   };
 

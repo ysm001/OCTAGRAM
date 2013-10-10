@@ -1,8 +1,16 @@
 class SpriteGroup extends Group
   constructor : (image) -> 
     super()
-    @sprite = new Sprite(image.width, image.height)
-    @sprite.image = image
+    if image
+      @sprite = new Sprite(image.width, image.height)
+      @sprite.image = image
+
+  topGroup : () ->
+    top = @
+    while top.parentNode && !(top.parentNode instanceof Scene)
+      top = top.parentNode
+
+    top
 
   getAbsolutePosition : () ->
     pos = {x: @x, y: @y}

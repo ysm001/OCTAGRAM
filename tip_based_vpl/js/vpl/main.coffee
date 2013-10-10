@@ -29,15 +29,62 @@ class TipSet
   findByInst : (instName) -> (tip for tip in @tips when tip.code.instruction? && tip.code.instruction.constructor.name == instName)[0]
   findByCode : (codeName) -> (tip for tip in @tips when tip.code.constructor.name == codeName)[0]
 
-class VirtualMachine
+class OctagramSet
+  constructor : (@x, @y, @xnum, @ynum) ->
+    @octagrams = {}
+    @currentInstance = null
+
+  createInstance : () ->
+    instance = new Octagram(@x, @y, @xnum, @ynum)
+    @octagrams[instance.id] = instance
+    instance
+
+  removeInstance : (id) ->
+  getInstance : (id) -> @octagrams[id]
+
+  show : (id) -> 
+    @currentInstance.hide() if @currentInstance
+    @currentInstance = @octagrams[id]
+    @currentInstance.show()
+
+class Octagram extends Group
   constructor : (x, y, xnum, ynum) ->
+    super()
     @id = uniqueID()
     @tipSet = new TipSet()
+    @userInstructions = []
     @cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX, @)
     @executer = new Executer(@cpu)
 
+    back = new TipBackground(x, y, xnum, ynum)
+    @ui = {}
+    @ui.frame = new Frame(0, 0)
+    @ui.help = new HelpPanel(0, 
+      Environment.EditorHeight + y, 
+      Environment.ScreenWidth, 
+      Environment.ScreenWidth - Environment.EditorWidth - x,
+      "")
+    selector = new ParameterConfigPanel(Environment.EditorWidth + x/2, 0)
+
+    @ui.side = new SideTipSelector(Environment.EditorWidth + x/2, 0)
+    @ui.configPanel = new UIPanel(selector)
+    @ui.configPanel.setTitle(TextResource.msg.title["configurator"])
+    selector.parent = @ui.configPanel
+
+    @addChild(back)
+    @addChild(@cpu)
+    @addChild(@ui.frame)
+    @addChild(@ui.side)
+    @addChild(@ui.help)
+
+    @addPresetInstructions()
+
   addInstruction : (instruction) ->
     @tipSet.addInstruction(instruction)
+    @userInstructions.push(instruction)
+  
+  addUserInstructions : () ->
+    for instruction in @userInstructions then @tipSet.addInstruction(instruction)
 
   addPresetInstructions : () ->
     stack = new StackMachine()
@@ -74,20 +121,30 @@ class VirtualMachine
 
   clearInstructions : () -> @tipSet.clear()
 
-  #loadInstruction : () ->
-  #  @addPresetInstructions()
-  #  for tip in @cpu.tipSet.tips then Game.instance.vpl.ui.side.addTip(tip)
+  load : (filename) -> @cpu.load(filename)
+  save : (filename) -> @cpu.save(filename)
+
+  execute : () -> @executer.execute()
+
+  setTipToBar : () ->
+    @clearInstructions()
+    @ui.side.clearTip()
+
+    @addUserInstructions()
+    @addPresetInstructions()
+    for tip in @tipSet.tips then @ui.side.addTip(tip)
 
   show : () -> 
-    @addPresetInstructions()
-    for tip in @tipSet.tips then Game.instance.vpl.ui.side.addTip(tip)
+    @setTipToBar()
+    Game.instance.currentScene.addChild(@)
 
-    Game.instance.currentScene.insertBefore(@cpu, Game.instance.vpl.ui.frame)
+  hide : () -> Game.instance.currentScene.removeChild(@)
 
 class TipBasedVPL extends Game
   constructor : (w, h, resourceBase) ->
     super(w, h)
     @fps = 24
+    @octagrams = new OctagramSet(16, 16, 8, 8)
     Resources.base = resourceBase
     Resources.load(this)
 
@@ -97,28 +154,5 @@ class TipBasedVPL extends Game
     xnum = 8
     ynum = 8
 
-    back = new TipBackground(x, y, xnum, ynum)
     Game.instance.vpl = {}
-    Game.instance.vpl.ui = {}
-    Game.instance.vpl.currentVM= new VirtualMachine(x, y, xnum, ynum)
-
-    Game.instance.vpl.ui.frame = new Frame(0, 0)
-    Game.instance.vpl.ui.help = new HelpPanel(0, 
-      Environment.EditorHeight + y, 
-      Environment.ScreenWidth, 
-      Environment.ScreenWidth - Environment.EditorWidth - x,
-      "")
-    selector = new ParameterConfigPanel(Environment.EditorWidth + x/2, 0)
-
-    Game.instance.vpl.ui.side = new SideTipSelector(Environment.EditorWidth + x/2, 0)
-    Game.instance.vpl.ui.configPanel = new UIPanel(selector)
-    Game.instance.vpl.ui.configPanel.setTitle(TextResource.msg.title["configurator"])
-    selector.parent = Game.instance.vpl.ui.configPanel
-
-    Game.instance.currentScene.addChild(back)
-    #Game.instance.currentScene.addChild(Game.instance.vpl.cpu)
-    Game.instance.currentScene.addChild(Game.instance.vpl.ui.frame)
-    Game.instance.currentScene.addChild(Game.instance.vpl.ui.side)
-    Game.instance.currentScene.addChild(Game.instance.vpl.ui.help)
-
-    #Game.instance.vpl.currentVM.show()
+    Game.instance.vpl.currentVM= new Octagram(x, y, xnum, ynum)

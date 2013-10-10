@@ -58,12 +58,12 @@ class CodeTip extends SpriteGroup
     x>xs && x<xe && y>ys && y<ye
 
   select : () =>
-    Game.instance.vpl.ui.help.setText(@description)
+    @topGroup().ui.help.setText(@description)
     @isFirstClick = !@isSelected()
     @showSelectedEffect()
 
   unselect : () ->
-    Game.instance.vpl.ui.help.setText("")
+    @topGroup().help.setText("")
     @hideSelectedEffect()
 
   execute : () -> if @code? then @code.execute() else null
@@ -114,13 +114,13 @@ class CodeTip extends SpriteGroup
     @dragMode = false
     if CodeTip.clonedTip?
       pos = CodeTip.clonedTip.getAbsolutePosition()
-      Game.instance.vpl.currentVM.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip)
+      @topGroup().cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip)
       CodeTip.clonedTip.hide()
 
   doubleClicked : () -> @showConfigWindow() 
 
   showConfigWindow : () -> 
-    panel = new ParameterConfigPanel()
+    panel = new ParameterConfigPanel(@topGroup())
     panel.show(this)
 
   isSelected : () -> 
@@ -151,7 +151,7 @@ class CodeTip extends SpriteGroup
     @onDescriptionChanged()
 
   onDescriptionChanged : () ->
-    if @isSelected() then Game.instance.vpl.ui.help.setText(@description)
+    if @isSelected() then @topGroup().ui.help.setText(@description)
 
   setIndex : (idxX, idxY) -> @code.index = {x: idxX, y: idxY}
   getIndex : () -> @code.index

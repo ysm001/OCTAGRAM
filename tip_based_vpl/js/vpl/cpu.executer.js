@@ -34,6 +34,11 @@ Executer = (function(_super) {
       this.current.code.instruction.removeEventListener('completeExecution', this.execNext);
       this.current.code.instruction.addEventListener('completeExecution', this.execNext);
     }
+    this.next = this.current.execute();
+    if (this.next == null) {
+      this.current.hideExecutionEffect();
+      this.current = null;
+    }
     if (!tip.isAsynchronous()) {
       return setTimeout(this.execNext, Executer.latency);
     }

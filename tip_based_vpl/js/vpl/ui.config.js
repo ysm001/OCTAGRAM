@@ -32,7 +32,8 @@ ParameterSlider = (function(_super) {
 ParameterConfigPanel = (function(_super) {
   __extends(ParameterConfigPanel, _super);
 
-  function ParameterConfigPanel() {
+  function ParameterConfigPanel(target) {
+    this.target = target;
     ParameterConfigPanel.__super__.constructor.call(this);
   }
 
@@ -62,9 +63,9 @@ ParameterConfigPanel = (function(_super) {
         }
         this.addParameter(param);
       }
-      Game.instance.vpl.ui.configPanel.setContent(this);
-      Game.instance.vpl.ui.configPanel.show(tip);
-      return Game.instance.vpl.ui.configPanel.onClosed = function(closedWithOK) {
+      this.target.ui.configPanel.setContent(this);
+      this.target.ui.configPanel.show(tip);
+      return this.target.ui.configPanel.onClosed = function(closedWithOK) {
         var _j, _len1, _ref1, _results;
         if (closedWithOK) {
           tip.icon = tip.getIcon();
@@ -85,4 +86,4 @@ ParameterConfigPanel = (function(_super) {
 
   return ParameterConfigPanel;
 
-})(Group);
+})(SpriteGroup);
