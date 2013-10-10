@@ -2,7 +2,7 @@
 # CPU 
 #####################################################
 class Cpu extends Group
-  constructor : (x, y, @xnum, @ynum, startIdx) ->
+  constructor : (x, y, @xnum, @ynum, startIdx, @tipSet) ->
     super(Resources.get("dummy"))
     @tipTable = []
     @sx = startIdx
@@ -133,9 +133,9 @@ class Cpu extends Group
         else if serializedTip.tip.code.name == "StartTip" then TipFactory.createStartTip() 
         else if serializedTip.tip.code.name == "EmptyTip" then TipFactory.createEmptyTip()
         else if !serializedTip.tip.code.instruction?
-          TipTable.findByCode(serializedTip.tip.code.name).clone()
+          @tipTable.findByCode(serializedTip.tip.code.name).clone()
         else
-          TipTable.findByInst(serializedTip.tip.code.instruction.name).clone()
+          @tipTable.findByInst(serializedTip.tip.code.instruction.name).clone()
       tip.deserialize(serializedTip.tip)
       @insertNewTip(serializedTip.x, serializedTip.y, tip)
 

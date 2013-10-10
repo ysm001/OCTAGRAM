@@ -16,26 +16,27 @@ class Environment
   @startX = 4
   @startY = -1
 
-class TipTable
-  @tips = []
-  @clear : () -> @tips = []
-  @addTip : (tip) -> @tips.push(tip)
-  @addInstruction : (inst) ->
+class TipSet
+  constructor : () ->
+    @tips = []
+
+  clear : () -> @tips = []
+  addTip : (tip) -> @tips.push(tip)
+  addInstruction : (inst) ->
     tip = TipFactory.createInstructionTip(inst) 
-    TipTable.addTip(tip)
+    @addTip(tip)
 
-  @findByInst : (instName) -> (tip for tip in @tips when tip.code.instruction? && tip.code.instruction.constructor.name == instName)[0]
-  @findByCode : (codeName) -> (tip for tip in @tips when tip.code.constructor.name == codeName)[0]
+  findByInst : (instName) -> (tip for tip in @tips when tip.code.instruction? && tip.code.instruction.constructor.name == instName)[0]
+  findByCode : (codeName) -> (tip for tip in @tips when tip.code.constructor.name == codeName)[0]
 
-class TipBasedVPL extends Game
-  constructor : (w, h, resourceBase) ->
-    super(w, h)
-    @fps = 24
-    Resources.base = resourceBase
-    Resources.load(this)
+class VirtualMachine
+  constructor : (x, y, xnum, ynum) ->
+    @tipSet = new TipSet()
+    @cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX, @tipSet)
+    @executer = new Executer(@cpu)
 
   addInstruction : (instruction) ->
-    TipTable.addInstruction(instruction)
+    @cpu.tipSet.addInstruction(instruction)
 
   addPresetInstructions : () ->
     stack = new StackMachine()
@@ -48,34 +49,43 @@ class TipBasedVPL extends Game
     nopTip  = TipFactory.createNopTip()
     inst = new RandomBranchInstruction()
 
-    TipTable.addInstruction(inst, Resources.get("iconRandom"))
-    TipTable.addTip(returnTip)
-    TipTable.addTip(stopTip)
-    TipTable.addTip(nopTip, Resources.get("iconNop"))
-    TipTable.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
-    TipTable.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))
-    TipTable.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"))
-    TipTable.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"))
-    TipTable.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(inst, Resources.get("iconRandom"))
+    @cpu.tipSet.addTip(returnTip)
+    @cpu.tipSet.addTip(stopTip)
+    @cpu.tipSet.addTip(nopTip, Resources.get("iconNop"))
+    @cpu.tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"))
+    @cpu.tipSet.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"))
 
-  clearInstructions : () -> TipTable.clear()
+  clearInstructions : () -> @tipSet.clear()
+
+  show : () -> Game.instance.currentScene.addChild(@cpu)
+
+class TipBasedVPL extends Game
+  constructor : (w, h, resourceBase) ->
+    super(w, h)
+    @fps = 24
+    Resources.base = resourceBase
+    Resources.load(this)
 
   loadInstruction : () ->
-    @addPresetInstructions()
+    Game.instance.vpl.vm.addPresetInstructions()
 
-    for tip in TipTable.tips then Game.instance.vpl.ui.side.addTip(tip)
+    for tip in Game.instance.vpl.vm.cpu.tipSet.tips then Game.instance.vpl.ui.side.addTip(tip)
 
   onload : () ->
     x = 16
@@ -86,8 +96,9 @@ class TipBasedVPL extends Game
     back = new TipBackground(x, y, xnum, ynum)
     Game.instance.vpl = {}
     Game.instance.vpl.ui = {}
-    Game.instance.vpl.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX)
-    Game.instance.vpl.executer = new Executer(Game.instance.vpl.cpu)
+    Game.instance.vpl.vm = new VirtualMachine(x, y, xnum, ynum)
+    #Game.instance.vpl.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX)
+    #Game.instance.vpl.executer = new Executer(Game.instance.vpl.cpu)
 
     Game.instance.vpl.ui.frame = new Frame(0, 0)
     Game.instance.vpl.ui.help = new HelpPanel(0, 
@@ -103,7 +114,8 @@ class TipBasedVPL extends Game
     selector.parent = Game.instance.vpl.ui.configPanel
 
     Game.instance.currentScene.addChild(back)
-    Game.instance.currentScene.addChild(Game.instance.vpl.cpu)
+    Game.instance.vpl.vm.show()
+    #Game.instance.currentScene.addChild(Game.instance.vpl.cpu)
     Game.instance.currentScene.addChild(Game.instance.vpl.ui.frame)
     Game.instance.currentScene.addChild(Game.instance.vpl.ui.side)
     Game.instance.currentScene.addChild(Game.instance.vpl.ui.help)

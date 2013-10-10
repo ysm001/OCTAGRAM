@@ -43,7 +43,7 @@ RobotWorld = (function(_super) {
   __extends(RobotWorld, _super);
 
   function RobotWorld(x, y, scene) {
-    var enemy, plate, player,
+    var plate,
       _this = this;
     if (RobotWorld.instance != null) {
       return RobotWorld.instance;
@@ -63,26 +63,29 @@ RobotWorld = (function(_super) {
         return _this.addChild(data);
       }
     });
-    player = new PlayerRobot(this);
+    this._player = new PlayerRobot(this);
     plate = Map.instance.getPlate(6, 4);
-    player.moveDirect(plate);
-    enemy = new EnemyRobot(this);
+    this._player.moveDirect(plate);
+    this._enemy = new EnemyRobot(this);
     plate = Map.instance.getPlate(1, 1);
-    enemy.moveDirect(plate);
-    Game.instance.addInstruction(new RandomMoveInstruction(player));
-    Game.instance.addInstruction(new MoveInstruction(player));
-    Game.instance.addInstruction(new ShotInstruction(player));
-    Game.instance.addInstruction(new ItemScanMoveInstruction(player, enemy));
-    Game.instance.addInstruction(new TurnEnemyScanInstruction(player, enemy));
-    Game.instance.addInstruction(new EnemyScanInstructon(player, enemy));
-    Game.instance.addInstruction(new HpBranchInstruction(player));
-    Game.instance.addInstruction(new HoldBulletBranchInstruction(player));
-    this._robots.push(player);
-    this._robots.push(enemy);
+    this._enemy.moveDirect(plate);
+    this._robots.push(this._player);
+    this._robots.push(this._enemy);
     scene.addChild(this);
-    this.addChild(player);
-    this.addChild(enemy);
+    this.addChild(this._player);
+    this.addChild(this._enemy);
   }
+
+  RobotWorld.prototype.initInstructions = function() {
+    Game.instance.vpl.vm.addInstruction(new RandomMoveInstruction(this._player));
+    Game.instance.vpl.vm.addInstruction(new MoveInstruction(this._player));
+    Game.instance.vpl.vm.addInstruction(new ShotInstruction(this._player));
+    Game.instance.vpl.vm.addInstruction(new ItemScanMoveInstruction(this._player, this._enemy));
+    Game.instance.vpl.vm.addInstruction(new TurnEnemyScanInstruction(this._player, this._enemy));
+    Game.instance.vpl.vm.addInstruction(new EnemyScanInstructon(this._player, this._enemy));
+    Game.instance.vpl.vm.addInstruction(new HpBranchInstruction(this._player));
+    return Game.instance.vpl.vm.addInstruction(new HoldBulletBranchInstruction(this._player));
+  };
 
   RobotWorld.prototype.properties = {
     player: {
@@ -263,6 +266,7 @@ RobotGame = (function(_super) {
     this.scene = new RobotScene(this);
     this.pushScene(this.scene);
     RobotGame.__super__.onload.apply(this, arguments);
+    this.scene.world.initInstructions();
     this.assets["font0.png"] = this.assets['resources/ui/font0.png'];
     this.assets["apad.png"] = this.assets['resources/ui/apad.png'];
     this.assets["icon0.png"] = this.assets['resources/ui/icon0.png'];

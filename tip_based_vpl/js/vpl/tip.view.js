@@ -160,7 +160,7 @@ CodeTip = (function(_super) {
     this.dragMode = false;
     if (CodeTip.clonedTip != null) {
       pos = CodeTip.clonedTip.getAbsolutePosition();
-      Game.instance.vpl.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip);
+      Game.instance.vpl.vm.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip);
       return CodeTip.clonedTip.hide();
     }
   };

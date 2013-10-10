@@ -65,35 +65,35 @@ generateTestCode = function() {
   searchLeftTip = TipFactory.createInstructionTip(searchDirectLeftRobotBranchInstruction.clone());
   currentLeftTip = TipFactory.createInstructionTip(currentDirectLeftBranchInstruction.clone());
   holdTip = TipFactory.createInstructionTip(holdBullet1BranchInstruction.clone());
-  Game.instance.vpl.cpu.putBranchTip(4, 0, Direction.leftDown, Direction.rightDown, searchLeftTip);
-  Game.instance.vpl.cpu.putBranchTip(3, 1, Direction.leftDown, Direction.rightDown, currentLeftTip);
-  Game.instance.vpl.cpu.putBranchTip(2, 2, Direction.leftDown, Direction.rightDown, holdTip);
-  Game.instance.vpl.cpu.putTip(4, 2, Direction.down, left1Tip);
-  Game.instance.vpl.cpu.putTip(3, 3, Direction.right, pickupNormalTip);
-  Game.instance.vpl.cpu.putSingleTip(4, 3, returnTip4);
-  Game.instance.vpl.cpu.putTip(1, 3, Direction.down, shotNormalTip);
-  Game.instance.vpl.cpu.putSingleTip(1, 4, returnTip5);
-  Game.instance.vpl.cpu.putBranchTip(5, 1, Direction.right, Direction.down, random1Tip);
-  Game.instance.vpl.cpu.putBranchTip(5, 2, Direction.right, Direction.down, random2Tip);
-  Game.instance.vpl.cpu.putBranchTip(5, 3, Direction.right, Direction.down, random3Tip);
-  Game.instance.vpl.cpu.putBranchTip(5, 4, Direction.right, Direction.down, random4Tip);
-  Game.instance.vpl.cpu.putTip(6, 1, Direction.rightDown, left2Tip);
-  Game.instance.vpl.cpu.putSingleTip(7, 2, returnTip1);
-  Game.instance.vpl.cpu.putTip(6, 2, Direction.right, leftUpTip);
-  Game.instance.vpl.cpu.putTip(6, 3, Direction.rightUp, rightUpTip);
-  Game.instance.vpl.cpu.putTip(6, 4, Direction.right, rightDownTip);
-  Game.instance.vpl.cpu.putSingleTip(7, 4, returnTip2);
-  return Game.instance.vpl.cpu.putSingleTip(5, 5, returnTip3);
+  Game.instance.vpl.vm.cpu.putBranchTip(4, 0, Direction.leftDown, Direction.rightDown, searchLeftTip);
+  Game.instance.vpl.vm.cpu.putBranchTip(3, 1, Direction.leftDown, Direction.rightDown, currentLeftTip);
+  Game.instance.vpl.vm.cpu.putBranchTip(2, 2, Direction.leftDown, Direction.rightDown, holdTip);
+  Game.instance.vpl.vm.cpu.putTip(4, 2, Direction.down, left1Tip);
+  Game.instance.vpl.vm.cpu.putTip(3, 3, Direction.right, pickupNormalTip);
+  Game.instance.vpl.vm.cpu.putSingleTip(4, 3, returnTip4);
+  Game.instance.vpl.vm.cpu.putTip(1, 3, Direction.down, shotNormalTip);
+  Game.instance.vpl.vm.cpu.putSingleTip(1, 4, returnTip5);
+  Game.instance.vpl.vm.cpu.putBranchTip(5, 1, Direction.right, Direction.down, random1Tip);
+  Game.instance.vpl.vm.cpu.putBranchTip(5, 2, Direction.right, Direction.down, random2Tip);
+  Game.instance.vpl.vm.cpu.putBranchTip(5, 3, Direction.right, Direction.down, random3Tip);
+  Game.instance.vpl.vm.cpu.putBranchTip(5, 4, Direction.right, Direction.down, random4Tip);
+  Game.instance.vpl.vm.cpu.putTip(6, 1, Direction.rightDown, left2Tip);
+  Game.instance.vpl.vm.cpu.putSingleTip(7, 2, returnTip1);
+  Game.instance.vpl.vm.cpu.putTip(6, 2, Direction.right, leftUpTip);
+  Game.instance.vpl.vm.cpu.putTip(6, 3, Direction.rightUp, rightUpTip);
+  Game.instance.vpl.vm.cpu.putTip(6, 4, Direction.right, rightDownTip);
+  Game.instance.vpl.vm.cpu.putSingleTip(7, 4, returnTip2);
+  return Game.instance.vpl.vm.cpu.putSingleTip(5, 5, returnTip3);
 };
 
 executeTestCode = function() {
-  return Game.instance.vpl.executer.execute();
+  return Game.instance.vpl.vm.executer.execute();
 };
 
 saveTestCode = function() {
-  return Game.instance.vpl.cpu.save("test");
+  return Game.instance.vpl.vm.cpu.save("test");
 };
 
 loadTestCode = function() {
-  return Game.instance.vpl.cpu.load("test");
+  return Game.instance.vpl.vm.cpu.load("test");
 };

@@ -46,27 +46,29 @@ class RobotWorld extends GroupModel
       if method == "push"
         @addChild(data)
 
-    player = new PlayerRobot @
+    @_player = new PlayerRobot @
     plate = Map.instance.getPlate(6,4)
-    player.moveDirect(plate)
+    @_player.moveDirect(plate)
 
-    enemy = new EnemyRobot @
+    @_enemy = new EnemyRobot @
     plate = Map.instance.getPlate(1,1)
-    enemy.moveDirect(plate)
+    @_enemy.moveDirect(plate)
 
-    Game.instance.addInstruction(new RandomMoveInstruction(player))
-    Game.instance.addInstruction(new MoveInstruction(player))
-    Game.instance.addInstruction(new ShotInstruction(player))
-    Game.instance.addInstruction(new ItemScanMoveInstruction(player, enemy))
-    Game.instance.addInstruction(new TurnEnemyScanInstruction(player, enemy))
-    Game.instance.addInstruction(new EnemyScanInstructon(player, enemy))
-    Game.instance.addInstruction(new HpBranchInstruction(player))
-    Game.instance.addInstruction(new HoldBulletBranchInstruction(player))
-    @_robots.push player
-    @_robots.push enemy
+    @_robots.push @_player
+    @_robots.push @_enemy
     scene.addChild @
-    @addChild player
-    @addChild enemy
+    @addChild @_player
+    @addChild @_enemy
+
+  initInstructions: () ->
+    Game.instance.vpl.vm.addInstruction(new RandomMoveInstruction(@_player))
+    Game.instance.vpl.vm.addInstruction(new MoveInstruction(@_player))
+    Game.instance.vpl.vm.addInstruction(new ShotInstruction(@_player))
+    Game.instance.vpl.vm.addInstruction(new ItemScanMoveInstruction(@_player, @_enemy))
+    Game.instance.vpl.vm.addInstruction(new TurnEnemyScanInstruction(@_player, @_enemy))
+    Game.instance.vpl.vm.addInstruction(new EnemyScanInstructon(@_player, @_enemy))
+    Game.instance.vpl.vm.addInstruction(new HpBranchInstruction(@_player))
+    Game.instance.vpl.vm.addInstruction(new HoldBulletBranchInstruction(@_player))
 
   properties:
     player:
@@ -176,6 +178,7 @@ class RobotGame extends TipBasedVPL
     @scene = new RobotScene @
     @pushScene @scene
     super
+    @scene.world.initInstructions()
     @assets["font0.png"] = @assets['resources/ui/font0.png']
     @assets["apad.png"] = @assets['resources/ui/apad.png']
     @assets["icon0.png"] = @assets['resources/ui/icon0.png']

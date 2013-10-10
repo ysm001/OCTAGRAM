@@ -114,7 +114,7 @@ class CodeTip extends SpriteGroup
     @dragMode = false
     if CodeTip.clonedTip?
       pos = CodeTip.clonedTip.getAbsolutePosition()
-      Game.instance.vpl.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip)
+      Game.instance.vpl.vm.cpu.insertTipOnNearestPosition(pos.x, pos.y, CodeTip.clonedTip)
       CodeTip.clonedTip.hide()
 
   doubleClicked : () -> @showConfigWindow() 
