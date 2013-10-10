@@ -13,16 +13,19 @@ class Spot
         @effect = new SpotNormalEffect(point.x, point.y + 5)
         @resultFunc = (robot, plate) ->
           point = plate.getAbsolutePos()
+          robot.pickup(BulletType.NORMAL)
           robot.parentNode.addChild new NormalEnpowerEffect(point.x, point.y)
       when Spot.TYPE_WIDE_BULLET
         @effect = new SpotWideEffect(point.x, point.y + 5)
         @resultFunc = (robot, plate) ->
           point = plate.getAbsolutePos()
+          robot.pickup(BulletType.WIDE)
           robot.parentNode.addChild new WideEnpowerEffect(point.x, point.y)
       when Spot.TYPE_DUAL_BULLET
         @effect = new SpotDualEffect(point.x, point.y + 5)
         @resultFunc = (robot, plate) ->
           point = plate.getAbsolutePos()
+          robot.pickup(BulletType.DUAL)
           robot.parentNode.addChild new DualEnpowerEffect(point.x, point.y)
 
   @createRandom: (point) ->
@@ -31,6 +34,11 @@ class Spot
 
   @getRandomType: () ->
     return Math.floor(Math.random() * (Spot.SIZE)) + 1
+
+class NormalSpot extends Spot
+
+  constructor: (@plate) ->
+
 
 class Plate extends ViewSprite
   @HEIGHT = 74
@@ -48,6 +56,11 @@ class Plate extends ViewSprite
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE]
     @spotEnabled = false
     @pravState = Plate.STATE_NORMAL
+    @addEventListener 'away', (evt) =>
+      @onRobotAway(evt.params.robot)
+
+    @addEventListener 'ride', (evt) =>
+      @onRobotRide(evt.params.robot)
 
   setState: (state) ->
     @pravState = @frame

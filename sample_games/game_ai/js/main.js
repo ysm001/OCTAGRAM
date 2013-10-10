@@ -72,7 +72,6 @@ RobotWorld = (function(_super) {
     Game.instance.addInstruction(new RandomMoveInstruction(player));
     Game.instance.addInstruction(new MoveInstruction(player));
     Game.instance.addInstruction(new ShotInstruction(player));
-    Game.instance.addInstruction(new PickupInstruction(player));
     Game.instance.addInstruction(new ItemScanMoveInstruction(player, enemy));
     Game.instance.addInstruction(new TurnEnemyScanInstruction(player, enemy));
     Game.instance.addInstruction(new EnemyScanInstructon(player, enemy));

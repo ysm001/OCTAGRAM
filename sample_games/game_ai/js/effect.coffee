@@ -12,7 +12,6 @@ class Effect extends Sprite
       if @frame > @endFrame
         @parentNode.removeChild @
 
-
 class Explosion extends Effect
   @SIZE = 64
   constructor: (x, y) ->

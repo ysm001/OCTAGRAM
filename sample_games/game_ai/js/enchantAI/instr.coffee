@@ -357,51 +357,6 @@ class ShotInstruction extends ActionInstruction
     @icon.frame = @typeParam.value - 1
     return @icon
 
-class PickupInstruction extends ActionInstruction
-
-  constructor: (@robot) ->
-    super
-    @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレットを一つ溜める"
-    )
-    # parameter 1
-    column = "弾丸の種類"
-    labels = {"1":"ストレート","2":"ワイド","3":"デュアル"}
-    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @typeParam = new TipParameter(column, 1, 1, 3, 1)
-    @typeParam.id = "type"
-    @addParameter(@typeParam)
-    @tipInfo.addParameter(@typeParam.id, column, labels, 1)
-
-    @icon = new Icon(Game.instance.assets[R.TIP.PICKUP_BULLET], 32, 32)
-    @setAsynchronous(true)
-
-  action: () ->
-    ret = @robot.pickup(@typeParam.value, () => @onComplete())
-    @setAsynchronous(ret != false)
-    # @robot.onCmdComplete(RobotInstruction.PICKUP, ret)
-
-  onComplete: () ->
-    super()
-
-  clone : () ->
-    obj = @copy(new PickupInstruction(@robot))
-    return obj
-
-  onParameterChanged : (parameter) ->
-    @typeParam = parameter
-    @tipInfo.changeLabel(parameter.id, parameter.value)
-
-  mkDescription: () ->
-    @tipInfo.getDescription()
-
-  mkLabel: (parameter) ->
-    @tipInfo.getLabel(parameter.id)
-
-  getIcon: () ->
-    @icon.frame = @typeParam.value - 1
-    return @icon
-
 class HpBranchInstruction extends BranchInstruction
   constructor : (@robot) ->
     super
