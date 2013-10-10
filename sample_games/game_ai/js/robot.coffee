@@ -53,10 +53,7 @@ class Robot extends SpriteModel
     @name = "robot"
     # @hp = Robot.MAX_HP
     @setup("hp", Robot.MAX_HP)
-    @bulletQueue =
-      normal : new ItemQueue [], 5
-      wide   : new ItemQueue [], 5
-      dual   : new ItemQueue [], 5
+    @_bulletQueue = new ItemQueue [], 5
     @plateState = 0
 
     RobotWorld.instance.addChild @
@@ -77,6 +74,8 @@ class Robot extends SpriteModel
       set:(value) -> @_animated = value
     pos:
       get: () -> @currentPlate.pos
+    bulletQueue:
+      get: () -> @_bulletQueue
 
   directFrame: (direct) ->
     DIRECT_FRAME[direct]
@@ -115,42 +114,24 @@ class Robot extends SpriteModel
       ret = false
     ret
 
-  shot: (bulletType, onComplete = () ->) ->
-    switch bulletType
-      when BulletType.NORMAL
-        bltQueue = @bulletQueue.normal
-      when BulletType.WIDE
-        bltQueue = @bulletQueue.wide
-      when BulletType.DUAL
-        bltQueue = @bulletQueue.dual
-
+  shot: (onComplete = () ->) ->
     ret = false
-    unless bltQueue.empty()
-      for b in bltQueue.dequeue()
+    unless @bulletQueue.empty()
+      for b in @bulletQueue.dequeue()
         b.shot(@x, @y, @direct)
         setTimeout(onComplete, Util.toMillisec(b.maxFrame))
-        ret = type:bulletType
+        ret = type:BulletType.NORMAL
     @dispatchEvent(new RobotEvent('shot', ret))
     ret
 
-  pickup: (bulletType, onComplete = () ->) ->
+  pickup: (onComplete = () ->) ->
     ret = false
-    blt = BulletFactory.create(bulletType, @)
-    switch bulletType
-      when BulletType.NORMAL
-        bltQueue = @bulletQueue.normal
-        itemClass = NormalBulletItem
-      when BulletType.WIDE
-        bltQueue = @bulletQueue.wide
-        itemClass = WideBulletItem
-      when BulletType.DUAL
-        bltQueue = @bulletQueue.dual
-        itemClass = DualBulletItem
-    ret = bltQueue.enqueue(blt) if bltQueue?
+    blt = BulletFactory.create(BulletType.NORMAL, @)
+    ret = @bulletQueue.enqueue(blt) if @bulletQueue?
     if ret != false
-      item = new itemClass(@x, @y)
+      item = new NormalBulletItem(@x, @y)
       item.setOnCompleteEvent(onComplete)
-      ret = type:bulletType
+      ret = type:BulletType.NORMAL
     @dispatchEvent(new RobotEvent('pickup', ret))
     ret
 
@@ -217,22 +198,11 @@ class PlayerRobot extends Robot
       #@cmdQueue.enqueue @cmdPool.moveRightDown
     else if input.q == true and input.m == true
       @animated = true
-      ret = @pickup(BulletType.NORMAL, @onDebugComplete)
+      ret = @pickup(@onDebugComplete)
     else if input.q == true and input.n == true
       @animated = true
-      ret = @pickup(BulletType.WIDE, @onDebugComplete)
-    else if input.q == true and input.l == true
       @animated = true
-      ret = @pickup(BulletType.DUAL, @onDebugComplete)
-    else if input.s == true and input.m == true
-      @animated = true
-      ret = @shot(BulletType.NORMAL, @onDebugComplete)
-    else if input.s == true and input.n == true
-      @animated = true
-      ret = @shot(BulletType.WIDE, @onDebugComplete)
-    else if input.s == true and input.l == true
-      @animated = true
-      ret = @shot(BulletType.DUAL, @onDebugComplete)
+      ret = @shot(@onDebugComplete)
 
     if ret == false
       @onDebugComplete()

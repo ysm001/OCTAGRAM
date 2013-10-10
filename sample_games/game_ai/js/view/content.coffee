@@ -3,8 +3,6 @@ R = Config.R
 class Spot
   
   @TYPE_NORMAL_BULLET = 1
-  @TYPE_WIDE_BULLET = 2
-  @TYPE_DUAL_BULLET = 3
   @SIZE = 3
 
   constructor: (@type, point) ->
@@ -13,20 +11,8 @@ class Spot
         @effect = new SpotNormalEffect(point.x, point.y + 5)
         @resultFunc = (robot, plate) ->
           point = plate.getAbsolutePos()
-          robot.pickup(BulletType.NORMAL)
+          robot.pickup()
           robot.parentNode.addChild new NormalEnpowerEffect(point.x, point.y)
-      when Spot.TYPE_WIDE_BULLET
-        @effect = new SpotWideEffect(point.x, point.y + 5)
-        @resultFunc = (robot, plate) ->
-          point = plate.getAbsolutePos()
-          robot.pickup(BulletType.WIDE)
-          robot.parentNode.addChild new WideEnpowerEffect(point.x, point.y)
-      when Spot.TYPE_DUAL_BULLET
-        @effect = new SpotDualEffect(point.x, point.y + 5)
-        @resultFunc = (robot, plate) ->
-          point = plate.getAbsolutePos()
-          robot.pickup(BulletType.DUAL)
-          robot.parentNode.addChild new DualEnpowerEffect(point.x, point.y)
 
   @createRandom: (point) ->
     type = Math.floor(Math.random() * (Spot.SIZE)) + 1

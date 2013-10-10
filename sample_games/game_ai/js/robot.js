@@ -96,11 +96,7 @@ Robot = (function(_super) {
     Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
     this.setup("hp", Robot.MAX_HP);
-    this.bulletQueue = {
-      normal: new ItemQueue([], 5),
-      wide: new ItemQueue([], 5),
-      dual: new ItemQueue([], 5)
-    };
+    this._bulletQueue = new ItemQueue([], 5);
     this.plateState = 0;
     RobotWorld.instance.addChild(this);
     plate = Map.instance.getPlate(0, 0);
@@ -136,6 +132,11 @@ Robot = (function(_super) {
     pos: {
       get: function() {
         return this.currentPlate.pos;
+      }
+    },
+    bulletQueue: {
+      get: function() {
+        return this._bulletQueue;
       }
     }
   };
@@ -201,30 +202,20 @@ Robot = (function(_super) {
     return ret;
   };
 
-  Robot.prototype.shot = function(bulletType, onComplete) {
-    var b, bltQueue, ret, _i, _len, _ref;
+  Robot.prototype.shot = function(onComplete) {
+    var b, ret, _i, _len, _ref;
     if (onComplete == null) {
       onComplete = function() {};
     }
-    switch (bulletType) {
-      case BulletType.NORMAL:
-        bltQueue = this.bulletQueue.normal;
-        break;
-      case BulletType.WIDE:
-        bltQueue = this.bulletQueue.wide;
-        break;
-      case BulletType.DUAL:
-        bltQueue = this.bulletQueue.dual;
-    }
     ret = false;
-    if (!bltQueue.empty()) {
-      _ref = bltQueue.dequeue();
+    if (!this.bulletQueue.empty()) {
+      _ref = this.bulletQueue.dequeue();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         b = _ref[_i];
         b.shot(this.x, this.y, this.direct);
         setTimeout(onComplete, Util.toMillisec(b.maxFrame));
         ret = {
-          type: bulletType
+          type: BulletType.NORMAL
         };
       }
     }
@@ -232,34 +223,21 @@ Robot = (function(_super) {
     return ret;
   };
 
-  Robot.prototype.pickup = function(bulletType, onComplete) {
-    var blt, bltQueue, item, itemClass, ret;
+  Robot.prototype.pickup = function(onComplete) {
+    var blt, item, ret;
     if (onComplete == null) {
       onComplete = function() {};
     }
     ret = false;
-    blt = BulletFactory.create(bulletType, this);
-    switch (bulletType) {
-      case BulletType.NORMAL:
-        bltQueue = this.bulletQueue.normal;
-        itemClass = NormalBulletItem;
-        break;
-      case BulletType.WIDE:
-        bltQueue = this.bulletQueue.wide;
-        itemClass = WideBulletItem;
-        break;
-      case BulletType.DUAL:
-        bltQueue = this.bulletQueue.dual;
-        itemClass = DualBulletItem;
-    }
-    if (bltQueue != null) {
-      ret = bltQueue.enqueue(blt);
+    blt = BulletFactory.create(BulletType.NORMAL, this);
+    if (this.bulletQueue != null) {
+      ret = this.bulletQueue.enqueue(blt);
     }
     if (ret !== false) {
-      item = new itemClass(this.x, this.y);
+      item = new NormalBulletItem(this.x, this.y);
       item.setOnCompleteEvent(onComplete);
       ret = {
-        type: bulletType
+        type: BulletType.NORMAL
       };
     }
     this.dispatchEvent(new RobotEvent('pickup', ret));
@@ -339,22 +317,11 @@ PlayerRobot = (function(_super) {
       ret = this.move(Direct.RIGHT | Direct.DOWN, this.onDebugComplete);
     } else if (input.q === true && input.m === true) {
       this.animated = true;
-      ret = this.pickup(BulletType.NORMAL, this.onDebugComplete);
+      ret = this.pickup(this.onDebugComplete);
     } else if (input.q === true && input.n === true) {
       this.animated = true;
-      ret = this.pickup(BulletType.WIDE, this.onDebugComplete);
-    } else if (input.q === true && input.l === true) {
       this.animated = true;
-      ret = this.pickup(BulletType.DUAL, this.onDebugComplete);
-    } else if (input.s === true && input.m === true) {
-      this.animated = true;
-      ret = this.shot(BulletType.NORMAL, this.onDebugComplete);
-    } else if (input.s === true && input.n === true) {
-      this.animated = true;
-      ret = this.shot(BulletType.WIDE, this.onDebugComplete);
-    } else if (input.s === true && input.l === true) {
-      this.animated = true;
-      ret = this.shot(BulletType.DUAL, this.onDebugComplete);
+      ret = this.shot(this.onDebugComplete);
     }
     if (ret === false) {
       return this.onDebugComplete();

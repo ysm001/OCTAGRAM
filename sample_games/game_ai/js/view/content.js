@@ -9,10 +9,6 @@ R = Config.R;
 Spot = (function() {
   Spot.TYPE_NORMAL_BULLET = 1;
 
-  Spot.TYPE_WIDE_BULLET = 2;
-
-  Spot.TYPE_DUAL_BULLET = 3;
-
   Spot.SIZE = 3;
 
   function Spot(type, point) {
@@ -22,24 +18,8 @@ Spot = (function() {
         this.effect = new SpotNormalEffect(point.x, point.y + 5);
         this.resultFunc = function(robot, plate) {
           point = plate.getAbsolutePos();
-          robot.pickup(BulletType.NORMAL);
+          robot.pickup();
           return robot.parentNode.addChild(new NormalEnpowerEffect(point.x, point.y));
-        };
-        break;
-      case Spot.TYPE_WIDE_BULLET:
-        this.effect = new SpotWideEffect(point.x, point.y + 5);
-        this.resultFunc = function(robot, plate) {
-          point = plate.getAbsolutePos();
-          robot.pickup(BulletType.WIDE);
-          return robot.parentNode.addChild(new WideEnpowerEffect(point.x, point.y));
-        };
-        break;
-      case Spot.TYPE_DUAL_BULLET:
-        this.effect = new SpotDualEffect(point.x, point.y + 5);
-        this.resultFunc = function(robot, plate) {
-          point = plate.getAbsolutePos();
-          robot.pickup(BulletType.DUAL);
-          return robot.parentNode.addChild(new DualEnpowerEffect(point.x, point.y));
         };
     }
   }

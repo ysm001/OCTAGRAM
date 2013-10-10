@@ -308,12 +308,11 @@ class TurnEnemyScanInstruction extends BranchInstruction
     i = 0
     turnOnComplete = (robot) =>
       if i < count
-        for k, v of @robot.bulletQueue
-          if v.size() > 0
-            bullet = v.index(0)
-            if bullet.withinRange(@robot, @opponent, @robot.direct)
-              @onComplete(true)
-              return
+        if @robot.bulletQueue.size() > 0
+          bullet = @robot.bulletQueue.index(0)
+          if bullet.withinRange(@robot, @opponent, @robot.direct)
+            @onComplete(true)
+            return
         i+=1
         @robot.turn(turnOnComplete)
       else
@@ -345,10 +344,10 @@ class TurnEnemyScanInstruction extends BranchInstruction
   getIcon: () ->
     return @icon
 
-###
-  scan item -> go
-###
 class ItemScanMoveInstruction extends ActionInstruction
+  ###
+    Item Scan
+  ###
 
   constructor : (@robot) ->
     super
@@ -381,93 +380,28 @@ class ItemScanMoveInstruction extends ActionInstruction
   getIcon: () ->
     return @icon
 
-
-class EnemyScanInstructon extends BranchInstruction
-
-  constructor: (@robot, @opponent) ->
-    super
-    @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレットが射程圏内に入っていれば、青矢印に進みます。<br>そうでなければ赤い矢印に進みます"
-    )
-    # parameter 1
-    column = "弾丸の種類"
-    labels = {"1":"ストレート","2":"ワイド","3":"デュアル"}
-    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @typeParam = new TipParameter(column, 1, 1, 3, 1)
-    @typeParam.id = "type"
-    @addParameter(@typeParam)
-    @tipInfo.addParameter(@typeParam.id, column, labels, 1)
-
-    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
-
-  action : () ->
-    bullet = BulletFactory.create(@typeParam.value, @robot)
-    if bullet?
-      return bullet.withinRange(@robot, @opponent, @robot.direct)
-    else
-      return false
-
-  clone : () ->
-    obj = @copy(new EnemyScanInstructon(@robot, @opponent))
-    obj.typeParam.value = @typeParam.value
-    obj
-
-  onParameterChanged : (parameter) ->
-    @typeParam = parameter
-    @tipInfo.changeLabel(parameter.id, parameter.value)
-
-  mkDescription: () ->
-    @tipInfo.getDescription()
-
-  mkLabel: (parameter) ->
-    @tipInfo.getLabel(parameter.id)
-
-  getIcon: () ->
-    return @icon
-
 class ShotInstruction extends ActionInstruction
 
   constructor: (@robot) ->
     super
-    @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレットを撃ちます。<br>射程距離:前方方向に距離5<br>"
-    )
-    # parameter 1
-    column = "弾丸の種類"
-    labels = {"1":"ストレート","2":"ワイド","3":"デュアル"}
-    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @typeParam = new TipParameter(column, 1, 1, 3, 1)
-    @typeParam.id = "type"
-    @addParameter(@typeParam)
-    @tipInfo.addParameter(@typeParam.id, column, labels, 1)
-
     @icon = new Icon(Game.instance.assets[R.TIP.SHOT_BULLET], 32, 32)
     @setAsynchronous(true)
 
   action : () ->
-    ret = @robot.shot(@typeParam.value, () => @onComplete())
+    ret = @robot.shot(() => @onComplete())
     @setAsynchronous(ret != false)
-
-  onComplete: () ->
-    super()
 
   clone : () ->
     obj = @copy(new ShotInstruction(@robot))
-    obj.typeParam.value = @typeParam.value
     return obj
 
-  onParameterChanged : (parameter) ->
-    @typeParam = parameter
-    @tipInfo.changeLabel(parameter.id, parameter.value)
-
   mkDescription: () ->
-    @tipInfo.getDescription()
+     "ストレートバレットを撃ちます。<br>射程距離:前方方向に距離5<br>"
 
   mkLabel: (parameter) ->
     @tipInfo.getLabel(parameter.id)
 
   getIcon: () ->
-    @icon.frame = @typeParam.value - 1
     return @icon
 
 class HpBranchInstruction extends BranchInstruction
@@ -517,18 +451,10 @@ class HoldBulletBranchInstruction extends BranchInstruction
   constructor: (@robot) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレッドの保有弾数が#{labels[1]}以上の時青矢印に進みます。<br>#{labels[1]}未満の時は赤矢印に進みます。"
+      "ストレートバレッドの保有弾数が#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
     )
-    # parameter 1
-    column = "弾丸の種類"
-    labels = {"1":"ストレート","2":"ワイド","3":"デュアル"}
-    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @typeParam = new TipParameter(column, 1, 1, 3, 1)
-    @typeParam.id = "type"
-    @addParameter(@typeParam)
-    @tipInfo.addParameter(@typeParam.id, column, labels, 1)
 
-    # parameter 2
+    # parameter 1
     column = "保有弾数"
     labels = [0..5]
     # sliderタイトル, 初期値, 最小値, 最大値, 増大値
@@ -540,28 +466,18 @@ class HoldBulletBranchInstruction extends BranchInstruction
     @icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32)
 
   action: () ->
-    switch @typeParam.value
-      when BulletType.NORMAL
-        bltQueue = @robot.bulletQueue.normal
-      when BulletType.WIDE
-        bltQueue = @robot.bulletQueue.wide
-      when BulletType.DUAL
-        bltQueue = @robot.bulletQueue.dual
-    if bltQueue.size() >= @sizeParam.value
+    if @robot.bulletQueue.size() >= @sizeParam.value
       return true
     else
       return false
 
   clone : () ->
     obj = @copy(new HoldBulletBranchInstruction(@robot))
-    obj.typeParam.value = @typeParam.value
     obj.sizeParam.value = @sizeParam.value
     return obj
 
   onParameterChanged : (parameter) ->
-    if parameter.id == @typeParam.id
-      @typeParam = parameter
-    else if parameter.id == @sizeParam.id
+    if parameter.id == @sizeParam.id
       @sizeParam = parameter
     @tipInfo.changeLabel(parameter.id, parameter.value)
 
