@@ -187,13 +187,11 @@ Map = (function(_super) {
         rand = Math.floor(Math.random() * 20);
         switch (rand) {
           case 0:
-            plate.setSpot(Spot.TYPE_NORMAL_BULLET);
-            break;
           case 1:
-            plate.setSpot(Spot.TYPE_WIDE_BULLET);
-            break;
           case 2:
-            plate.setSpot(Spot.TYPE_DUAL_BULLET);
+          case 3:
+          case 4:
+            plate.setSpot(Spot.TYPE_NORMAL_BULLET);
         }
       }
       this.plateMatrix.push(list);

@@ -63,6 +63,8 @@ Robot = (function(_super) {
 
   DIRECT_FRAME = {};
 
+  DIRECT_FRAME[Direct.NONE] = 0;
+
   DIRECT_FRAME[Direct.RIGHT] = 0;
 
   DIRECT_FRAME[Direct.RIGHT | Direct.DOWN] = 5;
@@ -111,10 +113,16 @@ Robot = (function(_super) {
   Robot.prototype.properties = {
     direct: {
       get: function() {
-        return FRAME_DIRECT[this.frame];
+        if (FRAME_DIRECT[this.frame] != null) {
+          return FRAME_DIRECT[this.frame];
+        } else {
+          return FRAME_DIRECT[Direct.RIGHT];
+        }
       },
       set: function(direct) {
-        return this.frame = DIRECT_FRAME[direct];
+        if (DIRECT_FRAME[direct] != null) {
+          return this.frame = DIRECT_FRAME[direct];
+        }
       }
     },
     animated: {
@@ -143,7 +151,7 @@ Robot = (function(_super) {
       onComplete = function() {};
     }
     plate = Map.instance.getTargetPoision(this.currentPlate, direct);
-    this.frame = this.directFrame(direct);
+    this.direct = direct;
     ret = this._move(plate, function() {
       var pos;
       pos = plate.getAbsolutePos();

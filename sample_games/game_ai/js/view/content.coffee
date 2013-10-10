@@ -127,12 +127,8 @@ class Map extends ViewGroup
         @addChild plate
         rand = Math.floor(Math.random() * 20)
         switch rand
-          when 0
+          when 0, 1, 2, 3, 4
             plate.setSpot(Spot.TYPE_NORMAL_BULLET)
-          when 1
-            plate.setSpot(Spot.TYPE_WIDE_BULLET)
-          when 2
-            plate.setSpot(Spot.TYPE_DUAL_BULLET)
       @plateMatrix.push list
     @x = x
     @y = y

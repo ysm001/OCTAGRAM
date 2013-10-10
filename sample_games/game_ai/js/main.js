@@ -43,7 +43,7 @@ RobotWorld = (function(_super) {
   __extends(RobotWorld, _super);
 
   function RobotWorld(x, y, scene) {
-    var enemy, plate, player,
+    var enemy, player,
       _this = this;
     if (RobotWorld.instance != null) {
       return RobotWorld.instance;
@@ -64,11 +64,7 @@ RobotWorld = (function(_super) {
       }
     });
     player = new PlayerRobot(this);
-    plate = Map.instance.getPlate(6, 4);
-    player.moveDirect(plate);
     enemy = new EnemyRobot(this);
-    plate = Map.instance.getPlate(1, 1);
-    enemy.moveDirect(plate);
     Game.instance.addInstruction(new RandomMoveInstruction(player));
     Game.instance.addInstruction(new MoveInstruction(player));
     Game.instance.addInstruction(new ApproachInstruction(player, enemy));
@@ -81,8 +77,6 @@ RobotWorld = (function(_super) {
     this._robots.push(player);
     this._robots.push(enemy);
     scene.addChild(this);
-    this.addChild(player);
-    this.addChild(enemy);
   }
 
   RobotWorld.prototype.properties = {
@@ -98,7 +92,13 @@ RobotWorld = (function(_super) {
     }
   };
 
-  RobotWorld.prototype.initialize = function(views) {};
+  RobotWorld.prototype.initialize = function(views) {
+    var plate;
+    plate = Map.instance.getPlate(6, 4);
+    this.player.moveDirect(plate);
+    plate = Map.instance.getPlate(1, 1);
+    return this.enemy.moveDirect(plate);
+  };
 
   RobotWorld.prototype.collisionBullet = function(bullet, robot) {
     return bullet.holder !== robot && bullet.within(robot, 32);
@@ -199,6 +199,7 @@ RobotScene = (function(_super) {
     this.views = new ViewWorld(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
     this.world = new RobotWorld(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
     this.views.initEvent(this.world);
+    this.world.initialize();
   }
 
   RobotScene.prototype.onenterframe = function() {

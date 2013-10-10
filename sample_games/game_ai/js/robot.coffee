@@ -32,6 +32,7 @@ class Robot extends SpriteModel
   @MAX_HP = 3
 
   DIRECT_FRAME                             = {}
+  DIRECT_FRAME[Direct.NONE]                = 0
   DIRECT_FRAME[Direct.RIGHT]               = 0
   DIRECT_FRAME[Direct.RIGHT | Direct.DOWN] = 5
   DIRECT_FRAME[Direct.LEFT | Direct.DOWN]  = 7
@@ -67,8 +68,10 @@ class Robot extends SpriteModel
 
   properties:
     direct:
-      get:() -> FRAME_DIRECT[@frame]
-      set:(direct) -> @frame = DIRECT_FRAME[direct]
+      get:() ->
+        if FRAME_DIRECT[@frame]? then FRAME_DIRECT[@frame] else FRAME_DIRECT[Direct.RIGHT]
+      set:(direct) ->
+        @frame = DIRECT_FRAME[direct] if DIRECT_FRAME[direct]?
     animated:
       get:() -> @_animated
       set:(value) -> @_animated = value
@@ -80,7 +83,7 @@ class Robot extends SpriteModel
 
   move: (direct, onComplete = () ->) ->
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
-    @frame = @directFrame(direct)
+    @direct = direct
     ret = @_move plate, () =>
       pos = plate.getAbsolutePos()
       @prevPlate.dispatchEvent(new RobotEvent('away', robot:@))
