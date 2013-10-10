@@ -72,6 +72,8 @@ class Robot extends SpriteModel
     animated:
       get:() -> @_animated
       set:(value) -> @_animated = value
+    pos:
+      get: () -> new Point(@currentPlate.ix, @currentPlate.iy)
 
   directFrame: (direct) ->
     DIRECT_FRAME[direct]
@@ -197,7 +199,7 @@ class PlayerRobot extends Robot
     else if input.x == true and input.p == true
       @animated = true
       #@cmdQueue.enqueue @cmdPool.moveleftDown
-      ret = @move(Direct.LEFT | Direct.DOWN)
+      ret = @move(Direct.LEFT | Direct.DOWN, @onDebugComplete)
     else if input.d == true and input.p == true
       @animated = true
       ret = @move(Direct.RIGHT, @onDebugComplete)
@@ -211,17 +213,24 @@ class PlayerRobot extends Robot
       ret = @move(Direct.RIGHT | Direct.DOWN, @onDebugComplete)
       #@cmdQueue.enqueue @cmdPool.moveRightDown
     else if input.q == true and input.m == true
-      @debugCmd.pickup(@wideBltQueue,1)
+      @animated = true
+      ret = @pickup(BulletType.NORMAL, @onDebugComplete)
     else if input.q == true and input.n == true
-      @debugCmd.pickup(@dualBltQueue,2)
+      @animated = true
+      ret = @pickup(BulletType.WIDE, @onDebugComplete)
     else if input.q == true and input.l == true
-      @debugCmd.pickup(@bltQueue,0)
+      @animated = true
+      ret = @pickup(BulletType.DUAL, @onDebugComplete)
     else if input.s == true and input.m == true
-      @debugCmd.shot(@wideBltQueue)
+      @animated = true
+      ret = @shot(BulletType.NORMAL, @onDebugComplete)
     else if input.s == true and input.n == true
-      @debugCmd.shot(@dualBltQueue)
+      @animated = true
+      ret = @shot(BulletType.WIDE, @onDebugComplete)
     else if input.s == true and input.l == true
-      @debugCmd.shot(@bltQueue)
+      @animated = true
+      ret = @shot(BulletType.DUAL, @onDebugComplete)
+
     if ret == false
       @onDebugComplete()
 

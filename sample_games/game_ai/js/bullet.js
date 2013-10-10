@@ -179,6 +179,21 @@ BulletGroup = (function(_super) {
         return animated;
       }
     });
+    Object.defineProperty(this, "holder", {
+      get: function() {
+        return _this.bullets[0].holder;
+      },
+      set: function(robot) {
+        var v, _i, _len, _ref, _results;
+        _ref = _this.bullets;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          v = _ref[_i];
+          _results.push(v.holder = robot);
+        }
+        return _results;
+      }
+    });
   }
 
   BulletGroup.prototype.shot = function(x, y, direct) {

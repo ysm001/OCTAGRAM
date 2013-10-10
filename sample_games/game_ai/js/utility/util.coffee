@@ -11,6 +11,7 @@ class RobotEvent extends enchant.Event
 
 class Direct
   bit = 1
+  @NONE = 0
   @LEFT = bit << 0
   @RIGHT = bit << 1
   @UP = bit << 2
@@ -38,6 +39,15 @@ class Point
   length : () ->
     Math.sqrt(@x*@x+@y*@y)
 
+  sub: (point) ->
+    @x -= point.x
+    @y -= point.y
+    return @
+
+  add: (point) ->
+    @x += point.x
+    @y += point.y
+    return @
 
 class Util
 

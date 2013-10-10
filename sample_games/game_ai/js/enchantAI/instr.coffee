@@ -30,14 +30,6 @@ class InstrCommon
         return frame[i]
     return 0
 
-class AbstractMoveInstruction extends ActionInstruction
-
-  constructor : () ->
-    super
-
-  onComplete: () ->
-    super
-
 class TipInfo
 
   constructor: (@description) ->
@@ -62,10 +54,10 @@ class TipInfo
     @description(values)
 
 
-###
-  Random Move
-###
-class RandomMoveInstruction extends AbstractMoveInstruction
+class RandomMoveInstruction extends ActionInstruction
+  ###
+    Random Move Instruction
+  ###
 
   constructor : (@robot) ->
     super
@@ -93,10 +85,52 @@ class RandomMoveInstruction extends AbstractMoveInstruction
     @icon.frame = 0
     return @icon
 
-###
-  Move
-###
-class MoveInstruction extends AbstractMoveInstruction
+class ApproachInstruction extends ActionInstruction
+  ###
+    Approach Instruction
+  ###
+
+  constructor : (@robot, @enemy) ->
+    super
+    @setAsynchronous(true)
+    @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
+
+  action : () ->
+    ret = false
+    enemyPos = @enemy.pos
+    robotPos = @robot.pos
+    robotPos.sub(enemyPos)
+
+    direct = Direct.NONE
+    if robotPos.x > 0
+     direct |=  Direct.LEFT
+    else if robotPos.x < 0
+     direct |=  Direct.RIGHT
+
+    if robotPos.y > 0
+     direct |=  Direct.UP
+    else if robotPos.y < 0
+     direct |=  Direct.DOWN
+
+    if direct != Direct.NONE
+      ret = @robot.move(direct, () => @onComplete())
+    @setAsynchronous(ret != false)
+
+  clone : () ->
+    obj = @copy(new ApproachInstruction(@robot, @enemy))
+    return obj
+
+  mkDescription: () ->
+    "敵に近づくように進みます"
+
+  getIcon: () ->
+    @icon.frame = 0
+    return @icon
+
+class MoveInstruction extends ActionInstruction
+  ###
+    Move Instruction
+  ###
 
   constructor : (@robot) ->
     super
@@ -233,7 +267,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
 ###
   scan item -> go
 ###
-class ItemScanMoveInstruction extends AbstractMoveInstruction
+class ItemScanMoveInstruction extends ActionInstruction
 
   constructor : (@robot) ->
     super

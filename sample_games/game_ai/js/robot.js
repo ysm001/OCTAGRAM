@@ -124,6 +124,11 @@ Robot = (function(_super) {
       set: function(value) {
         return this._animated = value;
       }
+    },
+    pos: {
+      get: function() {
+        return new Point(this.currentPlate.ix, this.currentPlate.iy);
+      }
     }
   };
 
@@ -314,7 +319,7 @@ PlayerRobot = (function(_super) {
       ret = this.move(Direct.LEFT, this.onDebugComplete);
     } else if (input.x === true && input.p === true) {
       this.animated = true;
-      ret = this.move(Direct.LEFT | Direct.DOWN);
+      ret = this.move(Direct.LEFT | Direct.DOWN, this.onDebugComplete);
     } else if (input.d === true && input.p === true) {
       this.animated = true;
       ret = this.move(Direct.RIGHT, this.onDebugComplete);
@@ -325,17 +330,23 @@ PlayerRobot = (function(_super) {
       this.animated = true;
       ret = this.move(Direct.RIGHT | Direct.DOWN, this.onDebugComplete);
     } else if (input.q === true && input.m === true) {
-      this.debugCmd.pickup(this.wideBltQueue, 1);
+      this.animated = true;
+      ret = this.pickup(BulletType.NORMAL, this.onDebugComplete);
     } else if (input.q === true && input.n === true) {
-      this.debugCmd.pickup(this.dualBltQueue, 2);
+      this.animated = true;
+      ret = this.pickup(BulletType.WIDE, this.onDebugComplete);
     } else if (input.q === true && input.l === true) {
-      this.debugCmd.pickup(this.bltQueue, 0);
+      this.animated = true;
+      ret = this.pickup(BulletType.DUAL, this.onDebugComplete);
     } else if (input.s === true && input.m === true) {
-      this.debugCmd.shot(this.wideBltQueue);
+      this.animated = true;
+      ret = this.shot(BulletType.NORMAL, this.onDebugComplete);
     } else if (input.s === true && input.n === true) {
-      this.debugCmd.shot(this.dualBltQueue);
+      this.animated = true;
+      ret = this.shot(BulletType.WIDE, this.onDebugComplete);
     } else if (input.s === true && input.l === true) {
-      this.debugCmd.shot(this.bltQueue);
+      this.animated = true;
+      ret = this.shot(BulletType.DUAL, this.onDebugComplete);
     }
     if (ret === false) {
       return this.onDebugComplete();

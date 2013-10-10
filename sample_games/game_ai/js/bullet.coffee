@@ -87,11 +87,16 @@ class BulletGroup extends Group
     super
     @bullets = []
     Object.defineProperty @, "animated",
-      get : () =>
+      get: () =>
         animated = true
         for i in @bullets
           animated = animated && i.animated
         return animated
+    Object.defineProperty @, "holder",
+      get: () =>
+        @bullets[0].holder
+      set: (robot) =>
+        v.holder = robot for v in @bullets
 
   shot: (x, y, direct=Direct.RIGHT) ->
     for i in @bullets

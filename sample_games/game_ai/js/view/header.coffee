@@ -69,7 +69,7 @@ class PlayerHp extends HpView
   initEvent: (world) ->
     # callback on the HP of player changed
     world.player.addObserver "hp", (hp) =>
-      @reduce() if hp < player.enemy.hp
+      @reduce() if hp < world.player.hp
 
 class Header extends ViewGroup
   @WIDTH = 600
