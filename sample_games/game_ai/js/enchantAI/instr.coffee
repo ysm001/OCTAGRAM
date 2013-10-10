@@ -79,7 +79,7 @@ class RandomMoveInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-    "進むことができるマスにランダムに移動します"
+    "移動可能なマスにランダムに移動します。"
 
   getIcon: () ->
     @icon.frame = 0
@@ -126,10 +126,100 @@ class ApproachInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-    "敵に近づくように進みます"
+    "敵に近づくように移動します。"
 
   getIcon: () ->
     @icon.frame = 0
+    return @icon
+
+class LeaveInstruction extends ActionInstruction
+  ###
+    Leave Instruction
+  ###
+
+  constructor : (@robot, @enemy) ->
+    super
+    @setAsynchronous(true)
+    @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
+
+  action : () ->
+    ret = false
+    enemyPos = @enemy.pos
+    robotPos = @robot.pos
+    robotPos.sub(enemyPos)
+
+    direct = Direct.NONE
+    if robotPos.x >= 0
+     direct |=  Direct.RIGHT
+    else if robotPos.x < 0
+     direct |=  Direct.LEFT
+
+    if robotPos.y >= 0
+      direct |=  Direct.DOWN
+      if robotPos.x == 0
+        direct |= Direct.LEFT
+    else if robotPos.y < 0
+      direct |=  Direct.UP
+      if robotPos.x == 0
+        direct |= Direct.RIGHT
+
+    if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
+      ret = @robot.move(direct, () => @onComplete())
+    if ret == false
+      @onComplete()
+
+  clone : () ->
+    obj = @copy(new LeaveInstruction(@robot, @enemy))
+    return obj
+
+  mkDescription: () ->
+    "敵から離れるように移動します。"
+
+  getIcon: () ->
+    @icon.frame = 0
+    return @icon
+
+
+class EnemyDistanceInstruction extends BranchInstruction
+
+  constructor : (@robot, @enemy) ->
+    super
+    @setAsynchronous(true)
+
+    @tipInfo = new TipInfo((labels) ->
+      "敵との距離が#{labels[0]}の場合青い矢印に進みます。<br>そうでなければ、赤い矢印に進みます。
+      "
+    )
+    # parameter 1
+    column = "距離"
+    labels = ["近距離", "中距離", "遠距離"]
+    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
+    @distanceParam = new TipParameter(column, 0, 0, 2, 1)
+    @distanceParam.id = "distance"
+    @addParameter(@distanceParam)
+    @tipInfo.addParameter(@distanceParam.id, column, labels, 0)
+
+    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
+
+  action : () ->
+    true
+
+  clone : () ->
+    obj = @copy(new EnemyDistanceInstruction(@robot, @enemy))
+    obj.distanceParam.value = @distanceParam.value
+    return obj
+
+  onParameterChanged : (parameter) ->
+    @distanceParam = parameter
+    @tipInfo.changeLabel(parameter.id, parameter.value)
+
+  mkDescription: () ->
+    @tipInfo.getDescription()
+
+  mkLabel: (parameter) ->
+    @tipInfo.getLabel(parameter.id)
+
+  getIcon: () ->
     return @icon
 
 class MoveInstruction extends ActionInstruction
@@ -148,7 +238,7 @@ class MoveInstruction extends ActionInstruction
     @directParam = new TipParameter(column, 0, 0, 5, 1)
     @directParam.id = "direct"
     @addParameter(@directParam)
-    @tipInfo = new TipInfo((labels) -> "#{labels[0]}に1マス移動します")
+    @tipInfo = new TipInfo((labels) -> "#{labels[0]}に1マス移動します。")
     @tipInfo.addParameter(@directParam.id, column, labels, 0)
 
     @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
@@ -190,7 +280,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
     @setAsynchronous(true)
 
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に所持している弾丸の射程圏内に入っていれば、<br>青い矢印に進む。そうでなければ赤い矢印に進む。<br>(消費フレーム 1回転当たり5フレーム)
+      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に所持している弾丸の射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり5フレーム)
       "
     )
     # parameter 1
@@ -286,8 +376,7 @@ class ItemScanMoveInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-    "周囲1マスを探索し、そのマスにセットされていないバリアーが存在した場合、そのマスへ進む。<br>(消費フレーム 40フレーム)
-      "
+    "周囲1マスを探索し、弾丸を見つけた場合、そのマスへ進みます。<br>  (消費フレーム 40フレーム)"
 
   getIcon: () ->
     return @icon
@@ -298,7 +387,7 @@ class EnemyScanInstructon extends BranchInstruction
   constructor: (@robot, @opponent) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレットが射程圏内に入っていれば、青矢印に進む。<br>そうでなければ赤い矢印に進む"
+      "#{labels[0]}バレットが射程圏内に入っていれば、青矢印に進みます。<br>そうでなければ赤い矢印に進みます"
     )
     # parameter 1
     column = "弾丸の種類"
@@ -341,7 +430,7 @@ class ShotInstruction extends ActionInstruction
   constructor: (@robot) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレットを撃つ"
+      "#{labels[0]}バレットを撃ちます。<br>射程距離:前方方向に距離5<br>"
     )
     # parameter 1
     column = "弾丸の種類"
@@ -385,7 +474,7 @@ class HpBranchInstruction extends BranchInstruction
   constructor : (@robot) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "HPが#{labels[0]}以上の時青矢印に進む。<br>#{labels[0]}未満の時は赤矢印に進む。"
+      "HPが#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
     )
      # parameter 2
     column = "HP"
@@ -428,7 +517,7 @@ class HoldBulletBranchInstruction extends BranchInstruction
   constructor: (@robot) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレッドの保有弾数が#{labels[1]}以上の時青矢印に進む。<br>#{labels[1]}未満の時は赤矢印に進む。"
+      "#{labels[0]}バレッドの保有弾数が#{labels[1]}以上の時青矢印に進みます。<br>#{labels[1]}未満の時は赤矢印に進みます。"
     )
     # parameter 1
     column = "弾丸の種類"

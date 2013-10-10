@@ -65,13 +65,13 @@ RobotWorld = (function(_super) {
     });
     player = new PlayerRobot(this);
     enemy = new EnemyRobot(this);
-    Game.instance.addInstruction(new RandomMoveInstruction(player));
     Game.instance.addInstruction(new MoveInstruction(player));
+    Game.instance.addInstruction(new RandomMoveInstruction(player));
     Game.instance.addInstruction(new ApproachInstruction(player, enemy));
-    Game.instance.addInstruction(new ShotInstruction(player));
+    Game.instance.addInstruction(new LeaveInstruction(player, enemy));
     Game.instance.addInstruction(new ItemScanMoveInstruction(player, enemy));
+    Game.instance.addInstruction(new ShotInstruction(player));
     Game.instance.addInstruction(new TurnEnemyScanInstruction(player, enemy));
-    Game.instance.addInstruction(new EnemyScanInstructon(player, enemy));
     Game.instance.addInstruction(new HpBranchInstruction(player));
     Game.instance.addInstruction(new HoldBulletBranchInstruction(player));
     this._robots.push(player);
