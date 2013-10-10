@@ -11,6 +11,7 @@ Item = (function(_super) {
     this.onComplete = __bind(this.onComplete, this);
     Item.__super__.constructor.call(this, w, h);
     this.animated = true;
+    RobotWorld.instance.items.push(this);
   }
 
   Item.prototype.onComplete = function() {

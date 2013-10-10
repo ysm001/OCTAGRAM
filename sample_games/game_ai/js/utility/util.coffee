@@ -3,6 +3,12 @@
 toi = (i) ->
   parseInt(i)
 
+
+class RobotEvent extends enchant.Event
+
+  constructor: (type, @params = {}) ->
+    super(type)
+
 class Direct
   bit = 1
   @LEFT = bit << 0
@@ -20,6 +26,11 @@ class Direct
   @each : (func) ->
     for i in _directs
       func(i)
+  
+  @next: (direct) ->
+    for v, i in _directs
+      return _directs[(i+1) % _directs.length] if v == direct
+    return direct
 
 class Point
   constructor : (@x, @y) ->

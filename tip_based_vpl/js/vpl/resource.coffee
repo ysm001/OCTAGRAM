@@ -2,14 +2,14 @@
 class Resources
   @base = "./"
   @resources = {
-    "emptyTip"        : "empty_tip_48x48.png",       
+    "emptyTip"        : "empty_tip_48x48.png",
     "returnTip"       : "return_tip_48x48.png",
     "startTip"        : "start_tip_48x48.png",
     "actionTip"       : "action_tip_48x48.png",
     "stopTip"         : "stop_tip_48x48.png",
     "branchTip"       : "branch_tip_48x48.png",
     "thinkTip"        : "think_tip_48x48.png",
-    "wallTip"         : "wall_tip_48x48.png",       
+    "wallTip"         : "wall_tip_48x48.png",
     "selectedEffect"  : "select_effect_48x48.png",
     "execEffect"      : "exec_effect_48x48.png",
     "mapTip"          : "map_tip_58x58.png",
@@ -47,7 +47,7 @@ class Resources
       game.preload(Resources.base + v)
 
   ## リソースの取得
-  @get : (assetName) -> 
+  @get : (assetName) ->
     Game.instance.assets[Resources.base + Resources.resources[assetName]]
 
 class TextResource

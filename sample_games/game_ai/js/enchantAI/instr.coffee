@@ -1,23 +1,8 @@
-class RobotInstruction
-  @MOVE      = "move"
-  @TURN_SCAN = "turnscan"
-  @SHOT      = "shot"
-  @PICKUP    = "pickup"
-
-
-class RobotDirect
-  constructor : (@value, @frame) ->
-
 class InstrCommon
 
-  # direct = [
-  #   Direct.RIGHT
-  #   Direct.RIGHT | Direct.UP
-  #   Direct.RIGHT | Direct.DOWN
-  #   Direct.LEFT
-  #   Direct.LEFT | Direct.UP
-  #   Direct.LEFT | Direct.DOWN
-  # ]
+  class RobotDirect
+    constructor : (@value, @frame) ->
+
   directs = [
     Direct.RIGHT
     Direct.RIGHT | Direct.DOWN
@@ -27,9 +12,6 @@ class InstrCommon
     Direct.RIGHT | Direct.UP
   ]
 
-  # frame = [
-  #   0, 4, 5, 2, 6, 7
-  # ]
   frame = [
     0, 5, 7, 2, 6, 4
   ]
@@ -54,7 +36,6 @@ class AbstractMoveInstruction extends ActionInstruction
     super
 
   onComplete: () ->
-    @robot.onAnimateComplete()
     super
 
 class TipInfo
@@ -97,11 +78,9 @@ class RandomMoveInstruction extends AbstractMoveInstruction
     while !ret
       rand = Random.nextInt() % InstrCommon.getDirectSize()
       direct = InstrCommon.getRobotDirect(rand)
-      @robot.frame = direct.frame
-      plate = @robot.map.getTargetPoision(@robot.currentPlate, direct.value)
-      ret = @robot.move(plate, () => @onComplete())
+      ret = @robot.move(direct.value, () => @onComplete())
     @setAsynchronous(ret != false)
-    @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+    # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
   clone : () ->
     obj = @copy(new RandomMoveInstruction(@robot))
@@ -138,11 +117,9 @@ class MoveInstruction extends AbstractMoveInstruction
   action : () ->
     ret = true
     direct = InstrCommon.getRobotDirect(@directParam.value)
-    @robot.frame = direct.frame
-    plate = @robot.map.getTargetPoision(@robot.currentPlate, direct.value)
-    ret = @robot.move(plate, () => @onComplete())
+    ret = @robot.move(direct.value, () => @onComplete())
     @setAsynchronous(ret != false)
-    @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+    # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
   clone : () ->
     obj = @copy(new MoveInstruction(@robot))
@@ -215,9 +192,21 @@ class TurnEnemyScanInstruction extends BranchInstruction
       @onComplete(false)
 
   action : () ->
-    count = @lengthParam.value + 1
-    directIndex = InstrCommon.getDirectIndex(@robot.getDirect())
-    setTimeout(@_turn, (1000*15)/30, directIndex, 0, count)
+    count = @lengthParam.value
+    i = 0
+    turnOnComplete = (robot) =>
+      if i < count
+        for k, v of @robot.bulletQueue
+          if v.size() > 0
+            bullet = v.index(0)
+            if bullet.withinRange(@robot, @opponent, @robot.direct)
+              @onComplete(true)
+              return
+        i+=1
+        @robot.turn(turnOnComplete)
+      else
+        @onComplete(false)
+    @robot.turn(turnOnComplete)
 
   clone : () ->
     obj = @copy(new TurnEnemyScanInstruction(@robot, @opponent))
@@ -257,13 +246,12 @@ class ItemScanMoveInstruction extends AbstractMoveInstruction
       target = null
       targetDirect = null
       Map.instance.eachSurroundingPlate @robot.currentPlate, (plate, direct) =>
-        if target is null and plate.spot? and !@robot.barrierMap.isset(plate.spot.type)
+        if target is null and plate.spot?
           target = plate
           targetDirect = direct
       if target?
-        @robot.frame = InstrCommon.getFrame(targetDirect)
-        ret = @robot.move(target, () => @onComplete())
-        @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+        ret = @robot.move(targetDirect, () => @onComplete())
+        # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
       else
         setTimeout((() => @onComplete()), Util.toMillisec(PlayerRobot.UPDATE_FRAME))
     ,Util.toMillisec(PlayerRobot.UPDATE_FRAME))
@@ -301,7 +289,7 @@ class EnemyScanInstructon extends BranchInstruction
   action : () ->
     bullet = BulletFactory.create(@typeParam.value, @robot)
     if bullet?
-      return bullet.withinRange(@robot, @opponent, @robot.getDirect())
+      return bullet.withinRange(@robot, @opponent, @robot.direct)
     else
       return false
 
@@ -348,58 +336,11 @@ class ShotInstruction extends ActionInstruction
     @robot.onCmdComplete(RobotInstruction.SHOT ,ret)
 
   onComplete: () ->
-    @robot.onAnimateComplete()
     super()
 
   clone : () ->
     obj = @copy(new ShotInstruction(@robot))
     obj.typeParam.value = @typeParam.value
-    return obj
-
-  onParameterChanged : (parameter) ->
-    @typeParam = parameter
-    @tipInfo.changeLabel(parameter.id, parameter.value)
-
-  mkDescription: () ->
-    @tipInfo.getDescription()
-
-  mkLabel: (parameter) ->
-    @tipInfo.getLabel(parameter.id)
-
-  getIcon: () ->
-    @icon.frame = @typeParam.value - 1
-    return @icon
-
-class PickupInstruction extends ActionInstruction
-
-  constructor: (@robot) ->
-    super
-    @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}バレットを一つ溜める"
-    )
-    # parameter 1
-    column = "弾丸の種類"
-    labels = {"1":"ストレート","2":"ワイド","3":"デュアル"}
-    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @typeParam = new TipParameter(column, 1, 1, 3, 1)
-    @typeParam.id = "type"
-    @addParameter(@typeParam)
-    @tipInfo.addParameter(@typeParam.id, column, labels, 1)
-
-    @icon = new Icon(Game.instance.assets[R.TIP.PICKUP_BULLET], 32, 32)
-    @setAsynchronous(true)
-
-  action: () ->
-    ret = @robot.pickup(@typeParam.value, () => @onComplete())
-    @setAsynchronous(ret != false)
-    @robot.onCmdComplete(RobotInstruction.PICKUP, ret)
-
-  onComplete: () ->
-    @robot.onAnimateComplete()
-    super()
-
-  clone : () ->
-    obj = @copy(new PickupInstruction(@robot))
     return obj
 
   onParameterChanged : (parameter) ->
@@ -424,9 +365,11 @@ class HpBranchInstruction extends BranchInstruction
     )
      # parameter 2
     column = "HP"
-    labels = {"1":1, "2":2, "3":3, "4":4}
+    labels = {}
+    for i in [1..Robot.MAX_HP]
+      labels[String(i)] = i
     # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @hpParam = new TipParameter(column, 1, 1, 4, 1)
+    @hpParam = new TipParameter(column, 1, 1, Robot.MAX_HP, 1)
     @hpParam.id = "size"
     @addParameter(@hpParam)
     @tipInfo.addParameter(@hpParam.id, column, labels, 1)
