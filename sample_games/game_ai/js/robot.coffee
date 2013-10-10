@@ -29,7 +29,7 @@ class ItemQueue
     @collection.length
 
 class Robot extends SpriteModel
-  @MAX_HP = 3
+  @MAX_HP = 6
 
   DIRECT_FRAME                             = {}
   DIRECT_FRAME[Direct.NONE]                = 0

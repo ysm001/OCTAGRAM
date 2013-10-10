@@ -59,7 +59,7 @@ Robot = (function(_super) {
 
   __extends(Robot, _super);
 
-  Robot.MAX_HP = 3;
+  Robot.MAX_HP = 6;
 
   DIRECT_FRAME = {};
 

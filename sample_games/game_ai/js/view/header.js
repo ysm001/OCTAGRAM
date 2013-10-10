@@ -10,7 +10,7 @@ HpBar = (function(_super) {
 
   HpBar.HEIGHT = 24;
 
-  HpBar.MAX_VALUE = 64 * Robot.MAX_HP;
+  HpBar.MAX_VALUE = 48 * Robot.MAX_HP;
 
   function HpBar(x, y, resource) {
     if (resource == null) {
@@ -155,8 +155,8 @@ Header = (function(_super) {
     Header.__super__.constructor.apply(this, arguments);
     this.x = x;
     this.y = y;
-    this.addView(new PlayerHp(16 + 32, 0));
-    this.addView(new EnemyHp(Header.WIDTH / 2 + 16 + 32, 0));
+    this.addView(new PlayerHp(8, 0));
+    this.addView(new EnemyHp(Header.WIDTH / 2 + 8, 0));
   }
 
   return Header;

@@ -2,7 +2,7 @@ R = Config.R
 
 class HpBar extends Bar
   @HEIGHT = 24
-  @MAX_VALUE = 64 * Robot.MAX_HP
+  @MAX_VALUE = 48 * Robot.MAX_HP
   constructor: (x,y,resource=PlayerHp.YELLOW) ->
     super x, y
     @height = HpBar.HEIGHT
@@ -77,5 +77,5 @@ class Header extends ViewGroup
     super
     @x = x
     @y = y
-    @addView(new PlayerHp(16 + 32, 0))
-    @addView(new EnemyHp(Header.WIDTH/2 + 16 + 32, 0))
+    @addView(new PlayerHp(8, 0))
+    @addView(new EnemyHp(Header.WIDTH/2 + 8, 0))
