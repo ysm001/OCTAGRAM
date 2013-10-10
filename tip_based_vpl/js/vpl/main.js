@@ -131,7 +131,14 @@ VirtualMachine = (function() {
   };
 
   VirtualMachine.prototype.show = function() {
-    return Game.instance.currentScene.addChild(this.cpu);
+    var tip, _i, _len, _ref;
+    this.addPresetInstructions();
+    _ref = this.cpu.tipSet.tips;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      tip = _ref[_i];
+      Game.instance.vpl.ui.side.addTip(tip);
+    }
+    return Game.instance.currentScene.insertBefore(this.cpu, Game.instance.vpl.ui.frame);
   };
 
   return VirtualMachine;
@@ -148,18 +155,6 @@ TipBasedVPL = (function(_super) {
     Resources.load(this);
   }
 
-  TipBasedVPL.prototype.loadInstruction = function() {
-    var tip, _i, _len, _ref, _results;
-    Game.instance.vpl.vm.addPresetInstructions();
-    _ref = Game.instance.vpl.vm.cpu.tipSet.tips;
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      tip = _ref[_i];
-      _results.push(Game.instance.vpl.ui.side.addTip(tip));
-    }
-    return _results;
-  };
-
   TipBasedVPL.prototype.onload = function() {
     var back, selector, x, xnum, y, ynum;
     x = 16;
@@ -169,7 +164,7 @@ TipBasedVPL = (function(_super) {
     back = new TipBackground(x, y, xnum, ynum);
     Game.instance.vpl = {};
     Game.instance.vpl.ui = {};
-    Game.instance.vpl.vm = new VirtualMachine(x, y, xnum, ynum);
+    Game.instance.vpl.currentVM = new VirtualMachine(x, y, xnum, ynum);
     Game.instance.vpl.ui.frame = new Frame(0, 0);
     Game.instance.vpl.ui.help = new HelpPanel(0, Environment.EditorHeight + y, Environment.ScreenWidth, Environment.ScreenWidth - Environment.EditorWidth - x, "");
     selector = new ParameterConfigPanel(Environment.EditorWidth + x / 2, 0);
@@ -178,7 +173,6 @@ TipBasedVPL = (function(_super) {
     Game.instance.vpl.ui.configPanel.setTitle(TextResource.msg.title["configurator"]);
     selector.parent = Game.instance.vpl.ui.configPanel;
     Game.instance.currentScene.addChild(back);
-    Game.instance.vpl.vm.show();
     Game.instance.currentScene.addChild(Game.instance.vpl.ui.frame);
     Game.instance.currentScene.addChild(Game.instance.vpl.ui.side);
     return Game.instance.currentScene.addChild(Game.instance.vpl.ui.help);

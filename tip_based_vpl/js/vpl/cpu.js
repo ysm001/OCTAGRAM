@@ -166,7 +166,7 @@ Cpu = (function(_super) {
     _results = [];
     for (_i = 0, _len = serializedVal.length; _i < _len; _i++) {
       serializedTip = serializedVal[_i];
-      tip = serializedTip.tip.code.name === "WallTip" ? TipFactory.createWallTip(this.sx, this.sy) : serializedTip.tip.code.name === "StartTip" ? TipFactory.createStartTip() : serializedTip.tip.code.name === "EmptyTip" ? TipFactory.createEmptyTip() : serializedTip.tip.code.instruction == null ? this.tipTable.findByCode(serializedTip.tip.code.name).clone() : this.tipTable.findByInst(serializedTip.tip.code.instruction.name).clone();
+      tip = serializedTip.tip.code.name === "WallTip" ? TipFactory.createWallTip(this.sx, this.sy) : serializedTip.tip.code.name === "StartTip" ? TipFactory.createStartTip() : serializedTip.tip.code.name === "EmptyTip" ? TipFactory.createEmptyTip() : serializedTip.tip.code.instruction == null ? this.tipSet.findByCode(serializedTip.tip.code.name).clone() : this.tipSet.findByInst(serializedTip.tip.code.instruction.name).clone();
       tip.deserialize(serializedTip.tip);
       _results.push(this.insertNewTip(serializedTip.x, serializedTip.y, tip));
     }

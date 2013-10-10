@@ -61,14 +61,18 @@ class RobotWorld extends GroupModel
     @addChild @_enemy
 
   initInstructions: () ->
-    Game.instance.vpl.vm.addInstruction(new RandomMoveInstruction(@_player))
-    Game.instance.vpl.vm.addInstruction(new MoveInstruction(@_player))
-    Game.instance.vpl.vm.addInstruction(new ShotInstruction(@_player))
-    Game.instance.vpl.vm.addInstruction(new ItemScanMoveInstruction(@_player, @_enemy))
-    Game.instance.vpl.vm.addInstruction(new TurnEnemyScanInstruction(@_player, @_enemy))
-    Game.instance.vpl.vm.addInstruction(new EnemyScanInstructon(@_player, @_enemy))
-    Game.instance.vpl.vm.addInstruction(new HpBranchInstruction(@_player))
-    Game.instance.vpl.vm.addInstruction(new HoldBulletBranchInstruction(@_player))
+    Game.instance.vpl.currentVM.addInstruction(new RandomMoveInstruction(@_player))
+    Game.instance.vpl.currentVM.addInstruction(new MoveInstruction(@_player))
+    Game.instance.vpl.currentVM.addInstruction(new ShotInstruction(@_player))
+    Game.instance.vpl.currentVM.addInstruction(new ItemScanMoveInstruction(@_player, @_enemy))
+    Game.instance.vpl.currentVM.addInstruction(new TurnEnemyScanInstruction(@_player, @_enemy))
+    Game.instance.vpl.currentVM.addInstruction(new EnemyScanInstructon(@_player, @_enemy))
+    Game.instance.vpl.currentVM.addInstruction(new HpBranchInstruction(@_player))
+    Game.instance.vpl.currentVM.addInstruction(new HoldBulletBranchInstruction(@_player))
+
+    # for debug
+    Game.instance.vpl.testVM = new VirtualMachine(0, 0, 8, 8);
+    Game.instance.vpl.testVM.addInstruction(new RandomMoveInstruction(@_enemy))
 
   properties:
     player:
@@ -183,12 +187,9 @@ class RobotGame extends TipBasedVPL
     @assets["apad.png"] = @assets['resources/ui/apad.png']
     @assets["icon0.png"] = @assets['resources/ui/icon0.png']
     @assets["pad.png"] = @assets['resources/ui/pad.png']
-    Game.instance.loadInstruction()
+    Game.instance.vpl.currentVM.show()
+    #Game.instance.vpl.vm.loadInstruction()
 
 window.onload = () ->
   game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT
   game.start()
-
-
-
-

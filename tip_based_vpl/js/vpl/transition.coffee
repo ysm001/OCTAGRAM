@@ -54,7 +54,7 @@ class TipTransition extends Sprite
     nx  = srcIdx.x + dir.x
     ny  = srcIdx.y + dir.y
 
-    dst = Game.instance.vpl.vm.cpu.getTip(nx, ny)
+    dst = Game.instance.vpl.currentVM.cpu.getTip(nx, ny)
 
     if dst != @dst
       @dst = dst

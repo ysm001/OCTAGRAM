@@ -73,7 +73,15 @@ class VirtualMachine
 
   clearInstructions : () -> @tipSet.clear()
 
-  show : () -> Game.instance.currentScene.addChild(@cpu)
+  #loadInstruction : () ->
+  #  @addPresetInstructions()
+  #  for tip in @cpu.tipSet.tips then Game.instance.vpl.ui.side.addTip(tip)
+
+  show : () -> 
+    @addPresetInstructions()
+    for tip in @cpu.tipSet.tips then Game.instance.vpl.ui.side.addTip(tip)
+
+    Game.instance.currentScene.insertBefore(@cpu, Game.instance.vpl.ui.frame)
 
 class TipBasedVPL extends Game
   constructor : (w, h, resourceBase) ->
@@ -81,11 +89,6 @@ class TipBasedVPL extends Game
     @fps = 24
     Resources.base = resourceBase
     Resources.load(this)
-
-  loadInstruction : () ->
-    Game.instance.vpl.vm.addPresetInstructions()
-
-    for tip in Game.instance.vpl.vm.cpu.tipSet.tips then Game.instance.vpl.ui.side.addTip(tip)
 
   onload : () ->
     x = 16
@@ -96,9 +99,7 @@ class TipBasedVPL extends Game
     back = new TipBackground(x, y, xnum, ynum)
     Game.instance.vpl = {}
     Game.instance.vpl.ui = {}
-    Game.instance.vpl.vm = new VirtualMachine(x, y, xnum, ynum)
-    #Game.instance.vpl.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX)
-    #Game.instance.vpl.executer = new Executer(Game.instance.vpl.cpu)
+    Game.instance.vpl.currentVM= new VirtualMachine(x, y, xnum, ynum)
 
     Game.instance.vpl.ui.frame = new Frame(0, 0)
     Game.instance.vpl.ui.help = new HelpPanel(0, 
@@ -114,9 +115,9 @@ class TipBasedVPL extends Game
     selector.parent = Game.instance.vpl.ui.configPanel
 
     Game.instance.currentScene.addChild(back)
-    Game.instance.vpl.vm.show()
     #Game.instance.currentScene.addChild(Game.instance.vpl.cpu)
     Game.instance.currentScene.addChild(Game.instance.vpl.ui.frame)
     Game.instance.currentScene.addChild(Game.instance.vpl.ui.side)
     Game.instance.currentScene.addChild(Game.instance.vpl.ui.help)
 
+    #Game.instance.vpl.currentVM.show()

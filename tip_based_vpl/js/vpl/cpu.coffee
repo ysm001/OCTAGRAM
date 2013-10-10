@@ -133,9 +133,9 @@ class Cpu extends Group
         else if serializedTip.tip.code.name == "StartTip" then TipFactory.createStartTip() 
         else if serializedTip.tip.code.name == "EmptyTip" then TipFactory.createEmptyTip()
         else if !serializedTip.tip.code.instruction?
-          @tipTable.findByCode(serializedTip.tip.code.name).clone()
+          @tipSet.findByCode(serializedTip.tip.code.name).clone()
         else
-          @tipTable.findByInst(serializedTip.tip.code.instruction.name).clone()
+          @tipSet.findByInst(serializedTip.tip.code.instruction.name).clone()
       tip.deserialize(serializedTip.tip)
       @insertNewTip(serializedTip.x, serializedTip.y, tip)
 

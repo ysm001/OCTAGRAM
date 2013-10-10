@@ -77,14 +77,16 @@ RobotWorld = (function(_super) {
   }
 
   RobotWorld.prototype.initInstructions = function() {
-    Game.instance.vpl.vm.addInstruction(new RandomMoveInstruction(this._player));
-    Game.instance.vpl.vm.addInstruction(new MoveInstruction(this._player));
-    Game.instance.vpl.vm.addInstruction(new ShotInstruction(this._player));
-    Game.instance.vpl.vm.addInstruction(new ItemScanMoveInstruction(this._player, this._enemy));
-    Game.instance.vpl.vm.addInstruction(new TurnEnemyScanInstruction(this._player, this._enemy));
-    Game.instance.vpl.vm.addInstruction(new EnemyScanInstructon(this._player, this._enemy));
-    Game.instance.vpl.vm.addInstruction(new HpBranchInstruction(this._player));
-    return Game.instance.vpl.vm.addInstruction(new HoldBulletBranchInstruction(this._player));
+    Game.instance.vpl.currentVM.addInstruction(new RandomMoveInstruction(this._player));
+    Game.instance.vpl.currentVM.addInstruction(new MoveInstruction(this._player));
+    Game.instance.vpl.currentVM.addInstruction(new ShotInstruction(this._player));
+    Game.instance.vpl.currentVM.addInstruction(new ItemScanMoveInstruction(this._player, this._enemy));
+    Game.instance.vpl.currentVM.addInstruction(new TurnEnemyScanInstruction(this._player, this._enemy));
+    Game.instance.vpl.currentVM.addInstruction(new EnemyScanInstructon(this._player, this._enemy));
+    Game.instance.vpl.currentVM.addInstruction(new HpBranchInstruction(this._player));
+    Game.instance.vpl.currentVM.addInstruction(new HoldBulletBranchInstruction(this._player));
+    Game.instance.vpl.testVM = new VirtualMachine(0, 0, 8, 8);
+    return Game.instance.vpl.testVM.addInstruction(new RandomMoveInstruction(this._enemy));
   };
 
   RobotWorld.prototype.properties = {
@@ -271,7 +273,7 @@ RobotGame = (function(_super) {
     this.assets["apad.png"] = this.assets['resources/ui/apad.png'];
     this.assets["icon0.png"] = this.assets['resources/ui/icon0.png'];
     this.assets["pad.png"] = this.assets['resources/ui/pad.png'];
-    return Game.instance.loadInstruction();
+    return Game.instance.vpl.currentVM.show();
   };
 
   return RobotGame;

@@ -78,7 +78,7 @@ TipTransition = (function(_super) {
     srcIdx = this.src.getIndex();
     nx = srcIdx.x + dir.x;
     ny = srcIdx.y + dir.y;
-    dst = Game.instance.vpl.vm.cpu.getTip(nx, ny);
+    dst = Game.instance.vpl.currentVM.cpu.getTip(nx, ny);
     if (dst !== this.dst) {
       this.dst = dst;
       if (this.src.setConseq != null) {
