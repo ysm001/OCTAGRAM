@@ -489,8 +489,7 @@ ShotInstruction = (function(_super) {
     ret = this.robot.shot(this.typeParam.value, function() {
       return _this.onComplete();
     });
-    this.setAsynchronous(ret !== false);
-    return this.robot.onCmdComplete(RobotInstruction.SHOT, ret);
+    return this.setAsynchronous(ret !== false);
   };
 
   ShotInstruction.prototype.onComplete = function() {

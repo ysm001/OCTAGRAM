@@ -333,7 +333,6 @@ class ShotInstruction extends ActionInstruction
   action : () ->
     ret = @robot.shot(@typeParam.value, () => @onComplete())
     @setAsynchronous(ret != false)
-    @robot.onCmdComplete(RobotInstruction.SHOT ,ret)
 
   onComplete: () ->
     super()
