@@ -1,0 +1,41 @@
+{
+  "name": "octagram",
+  "version": "0.1.0",
+  "description": "Tip Based Visual Programming Language Framework for enchant.js game",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ryysd/OCTAGRAM.git"
+  },
+  "keywords": [
+    "CoffeeScript",
+    "Visual",
+    "Programming",
+    "Language",
+    "Framework",
+    "enchant.js"
+  ],
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-concat": "~0.1.3",
+    "grunt-contrib-coffee": "~0.6.5",
+    "grunt-contrib-compass": "~0.2.0",
+    "grunt-contrib-cssmin": "~0.6.0",
+    "grunt-contrib-connect": "~0.2.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-htmlmin": "~0.1.3",
+    "grunt-contrib-imagemin": "~0.1.3",
+    "grunt-contrib-watch": "~0.4.0"
+  },
+  "author": "Taketo Yoshida, Ryo Yasuda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryysd/OCTAGRAM/issues"
+  }
+}
