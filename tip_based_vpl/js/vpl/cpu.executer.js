@@ -49,7 +49,7 @@ Executer = (function() {
   Executer.prototype.execNext = function(e) {
     var nextTip;
     nextTip = this.getNext();
-    if ((this.current != null) && this.current.isAsynchronous() && (e.result != null)) {
+    if ((this.current != null) && this.current.isAsynchronous() && e && (e.result != null) && this.current instanceof BranchTransitionCodeTip) {
       this.next = e.result ? this.current.code.getConseq() : this.current.code.getAlter();
       nextTip = this.getNext();
     }

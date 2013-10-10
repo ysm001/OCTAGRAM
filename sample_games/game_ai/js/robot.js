@@ -135,7 +135,7 @@ Robot = (function(_super) {
     },
     pos: {
       get: function() {
-        return new Point(this.currentPlate.ix, this.currentPlate.iy);
+        return this.currentPlate.pos;
       }
     }
   };

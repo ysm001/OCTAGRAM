@@ -61,6 +61,11 @@ class Plate extends ViewSprite
 
     @addEventListener 'ride', (evt) =>
       @onRobotRide(evt.params.robot)
+    Object.defineProperties @, @properties
+
+  properties:
+    pos:
+      get: () -> new Point(toi(Math.ceil(@iy/2)) + @ix, @iy)
 
   setState: (state) ->
     @pravState = @frame
@@ -105,6 +110,7 @@ class Plate extends ViewSprite
 class Map extends ViewGroup
   @WIDTH = 9
   @HEIGHT = 7
+  @OFFSET_SIZE = 5
   @UNIT_HEIGHT = Plate.HEIGHT
   @UNIT_WIDTH = Plate.WIDTH
 
@@ -115,6 +121,17 @@ class Map extends ViewGroup
     Map.instance = @
     @plateMatrix = []
     offset = 64/4
+    #ty = 0
+    #for c in [Map.OFFSET_SIZE, Map.OFFSET_SIZE + 1, Map.OFFSET_SIZE + 2, Map.OFFSET_SIZE + 3, Map.OFFSET_SIZE + 2, Map.OFFSET_SIZE + 1, Map.OFFSET_SIZE]
+    #  list = []
+    #  for tx in [0..c]
+    #    offsetX = (7 - c) * (Map.UNIT_WIDTH/2)
+    #    plate = new Plate(offsetX + tx * Map.UNIT_WIDTH , (ty * Map.UNIT_HEIGHT) - ty * offset, tx, ty)
+    #    list.push plate
+    #    @addChild plate
+    #  ty += 1
+    #  @plateMatrix.push list
+      
     # backgrond images
     for ty in [0...Map.HEIGHT]
       list = []

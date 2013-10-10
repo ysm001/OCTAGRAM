@@ -108,13 +108,18 @@ class ApproachInstruction extends ActionInstruction
      direct |=  Direct.RIGHT
 
     if robotPos.y > 0
-     direct |=  Direct.UP
+      direct |=  Direct.UP
+      if robotPos.x == 0
+        direct |= Direct.RIGHT
     else if robotPos.y < 0
-     direct |=  Direct.DOWN
+      direct |=  Direct.DOWN
+      if robotPos.x == 0
+        direct |= Direct.LEFT
 
-    if direct != Direct.NONE
+    if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
       ret = @robot.move(direct, () => @onComplete())
-    @setAsynchronous(ret != false)
+    if ret == false
+      @onComplete()
 
   clone : () ->
     obj = @copy(new ApproachInstruction(@robot, @enemy))
@@ -199,34 +204,17 @@ class TurnEnemyScanInstruction extends BranchInstruction
 
     # parameter 2
     column = "回転回数"
-    labels = [0..6]
+    labels = [0..5]
     # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @lengthParam = new TipParameter(column, 0, 0, 6, 1)
+    @lengthParam = new TipParameter(column, 0, 0, 5, 1)
     @lengthParam.id = "length"
     @addParameter(@lengthParam)
     @tipInfo.addParameter(@lengthParam.id, column, labels, 0)
 
     @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
 
-  _turn : (directIndex, i, count) =>
-    if i < count
-      direct = InstrCommon.getRobotDirect(directIndex)
-      @robot.frame = direct.frame
-      for k, v of @robot.bulletQueue
-        if v.size() > 0
-          bullet = v.index(0)
-          if bullet.withinRange(@robot, @opponent, direct.value)
-            @onComplete(true)
-            return
-      setTimeout(@_turn
-        Util.toMillisec(15), (directIndex + 1) % InstrCommon.getDirectSize()
-        i + 1
-        count)
-    else
-      @onComplete(false)
-
   action : () ->
-    count = @lengthParam.value
+    count = @lengthParam.value + 1
     i = 0
     turnOnComplete = (robot) =>
       if i < count
@@ -240,7 +228,10 @@ class TurnEnemyScanInstruction extends BranchInstruction
         @robot.turn(turnOnComplete)
       else
         @onComplete(false)
-    @robot.turn(turnOnComplete)
+    setTimeout((() =>
+      turnOnComplete(@robot)),
+      Util.toMillisec(15)
+    )
 
   clone : () ->
     obj = @copy(new TurnEnemyScanInstruction(@robot, @opponent))
@@ -275,7 +266,7 @@ class ItemScanMoveInstruction extends ActionInstruction
     @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32)
 
   action : () ->
-    setTimeout(() =>
+    setTimeout((() =>
       ret = false
       target = null
       targetDirect = null
@@ -287,7 +278,7 @@ class ItemScanMoveInstruction extends ActionInstruction
         ret = @robot.move(targetDirect, () => @onComplete())
         # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
       else
-        setTimeout((() => @onComplete()), Util.toMillisec(PlayerRobot.UPDATE_FRAME))
+        @onComplete())
     ,Util.toMillisec(PlayerRobot.UPDATE_FRAME))
 
   clone : () ->

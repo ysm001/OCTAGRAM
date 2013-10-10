@@ -3,7 +3,6 @@
 toi = (i) ->
   parseInt(i)
 
-
 class RobotEvent extends enchant.Event
 
   constructor: (type, @params = {}) ->

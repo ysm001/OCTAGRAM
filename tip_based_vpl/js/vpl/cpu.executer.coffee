@@ -31,7 +31,7 @@ class Executer
     nextTip = @getNext()
 
     # asynchronous branch
-    if @current? && @current.isAsynchronous() && e.result?
+    if @current? && @current.isAsynchronous() && e && e.result? && @current instanceof BranchTransitionCodeTip
       @next = if e.result then @current.code.getConseq() else @current.code.getAlter()
       nextTip = @getNext()
 

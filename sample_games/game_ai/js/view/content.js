@@ -101,7 +101,16 @@ Plate = (function(_super) {
     this.addEventListener('ride', function(evt) {
       return _this.onRobotRide(evt.params.robot);
     });
+    Object.defineProperties(this, this.properties);
   }
+
+  Plate.prototype.properties = {
+    pos: {
+      get: function() {
+        return new Point(toi(Math.ceil(this.iy / 2)) + this.ix, this.iy);
+      }
+    }
+  };
 
   Plate.prototype.setState = function(state) {
     this.pravState = this.frame;
@@ -161,6 +170,8 @@ Map = (function(_super) {
   Map.WIDTH = 9;
 
   Map.HEIGHT = 7;
+
+  Map.OFFSET_SIZE = 5;
 
   Map.UNIT_HEIGHT = Plate.HEIGHT;
 

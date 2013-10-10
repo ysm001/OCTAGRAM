@@ -76,7 +76,7 @@ class Robot extends SpriteModel
       get:() -> @_animated
       set:(value) -> @_animated = value
     pos:
-      get: () -> new Point(@currentPlate.ix, @currentPlate.iy)
+      get: () -> @currentPlate.pos
 
   directFrame: (direct) ->
     DIRECT_FRAME[direct]
