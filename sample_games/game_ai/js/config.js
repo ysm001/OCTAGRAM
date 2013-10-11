@@ -88,13 +88,15 @@ Config.R = (function() {
 Config.Frame = (function() {
   function Frame() {}
 
-  Frame.ROBOT_MOVE = 12;
+  Frame.DIAMETER = 2;
 
-  Frame.ROBOT_WAIT = 10;
+  Frame.ROBOT_MOVE = 12 / Frame.DIAMETER;
 
-  Frame.ROBOT_TURN = 10;
+  Frame.ROBOT_WAIT = 8 / Frame.DIAMETER;
 
-  Frame.BULLET = 15;
+  Frame.ROBOT_TURN = 8 / Frame.DIAMETER;
+
+  Frame.BULLET = 16 / Frame.DIAMETER;
 
   return Frame;
 

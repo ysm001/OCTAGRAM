@@ -55,14 +55,14 @@ class Config.R
     REST_BULLET : "#{R.RESOURCE_DIR}/tip/rest_bullet.png"
 
 class Config.Frame
-  
-  @ROBOT_MOVE : 12
-  @ROBOT_WAIT : 10
-  @ROBOT_TURN : 10
-  @BULLET : 15
+  @DIAMETER = 2
+
+  @ROBOT_MOVE = 12 / Frame.DIAMETER
+  @ROBOT_WAIT = 8 / Frame.DIAMETER
+  @ROBOT_TURN = 8 / Frame.DIAMETER
+  @BULLET = 16 / Frame.DIAMETER
 
 class Config.R.String
-  
   @PLAYER : "プレイヤー"
   @ENEMY : "エネミー"
   @CANNOTMOVE : "移動てきません"
@@ -75,4 +75,3 @@ class Config.R.String
     return "#{s}は攻撃しました"
   @move:(s, x, y) ->
     return "#{s}は(#{x},#{y})に移動しました"
-
