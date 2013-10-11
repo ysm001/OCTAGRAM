@@ -8,10 +8,14 @@ module.exports = (grunt)->
 
   grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
+    all:
+      tasks: ['coffee', 'concat', 'uglify']
+      options:
+        interrupt: yes
     watch:
       scripts:
         files: ["js/vpl/*.coffee"]
-        tasks: ['coffee', 'concat']
+        tasks: ['coffee', 'concat', 'uglify']
         options:
           interrupt: yes
     coffee:
@@ -64,3 +68,5 @@ module.exports = (grunt)->
         dest:'js/octagram.min.js'
 
   grunt.registerTask('default', ['watch', 'coffee', 'concat', 'uglify'])
+  grunt.registerTask 'build', 'build task.', () ->
+    grunt.task.run('coffee', 'concat', 'uglify')

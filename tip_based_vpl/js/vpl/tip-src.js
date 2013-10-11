@@ -451,8 +451,8 @@ CounterIncrementInstruction = (function(_super) {
     CounterIncrementInstruction.__super__.constructor.call(this);
     this.id = 0;
     this.step = 1;
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, this.counters.length, 1);
-    stepParam = new TipParameter("$BA}2CNL(B", 1, 1, 100, 1);
+    idParam = new TipParameter("カウンターID", 0, 0, this.counters.length, 1);
+    stepParam = new TipParameter("増加量", 1, 1, 100, 1);
     idParam.id = "id";
     stepParam.id = "step";
     this.addParameter(idParam);
@@ -476,7 +476,7 @@ CounterIncrementInstruction = (function(_super) {
   };
 
   CounterIncrementInstruction.prototype.mkDescription = function() {
-    return "$B%+%&%s%?!<(B" + this.id + "$B$r(B" + this.step + "$BA}2C$5$;$^$9!#(B";
+    return "カウンター" + this.id + "を" + this.step + "増加させます。";
   };
 
   CounterIncrementInstruction.prototype.clone = function() {
@@ -496,8 +496,8 @@ CounterDecrementInstruction = (function(_super) {
     CounterDecrementInstruction.__super__.constructor.call(this);
     this.id = 0;
     this.step = 1;
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, this.counters.length, 1);
-    stepParam = new TipParameter("$B8:>/NL(B", 1, 1, 100, 1);
+    idParam = new TipParameter("カウンターID", 0, 0, this.counters.length, 1);
+    stepParam = new TipParameter("減少量", 1, 1, 100, 1);
     idParam.id = "id";
     stepParam.id = "step";
     this.addParameter(idParam);
@@ -521,7 +521,7 @@ CounterDecrementInstruction = (function(_super) {
   };
 
   CounterDecrementInstruction.prototype.mkDescription = function() {
-    return "$B%+%&%s%?!<(B" + this.id + "$B$r(B" + this.step + "$B8:>/$5$;$^$9!#(B";
+    return "カウンター" + this.id + "を" + this.step + "減少させます。";
   };
 
   CounterDecrementInstruction.prototype.clone = function() {
@@ -541,8 +541,8 @@ CounterBranchInstruction = (function(_super) {
     CounterBranchInstruction.__super__.constructor.call(this);
     this.id = 0;
     this.threthold = 0;
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, this.counters.length, 1);
-    thretholdParam = new TipParameter("$BogCM(B", 0, -100, 100, 1);
+    idParam = new TipParameter("カウンターID", 0, 0, this.counters.length, 1);
+    thretholdParam = new TipParameter("閾値", 0, -100, 100, 1);
     idParam.id = "id";
     thretholdParam.id = "threthold";
     this.addParameter(idParam);
@@ -566,7 +566,7 @@ CounterBranchInstruction = (function(_super) {
   };
 
   CounterBranchInstruction.prototype.mkDescription = function() {
-    return "$B%+%&%s%?!<(B" + this.id + "$B$,(B" + this.threthold + "$B0J>e$J$i$P@DLp0u$K?J$_$^$9!#(B<br>" + "$B%+%&%s%?!<(B" + this.id + "$B$,(B" + this.threthold + "$BL$K~$J$i$P@VLp0u$K?J$_$^$9!#(B";
+    return "カウンター" + this.id + "が" + this.threthold + "以上ならば青矢印に進みます。<br>" + "カウンター" + this.id + "が" + this.threthold + "未満ならば赤矢印に進みます。";
   };
 
   CounterBranchInstruction.prototype.clone = function() {
@@ -586,7 +586,7 @@ CounterPushInstruction = (function(_super) {
     this.stack = stack;
     CounterPushInstruction.__super__.constructor.call(this);
     this.id = 0;
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, this.counters.length, 1);
+    idParam = new TipParameter("カウンターID", 0, 0, this.counters.length, 1);
     this.addParameter(idParam);
   }
 
@@ -603,7 +603,7 @@ CounterPushInstruction = (function(_super) {
   };
 
   CounterPushInstruction.prototype.mkDescription = function() {
-    return "$B%+%&%s%?!<(B" + this.id + "$B$NCM$r(B" + "$B%9%?%C%/$K%W%C%7%e$7$^$9!#(B";
+    return "カウンター" + this.id + "の値を" + "スタックにプッシュします。";
   };
 
   CounterPushInstruction.prototype.clone = function() {
@@ -623,7 +623,7 @@ CounterPopInstruction = (function(_super) {
     this.stack = stack;
     CounterPopInstruction.__super__.constructor.call(this);
     this.id = 0;
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, this.counters.length, 1);
+    idParam = new TipParameter("カウンターID", 0, 0, this.counters.length, 1);
     this.addParameter(idParam);
   }
 
@@ -640,7 +640,7 @@ CounterPopInstruction = (function(_super) {
   };
 
   CounterPopInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/$+$i(Bx$B$r%]%C%W$7$F(B, $B%+%&%s%?!<(B" + this.id + "$B$KBeF~$7$^$9!#(B";
+    return "スタックからxをポップして, カウンター" + this.id + "に代入します。";
   };
 
   CounterPopInstruction.prototype.clone = function() {
@@ -803,7 +803,7 @@ StackAddInstruction = (function(_super) {
   };
 
   StackAddInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x+y$B$NCM$r%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x+yの値をプッシュする。";
   };
 
   return StackAddInstruction;
@@ -831,7 +831,7 @@ StackSubInstruction = (function(_super) {
   };
 
   StackSubInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x-y$B$NCM$r%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x-yの値をプッシュする。";
   };
 
   return StackSubInstruction;
@@ -859,7 +859,7 @@ StackMulInstruction = (function(_super) {
   };
 
   StackMulInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x+y$B$NCM$r%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x+yの値をプッシュする。";
   };
 
   return StackMulInstruction;
@@ -887,7 +887,7 @@ StackDivInstruction = (function(_super) {
   };
 
   StackDivInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x/y$B$NCM$r%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x/yの値をプッシュする。";
   };
 
   return StackDivInstruction;
@@ -915,7 +915,7 @@ StackModInstruction = (function(_super) {
   };
 
   StackModInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x$B$r(By$B$G3d$C$?;~$NM>$j$r%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, xをyで割った時の余りをプッシュする。";
   };
 
   return StackModInstruction;
@@ -943,7 +943,7 @@ StackXorInstruction = (function(_super) {
   };
 
   StackXorInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x$B$H(By$B$NGSB>E*O@M}OB$NCM$r%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, xとyの排他的論理和の値をプッシュする。";
   };
 
   return StackXorInstruction;
@@ -971,7 +971,7 @@ StackGrtInstruction = (function(_super) {
   };
 
   StackGrtInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x>y$B$J$i$P(B1$B$r%W%C%7%e$9$k!#(B<br>$B$=$&$G$J$1$l$P(B0$B$r%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x>yならば1をプッシュする。<br>そうでなければ0をプッシュする。";
   };
 
   return StackGrtInstruction;
@@ -999,7 +999,7 @@ StackSwpInstruction = (function(_super) {
   };
 
   StackSwpInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, y, x$B$N=g$G%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, y, xの順でプッシュする。";
   };
 
   return StackSwpInstruction;
@@ -1027,7 +1027,7 @@ StackNotInstruction = (function(_super) {
   };
 
   StackNotInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx$B$r%]%C%W$7$F(B, x$B$,(B0$B$J$i$P(B1$B$r%W%C%7%e$9$k!#(B<br>$B$=$&$G$J$1$l$P(B0$B$r%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xが0ならば1をプッシュする。<br>そうでなければ0をプッシュする。";
   };
 
   return StackNotInstruction;
@@ -1055,7 +1055,7 @@ StackDupInstruction = (function(_super) {
   };
 
   StackDupInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx$B$r%]%C%W$7$F(B, x$B$r(B2$B2s%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xを2回プッシュする。";
   };
 
   return StackDupInstruction;
@@ -1083,7 +1083,7 @@ StackRotInstruction = (function(_super) {
   };
 
   StackRotInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y, z$B$r%]%C%W$7$F(B, y, z, x$B$N=g$G%W%C%7%e$9$k!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからx, y, zをポップして, y, z, xの順でプッシュする。";
   };
 
   return StackRotInstruction;
@@ -1111,7 +1111,7 @@ StackBnzInstruction = (function(_super) {
   };
 
   StackBnzInstruction.prototype.mkDescription = function() {
-    return "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx$B$r%]%C%W$7$F(B, x$B$,(B1$B$J$i$P@DLp0u$K?J$`!#(B<br>$B$=$&$G$J$1$l$P@VLp0u$K?J$`!#(B";
+    return "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xが1ならば青矢印に進む。<br>そうでなければ赤矢印に進む。";
   };
 
   return StackBnzInstruction;

@@ -7,7 +7,7 @@ TextLabel = (function(_super) {
 
   function TextLabel(text) {
     TextLabel.__super__.constructor.call(this, text);
-    this.font = "18px 'Meirio', '$B%R%i%.%N3Q%4(B Pro W3', sans-serif";
+    this.font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif";
     this.color = "white";
   }
 
