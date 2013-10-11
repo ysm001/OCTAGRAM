@@ -288,7 +288,6 @@ PlayerRobot = (function(_super) {
     this.name = R.String.PLAYER;
     this.image = Game.instance.assets[R.CHAR.PLAYER];
     this.plateState = Plate.STATE_PLAYER;
-    this.debugCmd = new DebugCommand(this);
   }
 
   PlayerRobot.prototype.onKeyInput = function(input) {
@@ -346,30 +345,45 @@ EnemyRobot = (function(_super) {
   EnemyRobot.UPDATE_FRAME = 10;
 
   function EnemyRobot(parentNode) {
+    this.onDebugComplete = __bind(this.onDebugComplete, this);
     EnemyRobot.__super__.constructor.call(this, EnemyRobot.WIDTH, EnemyRobot.HEIGHT, parentNode);
     this.name = R.String.ENEMY;
     this.image = Game.instance.assets[R.CHAR.ENEMY];
     this.plateState = Plate.STATE_ENEMY;
-    this.debugCmd = new DebugCommand(this);
   }
 
   EnemyRobot.prototype.onKeyInput = function(input) {
+    var ret;
     if (this.animated === true) {
       return;
     }
+    ret = true;
     if (input.w === true && input.o === true) {
-      return this.debugCmd.move(4);
+      this.animated = true;
+      ret = this.move(Direct.LEFT | Direct.UP, this.onDebugComplete);
     } else if (input.a === true && input.o === true) {
-      return this.debugCmd.move(3);
+      this.animated = true;
+      ret = this.move(Direct.LEFT, this.onDebugComplete);
     } else if (input.x === true && input.o === true) {
-      return this.debugCmd.move(5);
+      this.animated = true;
+      ret = this.move(Direct.LEFT | Direct.DOWN, this.onDebugComplete);
     } else if (input.d === true && input.o === true) {
-      return this.debugCmd.move(0);
+      this.animated = true;
+      ret = this.move(Direct.RIGHT, this.onDebugComplete);
     } else if (input.e === true && input.o === true) {
-      return this.debugCmd.move(1);
+      this.animated = true;
+      ret = this.move(Direct.RIGHT | Direct.UP, this.onDebugComplete);
     } else if (input.c === true && input.o === true) {
-      return this.debugCmd.move(2);
+      this.animated = true;
+      ret = this.move(Direct.RIGHT | Direct.DOWN, this.onDebugComplete);
     }
+    if (ret === false) {
+      return this.onDebugComplete();
+    }
+  };
+
+  EnemyRobot.prototype.onDebugComplete = function() {
+    return this.animated = false;
   };
 
   return EnemyRobot;

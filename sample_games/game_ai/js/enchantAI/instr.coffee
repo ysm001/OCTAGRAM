@@ -31,7 +31,6 @@ class InstrCommon
     return 0
 
 class TipInfo
-
   constructor: (@description) ->
     @params = {}
     @labels = {}
@@ -181,6 +180,9 @@ class LeaveInstruction extends ActionInstruction
 
 
 class EnemyDistanceInstruction extends BranchInstruction
+  ###
+    Enemy Distance Instruction
+  ###
 
   constructor : (@robot, @enemy) ->
     super
@@ -270,10 +272,10 @@ class MoveInstruction extends ActionInstruction
     @icon.frame = @directParam.value
     return @icon
 
-###
- Turn Enemy Scan
-###
 class TurnEnemyScanInstruction extends BranchInstruction
+  ###
+    Turn Enemy Scan Instruction
+  ###
 
   constructor : (@robot, @opponent) ->
     super
@@ -346,7 +348,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
 
 class ItemScanMoveInstruction extends ActionInstruction
   ###
-    Item Scan
+    Item Scan and Move Instruction
   ###
 
   constructor : (@robot) ->
@@ -383,6 +385,9 @@ class ItemScanMoveInstruction extends ActionInstruction
     return @icon
 
 class ShotInstruction extends ActionInstruction
+  ###
+    Shot Instruction
+  ###
 
   constructor: (@robot) ->
     super
@@ -449,6 +454,9 @@ class HpBranchInstruction extends BranchInstruction
 
 
 class HoldBulletBranchInstruction extends BranchInstruction
+  ###
+    Hold Bullet Instruction
+  ###
 
   constructor: (@robot) ->
     super

@@ -1,7 +1,6 @@
 R = Config.R
 
 class Spot
-  
   @TYPE_NORMAL_BULLET = 1
   @SIZE = 3
 
@@ -22,7 +21,6 @@ class Spot
     return Math.floor(Math.random() * (Spot.SIZE)) + 1
 
 class NormalSpot extends Spot
-
   constructor: (@plate) ->
 
 

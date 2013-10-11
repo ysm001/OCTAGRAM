@@ -281,6 +281,11 @@ LeaveInstruction = (function(_super) {
 EnemyDistanceInstruction = (function(_super) {
   __extends(EnemyDistanceInstruction, _super);
 
+  /*
+    Enemy Distance Instruction
+  */
+
+
   function EnemyDistanceInstruction(robot, enemy) {
     var column, labels;
     this.robot = robot;
@@ -398,13 +403,13 @@ MoveInstruction = (function(_super) {
 
 })(ActionInstruction);
 
-/*
- Turn Enemy Scan
-*/
-
-
 TurnEnemyScanInstruction = (function(_super) {
   __extends(TurnEnemyScanInstruction, _super);
+
+  /*
+    Turn Enemy Scan Instruction
+  */
+
 
   function TurnEnemyScanInstruction(robot, opponent) {
     var column, labels;
@@ -493,7 +498,7 @@ ItemScanMoveInstruction = (function(_super) {
   __extends(ItemScanMoveInstruction, _super);
 
   /*
-    Item Scan
+    Item Scan and Move Instruction
   */
 
 
@@ -550,6 +555,11 @@ ItemScanMoveInstruction = (function(_super) {
 
 ShotInstruction = (function(_super) {
   __extends(ShotInstruction, _super);
+
+  /*
+    Shot Instruction
+  */
+
 
   function ShotInstruction(robot) {
     this.robot = robot;
@@ -647,6 +657,11 @@ HpBranchInstruction = (function(_super) {
 
 HoldBulletBranchInstruction = (function(_super) {
   __extends(HoldBulletBranchInstruction, _super);
+
+  /*
+    Hold Bullet Instruction
+  */
+
 
   function HoldBulletBranchInstruction(robot) {
     var column, labels;

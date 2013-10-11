@@ -1,7 +1,6 @@
 R = Config.R
 
 class ViewGroup extends Group
-
   constructor: (x, y) ->
     super(x,y)
     @_childs = []
@@ -14,7 +13,6 @@ class ViewGroup extends Group
     view.initEvent(world) for view in @_childs
 
 class ViewSprite extends Sprite
-
   constructor: (x, y) ->
     super(x,y)
 
@@ -22,6 +20,7 @@ class ViewSprite extends Sprite
 
 class Background extends ViewSprite
   @SIZE = 640
+
   constructor: (x, y) ->
     super Background.SIZE, Background.SIZE
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.SPACE]
@@ -31,6 +30,7 @@ class Background extends ViewSprite
 class Button extends ViewSprite
   @WIDTH = 120
   @HEIGHT = 50
+
   constructor: (x,y) ->
     super Button.WIDTH, Button.HEIGHT
     @x = x

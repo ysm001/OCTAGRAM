@@ -165,7 +165,6 @@ class PlayerRobot extends Robot
     @name = R.String.PLAYER
     @image = Game.instance.assets[R.CHAR.PLAYER]
     @plateState = Plate.STATE_PLAYER
-    @debugCmd = new DebugCommand(@)
 
   onKeyInput: (input) ->
     if @animated == true
@@ -174,28 +173,22 @@ class PlayerRobot extends Robot
     ret = true
     if input.w == true and input.p == true
       @animated = true
-      #left Up
       ret = @move(Direct.LEFT | Direct.UP, @onDebugComplete)
     else if input.a == true and input.p == true
       @animated = true
-      #moveLeft
       ret = @move(Direct.LEFT, @onDebugComplete)
     else if input.x == true and input.p == true
       @animated = true
-      #@cmdQueue.enqueue @cmdPool.moveleftDown
       ret = @move(Direct.LEFT | Direct.DOWN, @onDebugComplete)
     else if input.d == true and input.p == true
       @animated = true
       ret = @move(Direct.RIGHT, @onDebugComplete)
-      #@cmdQueue.enqueue @cmdPool.moveRight
     else if input.e == true and input.p == true
       @animated = true
       ret = @move(Direct.RIGHT | Direct.UP, @onDebugComplete)
-      #@cmdQueue.enqueue @cmdPool.moveRightUp
     else if input.c == true and input.p == true
       @animated = true
       ret = @move(Direct.RIGHT | Direct.DOWN, @onDebugComplete)
-      #@cmdQueue.enqueue @cmdPool.moveRightDown
     else if input.q == true and input.m == true
       @animated = true
       ret = @pickup(@onDebugComplete)
@@ -219,26 +212,33 @@ class EnemyRobot extends Robot
     @name = R.String.ENEMY
     @image = Game.instance.assets[R.CHAR.ENEMY]
     @plateState = Plate.STATE_ENEMY
-    @debugCmd = new DebugCommand(@)
 
   onKeyInput: (input) ->
     if @animated == true
       return
+
+    ret = true
     if input.w == true and input.o == true
-      #left Up
-      @debugCmd.move(4)
+      @animated = true
+      ret = @move(Direct.LEFT | Direct.UP, @onDebugComplete)
     else if input.a == true and input.o == true
-      #@cmdQueue.enqueue @cmdPool.moveLeft
-      @debugCmd.move(3)
+      @animated = true
+      ret = @move(Direct.LEFT, @onDebugComplete)
     else if input.x == true and input.o == true
-      @debugCmd.move(5)
-      #@cmdQueue.enqueue @cmdPool.moveleftDown
+      @animated = true
+      ret = @move(Direct.LEFT | Direct.DOWN, @onDebugComplete)
     else if input.d == true and input.o == true
-      @debugCmd.move(0)
-      #@cmdQueue.enqueue @cmdPool.moveRight
+      @animated = true
+      ret = @move(Direct.RIGHT, @onDebugComplete)
     else if input.e == true and input.o == true
-      @debugCmd.move(1)
-      #@cmdQueue.enqueue @cmdPool.moveRightUp
+      @animated = true
+      ret = @move(Direct.RIGHT | Direct.UP, @onDebugComplete)
     else if input.c == true and input.o == true
-      @debugCmd.move(2)
-      #@cmdQueue.enqueue @cmdPool.moveRightDown
+      @animated = true
+      ret = @move(Direct.RIGHT | Direct.DOWN, @onDebugComplete)
+
+    if ret == false
+      @onDebugComplete()
+
+  onDebugComplete: () =>
+    @animated = false

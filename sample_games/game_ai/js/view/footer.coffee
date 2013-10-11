@@ -1,15 +1,21 @@
 R = Config.R
 
-class MsgWindow extends ViewSprite
-  @WIDTH = 320
-  @HEIGHT = 128
-  constructor: (x,y) ->
-    super MsgWindow.WIDTH, MsgWindow.HEIGHT
-    @x = x
-    @y = y
-    @image = Game.instance.assets[R.BACKGROUND_IMAGE.MSGBOX]
-
 class MsgBox extends ViewGroup
+  @WIDTH : 320
+  @HEIGHT : 128
+
+  ###
+   inner class
+  ###
+  class MsgWindow extends ViewSprite
+    @WIDTH = 320
+    @HEIGHT = 128
+
+    constructor: (x,y) ->
+      super MsgWindow.WIDTH, MsgWindow.HEIGHT
+      @x = x
+      @y = y
+      @image = Game.instance.assets[R.BACKGROUND_IMAGE.MSGBOX]
 
   constructor: (x,y) ->
     super MsgWindow.WIDTH, MsgWindow.HEIGHT
@@ -53,50 +59,45 @@ class MsgBox extends ViewGroup
   print: (msg) ->
     @label.text = "#{msg}"
 
-class StatusWindow extends ViewSprite
-  @WIDTH = 160
-  @HEIGHT = 128
-  constructor: (x,y) ->
-    super StatusWindow.WIDTH, StatusWindow.HEIGHT
-    @x = x
-    @y = y
-    @image = Game.instance.assets[R.BACKGROUND_IMAGE.STATUS_BOX]
-
-class RemainingBullet extends ViewSprite
-  @SIZE = 24
-  constructor: (x, y, frame) ->
-    super RemainingBullet.SIZE, RemainingBullet.SIZE
-    @x = x
-    @y = y
-    @frame = frame
-    @image = Game.instance.assets[R.ITEM.STATUS_BULLET]
-
-class RemainingBullets extends ViewGroup
-  @HEIGHT = 30
-  @WIDTH = 120
-
-  constructor: (x, y, @type) ->
-    super RemainingBullets.WIDTH, RemainingBullets.HEIGHT
-    @x = x
-    @y = y
-    @size = 0
-    @array = []
-    for i in [0..4]
-      b = new RemainingBullet(i * RemainingBullet.SIZE, 0, @type)
-      @array.push b
-      @addChild b
-
-  increment: () ->
-    if @size < 5
-      @array[@size].frame = @type - 1
-      @size++
-
-  decrement: () ->
-    if @size > 0
-      @size--
-      @array[@size].frame = @type
-
 class RemainingBulletsGroup extends ViewGroup
+
+  ###
+   inner class
+  ###
+  class RemainingBullet extends ViewSprite
+    @SIZE = 24
+
+    constructor: (x, y, frame) ->
+      super RemainingBullet.SIZE, RemainingBullet.SIZE
+      @x = x
+      @y = y
+      @frame = frame
+      @image = Game.instance.assets[R.ITEM.STATUS_BULLET]
+
+  class RemainingBullets extends ViewGroup
+    @HEIGHT = 30
+    @WIDTH = 120
+
+    increment: () ->
+      if @size < 5
+        @array[@size].frame = @type - 1
+        @size++
+
+    decrement: () ->
+      if @size > 0
+        @size--
+        @array[@size].frame = @type
+
+    constructor: (x, y, @type) ->
+      super RemainingBullets.WIDTH, RemainingBullets.HEIGHT
+      @x = x
+      @y = y
+      @size = 0
+      @array = []
+      for i in [0..4]
+        b = new RemainingBullet(i * RemainingBullet.SIZE, 0, @type)
+        @array.push b
+        @addChild b
 
   constructor : (x, y) ->
     super
@@ -132,6 +133,18 @@ class RemainingBulletsGroup extends ViewGroup
 
 class StatusBox extends ViewGroup
 
+  ###
+   inner class
+  ###
+  class StatusWindow extends ViewSprite
+    @WIDTH = 160
+    @HEIGHT = 128
+    constructor: (x,y) ->
+      super StatusWindow.WIDTH, StatusWindow.HEIGHT
+      @x = x
+      @y = y
+      @image = Game.instance.assets[R.BACKGROUND_IMAGE.STATUS_BOX]
+
   constructor: (x,y) ->
     super StatusWindow.WIDTH, StatusWindow.HEIGHT
     @x = x
@@ -140,9 +153,10 @@ class StatusBox extends ViewGroup
     @addView(new RemainingBulletsGroup())
 
 class Footer extends ViewGroup
+
   constructor: (x,y) ->
     super
     @x = x
     @y = y
     @addView(new MsgBox(20, 0))
-    @addView(new StatusBox(x+MsgWindow.WIDTH+32, 16))
+    @addView(new StatusBox(x+MsgBox.WIDTH+32, 16))

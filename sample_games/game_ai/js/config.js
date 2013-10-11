@@ -29,8 +29,8 @@ Config.R = (function() {
   R.BACKGROUND_IMAGE = {
     SPACE: "" + R.RESOURCE_DIR + "/background/background_space.png",
     HEADER: "" + R.RESOURCE_DIR + "/background/header.png",
-    HP_YELLOW: "" + R.RESOURCE_DIR + "/background/hp_yellow.png",
-    HP_BULE: "" + R.RESOURCE_DIR + "/background/hp_blue.png",
+    HP_RED: "" + R.RESOURCE_DIR + "/background/hp_red.png",
+    HP_GREEN: "" + R.RESOURCE_DIR + "/background/hp_green.png",
     HP_ENCLOSE: "" + R.RESOURCE_DIR + "/background/hpenclose.png",
     PLATE: "" + R.RESOURCE_DIR + "/background/plate.png",
     MSGBOX: "" + R.RESOURCE_DIR + "/background/msgbox.png",

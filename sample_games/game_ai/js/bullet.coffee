@@ -44,7 +44,6 @@ class BulletType
   @DUAL = 3
 
 class Bullet extends Sprite
-
   constructor: (w, h, @type, @maxFrame = Config.Frame.BULLET) ->
     super w, h
     @rotate 90
