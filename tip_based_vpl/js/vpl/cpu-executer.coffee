@@ -4,6 +4,7 @@ class Executer extends EventTarget
   constructor : (@cpu) ->
     @next = null
     @current = null
+    @end = false
 
   getNext : () -> if @next? then @cpu.getTip(@next.x, @next.y) else null
 
@@ -26,21 +27,27 @@ class Executer extends EventTarget
       setTimeout(@execNext, Executer.latency)
 
   execute : () ->
+    @end = false
     tip = @cpu.getStartTip()
     @_execute(tip)
 
   execNext : (e) =>
-    nextTip = @getNext()
-
-    # asynchronous branch
-    if @current? && @current.isAsynchronous() && e && e.params.result? && @current instanceof BranchTransitionCodeTip
-      @next = if e.params.result then @current.code.getConseq() else @current.code.getAlter()
+    if @end
+      @current.hideExecutionEffect() if @current
+    else
       nextTip = @getNext()
 
-    if nextTip?
-      if nextTip == @current
-        console.log("error : invalid execution timing.")
-        @next = @current.code.getNext()
+      # asynchronous branch
+      if @current? && @current.isAsynchronous() && e && e.params.result? && @current instanceof BranchTransitionCodeTip
+        @next = if e.params.result then @current.code.getConseq() else @current.code.getAlter()
         nextTip = @getNext()
 
-      @_execute(nextTip)
+      if nextTip?
+        if nextTip == @current
+          console.log("error : invalid execution timing.")
+          @next = @current.code.getNext()
+          nextTip = @getNext()
+
+        @_execute(nextTip)
+
+  stop : () -> @end =true
