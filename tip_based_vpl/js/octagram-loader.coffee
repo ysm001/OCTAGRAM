@@ -28,5 +28,7 @@
 	"vpl/ui/sidebar.js",
 	"vpl/ui/config-panel.js",
 	"vpl/ui/ui.js",
+	"vpl/environment.js"
+	"vpl/octagram.js"
 	"vpl/main.js"
 )

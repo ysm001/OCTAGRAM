@@ -25,12 +25,6 @@ class TipUtil
      else if code instanceof WallTip   then TextResource.msg["wall"]
      else if code instanceof NopTip    then TextResource.msg["nop"]
 
-class EventUtil
-  @createEvent : (eventName) ->
-    evt = document.createEvent('UIEvent', false)
-    evt.initUIEvent(eventName, true, true)
-    evt
-
 uniqueID = () ->
   randam = Math.floor(Math.random()*1000)
   date = new Date()

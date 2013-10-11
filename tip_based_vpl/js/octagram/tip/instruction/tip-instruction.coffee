@@ -8,17 +8,8 @@ class Instruction extends EventTarget
     @parameters = []
 
   onComplete : (result = null) ->
-    ###
-    evt = document.createEvent('UIEvent', false)
-    evt.initUIEvent('completeExecution', true, true)
-    ###
     @dispatchEvent(new InstructionEvent('completeExecution', {tip: this, result: result}))
-    ###
-    evt.tip = this
-    evt.result = result
-    ###
-    #document.dispatchEvent(evt)
-
+    
   action : () ->
   execute : () -> @action()
   setAsynchronous : (async = true) -> @isAsynchronous = async
