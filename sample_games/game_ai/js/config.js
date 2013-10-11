@@ -88,7 +88,7 @@ Config.R = (function() {
 Config.Frame = (function() {
   function Frame() {}
 
-  Frame.DIAMETER = 2;
+  Frame.DIAMETER = 1;
 
   Frame.ROBOT_MOVE = 12 / Frame.DIAMETER;
 
@@ -109,22 +109,26 @@ Config.R.String = (function() {
 
   String.ENEMY = "エネミー";
 
-  String.CANNOTMOVE = "移動てきません";
+  String.CANNOTMOVE = "移動てきません。";
 
-  String.CANNOTSHOT = "弾切れです";
+  String.CANNOTSHOT = "弾切れです。";
 
-  String.CANNOTPICKUP = "弾を補充できません";
+  String.CANNOTPICKUP = "弾を補充できません。";
 
   String.pickup = function(s) {
-    return "" + s + "は弾を一つ補充しました";
+    return "" + s + "は弾を一つ補充しました。";
   };
 
   String.shot = function(s) {
-    return "" + s + "は攻撃しました";
+    return "" + s + "は攻撃しました。";
   };
 
   String.move = function(s, x, y) {
-    return "" + s + "は(" + x + "," + y + ")に移動しました";
+    return "" + s + "は(" + x + "," + y + ")に移動しました。";
+  };
+
+  String.die = function(s) {
+    return "" + s + "はHPが0になりました。";
   };
 
   return String;

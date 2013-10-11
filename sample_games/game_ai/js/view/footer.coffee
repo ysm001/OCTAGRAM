@@ -56,6 +56,10 @@ class MsgBox extends ViewGroup
       else
         @print R.String.CANNOTPICKUP
 
+    # callback on the HP of enemy changed
+    world.player.addObserver "hp", (hp) =>
+      @print R.String.die(world.player.name) if hp <= 0
+
   print: (msg) ->
     @label.text = "#{msg}"
 

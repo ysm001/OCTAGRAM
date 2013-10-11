@@ -55,7 +55,7 @@ class Config.R
     REST_BULLET : "#{R.RESOURCE_DIR}/tip/rest_bullet.png"
 
 class Config.Frame
-  @DIAMETER = 2
+  @DIAMETER = 1
 
   @ROBOT_MOVE = 12 / Frame.DIAMETER
   @ROBOT_WAIT = 8 / Frame.DIAMETER
@@ -65,13 +65,11 @@ class Config.Frame
 class Config.R.String
   @PLAYER : "プレイヤー"
   @ENEMY : "エネミー"
-  @CANNOTMOVE : "移動てきません"
-  @CANNOTSHOT : "弾切れです"
-  @CANNOTPICKUP : "弾を補充できません"
+  @CANNOTMOVE : "移動てきません。"
+  @CANNOTSHOT : "弾切れです。"
+  @CANNOTPICKUP : "弾を補充できません。"
 
-  @pickup:(s) ->
-    return "#{s}は弾を一つ補充しました"
-  @shot:(s) ->
-    return "#{s}は攻撃しました"
-  @move:(s, x, y) ->
-    return "#{s}は(#{x},#{y})に移動しました"
+  @pickup: (s) -> "#{s}は弾を一つ補充しました。"
+  @shot: (s) -> "#{s}は攻撃しました。"
+  @move: (s, x, y) -> "#{s}は(#{x},#{y})に移動しました。"
+  @die: (s) -> "#{s}はHPが0になりました。"
