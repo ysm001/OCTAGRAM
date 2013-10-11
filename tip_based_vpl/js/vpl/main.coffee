@@ -125,6 +125,7 @@ class Octagram extends Group
   save : (filename) -> @cpu.save(filename)
 
   execute : () -> @executer.execute()
+  stop : () -> @executer.stop()
 
   setTipToBar : () ->
     @clearInstructions()
