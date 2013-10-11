@@ -12,8 +12,8 @@ class CounterIncrementInstruction extends ActionInstruction
     super()
     @id = 0 
     @step = 1
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
-    stepParam = new TipParameter("$BA}2CNL(B", 1, 1, 100, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
+    stepParam = new TipParameter("増加量", 1, 1, 100, 1)
     
     idParam.id = "id"
     stepParam.id = "step"
@@ -29,7 +29,7 @@ class CounterIncrementInstruction extends ActionInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%+%&%s%?!<(B" + @id + "$B$r(B" + @step + "$BA}2C$5$;$^$9!#(B"
+    "カウンター" + @id + "を" + @step + "増加させます。"
 
   clone : () -> @copy(new CounterIncrementInstruction(@counters))
 
@@ -38,8 +38,8 @@ class CounterDecrementInstruction extends ActionInstruction
     super()
     @id = 0
     @step = 1
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
-    stepParam = new TipParameter("$B8:>/NL(B", 1, 1, 100, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
+    stepParam = new TipParameter("減少量", 1, 1, 100, 1)
     
     idParam.id = "id"
     stepParam.id = "step"
@@ -55,7 +55,7 @@ class CounterDecrementInstruction extends ActionInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%+%&%s%?!<(B" + @id + "$B$r(B" + @step + "$B8:>/$5$;$^$9!#(B"
+    "カウンター" + @id + "を" + @step + "減少させます。"
 
   clone : () -> @copy(new CounterDecrementInstruction(@counters))
 
@@ -64,8 +64,8 @@ class CounterBranchInstruction extends BranchInstruction
     super()
     @id = 0
     @threthold = 0
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
-    thretholdParam = new TipParameter("$BogCM(B", 0, -100, 100, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
+    thretholdParam = new TipParameter("閾値", 0, -100, 100, 1)
     
     idParam.id = "id"
     thretholdParam.id = "threthold"
@@ -81,8 +81,8 @@ class CounterBranchInstruction extends BranchInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%+%&%s%?!<(B" + @id + "$B$,(B" + @threthold + "$B0J>e$J$i$P@DLp0u$K?J$_$^$9!#(B<br>" +  
-    "$B%+%&%s%?!<(B" + @id + "$B$,(B" + @threthold + "$BL$K~$J$i$P@VLp0u$K?J$_$^$9!#(B" 
+    "カウンター" + @id + "が" + @threthold + "以上ならば青矢印に進みます。<br>" +  
+    "カウンター" + @id + "が" + @threthold + "未満ならば赤矢印に進みます。" 
 
   clone : () -> @copy(new CounterBranchInstruction(@counters))
 
@@ -90,7 +90,7 @@ class CounterPushInstruction extends ActionInstruction
   constructor : (@counters, @stack) ->
     super()
     @id = 0
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
     
     @addParameter(idParam)
 
@@ -100,7 +100,7 @@ class CounterPushInstruction extends ActionInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%+%&%s%?!<(B" + @id + "$B$NCM$r(B" + "$B%9%?%C%/$K%W%C%7%e$7$^$9!#(B"
+    "カウンター" + @id + "の値を" + "スタックにプッシュします。"
 
   clone : () -> @copy(new CounterPushInstruction(@counters))
 
@@ -108,7 +108,7 @@ class CounterPopInstruction extends ActionInstruction
   constructor : (@counters, @stack) ->
     super()
     @id = 0 
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
     
     @addParameter(idParam)
 
@@ -118,6 +118,6 @@ class CounterPopInstruction extends ActionInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%9%?%C%/$+$i(Bx$B$r%]%C%W$7$F(B, $B%+%&%s%?!<(B" + @id + "$B$KBeF~$7$^$9!#(B"
+    "スタックからxをポップして, カウンター" + @id + "に代入します。"
 
   clone : () -> @copy(new CounterPushInstruction(@counters))

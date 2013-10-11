@@ -213,8 +213,8 @@ class CounterIncrementInstruction extends ActionInstruction
     super()
     @id = 0 
     @step = 1
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
-    stepParam = new TipParameter("$BA}2CNL(B", 1, 1, 100, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
+    stepParam = new TipParameter("増加量", 1, 1, 100, 1)
     
     idParam.id = "id"
     stepParam.id = "step"
@@ -230,7 +230,7 @@ class CounterIncrementInstruction extends ActionInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%+%&%s%?!<(B" + @id + "$B$r(B" + @step + "$BA}2C$5$;$^$9!#(B"
+    "カウンター" + @id + "を" + @step + "増加させます。"
 
   clone : () -> @copy(new CounterIncrementInstruction(@counters))
 
@@ -239,8 +239,8 @@ class CounterDecrementInstruction extends ActionInstruction
     super()
     @id = 0
     @step = 1
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
-    stepParam = new TipParameter("$B8:>/NL(B", 1, 1, 100, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
+    stepParam = new TipParameter("減少量", 1, 1, 100, 1)
     
     idParam.id = "id"
     stepParam.id = "step"
@@ -256,7 +256,7 @@ class CounterDecrementInstruction extends ActionInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%+%&%s%?!<(B" + @id + "$B$r(B" + @step + "$B8:>/$5$;$^$9!#(B"
+    "カウンター" + @id + "を" + @step + "減少させます。"
 
   clone : () -> @copy(new CounterDecrementInstruction(@counters))
 
@@ -265,8 +265,8 @@ class CounterBranchInstruction extends BranchInstruction
     super()
     @id = 0
     @threthold = 0
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
-    thretholdParam = new TipParameter("$BogCM(B", 0, -100, 100, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
+    thretholdParam = new TipParameter("閾値", 0, -100, 100, 1)
     
     idParam.id = "id"
     thretholdParam.id = "threthold"
@@ -282,8 +282,8 @@ class CounterBranchInstruction extends BranchInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%+%&%s%?!<(B" + @id + "$B$,(B" + @threthold + "$B0J>e$J$i$P@DLp0u$K?J$_$^$9!#(B<br>" +  
-    "$B%+%&%s%?!<(B" + @id + "$B$,(B" + @threthold + "$BL$K~$J$i$P@VLp0u$K?J$_$^$9!#(B" 
+    "カウンター" + @id + "が" + @threthold + "以上ならば青矢印に進みます。<br>" +  
+    "カウンター" + @id + "が" + @threthold + "未満ならば赤矢印に進みます。" 
 
   clone : () -> @copy(new CounterBranchInstruction(@counters))
 
@@ -291,7 +291,7 @@ class CounterPushInstruction extends ActionInstruction
   constructor : (@counters, @stack) ->
     super()
     @id = 0
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
     
     @addParameter(idParam)
 
@@ -301,7 +301,7 @@ class CounterPushInstruction extends ActionInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%+%&%s%?!<(B" + @id + "$B$NCM$r(B" + "$B%9%?%C%/$K%W%C%7%e$7$^$9!#(B"
+    "カウンター" + @id + "の値を" + "スタックにプッシュします。"
 
   clone : () -> @copy(new CounterPushInstruction(@counters))
 
@@ -309,7 +309,7 @@ class CounterPopInstruction extends ActionInstruction
   constructor : (@counters, @stack) ->
     super()
     @id = 0 
-    idParam = new TipParameter("$B%+%&%s%?!<(BID", 0, 0, @counters.length, 1)
+    idParam = new TipParameter("カウンターID", 0, 0, @counters.length, 1)
     
     @addParameter(idParam)
 
@@ -319,7 +319,7 @@ class CounterPopInstruction extends ActionInstruction
 
   getIcon : () -> new Icon(Resources.get("iconRandom"))
   mkDescription : () ->
-    "$B%9%?%C%/$+$i(Bx$B$r%]%C%W$7$F(B, $B%+%&%s%?!<(B" + @id + "$B$KBeF~$7$^$9!#(B"
+    "スタックからxをポップして, カウンター" + @id + "に代入します。"
 
   clone : () -> @copy(new CounterPushInstruction(@counters))
 
@@ -388,84 +388,84 @@ class StackAddInstruction extends ActionInstruction
   action : () -> @stack.add()
   clone : () -> @copy(new StackAddInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x+y$B$NCM$r%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x+yの値をプッシュする。"
 
 class StackSubInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.sub()
   clone : () -> @copy(new StackSubInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x-y$B$NCM$r%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x-yの値をプッシュする。"
 
 class StackMulInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.mul()
   clone : () -> @copy(new StackMulInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x+y$B$NCM$r%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x+yの値をプッシュする。"
 
 class StackDivInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.div()
   clone : () -> @copy(new StackDivInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x/y$B$NCM$r%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x/yの値をプッシュする。"
 
 class StackModInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.mod()
   clone : () -> @copy(new StackModInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x$B$r(By$B$G3d$C$?;~$NM>$j$r%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, xをyで割った時の余りをプッシュする。"
 
 class StackXorInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.xor()
   clone : () -> @copy(new StackXorInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x$B$H(By$B$NGSB>E*O@M}OB$NCM$r%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, xとyの排他的論理和の値をプッシュする。"
 
 class StackGrtInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.grt()
   clone : () -> @copy(new StackGrtInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, x>y$B$J$i$P(B1$B$r%W%C%7%e$9$k!#(B<br>$B$=$&$G$J$1$l$P(B0$B$r%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, x>yならば1をプッシュする。<br>そうでなければ0をプッシュする。"
 
 class StackSwpInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.swap()
   clone : () -> new StackSwpInstruction(@stack)
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y$B$r%]%C%W$7$F(B, y, x$B$N=g$G%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, yをポップして, y, xの順でプッシュする。"
 
 class StackNotInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.not()
   clone : () -> @copy(new StackNotInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx$B$r%]%C%W$7$F(B, x$B$,(B0$B$J$i$P(B1$B$r%W%C%7%e$9$k!#(B<br>$B$=$&$G$J$1$l$P(B0$B$r%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xが0ならば1をプッシュする。<br>そうでなければ0をプッシュする。"
 
 class StackDupInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.dup()
   clone : () -> @copy(new StackDupInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx$B$r%]%C%W$7$F(B, x$B$r(B2$B2s%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xを2回プッシュする。"
 
 class StackRotInstruction extends ActionInstruction
   constructor : (@stack) -> super
   action : () -> @stack.rot()
   clone : () -> @copy(new StackRotInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx, y, z$B$r%]%C%W$7$F(B, y, z, x$B$N=g$G%W%C%7%e$9$k!#(B"
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからx, y, zをポップして, y, z, xの順でプッシュする。"
 
 class StackBnzInstruction extends BranchInstruction
   constructor : (@stack) -> super
   action : () -> @stack.bnz()
   clone : () -> @copy(new StackBnzInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
-  mkDescription : () -> "$B%9%?%C%/A`:nL?Na(B($B>e5i<T8~$1(B)<br>" + "$B%9%?%C%/$+$i(Bx$B$r%]%C%W$7$F(B, x$B$,(B1$B$J$i$P@DLp0u$K?J$`!#(B<br>$B$=$&$G$J$1$l$P@VLp0u$K?J$`!#(B" 
+  mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xが1ならば青矢印に進む。<br>そうでなければ赤矢印に進む。" 
 
 #####################################################
 # チップ関連

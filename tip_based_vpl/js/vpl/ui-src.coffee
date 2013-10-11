@@ -1,7 +1,7 @@
 class TextLabel extends Label
   constructor : (text) ->
     super(text)
-    @font = "18px 'Meirio', '$B%R%i%.%N3Q%4(B Pro W3', sans-serif" 
+    @font = "18px 'Meirio', 'ヒラギノ角ゴ Pro W3', sans-serif" 
     @color = "white"
 
 class UIPanel extends SpriteGroup
