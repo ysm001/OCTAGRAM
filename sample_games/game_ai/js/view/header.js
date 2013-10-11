@@ -91,9 +91,9 @@ HpView = (function(_super) {
   function HpView(x, y, resource) {
     HpView.__super__.constructor.apply(this, arguments);
     this.hp = new HpBar(x, y, resource);
-    this.addChild(this.hp);
     this.underBar = new HpEnclose(x, y);
     this.addChild(this.underBar);
+    this.addChild(this.hp);
   }
 
   HpView.prototype.reduce = function() {

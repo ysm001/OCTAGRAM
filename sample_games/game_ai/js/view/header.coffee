@@ -46,9 +46,9 @@ class HpView extends ViewGroup
   constructor: (x,y, resource) ->
     super
     @hp = new HpBar x, y, resource
-    @addChild @hp
     @underBar = new HpEnclose x, y
     @addChild @underBar
+    @addChild @hp
 
   reduce: () ->
     @hp.value -= @hp.maxValue / Robot.MAX_HP if @hp.value > 0
