@@ -21,12 +21,12 @@
 	"vpl/tip/instruction/instruction-preset.js",
 	"vpl/tip/instruction/tip-instruction-stack.js",
 	"vpl/tip/instruction/tip-instruction-counter.js",
-	"vpl/ui/ui.js",
 	"vpl/ui/background.js",
 	"vpl/cpu/cpu.js",
 	"vpl/cpu/cpu-executer.js",
-	"vpl/ui/ui-slider.js",
-	"vpl/ui/ui-sidebar.js",
-	"vpl/ui/ui-config.js",
+	"vpl/ui/slider.js",
+	"vpl/ui/sidebar.js",
+	"vpl/ui/config-panel.js",
+	"vpl/ui/ui.js",
 	"vpl/main.js"
 )
