@@ -6,13 +6,12 @@ class Slider extends SpriteGroup
     labelPaddingY = 4
     labelPaddingX = 12
 
-    @knob = new ImageSprite(Resources.get("sliderKnob"))
+    @knob = new UIButton(null, Resources.get("sliderKnob"))
     @knob.touchEnabled = false
 
     @label = new TextLabel("")
     @title = new TextLabel("")
 
-    @knob.moveTo(0, @knob.width / 2)
     @title.moveTo(-@titleWidth, labelPaddingY)
     @label.moveTo(@getWidth() + labelPaddingX, labelPaddingY)
 
@@ -25,15 +24,22 @@ class Slider extends SpriteGroup
     @addChild(@label)
     @addChild(@title)
 
-  ontouchstart : (e) ->
-    x = e.x - @getAbsolutePosition().x
-    value = @positionToValue(x)
-    @scroll(value)
+  ontouchstart : (e) -> 
+    @knob.ontouchstart()
+    @ontouchmove(e)
 
   ontouchmove : (e) ->
     x = e.x - @getAbsolutePosition().x
     if x < 0 then x = 0 
     if x > @getWidth() then x = @getWidth()
+
+    @scrollByPos(x)
+
+  ontouchend : (e) ->
+    x = e.x - @getAbsolutePosition().x
+    if x < 0 then x = 0 
+    if x > @getWidth() then x = @getWidth()
+    @knob.ontouchend()
 
     value = @positionToValue(x)
     @scroll(value)
@@ -51,7 +57,12 @@ class Slider extends SpriteGroup
   scroll : (value) ->
     @value = @adjustValue(value)
     x = @valueToPosition(@value)
-    @knob.moveTo(x - @knob.width/2, @knob.height / 2)
+    @knob.moveTo(x - @knob.width/2, 0)
+    @onValueChanged()
+
+  scrollByPos : (x) ->
+    @value = @adjustValue(@positionToValue(x))
+    @knob.moveTo(x - @knob.width/2, 0)
     @onValueChanged()
 
   adjustValue : (value) ->

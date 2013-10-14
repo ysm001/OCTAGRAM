@@ -40,7 +40,7 @@ class UIPanelBody extends SpriteGroup
     @okButton.moveTo(@getWidth()/2 - @okButton.width/2, 
       @getHeight() - @okButton.height - 24)
 
-    @closeButton.moveTo(32, 24)
+    @closeButton.moveTo(32, 19)
     @label.moveTo(80, 28)
     @content.moveTo(90, 24)
 

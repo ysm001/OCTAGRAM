@@ -16,11 +16,10 @@ Slider = (function(_super) {
     this.titleWidth = 128;
     labelPaddingY = 4;
     labelPaddingX = 12;
-    this.knob = new ImageSprite(Resources.get("sliderKnob"));
+    this.knob = new UIButton(null, Resources.get("sliderKnob"));
     this.knob.touchEnabled = false;
     this.label = new TextLabel("");
     this.title = new TextLabel("");
-    this.knob.moveTo(0, this.knob.width / 2);
     this.title.moveTo(-this.titleWidth, labelPaddingY);
     this.label.moveTo(this.getWidth() + labelPaddingX, labelPaddingY);
     this.title.width = this.titleWidth;
@@ -32,13 +31,23 @@ Slider = (function(_super) {
   }
 
   Slider.prototype.ontouchstart = function(e) {
-    var value, x;
-    x = e.x - this.getAbsolutePosition().x;
-    value = this.positionToValue(x);
-    return this.scroll(value);
+    this.knob.ontouchstart();
+    return this.ontouchmove(e);
   };
 
   Slider.prototype.ontouchmove = function(e) {
+    var x;
+    x = e.x - this.getAbsolutePosition().x;
+    if (x < 0) {
+      x = 0;
+    }
+    if (x > this.getWidth()) {
+      x = this.getWidth();
+    }
+    return this.scrollByPos(x);
+  };
+
+  Slider.prototype.ontouchend = function(e) {
     var value, x;
     x = e.x - this.getAbsolutePosition().x;
     if (x < 0) {
@@ -47,6 +56,7 @@ Slider = (function(_super) {
     if (x > this.getWidth()) {
       x = this.getWidth();
     }
+    this.knob.ontouchend();
     value = this.positionToValue(x);
     return this.scroll(value);
   };
@@ -72,7 +82,13 @@ Slider = (function(_super) {
     var x;
     this.value = this.adjustValue(value);
     x = this.valueToPosition(this.value);
-    this.knob.moveTo(x - this.knob.width / 2, this.knob.height / 2);
+    this.knob.moveTo(x - this.knob.width / 2, 0);
+    return this.onValueChanged();
+  };
+
+  Slider.prototype.scrollByPos = function(x) {
+    this.value = this.adjustValue(this.positionToValue(x));
+    this.knob.moveTo(x - this.knob.width / 2, 0);
     return this.onValueChanged();
   };
 

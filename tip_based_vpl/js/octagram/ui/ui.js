@@ -64,7 +64,7 @@ UIPanelBody = (function(_super) {
     this.okButton = new UIOkButton(this.parent);
     this.closedWithOK = false;
     this.okButton.moveTo(this.getWidth() / 2 - this.okButton.width / 2, this.getHeight() - this.okButton.height - 24);
-    this.closeButton.moveTo(32, 24);
+    this.closeButton.moveTo(32, 19);
     this.label.moveTo(80, 28);
     this.content.moveTo(90, 24);
     this.addChild(this.sprite);
