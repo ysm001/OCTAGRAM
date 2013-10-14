@@ -41,7 +41,7 @@ ParameterConfigPanel = (function(_super) {
     var padding, slider;
     slider = new ParameterSlider(parameter);
     padding = slider.getHeight() / 2;
-    slider.moveTo(slider.titleWidth, padding + this.childNodes.length * (slider.getHeight() + padding));
+    slider.moveTo(slider.titleWidth + padding, padding + this.childNodes.length * (slider.getHeight() + padding));
     slider.setTitle(parameter.valueName);
     return this.addChild(slider);
   };
