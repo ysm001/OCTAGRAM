@@ -19,7 +19,7 @@ SideTipSelector = (function(_super) {
     background = new ImageSprite(Resources.get('sidebar'));
     this.addChild(background);
     tipHeight = Resources.get("emptyTip").height;
-    this.topArrow = new ImageSprite(Resources.get('arrow'));
+    this.topArrow = new UIButton(Resources.get('arrow'));
     this.topArrow.rotate(-90);
     this.topArrow.moveTo((this.width - this.topArrow.width) / 2, 0);
     this.topArrow.on(Event.TOUCH_START, function() {
@@ -31,7 +31,7 @@ SideTipSelector = (function(_super) {
       return _this._updateVisibility();
     });
     this.addChild(this.topArrow);
-    this.bottomArrow = new ImageSprite(Resources.get('arrow'));
+    this.bottomArrow = new UIButton(Resources.get('arrow'));
     this.bottomArrow.rotate(90);
     this.bottomArrow.moveTo((this.width - this.bottomArrow.width) / 2, this.height - this.bottomArrow.height);
     this.bottomArrow.on(Event.TOUCH_START, function() {

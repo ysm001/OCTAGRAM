@@ -27,7 +27,7 @@ class Resources
     "frameBottom"     : "frame_bottom.png",
     "helpPanel"       : "help_panel_144x640.png",
     "closeButton"     : "close_btn_64x32.png",
-    "arrow"           : "arrow_64x64.png"
+    "arrow"           : "arrow_128x64.png"
     "filter"          : "filter_960x960.png"
     "okButton"        : "ok_button_308x56.png"
     "testObject"      : "test_obj_48x48.png"

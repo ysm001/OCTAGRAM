@@ -16,7 +16,7 @@ class SideTipSelector extends EntityGroup
     tipHeight = Resources.get("emptyTip").height
 
     # create top arrow
-    @topArrow = new ImageSprite(Resources.get('arrow'))
+    @topArrow = new UIButton(Resources.get('arrow'))
     @topArrow.rotate(-90)
     @topArrow.moveTo((@width - @topArrow.width) / 2, 0)
     @topArrow.on(Event.TOUCH_START, =>
@@ -29,7 +29,7 @@ class SideTipSelector extends EntityGroup
 
 
     # create bottom arrow
-    @bottomArrow = new ImageSprite(Resources.get('arrow'))
+    @bottomArrow = new UIButton(Resources.get('arrow'))
     @bottomArrow.rotate(90)
     @bottomArrow.moveTo((@width - @bottomArrow.width)/2, @height - @bottomArrow.height)
     @bottomArrow.on(Event.TOUCH_START, =>
