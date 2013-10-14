@@ -6,7 +6,7 @@ Random = new MersenneTwister()
 class ViewWorld extends Group
   constructor: (x, y, scene) ->
     super()
-    #scene.addChild @
+    scene.addChild @
     @x = x
     @y = y
 
@@ -56,7 +56,7 @@ class RobotWorld extends GroupModel
 
     @_robots.push @_player
     @_robots.push @_enemy
-    #scene.addChild @
+    scene.addChild @
     @addChild @_player
     @addChild @_enemy
 

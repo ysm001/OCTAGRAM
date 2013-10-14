@@ -23,6 +23,8 @@ Direction = (function() {
 
   Direction.rightDown = new Point(1, 1);
 
+  Direction.array = [Direction.up, Direction.rightUp, Direction.right, Direction.rightDown, Direction.down, Direction.leftDown, Direction.left, Direction.leftUp];
+
   Direction.toDirection = function(x, y) {
     return new Point(x, y);
   };

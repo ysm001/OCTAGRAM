@@ -15,6 +15,7 @@ class Direction
   @rightUp   = new Point( 1,-1)
   @rightDown = new Point( 1, 1)
 
+  @array = [Direction.up, Direction.rightUp, Direction.right, Direction.rightDown, Direction.down, Direction.leftDown, Direction.left, Direction.leftUp]
   @toDirection : (x, y) -> new Point(x, y)
 
 #####################################################

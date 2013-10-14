@@ -11,7 +11,9 @@ TipTransition = (function(_super) {
     this.dst = dst;
     TipTransition.__super__.constructor.call(this, image.width, image.height);
     this.image = image;
-    this.link(this.src, this.dst);
+    if (this.src && this.dst) {
+      this.link(this.src, this.dst);
+    }
     this.parent = null;
   }
 

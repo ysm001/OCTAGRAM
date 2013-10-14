@@ -12,6 +12,7 @@ ViewWorld = (function(_super) {
 
   function ViewWorld(x, y, scene) {
     ViewWorld.__super__.constructor.call(this);
+    scene.addChild(this);
     this.x = x;
     this.y = y;
     this.background = new Background(0, 0);
@@ -70,6 +71,7 @@ RobotWorld = (function(_super) {
     this._enemy.moveDirect(plate);
     this._robots.push(this._player);
     this._robots.push(this._enemy);
+    scene.addChild(this);
     this.addChild(this._player);
     this.addChild(this._enemy);
   }

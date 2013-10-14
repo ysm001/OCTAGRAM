@@ -5,7 +5,7 @@ class TipTransition extends GroupedSprite
   constructor : (image, @src, @dst) ->
     super(image.width, image.height)
     @image = image
-    @link(@src, @dst)
+    @link(@src, @dst) if @src && @dst
     @parent = null
 
   link : (src, dst) ->

@@ -29,6 +29,7 @@
 	"octagram/ui/sidebar.js",
 	"octagram/ui/config-panel.js",
 	"octagram/ui/ui.js",
+	"octagram/ui/direction-selector.js",
 	"octagram/environment.js"
 	"octagram/octagram.js"
 	"octagram/main.js"

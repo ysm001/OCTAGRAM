@@ -11,6 +11,7 @@ loadPlayerProgram = () -> getPlayerProgram().load("player")
 loadEnemyProgram = () -> getEnemyProgram().load("enemy")
 
 showPlayerProgram = () -> Game.instance.octagrams.show(Game.instance.currentScene.world.playerProgramId)
+
 showEnemyProgram = () -> Game.instance.octagrams.show(Game.instance.currentScene.world.enemyProgramId)
 
 test = () ->

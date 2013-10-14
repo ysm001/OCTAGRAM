@@ -39,6 +39,8 @@ class Resources
     "slider"          : "slider_256x32.png"
     "sliderKnob"      : "slider_knob_64x32.png"
     "touchEffect"     : "touch_effect_64x64.png"
+    "selector"        : "selector_96x48.png"
+    "selectorAlter"   : "selector_alter_96x48.png"
     "dummy"           : "dummy_1x1.png"
   }
 
