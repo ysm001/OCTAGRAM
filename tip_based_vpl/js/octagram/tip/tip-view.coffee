@@ -107,7 +107,7 @@ class CodeTip extends SpriteGroup
   dragged : (e) -> 
     if CodeTip.clonedTip?
       dx = e.x - @dragStartX
-      dy = e.y - @dragStartY
+      dy = e.y - @dragStartY - if Environment.Mobile then @getHeight()*2 else 0
       CodeTip.clonedTip.moveTo(@x + dx, @y + dy)
 
   dragEnd : (e) -> 

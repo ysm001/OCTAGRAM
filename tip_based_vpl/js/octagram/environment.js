@@ -20,6 +20,8 @@ Environment = (function() {
 
   Environment.startY = -1;
 
+  Environment.Mobile = true;
+
   return Environment;
 
 })();
