@@ -1,11 +1,12 @@
 #####################################################
 # 遷移のCV 
 #####################################################
-class TipTransition extends Sprite
+class TipTransition extends GroupedSprite
   constructor : (image, @src, @dst) ->
     super(image.width, image.height)
     @image = image
     @link(@src, @dst)
+    @parent = null
 
   link : (src, dst) ->
     pos = @calcPosition(src, dst)
@@ -40,6 +41,7 @@ class TipTransition extends Sprite
     else if theta > 157.5 || theta <= -157.5 <= 22.5 then Direction.left
 
   ontouchmove : (e) ->
+    @parent = @parent || @topGroup()
     tip = TipFactory.createEmptyTip()
 
     src = {
@@ -54,7 +56,7 @@ class TipTransition extends Sprite
     nx  = srcIdx.x + dir.x
     ny  = srcIdx.y + dir.y
 
-    dst = Game.instance.vpl.currentVM.cpu.getTip(nx, ny)
+    dst = @parent.cpu.getTip(nx, ny)
 
     if dst != @dst
       @dst = dst

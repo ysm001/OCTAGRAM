@@ -107,6 +107,15 @@ GroupedSprite = (function(_super) {
     return pos;
   };
 
+  GroupedSprite.prototype.topGroup = function() {
+    var top;
+    top = this;
+    while (top.parentNode && !(top.parentNode instanceof Scene)) {
+      top = top.parentNode;
+    }
+    return top;
+  };
+
   return GroupedSprite;
 
 })(Sprite);

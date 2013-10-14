@@ -48,6 +48,13 @@ class GroupedSprite extends Sprite
       parent = parent.parentNode
     pos
 
+  topGroup : () ->
+    top = @
+    while top.parentNode && !(top.parentNode instanceof Scene)
+      top = top.parentNode
+
+    top
+
 class ImageSprite extends Sprite 
   constructor : (image, width, height) ->
     super(width || image.width, height || image.height)
