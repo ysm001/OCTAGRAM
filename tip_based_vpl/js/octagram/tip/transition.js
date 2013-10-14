@@ -15,6 +15,7 @@ TipTransition = (function(_super) {
       this.link(this.src, this.dst);
     }
     this.parent = null;
+    this.touchEnabled = false;
   }
 
   TipTransition.prototype.link = function(src, dst) {
@@ -69,7 +70,7 @@ TipTransition = (function(_super) {
     }
   };
 
-  TipTransition.prototype.ontouchmove = function(e) {
+  TipTransition.prototype.onTouchMove = function(e) {
     var dir, dst, nx, ny, src, srcIdx, theta, tip;
     this.parent = this.parent || this.topGroup();
     tip = TipFactory.createEmptyTip();

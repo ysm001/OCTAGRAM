@@ -29,6 +29,26 @@ Direction = (function() {
     return new Point(x, y);
   };
 
+  Direction.create = function(theta) {
+    if ((-22.5 < theta && theta <= 22.5)) {
+      return Direction.right;
+    } else if ((22.5 < theta && theta <= 67.5)) {
+      return Direction.rightDown;
+    } else if ((67.5 < theta && theta <= 112.5)) {
+      return Direction.down;
+    } else if ((112.5 < theta && theta <= 157.5)) {
+      return Direction.leftDown;
+    } else if ((-157.5 < theta && theta <= -112.5)) {
+      return Direction.leftUp;
+    } else if ((-112.5 < theta && theta <= -67.5)) {
+      return Direction.up;
+    } else if ((-67.5 < theta && theta <= -22.5)) {
+      return Direction.rightUp;
+    } else if (theta > 157.5 || (theta <= -157.5 && -157.5 <= 22.5)) {
+      return Direction.left;
+    }
+  };
+
   return Direction;
 
 })();
@@ -79,14 +99,40 @@ CodeTip = (function(_super) {
   };
 
   CodeTip.prototype.select = function() {
+    var parent, pre;
+    pre = this.getSelectedTip();
+    parent = this.parentNode;
+    parent.removeChild(this);
+    parent.addChild(this);
     this.topGroup().ui.help.setText(this.description);
     this.isFirstClick = !this.isSelected();
-    return this.showSelectedEffect();
+    this.showSelectedEffect();
+    if (pre) {
+      pre.unselect();
+    }
+    return this.showDirectionSelector();
   };
 
   CodeTip.prototype.unselect = function() {
-    this.topGroup().help.setText("");
-    return this.hideSelectedEffect();
+    return this.hideDirectionSelector();
+  };
+
+  CodeTip.prototype.hideDirectionSelector = function() {
+    var child, target, targets, _i, _j, _len, _len1, _ref, _results;
+    targets = [];
+    _ref = this.childNodes;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      child = _ref[_i];
+      if (child instanceof DirectionSelector) {
+        targets.push(child);
+      }
+    }
+    _results = [];
+    for (_j = 0, _len1 = targets.length; _j < _len1; _j++) {
+      target = targets[_j];
+      _results.push(this.removeChild(target));
+    }
+    return _results;
   };
 
   CodeTip.prototype.execute = function() {
@@ -95,6 +141,10 @@ CodeTip = (function(_super) {
     } else {
       return null;
     }
+  };
+
+  CodeTip.prototype.getSelectedTip = function() {
+    return CodeTip.selectedEffect.parentNode;
   };
 
   CodeTip.prototype.createGhost = function() {
@@ -142,6 +192,7 @@ CodeTip = (function(_super) {
   };
 
   CodeTip.prototype.dragStart = function(e) {
+    this.hideDirectionSelector();
     CodeTip.clonedTip = this.createGhost();
     CodeTip.clonedTip.show(this.parentNode);
     this.dragStartX = e.x;
@@ -248,6 +299,8 @@ CodeTip = (function(_super) {
     }
   };
 
+  CodeTip.prototype.showDirectionSelector = function() {};
+
   CodeTip.prototype.clone = function() {
     return new CodeTip(this.code.clone());
   };
@@ -303,6 +356,12 @@ SingleTransitionCodeTip = (function(_super) {
       return null;
     } else {
       return Direction.toDirection(next.x - this.code.index.x, next.y - this.code.index.y);
+    }
+  };
+
+  SingleTransitionCodeTip.prototype.showDirectionSelector = function() {
+    if (this.trans) {
+      return DirectionSelector.createNormal(this.trans).show();
     }
   };
 
@@ -364,6 +423,15 @@ BranchTransitionCodeTip = (function(_super) {
       return null;
     } else {
       return Direction.toDirection(next.x - this.code.index.x, next.y - this.code.index.y);
+    }
+  };
+
+  BranchTransitionCodeTip.prototype.showDirectionSelector = function() {
+    if (this.conseqTrans) {
+      DirectionSelector.createNormal(this.conseqTrans).show();
+    }
+    if (this.alterTrans) {
+      return DirectionSelector.createAlter(this.alterTrans).show();
     }
   };
 

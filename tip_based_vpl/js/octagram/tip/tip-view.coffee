@@ -18,6 +18,17 @@ class Direction
   @array = [Direction.up, Direction.rightUp, Direction.right, Direction.rightDown, Direction.down, Direction.leftDown, Direction.left, Direction.leftUp]
   @toDirection : (x, y) -> new Point(x, y)
 
+  @create : (theta) ->
+    if       -22.5 < theta <=   22.5 then Direction.right
+    else if   22.5 < theta <=   67.5 then Direction.rightDown
+    else if   67.5 < theta <=  112.5 then Direction.down
+    else if  112.5 < theta <=  157.5 then Direction.leftDown
+    else if -157.5 < theta <= -112.5 then Direction.leftUp
+    else if -112.5 < theta <=  -67.5 then Direction.up
+    else if  -67.5 < theta <=  -22.5 then Direction.rightUp
+    else if theta > 157.5 || theta <= -157.5 <= 22.5 then Direction.left
+
+
 #####################################################
 # チップのCV 
 #####################################################
@@ -59,15 +70,34 @@ class CodeTip extends SpriteGroup
     x>xs && x<xe && y>ys && y<ye
 
   select : () =>
+    pre = @getSelectedTip()
+    parent = @parentNode
+    parent.removeChild(@)
+    parent.addChild(@)
+
     @topGroup().ui.help.setText(@description)
     @isFirstClick = !@isSelected()
     @showSelectedEffect()
 
+    pre.unselect() if pre
+    @showDirectionSelector()
+
   unselect : () ->
-    @topGroup().help.setText("")
-    @hideSelectedEffect()
+    #@topGroup().help.setText("")
+    #@hideSelectedEffect()
+    @hideDirectionSelector()
+    
+  hideDirectionSelector : () ->
+    targets = []
+    for child in @childNodes
+      targets.push(child) if child instanceof DirectionSelector
+    
+    for target in targets
+      @removeChild(target) 
 
   execute : () -> if @code? then @code.execute() else null
+
+  getSelectedTip : () -> CodeTip.selectedEffect.parentNode
 
   createGhost : () ->
     CodeTip.clonedTip.hide() if CodeTip.clonedTip?
@@ -100,6 +130,7 @@ class CodeTip extends SpriteGroup
     CodeTip.selectedInstance = this
 
   dragStart : (e) -> 
+    @hideDirectionSelector()
     CodeTip.clonedTip = @createGhost()
     CodeTip.clonedTip.show(@parentNode)
     @dragStartX = e.x
@@ -160,6 +191,8 @@ class CodeTip extends SpriteGroup
   show : (parent) -> parent.addChild(this) if parent?
   hide : (parent) -> @parentNode.removeChild(this) if @parentNode?
 
+  showDirectionSelector : () ->
+
   clone : () -> new CodeTip(@code.clone())
 
   copy : (obj) ->
@@ -197,7 +230,8 @@ class SingleTransitionCodeTip extends CodeTip
     else Direction.toDirection(next.x - @code.index.x, 
       next.y - @code.index.y)
 
-  #clone : () -> @copy(new SingleTransitionCodeTip(@code.clone()))
+  showDirectionSelector : () -> DirectionSelector.createNormal(@trans).show() if @trans
+
   clone : () -> @copy(new SingleTransitionCodeTip(@code.clone()))
 
 #####################################################
@@ -232,6 +266,10 @@ class BranchTransitionCodeTip extends CodeTip
    if !next? then null
    else Direction.toDirection(next.x - @code.index.x, 
      next.y - @code.index.y)
+
+  showDirectionSelector : () -> 
+    DirectionSelector.createNormal(@conseqTrans).show() if @conseqTrans
+    DirectionSelector.createAlter(@alterTrans).show() if @alterTrans
 
   clone : () -> @copy(new BranchTransitionCodeTip(@code.clone()))
 

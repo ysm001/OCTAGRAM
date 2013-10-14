@@ -7,9 +7,11 @@ class SideTipSelector extends EntityGroup
     @moveTo(x, y)
     @scrollPosition = 0
 
+    @touchEnabled = false
 
     # create background
     background = new ImageSprite(Resources.get('sidebar'))
+    background.touchEnabled = false
     @addChild(background)
 
 

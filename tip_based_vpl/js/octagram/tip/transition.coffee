@@ -7,6 +7,7 @@ class TipTransition extends GroupedSprite
     @image = image
     @link(@src, @dst) if @src && @dst
     @parent = null
+    @touchEnabled = false
 
   link : (src, dst) ->
     pos = @calcPosition(src, dst)
@@ -40,7 +41,7 @@ class TipTransition extends GroupedSprite
     else if  -67.5 < theta <=  -22.5 then Direction.rightUp
     else if theta > 157.5 || theta <= -157.5 <= 22.5 then Direction.left
 
-  ontouchmove : (e) ->
+  onTouchMove : (e) ->
     @parent = @parent || @topGroup()
     tip = TipFactory.createEmptyTip()
 

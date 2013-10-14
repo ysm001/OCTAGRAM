@@ -25,6 +25,16 @@ class TipUtil
      else if code instanceof WallTip   then TextResource.msg["wall"]
      else if code instanceof NopTip    then TextResource.msg["nop"]
 
+class Vector
+  @angle : (src, dst) ->
+    dx = dst.x - src.x
+    dy = dst.y - src.y
+    cos = dx / Math.sqrt(dx*dx + dy*dy)
+      
+    theta = Math.acos(cos) * 180 / Math.PI
+    if dy < 0 then theta *= -1
+    theta
+
 uniqueID = () ->
   randam = Math.floor(Math.random()*1000)
   date = new Date()
