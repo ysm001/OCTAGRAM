@@ -6,7 +6,7 @@ class Slider extends SpriteGroup
     labelPaddingY = 4
     labelPaddingX = 12
 
-    @knob = new UIButton(null, Resources.get("sliderKnob"))
+    @knob = new UIButton(Resources.get("sliderKnob"))
     @knob.touchEnabled = false
 
     @label = new TextLabel("")

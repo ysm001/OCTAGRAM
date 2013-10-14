@@ -58,7 +58,7 @@ class UIPanelBody extends SpriteGroup
     @addChild(content)
 
 class UIButton extends ImageSprite
-  constructor : (@parent, image) ->
+  constructor : (image) ->
     super(image, image.width / 2, image.height)
 
   ontouchstart : () =>
@@ -72,17 +72,15 @@ class UIButton extends ImageSprite
 
 class UICloseButton extends UIButton
   constructor : (@parent) ->
-    super(@parent, Resources.get("closeButtonAnim"))
+    super(Resources.get("closeButton"))
 
   onClicked : () => @parent.hide(false)
 
-class UIOkButton extends ImageSprite 
+class UIOkButton extends UIButton 
   constructor : (@parent) ->
     super(Resources.get("okButton"))
 
-    @addEventListener('touchstart', () =>
-      @parent.hide(true)
-    )
+  onClicked : () => @parent.hide(true)
 
 class HelpPanel extends SpriteGroup
   constructor : (x, y, w, h, @text) ->

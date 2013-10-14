@@ -89,8 +89,7 @@ UIPanelBody = (function(_super) {
 UIButton = (function(_super) {
   __extends(UIButton, _super);
 
-  function UIButton(parent, image) {
-    this.parent = parent;
+  function UIButton(image) {
     this.ontouchend = __bind(this.ontouchend, this);
     this.ontouchstart = __bind(this.ontouchstart, this);
     UIButton.__super__.constructor.call(this, image, image.width / 2, image.height);
@@ -117,7 +116,7 @@ UICloseButton = (function(_super) {
   function UICloseButton(parent) {
     this.parent = parent;
     this.onClicked = __bind(this.onClicked, this);
-    UICloseButton.__super__.constructor.call(this, this.parent, Resources.get("closeButtonAnim"));
+    UICloseButton.__super__.constructor.call(this, Resources.get("closeButton"));
   }
 
   UICloseButton.prototype.onClicked = function() {
@@ -132,17 +131,18 @@ UIOkButton = (function(_super) {
   __extends(UIOkButton, _super);
 
   function UIOkButton(parent) {
-    var _this = this;
     this.parent = parent;
+    this.onClicked = __bind(this.onClicked, this);
     UIOkButton.__super__.constructor.call(this, Resources.get("okButton"));
-    this.addEventListener('touchstart', function() {
-      return _this.parent.hide(true);
-    });
   }
+
+  UIOkButton.prototype.onClicked = function() {
+    return this.parent.hide(true);
+  };
 
   return UIOkButton;
 
-})(ImageSprite);
+})(UIButton);
 
 HelpPanel = (function(_super) {
   __extends(HelpPanel, _super);
