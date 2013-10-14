@@ -58,6 +58,7 @@ SideTipSelector = (function(_super) {
     var tipCount, uiTip;
     tipCount = this._getTipCount();
     uiTip = tip.clone();
+    uiTip.showOnTop = function() {};
     if (tipCount >= VISIBLE_TIP_COUNT) {
       uiTip.setVisible(false);
     }

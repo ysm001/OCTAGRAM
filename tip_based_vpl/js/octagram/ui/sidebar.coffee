@@ -55,6 +55,7 @@ class SideTipSelector extends EntityGroup
     tipCount = @_getTipCount()
 
     uiTip = tip.clone()
+    uiTip.showOnTop = () ->
     uiTip.setVisible(false) if tipCount >= VISIBLE_TIP_COUNT
     uiTip.moveTo(8, -6 + tipCount * tip.getHeight())
 

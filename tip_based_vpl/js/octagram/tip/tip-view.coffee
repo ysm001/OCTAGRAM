@@ -69,11 +69,15 @@ class CodeTip extends SpriteGroup
     ye = pos.y + range
     x>xs && x<xe && y>ys && y<ye
 
-  select : () =>
-    pre = @getSelectedTip()
+  showOnTop : () ->
     parent = @parentNode
     parent.removeChild(@)
     parent.addChild(@)
+
+  select : () =>
+    pre = @getSelectedTip()
+
+    @showOnTop()
 
     @topGroup().ui.help.setText(@description)
     @isFirstClick = !@isSelected()
@@ -82,10 +86,7 @@ class CodeTip extends SpriteGroup
     pre.unselect() if pre
     @showDirectionSelector()
 
-  unselect : () ->
-    #@topGroup().help.setText("")
-    #@hideSelectedEffect()
-    @hideDirectionSelector()
+  unselect : () -> @hideDirectionSelector()
     
   hideDirectionSelector : () ->
     targets = []

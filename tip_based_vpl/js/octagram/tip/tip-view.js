@@ -98,12 +98,17 @@ CodeTip = (function(_super) {
     return x > xs && x < xe && y > ys && y < ye;
   };
 
-  CodeTip.prototype.select = function() {
-    var parent, pre;
-    pre = this.getSelectedTip();
+  CodeTip.prototype.showOnTop = function() {
+    var parent;
     parent = this.parentNode;
     parent.removeChild(this);
-    parent.addChild(this);
+    return parent.addChild(this);
+  };
+
+  CodeTip.prototype.select = function() {
+    var pre;
+    pre = this.getSelectedTip();
+    this.showOnTop();
     this.topGroup().ui.help.setText(this.description);
     this.isFirstClick = !this.isSelected();
     this.showSelectedEffect();
