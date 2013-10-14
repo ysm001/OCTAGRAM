@@ -203,7 +203,7 @@ CodeTip = (function(_super) {
     var dx, dy;
     if (CodeTip.clonedTip != null) {
       dx = e.x - this.dragStartX;
-      dy = e.y - this.dragStartY - (Environment.Mobile ? this.getHeight() * 2 : 0);
+      dy = e.y - this.dragStartY - (Environment.Mobile ? this.getHeight() : 0);
       return CodeTip.clonedTip.moveTo(this.x + dx, this.y + dy);
     }
   };
