@@ -57,15 +57,6 @@ class UIPanelBody extends SpriteGroup
     @content.moveTo(32, 64)
     @addChild(content)
 
-###
-class UICloseButton extends ImageSprite
-  constructor : (@parent) ->
-    super(Resources.get("closeButton"))
-
-    @addEventListener('touchstart', () =>
-      @parent.hide(false)
-    )
-###
 class UIButton extends ImageSprite
   constructor : (@parent, image) ->
     super(image, image.width / 2, image.height)

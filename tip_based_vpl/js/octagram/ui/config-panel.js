@@ -38,9 +38,10 @@ ParameterConfigPanel = (function(_super) {
   }
 
   ParameterConfigPanel.prototype.addParameter = function(parameter) {
-    var slider;
+    var padding, slider;
     slider = new ParameterSlider(parameter);
-    slider.moveTo(slider.titleWidth, this.childNodes.length * slider.getHeight());
+    padding = slider.getHeight() / 2;
+    slider.moveTo(slider.titleWidth, padding + this.childNodes.length * (slider.getHeight() + padding));
     slider.setTitle(parameter.valueName);
     return this.addChild(slider);
   };

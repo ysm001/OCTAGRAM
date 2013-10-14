@@ -86,17 +86,6 @@ UIPanelBody = (function(_super) {
 
 })(SpriteGroup);
 
-/*
-class UICloseButton extends ImageSprite
-  constructor : (@parent) ->
-    super(Resources.get("closeButton"))
-
-    @addEventListener('touchstart', () =>
-      @parent.hide(false)
-    )
-*/
-
-
 UIButton = (function(_super) {
   __extends(UIButton, _super);
 

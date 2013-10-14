@@ -19,7 +19,8 @@ class ParameterConfigPanel extends SpriteGroup
 
   addParameter : (parameter) -> 
     slider = new ParameterSlider(parameter)
-    slider.moveTo(slider.titleWidth, @childNodes.length * slider.getHeight())
+    padding = slider.getHeight() / 2
+    slider.moveTo(slider.titleWidth + padding, (@childNodes.length + 1) * slider.getHeight() + padding))
     slider.setTitle(parameter.valueName)
     @addChild(slider)
 
