@@ -6,23 +6,14 @@ var TipBasedVPL,
 TipBasedVPL = (function(_super) {
   __extends(TipBasedVPL, _super);
 
-  function TipBasedVPL(w, h, resourceBase) {
+  function TipBasedVPL(x, y, w, h, resourceBase) {
     TipBasedVPL.__super__.constructor.call(this, w, h);
-    this.fps = 24;
-    this.octagrams = new OctagramSet(16, 16, 8, 8);
+    this.octagrams = new OctagramSet(x, y, 8, 8);
     Resources.base = resourceBase;
     Resources.load(this);
   }
 
-  TipBasedVPL.prototype.onload = function() {
-    var x, xnum, y, ynum;
-    x = 16;
-    y = 16;
-    xnum = 8;
-    ynum = 8;
-    Game.instance.vpl = {};
-    return Game.instance.vpl.currentVM = new Octagram(x, y, xnum, ynum);
-  };
+  TipBasedVPL.prototype.onload = function() {};
 
   return TipBasedVPL;
 

@@ -242,8 +242,8 @@ RobotScene = (function(_super) {
 RobotGame = (function(_super) {
   __extends(RobotGame, _super);
 
-  function RobotGame(width, height) {
-    RobotGame.__super__.constructor.call(this, width, height, "./js/tip_based_vpl/resource/");
+  function RobotGame(x, y, width, height) {
+    RobotGame.__super__.constructor.call(this, x, y, width, height, "./js/tip_based_vpl/resource/");
     this._assetPreload();
     this.keybind(87, 'w');
     this.keybind(65, 'a');
@@ -302,6 +302,6 @@ RobotGame = (function(_super) {
 
 window.onload = function() {
   var game;
-  game = new RobotGame(Config.GAME_WIDTH, Config.GAME_HEIGHT);
+  game = new RobotGame(16, 16, Config.GAME_WIDTH, Config.GAME_HEIGHT);
   return game.start();
 };

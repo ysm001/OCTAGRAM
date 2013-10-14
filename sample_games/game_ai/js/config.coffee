@@ -1,9 +1,16 @@
-    
+if !IS_MOBILE? then IS_MOBILE = false
+
 class Config
-  @GAME_WIDTH = 1280
+  @GAME_WIDTH = if IS_MOBILE then 640 else 1280
   @GAME_HEIGHT = 640
-  @GAME_OFFSET_X = 640
+  @GAME_OFFSET_X = if IS_MOBILE then 0 else 640
   @GAME_OFFSET_Y = 0
+  @IS_MOBILE : IS_MOBILE
+
+  @EDITOR_MOBILE_SCALE_X = 0.2
+  @EDITOR_MOBILE_SCALE_Y = 0.2
+  @EDITOR_MOBILE_OFFSET_X = 640 - 128
+  @EDITOR_MOBILE_OFFSET_Y = 640 - 128
 
 class Config.R
   @RESOURCE_DIR : "resources"
@@ -55,7 +62,7 @@ class Config.R
     REST_BULLET : "#{R.RESOURCE_DIR}/tip/rest_bullet.png"
 
 class Config.Frame
-  @DIAMETER = 1
+  @DIAMETER = 2
 
   @ROBOT_MOVE = 12 / Frame.DIAMETER
   @ROBOT_WAIT = 8 / Frame.DIAMETER

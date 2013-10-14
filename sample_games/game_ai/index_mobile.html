@@ -7,19 +7,16 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.css" />
     <link rel="stylesheet" href="./css/magic-bootstrap.css" />
-    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/main-mobile.css" />
   </head>
   <body>
     <div id="content">
-      <iframe src="./content.html" frameborder="0" width="1280" height="640"></iframe>
+      <iframe src="./content.html" frameborder="0" width="640" height="640"></iframe>
     </div>
   </body>
   <script type="text/javascript">
-      //if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
       $(function() {
-          if (true) {
-	      location.href = "./index_mobile.html";
-	  }
+	      $('#content iframe')[0].contentWindow.IS_MOBILE = true;
       })
   </script>
 </html>

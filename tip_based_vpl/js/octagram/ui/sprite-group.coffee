@@ -49,8 +49,6 @@ class GroupedSprite extends Sprite
     pos
 
 class ImageSprite extends Sprite 
-  constructor : (image) ->
-    super(image.width, image.height)
+  constructor : (image, width, height) ->
+    super(width || image.width, height || image.height)
     @image = image
-
-

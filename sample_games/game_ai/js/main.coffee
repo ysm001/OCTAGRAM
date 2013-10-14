@@ -163,8 +163,8 @@ class RobotScene extends Scene
     @views.update(@world)
 
 class RobotGame extends TipBasedVPL
-  constructor: (width, height) ->
-    super width, height, "./js/tip_based_vpl/resource/"
+  constructor: (x, y, width, height) ->
+    super x, y, width, height, "./js/tip_based_vpl/resource/"
     @_assetPreload()
     @keybind(87, 'w')
     @keybind(65, 'a')
@@ -210,5 +210,5 @@ class RobotGame extends TipBasedVPL
     #Game.instance.vpl.currentVM.show()
 
 window.onload = () ->
-  game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT
+  game = new RobotGame 16, 16, Config.GAME_WIDTH, Config.GAME_HEIGHT
   game.start()

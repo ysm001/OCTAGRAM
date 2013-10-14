@@ -114,8 +114,8 @@ GroupedSprite = (function(_super) {
 ImageSprite = (function(_super) {
   __extends(ImageSprite, _super);
 
-  function ImageSprite(image) {
-    ImageSprite.__super__.constructor.call(this, image.width, image.height);
+  function ImageSprite(image, width, height) {
+    ImageSprite.__super__.constructor.call(this, width || image.width, height || image.height);
     this.image = image;
   }
 
