@@ -7,6 +7,7 @@
 	"octagram/util/storage.js",
 	"octagram/event/event.js",
 	"octagram/ui/sprite-group.js",
+	"octagram/effect.js",
 	"octagram/tip/tip-model.js",
 	"octagram/tip/instruction/tip-instruction.js",
 	"octagram/test.js",
