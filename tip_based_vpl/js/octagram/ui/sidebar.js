@@ -16,7 +16,6 @@ SideTipSelector = (function(_super) {
     SideTipSelector.__super__.constructor.call(this, 160, 500);
     this.moveTo(x, y);
     this.scrollPosition = 0;
-    this.touchEnabled = false;
     background = new ImageSprite(Resources.get('sidebar'));
     background.touchEnabled = false;
     this.addChild(background);
