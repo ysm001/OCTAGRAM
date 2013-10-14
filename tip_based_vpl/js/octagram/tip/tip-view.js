@@ -187,7 +187,7 @@ CodeTip = (function(_super) {
 
   CodeTip.prototype.ontouchend = function(e) {
     if (!this.immutable) {
-      if (!this.dragMode && this.isSelected() && !this.isFirstClick) {
+      if (!this.dragMode && this.isSelected() && !this.isFirstClick && this.isInnerTip(e.x, e.y)) {
         this.doubleClicked();
       } else if (this.dragMode) {
         this.dragEnd(e);

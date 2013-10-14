@@ -126,7 +126,7 @@ class CodeTip extends SpriteGroup
 
   ontouchend : (e) => 
     if !@immutable
-      if !@dragMode && @isSelected() && !@isFirstClick then @doubleClicked()
+      if !@dragMode && @isSelected() && !@isFirstClick && @isInnerTip(e.x, e.y) then @doubleClicked()
       else if @dragMode then @dragEnd(e)
     CodeTip.selectedInstance = this
 
