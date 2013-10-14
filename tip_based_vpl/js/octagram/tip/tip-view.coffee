@@ -49,13 +49,17 @@ class CodeTip extends SpriteGroup
     CodeTip.selectedEffect = new SelectedEffect() if !CodeTip.selectedEffect?
 
   isInnerTip : (x, y) ->
+    scale = @getScale()
+    sx = x / scale.x
+    sy = y / scale.x
+
     pos = @getAbsolutePosition()
     range = @getWidth()
     xs = pos.x
     xe = pos.x + range 
     ys = pos.y
     ye = pos.y + range
-    x>xs && x<xe && y>ys && y<ye
+    sx>xs && sx<xe && sy>ys && sy<ye
 
   select : () =>
     @topGroup().ui.help.setText(@description)
@@ -77,7 +81,7 @@ class CodeTip extends SpriteGroup
     tip.sprite.touchEnabled = false
     tip
 
-  ontouchstart : (e) =>
+  onTouchStart : (e) =>
     @isTransitionSelect = !@isInnerTip(e.x, e.y)
     if !@isTransitionSelect
       if @dragMode && CodeTip.clonedTip? 
@@ -85,14 +89,14 @@ class CodeTip extends SpriteGroup
       @dragMode = false
       @select()
 
-  ontouchmove : (e) => 
+  onTouchMove : (e) => 
     if !@isTransitionSelect
       if !@dragMode && !@immutable 
         @dragMode = true
         @dragStart(e)
       @dragged(e) 
 
-  ontouchend : (e) => 
+  onTouchEnd : (e) => 
     if !@immutable
       if !@dragMode && @isSelected() && !@isFirstClick then @doubleClicked()
       else if @dragMode then @dragEnd(e)

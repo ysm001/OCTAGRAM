@@ -72,6 +72,32 @@ SpriteGroup = (function(_super) {
     return _results;
   };
 
+  SpriteGroup.prototype.getScale = function() {
+    var parent, scale;
+    scale = {
+      x: this.scaleX,
+      y: this.scaleY
+    };
+    parent = this.parentNode;
+    while ((parent != null) && !(parent instanceof Scene)) {
+      scale.x *= parent.scaleX;
+      scale.y *= parent.scaleY;
+      parent = parent.parentNode;
+    }
+    return scale;
+  };
+
+  SpriteGroup.prototype.getScaledBounds = function() {
+    var scale;
+    scale = this.getScale();
+    return {
+      x: this.x * scale.x,
+      y: this.y * scale.y,
+      width: this.getWidth() * scale.x,
+      height: this.getHeight() * scale.y
+    };
+  };
+
   SpriteGroup.prototype.getWidth = function() {
     return this.sprite.width;
   };

@@ -61,6 +61,9 @@ SideTipSelector = (function(_super) {
       uiTip.setVisible(false);
     }
     uiTip.moveTo(8, -6 + tipCount * tip.getHeight());
+    uiTip.addEventListener('touchstart', uiTip.onTouchStart);
+    uiTip.addEventListener('touchmove', uiTip.onTouchMove);
+    uiTip.addEventListener('touchend', uiTip.onTouchEnd);
     return this.tipGroup.addChild(uiTip);
   };
 

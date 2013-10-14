@@ -57,6 +57,9 @@ class SideTipSelector extends EntityGroup
     uiTip = tip.clone()
     uiTip.setVisible(false) if tipCount >= VISIBLE_TIP_COUNT
     uiTip.moveTo(8, -6 + tipCount * tip.getHeight())
+    uiTip.addEventListener('touchstart', uiTip.onTouchStart)
+    uiTip.addEventListener('touchmove', uiTip.onTouchMove)
+    uiTip.addEventListener('touchend', uiTip.onTouchEnd)
 
     @tipGroup.addChild(uiTip)
 

@@ -11,6 +11,17 @@ class Cpu extends Group
 
     @createTips(x, y)
 
+  ontouchstart : (evt) -> @distributeTouchEvent('onTouchStart', evt)
+  ontouchmove  : (evt) -> @distributeTouchEvent('onTouchMove', evt)
+  ontouchend   : (evt) -> @distributeTouchEvent('onTouchEnd', evt)
+
+  distributeTouchEvent : (name, evt) ->
+    target = @getIntersectIndex(evt.x, evt.y)
+    if target
+      tip = @getTip(target.x, target.y)
+      code = 'tip.' + name + '(evt)'
+      eval(code)
+
   putTip : (sx, sy, dir, newTip) ->
     dx = sx + dir.x
     dy = sy + dir.y
@@ -95,7 +106,9 @@ class Cpu extends Group
     else
       @putSingleTip(x, y, newTip)
 
-  getNearestIndex : (x, y) ->
+  getNearestIndex : (tx, ty) ->
+    x = tx / @scaleX
+    y = ty / @scaleY
     minDist = 0xffffffff
     minX = -1
     minY = -1
@@ -110,6 +123,19 @@ class Cpu extends Group
           minX = j
           minY = i
     {x: minX, y: minY}
+
+  getIntersectIndex : (x, y) ->
+    sx = x/@scaleX
+    sy = y/@scaleY
+    for i in [-1...@ynum+1]
+      for j in [-1...@xnum+1]
+        tmp = @getTip(j, i)
+        minX = tmp.x
+        maxX = tmp.x + tmp.getWidth()
+        minY = tmp.y
+        maxY = tmp.y + tmp.getHeight()
+        if (minX <= sx && sx < maxX && minY <= sy && sy < maxY) then return {x: j, y: i}
+
 
   insertTipOnNearestPosition : (x, y, tip) ->
     nearest = @getNearestIndex(x, y)

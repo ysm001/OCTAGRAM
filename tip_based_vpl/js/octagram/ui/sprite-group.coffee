@@ -34,7 +34,21 @@ class SpriteGroup extends Group
         child.visible = visible
       else if child instanceof SpriteGroup
         child.setVisible(opacity)
+
+  getScale : () ->
+    scale = {x: @scaleX, y: @scaleY}
+    parent = @parentNode
+    while parent? && !(parent instanceof Scene)
+      scale.x *= parent.scaleX
+      scale.y *= parent.scaleY
+      parent = parent.parentNode
+    scale
+
     
+  getScaledBounds : () -> 
+    scale = @getScale()
+    return {x: @x*scale.x, y: @y*scale.y, width: @getWidth()*scale.x, height: @getHeight()*scale.y}
+
   getWidth : () -> @sprite.width
   getHeight : () -> @sprite.height
 

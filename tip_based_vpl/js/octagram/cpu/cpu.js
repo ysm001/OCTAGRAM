@@ -18,6 +18,28 @@ Cpu = (function(_super) {
     this.createTips(x, y);
   }
 
+  Cpu.prototype.ontouchstart = function(evt) {
+    return this.distributeTouchEvent('onTouchStart', evt);
+  };
+
+  Cpu.prototype.ontouchmove = function(evt) {
+    return this.distributeTouchEvent('onTouchMove', evt);
+  };
+
+  Cpu.prototype.ontouchend = function(evt) {
+    return this.distributeTouchEvent('onTouchEnd', evt);
+  };
+
+  Cpu.prototype.distributeTouchEvent = function(name, evt) {
+    var code, target, tip;
+    target = this.getIntersectIndex(evt.x, evt.y);
+    if (target) {
+      tip = this.getTip(target.x, target.y);
+      code = 'tip.' + name + '(evt)';
+      return eval(code);
+    }
+  };
+
   Cpu.prototype.putTip = function(sx, sy, dir, newTip) {
     var dx, dy;
     dx = sx + dir.x;
@@ -116,8 +138,10 @@ Cpu = (function(_super) {
     }
   };
 
-  Cpu.prototype.getNearestIndex = function(x, y) {
-    var dist, dx, dy, i, j, minDist, minX, minY, tmp, _i, _j, _ref, _ref1;
+  Cpu.prototype.getNearestIndex = function(tx, ty) {
+    var dist, dx, dy, i, j, minDist, minX, minY, tmp, x, y, _i, _j, _ref, _ref1;
+    x = tx / this.scaleX;
+    y = ty / this.scaleY;
     minDist = 0xffffffff;
     minX = -1;
     minY = -1;
@@ -138,6 +162,27 @@ Cpu = (function(_super) {
       x: minX,
       y: minY
     };
+  };
+
+  Cpu.prototype.getIntersectIndex = function(x, y) {
+    var i, j, maxX, maxY, minX, minY, sx, sy, tmp, _i, _j, _ref, _ref1;
+    sx = x / this.scaleX;
+    sy = y / this.scaleY;
+    for (i = _i = -1, _ref = this.ynum + 1; -1 <= _ref ? _i < _ref : _i > _ref; i = -1 <= _ref ? ++_i : --_i) {
+      for (j = _j = -1, _ref1 = this.xnum + 1; -1 <= _ref1 ? _j < _ref1 : _j > _ref1; j = -1 <= _ref1 ? ++_j : --_j) {
+        tmp = this.getTip(j, i);
+        minX = tmp.x;
+        maxX = tmp.x + tmp.getWidth();
+        minY = tmp.y;
+        maxY = tmp.y + tmp.getHeight();
+        if (minX <= sx && sx < maxX && minY <= sy && sy < maxY) {
+          return {
+            x: j,
+            y: i
+          };
+        }
+      }
+    }
   };
 
   Cpu.prototype.insertTipOnNearestPosition = function(x, y, tip) {
