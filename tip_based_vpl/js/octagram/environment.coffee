@@ -10,4 +10,4 @@ class Environment
   @startX = 4
   @startY = -1
 
-  @Mobile = true
+  @Mobile = false

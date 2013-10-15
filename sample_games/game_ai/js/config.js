@@ -3,6 +3,8 @@ var Config, IS_MOBILE;
 
 if (typeof IS_MOBILE === "undefined" || IS_MOBILE === null) {
   IS_MOBILE = false;
+} else {
+  Environment.Mobile = true;
 }
 
 Config = (function() {

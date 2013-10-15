@@ -1,4 +1,4 @@
-if !IS_MOBILE? then IS_MOBILE = false
+if !IS_MOBILE? then IS_MOBILE = false else Environment.Mobile = true
 
 class Config
   @GAME_WIDTH = if IS_MOBILE then 640 else 1280
