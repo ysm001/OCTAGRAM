@@ -35,6 +35,34 @@ class Vector
     if dy < 0 then theta *= -1
     theta
 
+class Point
+  constructor : (@x, @y) ->
+
+class Direction
+  @left      = new Point(-1, 0)
+  @right     = new Point( 1, 0)
+  @up        = new Point( 0,-1)
+  @down      = new Point( 0, 1)
+  @leftUp    = new Point(-1,-1)
+  @leftDown  = new Point(-1, 1)
+  @rightUp   = new Point( 1,-1)
+  @rightDown = new Point( 1, 1)
+
+  @array = [Direction.up, Direction.rightUp, Direction.right, Direction.rightDown, Direction.down, Direction.leftDown, Direction.left, Direction.leftUp]
+  @toDirection : (x, y) -> new Point(x, y)
+
+  @create : (theta) ->
+    if       -22.5 < theta <=   22.5 then Direction.right
+    else if   22.5 < theta <=   67.5 then Direction.rightDown
+    else if   67.5 < theta <=  112.5 then Direction.down
+    else if  112.5 < theta <=  157.5 then Direction.leftDown
+    else if -157.5 < theta <= -112.5 then Direction.leftUp
+    else if -112.5 < theta <=  -67.5 then Direction.up
+    else if  -67.5 < theta <=  -22.5 then Direction.rightUp
+    else if theta > 157.5 || theta <= -157.5 <= 22.5 then Direction.left
+
+
+
 uniqueID = () ->
   randam = Math.floor(Math.random()*1000)
   date = new Date()
