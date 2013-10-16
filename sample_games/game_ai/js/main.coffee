@@ -164,7 +164,7 @@ class RobotScene extends Scene
 
 class RobotGame extends OctagramCore
   constructor: (x, y, width, height) ->
-    super x, y, width, height, "./js/tip_based_vpl/resource/"
+    super x, y, width, height, "./js/octagram/resource/"
     @_assetPreload()
     @keybind(87, 'w')
     @keybind(65, 'a')
