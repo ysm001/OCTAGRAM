@@ -298,7 +298,7 @@ RobotGame = (function(_super) {
 
   return RobotGame;
 
-})(TipBasedVPL);
+})(OctagramCore);
 
 window.onload = function() {
   var game;

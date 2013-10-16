@@ -11,13 +11,13 @@ class TipSet
   findByInst : (instName) -> (tip for tip in @tips when tip.code.instruction? && tip.code.instruction.constructor.name == instName)[0]
   findByCode : (codeName) -> (tip for tip in @tips when tip.code.constructor.name == codeName)[0]
 
-class OctagramSet
+class OctagramContentSet
   constructor : (@x, @y, @xnum, @ynum) ->
     @octagrams = {}
     @currentInstance = null
 
   createInstance : () ->
-    instance = new Octagram(@x, @y, @xnum, @ynum)
+    instance = new OctagramContent(@x, @y, @xnum, @ynum)
     @octagrams[instance.id] = instance
     instance
 
@@ -29,7 +29,7 @@ class OctagramSet
     @currentInstance = @octagrams[id]
     @currentInstance.show()
 
-class Octagram extends Group
+class OctagramContent extends Group
   constructor : (x, y, xnum, ynum) ->
     super()
     @id = uniqueID()

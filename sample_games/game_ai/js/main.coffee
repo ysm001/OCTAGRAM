@@ -162,7 +162,7 @@ class RobotScene extends Scene
     @world.update(@views)
     @views.update(@world)
 
-class RobotGame extends TipBasedVPL
+class RobotGame extends OctagramCore
   constructor: (x, y, width, height) ->
     super x, y, width, height, "./js/tip_based_vpl/resource/"
     @_assetPreload()
