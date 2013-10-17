@@ -300,8 +300,4 @@ RobotGame = (function(_super) {
 
 })(OctagramCore);
 
-window.onload = function() {
-  var game;
-  game = new RobotGame(16, 16, Config.GAME_WIDTH, Config.GAME_HEIGHT);
-  return game.start();
-};
+window.onload = function() {};

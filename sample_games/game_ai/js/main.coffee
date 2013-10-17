@@ -207,8 +207,7 @@ class RobotGame extends OctagramCore
     @assets["apad.png"] = @assets['resources/ui/apad.png']
     @assets["icon0.png"] = @assets['resources/ui/icon0.png']
     @assets["pad.png"] = @assets['resources/ui/pad.png']
-    #Game.instance.vpl.currentVM.show()
 
 window.onload = () ->
-  game = new RobotGame 16, 16, Config.GAME_WIDTH, Config.GAME_HEIGHT
-  game.start()
+  #game = new RobotGame 16, 16, Config.GAME_WIDTH, Config.GAME_HEIGHT
+  #game.start()

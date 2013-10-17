@@ -31,6 +31,6 @@
 	"core/ui/ui.js",
 	"core/ui/direction-selector.js",
 	"core/environment.js"
+	"core/octagram-content.js"
 	"core/octagram-core.js"
-	"core/main.js"
 )
