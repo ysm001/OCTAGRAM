@@ -14,15 +14,21 @@ Octagram = (function() {
       _this.core = new contentWindow.OctagramCore(16, 16, 640, 640, "./resource/");
       _this.core.start();
       return _this.core.onload = function() {
-        var program, scene;
+        var scene;
         scene = new contentWindow.Scene(_this.core);
         _this.core.pushScene(scene);
-        program = _this.core.octagrams.createInstance();
-        _this.core.octagrams.show(program.id);
         return _this.onload();
       };
     };
   }
+
+  Octagram.prototype.createProgramInstance = function() {
+    return this.core.octagrams.createInstance();
+  };
+
+  Octagram.prototype.showProgram = function(program) {
+    return this.core.octagrams.show(program);
+  };
 
   Octagram.prototype.copyObjectToLocal = function(local) {
     var key, value, _ref, _results;

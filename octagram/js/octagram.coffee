@@ -20,9 +20,12 @@ class Octagram
       @core.onload = () => 
         scene = new contentWindow.Scene(@core)
         @core.pushScene(scene)
-        program = @core.octagrams.createInstance()
-        @core.octagrams.show(program.id)
+        #program = @core.octagrams.createInstance()
+        #@core.octagrams.show(program.id)
         @onload()
+
+  createProgramInstance : () -> @core.octagrams.createInstance()
+  showProgram : (program) -> @core.octagrams.show(program)
 
   copyObjectToLocal : (local) ->
     for key, value of local.parent.octagram
