@@ -162,7 +162,7 @@ class RobotScene extends Scene
     @world.update(@views)
     @views.update(@world)
 
-class RobotGame extends OctagramCore
+class RobotGame
   constructor: (x, y, width, height) ->
     super x, y, width, height, "./js/octagram/resource/"
     @_assetPreload()

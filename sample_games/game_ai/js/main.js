@@ -239,9 +239,7 @@ RobotScene = (function(_super) {
 
 })(Scene);
 
-RobotGame = (function(_super) {
-  __extends(RobotGame, _super);
-
+RobotGame = (function() {
   function RobotGame(x, y, width, height) {
     RobotGame.__super__.constructor.call(this, x, y, width, height, "./js/octagram/resource/");
     this._assetPreload();
@@ -298,6 +296,6 @@ RobotGame = (function(_super) {
 
   return RobotGame;
 
-})(OctagramCore);
+})();
 
 window.onload = function() {};
