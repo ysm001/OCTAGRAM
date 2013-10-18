@@ -1,5 +1,16 @@
+copyObjectToLocal = (local) ->
+  ignores = ['Resources', 'TipUtil']
+
+  for key, value of local.parent.octagram
+    if !(key in ignores)
+      console.log('import : ' + key)
+      local[key] = value
+    else console.log('ignore : ' + key)
+
 ( ->
     window.octagram = {}
+    copyObjectToLocal(window)
+
     s = document.getElementsByTagName("script")
     d = s[s.length-1].src.substring(0, s[s.length-1].src.lastIndexOf("/")+1)
     for arg in arguments
@@ -9,18 +20,18 @@
 	"core/event/event.js",
 	"core/ui/sprite-group.js",
 	"core/effect.js",
-	"core/tip/tip-model.js",
-	"core/tip/instruction/tip-instruction.js",
-	"core/test.js",
-	"core/util/util.js",
-	"core/resource.js",
+  #"core/tip/tip-model.js",
+	#"core/tip/instruction/tip-instruction.js",
+	#"core/test.js",
+  "core/util/util.js",
+  "core/resource.js",
 	"core/tip/tip-effect.js",
 	"core/tip/transition.js",
 	"core/tip/tip-view.js",
 	"core/tip/tip-icon.js",
-	"core/tip/tip-parameter.js",
+  #"core/tip/tip-parameter.js",
 	"core/tip/tip-factory.js",
-	"core/tip/instruction/instruction-preset.js",
+  "core/tip/instruction/instruction-preset.js",
 	"core/tip/instruction/tip-instruction-stack.js",
 	"core/tip/instruction/tip-instruction-counter.js",
 	"core/ui/background.js",
@@ -31,9 +42,10 @@
 	"core/ui/config-panel.js",
 	"core/ui/ui.js",
 	"core/ui/direction-selector.js",
-	"core/environment.js"
+  #"core/environment.js"
 	"core/octagram-content.js"
 	"core/octagram-core.js"
-	"octagram.js"
+  #"octagram.js"
 )
+
 

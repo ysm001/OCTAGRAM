@@ -163,7 +163,7 @@ class RobotScene extends Scene
     @views.update(@world)
 
 class RobotGame extends Core
-  constructor: (x, y, width, height) ->
+  constructor: (width, height) ->
     super width, height
     @_assetPreload()
     @keybind(87, 'w')

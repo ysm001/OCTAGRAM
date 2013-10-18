@@ -142,6 +142,7 @@ class StackBnzInstruction extends BranchInstruction
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
   mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xが1ならば青矢印に進む。<br>そうでなければ赤矢印に進む。" 
 
+octagram.StackMachine = StackMachine
 octagram.StackAddInstruction = StackAddInstruction
 octagram.StackSubInstruction = StackSubInstruction
 octagram.StackMulInstruction = StackMulInstruction

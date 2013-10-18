@@ -264,6 +264,12 @@ ActionTip = (function(_super) {
 
 octagram.Tip = Tip;
 
+octagram.ActionTip = ActionTip;
+
+octagram.SingleTransitionTip = SingleTransitionTip;
+
+octagram.BranchTip = BranchTip;
+
 octagram.EmptyTip = EmptyTip;
 
 octagram.StopTip = StopTip;

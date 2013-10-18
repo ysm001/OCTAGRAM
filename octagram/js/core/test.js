@@ -2,11 +2,11 @@
 var executeEnemyProgram, executePlayerProgram, getEnemyProgram, getPlayerProgram, loadEnemyProgram, loadPlayerProgram, saveEnemyProgram, savePlayerProgram, showEnemyProgram, showPlayerProgram, test;
 
 getPlayerProgram = function() {
-  return Game.instance.octagrams.getInstance(Game.instance.currentScene.world.playerProgramId);
+  return Game.instance.octagram.getInstance(Game.instance.currentScene.world.playerProgramId);
 };
 
 getEnemyProgram = function() {
-  return Game.instance.octagrams.getInstance(Game.instance.currentScene.world.enemyProgramId);
+  return Game.instance.octagram.getInstance(Game.instance.currentScene.world.enemyProgramId);
 };
 
 executePlayerProgram = function() {

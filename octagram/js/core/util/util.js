@@ -126,8 +126,12 @@ uniqueID = function() {
   return randam + time.toString();
 };
 
+octagram.TipUtil = TipUtil;
+
 octagram.Vector = Vector;
 
 octagram.Point = Point;
 
 octagram.Direction = Direction;
+
+octagram.uniqueID = uniqueID;

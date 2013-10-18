@@ -26,11 +26,22 @@ class Octagram
 
   createProgramInstance : () -> @core.octagrams.createInstance()
   showProgram : (program) -> @core.octagrams.show(program)
+  getInstance : (id) -> @core.octagrams.getInstance(id)
 
   copyObjectToLocal : (local) ->
+    ignores = ['Resources', 'TipUtil']
+
     for key, value of local.parent.octagram
-      console.log(key)
-      if (key != 'Octagram' && key != 'Cpu' && key != 'Resource' && key != 'OctagramCore' && 'OctagramContent' && 'OctagramContentSet') then local[key] = value
+      if !(key in ignores)
+        console.log('import : ' + key)
+        local[key] = value
+      else console.log('ignore : ' + key)
+
+  copyAssetsToHost : (local) ->
+    console.log(local.Game.instance.assets)
+    for key, value of local.Game.instance.assets
+      console.log('load asset :' + key)
+      local.parent.Game.instance.assets[key] = value
     
   onload : () ->
 

@@ -470,6 +470,8 @@ StackBnzInstruction = (function(_super) {
 
 })(BranchInstruction);
 
+octagram.StackMachine = StackMachine;
+
 octagram.StackAddInstruction = StackAddInstruction;
 
 octagram.StackSubInstruction = StackSubInstruction;

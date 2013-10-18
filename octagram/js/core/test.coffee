@@ -1,5 +1,5 @@
-getPlayerProgram = () -> Game.instance.octagrams.getInstance(Game.instance.currentScene.world.playerProgramId)
-getEnemyProgram = () -> Game.instance.octagrams.getInstance(Game.instance.currentScene.world.enemyProgramId)
+getPlayerProgram = () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.playerProgramId)
+getEnemyProgram = () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.enemyProgramId)
 
 executePlayerProgram = () -> getPlayerProgram().execute()
 executeEnemyProgram = () -> getEnemyProgram().execute()

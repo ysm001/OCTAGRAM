@@ -14,7 +14,7 @@ Config = (function() {
 
   Config.GAME_HEIGHT = 640;
 
-  Config.GAME_OFFSET_X = IS_MOBILE ? 0 : 640;
+  Config.GAME_OFFSET_X = 0;
 
   Config.GAME_OFFSET_Y = 0;
 

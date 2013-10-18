@@ -242,7 +242,7 @@ RobotScene = (function(_super) {
 RobotGame = (function(_super) {
   __extends(RobotGame, _super);
 
-  function RobotGame(x, y, width, height) {
+  function RobotGame(width, height) {
     RobotGame.__super__.constructor.call(this, width, height);
     this._assetPreload();
     this.keybind(87, 'w');
