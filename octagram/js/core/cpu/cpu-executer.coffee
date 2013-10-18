@@ -51,3 +51,5 @@ class Executer extends EventTarget
         @_execute(nextTip)
 
   stop : () -> @end =true
+
+octagram.Executer = Executer

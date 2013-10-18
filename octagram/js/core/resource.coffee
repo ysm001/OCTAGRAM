@@ -69,3 +69,6 @@ class TextResource
       "configurator" : "パラメータ編集"
     }
   }
+
+octagram.Resources = Resources
+octagram.TextResource = TextResource

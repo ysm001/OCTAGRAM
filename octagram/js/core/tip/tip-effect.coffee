@@ -40,3 +40,6 @@ class ExecutionEffect extends ImageSprite
     @busy = false
     @visible = false
     @parentNode.removeChild(this)
+
+octagram.SelectedEffect = SelectedEffect
+octagram.ExecutionEffect = ExecutionEffect

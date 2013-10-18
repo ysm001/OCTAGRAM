@@ -31,3 +31,5 @@ TipBackground = (function(_super) {
   return TipBackground;
 
 })(Group);
+
+octagram.TipBackground = TipBackground;

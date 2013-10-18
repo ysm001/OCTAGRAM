@@ -22,3 +22,5 @@ class TipFactory
     else if inst instanceof BranchInstruction
       TipFactory.createBranchTip(new CustomInstructionBranchTip(inst))
     else console.log("error : invalid instruction type.")
+
+octagram.TipFactory = TipFactory

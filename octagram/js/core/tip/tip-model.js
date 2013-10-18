@@ -261,3 +261,19 @@ ActionTip = (function(_super) {
   return ActionTip;
 
 })(SingleTransitionTip);
+
+octagram.Tip = Tip;
+
+octagram.EmptyTip = EmptyTip;
+
+octagram.StopTip = StopTip;
+
+octagram.ThinkTip = ThinkTip;
+
+octagram.NopTip = NopTip;
+
+octagram.StartTip = StartTip;
+
+octagram.ReturnTip = ReturnTip;
+
+octagram.WallTip = WallTip;

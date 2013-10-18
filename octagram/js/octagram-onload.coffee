@@ -1,3 +1,4 @@
+###
 window.onload = () ->
   core = new @OctagramCore(16, 16, 640, 640, "./resource/")
   core.start()
@@ -6,6 +7,4 @@ window.onload = () ->
     core.pushScene(scene)
     program = core.octagrams.createInstance()
     core.octagrams.show(program.id)
-
-  @octagram.core = core
-  @octagram.onload()
+###

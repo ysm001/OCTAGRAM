@@ -141,3 +141,16 @@ class StackBnzInstruction extends BranchInstruction
   clone : () -> @copy(new StackBnzInstruction(@stack))
   getIcon : () ->  new Icon(Resources.get("iconRandom"))
   mkDescription : () -> "スタック操作命令(上級者向け)<br>" + "スタックからxをポップして, xが1ならば青矢印に進む。<br>そうでなければ赤矢印に進む。" 
+
+octagram.StackAddInstruction = StackAddInstruction
+octagram.StackSubInstruction = StackSubInstruction
+octagram.StackMulInstruction = StackMulInstruction
+octagram.StackDivInstruction = StackDivInstruction
+octagram.StackModInstruction = StackModInstruction
+octagram.StackXorInstruction = StackXorInstruction
+octagram.StackGrtInstruction = StackGrtInstruction
+octagram.StackSwpInstruction = StackSwpInstruction
+octagram.StackNotInstruction = StackNotInstruction
+octagram.StackDupInstruction = StackDupInstruction
+octagram.StackRotInstruction = StackRotInstruction
+octagram.StackBnzInstruction = StackBnzInstruction

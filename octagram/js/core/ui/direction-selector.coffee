@@ -44,3 +44,5 @@ class DirectionSelector extends Group
 
   @createNormal : (transition) -> new DirectionSelector(transition, 50, 'normal')
   @createAlter : (transition) -> new DirectionSelector(transition, 50, 'alter')
+
+octagram.DirectionSelector = DirectionSelector

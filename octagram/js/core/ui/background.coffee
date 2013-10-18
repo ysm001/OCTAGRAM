@@ -18,3 +18,5 @@ class TipBackground extends Group
         map.image = background
         map.moveTo(x+j*space, y+i*space)
         @addChild(map)
+
+octagram.TipBackground = TipBackground

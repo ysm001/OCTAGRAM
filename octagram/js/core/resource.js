@@ -89,3 +89,7 @@ TextResource = (function() {
   return TextResource;
 
 })();
+
+octagram.Resources = Resources;
+
+octagram.TextResource = TextResource;

@@ -218,3 +218,9 @@ OctagramContent = (function(_super) {
   return OctagramContent;
 
 })(Group);
+
+octagram.TipSet = TipSet;
+
+octagram.OctagramContentSet = OctagramContentSet;
+
+octagram.OctagramContent = OctagramContent;

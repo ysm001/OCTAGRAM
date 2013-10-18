@@ -22,3 +22,5 @@ class Icon extends Sprite
     obj = new Icon(@image, @width, @height)
     obj.frame = @frame 
     obj
+
+octagram.Icon = Icon

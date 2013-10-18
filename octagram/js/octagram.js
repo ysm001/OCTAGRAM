@@ -3,16 +3,47 @@ var Octagram;
 
 Octagram = (function() {
   function Octagram(path) {
-    var $octagramContent, contentWindow;
+    var $octagramContent, contentWindow,
+      _this = this;
     this.core = null;
     $octagramContent = $('<iframe seamless></iframe>').attr('id', 'octagram-content').attr('src', path + '/content.html').attr('width', '640').attr('height', '640');
     $('#octagram').append($octagramContent);
     contentWindow = $octagramContent[0].contentWindow;
-    contentWindow.octagram = this;
+    contentWindow.isContent = true;
+    contentWindow.onload = function() {
+      _this.core = new contentWindow.OctagramCore(16, 16, 640, 640, "./resource/");
+      _this.core.start();
+      return _this.core.onload = function() {
+        var program, scene;
+        scene = new contentWindow.Scene(_this.core);
+        _this.core.pushScene(scene);
+        program = _this.core.octagrams.createInstance();
+        _this.core.octagrams.show(program.id);
+        return _this.onload();
+      };
+    };
   }
+
+  Octagram.prototype.copyObjectToLocal = function(local) {
+    var key, value, _ref, _results;
+    _ref = local.parent.octagram;
+    _results = [];
+    for (key in _ref) {
+      value = _ref[key];
+      console.log(key);
+      if (key !== 'Octagram' && key !== 'Cpu' && key !== 'Resource' && key !== 'OctagramCore' && 'OctagramContent' && 'OctagramContentSet') {
+        _results.push(local[key] = value);
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
 
   Octagram.prototype.onload = function() {};
 
   return Octagram;
 
 })();
+
+octagram.Octagram = Octagram;

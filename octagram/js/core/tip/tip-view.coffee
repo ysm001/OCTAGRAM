@@ -254,3 +254,8 @@ class JumpTransitionCodeTip extends CodeTip
   constructor : (code) -> super(code)
   setNext : (x, y) -> @code.setNext({x:x, y:y})
   clone : () -> @copy(new JumpTransitionCodeTip(@code.clone()))
+
+octagram.CodeTip = CodeTip
+octagram.SingleTransitionCodeTip = SingleTransitionCodeTip
+octagram.BranchTransitionCodeTip = BranchTransitionCodeTip
+octagram.JumpTransitionCodeTip = JumpTransitionCodeTip

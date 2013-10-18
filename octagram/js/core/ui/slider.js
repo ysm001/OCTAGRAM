@@ -122,3 +122,5 @@ Slider = (function(_super) {
   return Slider;
 
 })(SpriteGroup);
+
+octagram.Slider = Slider;

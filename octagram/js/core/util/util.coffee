@@ -68,3 +68,7 @@ uniqueID = () ->
   date = new Date()
   time = date.getTime()
   randam + time.toString()
+
+octagram.Vector = Vector
+octagram.Point = Point
+octagram.Direction = Direction

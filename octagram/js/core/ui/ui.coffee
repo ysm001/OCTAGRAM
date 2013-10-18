@@ -103,3 +103,9 @@ class Frame extends ImageSprite
   constructor : () ->
     super(Resources.get("frame"))
     @touchEnabled = false
+
+octagram.TextLabel = TextLabel
+octagram.UIPanel = UIPanel
+octagram.UIButton = UIButton
+octagram.UICloseButton = UICloseButton
+octagram.HelpPanel = HelpPanel

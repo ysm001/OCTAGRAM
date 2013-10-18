@@ -125,3 +125,9 @@ uniqueID = function() {
   time = date.getTime();
   return randam + time.toString();
 };
+
+octagram.Vector = Vector;
+
+octagram.Point = Point;
+
+octagram.Direction = Direction;

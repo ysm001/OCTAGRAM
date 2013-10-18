@@ -183,3 +183,13 @@ Frame = (function(_super) {
   return Frame;
 
 })(ImageSprite);
+
+octagram.TextLabel = TextLabel;
+
+octagram.UIPanel = UIPanel;
+
+octagram.UIButton = UIButton;
+
+octagram.UICloseButton = UICloseButton;
+
+octagram.HelpPanel = HelpPanel;

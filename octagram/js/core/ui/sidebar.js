@@ -95,3 +95,5 @@ SideTipSelector = (function(_super) {
   return SideTipSelector;
 
 })(EntityGroup);
+
+octagram.SideTipSelector = SideTipSelector;

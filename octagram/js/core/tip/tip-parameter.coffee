@@ -32,3 +32,5 @@ class TipParameter
 
   serialize : () -> {valueName: @valueName, value: @value}
   deserialize : (serializedVal) -> @setValue(serializedVal.value)
+
+octagram.TipParameter = TipParameter

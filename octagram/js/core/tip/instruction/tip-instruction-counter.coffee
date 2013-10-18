@@ -121,3 +121,10 @@ class CounterPopInstruction extends ActionInstruction
     "スタックからxをポップして, カウンター" + @id + "に代入します。"
 
   clone : () -> @copy(new CounterPushInstruction(@counters))
+
+octagram.Counter = Counter
+octagram.CounterIncrementInstruction = CounterIncrementInstruction
+octagram.CounterDecrementInstruction = CounterDecrementInstruction
+octagram.CounterBranchInstruction = CounterBranchInstruction
+octagram.CounterPushInstruction = CounterPushInstruction
+octagram.CounterPopInstruction = CounterPopInstruction

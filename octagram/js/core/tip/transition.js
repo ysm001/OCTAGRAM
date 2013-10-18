@@ -131,3 +131,9 @@ AlterTransition = (function(_super) {
   return AlterTransition;
 
 })(TipTransition);
+
+octagram.TipTransition = TipTransition;
+
+octagram.NormalTransition = NormalTransition;
+
+octagram.AlterTransition = AlterTransition;

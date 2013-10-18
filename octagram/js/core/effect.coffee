@@ -16,3 +16,5 @@ class TouchEffect extends ImageSprite
     console.log(time/4)
     f = () => @single(parent, x, y, time)
     setTimeout(f, 100)
+
+octagram.TouchEffect = TouchEffect

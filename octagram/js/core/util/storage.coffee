@@ -5,3 +5,6 @@ class LocalStorage
 class ServerStorage
   save : (key, value) ->
   load : (key) ->
+
+octagram.LocalStorage = LocalStorage
+octagram.ServerStorage = ServerStorage

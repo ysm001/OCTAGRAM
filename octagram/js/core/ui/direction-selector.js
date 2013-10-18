@@ -70,3 +70,5 @@ DirectionSelector = (function(_super) {
   return DirectionSelector;
 
 })(Group);
+
+octagram.DirectionSelector = DirectionSelector;

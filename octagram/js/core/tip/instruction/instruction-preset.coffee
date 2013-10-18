@@ -27,3 +27,5 @@ class RandomBranchInstruction extends BranchInstruction
     
   mkDescription : () ->
     @threthold + "%の確率で青矢印に進みます。<br>" + (100 - @threthold) + "%の確率で赤矢印に進みます。"
+
+octagram.RandomBranchInstruction = RandomBranchInstruction

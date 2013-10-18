@@ -25,3 +25,5 @@ Environment = (function() {
   return Environment;
 
 })();
+
+octagram.Environment = Environment;

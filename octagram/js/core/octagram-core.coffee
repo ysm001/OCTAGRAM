@@ -13,3 +13,5 @@ class OctagramCore extends Core
     Resources.load(this)
 
   onload : ->
+
+octagram.OctagramCore = OctagramCore

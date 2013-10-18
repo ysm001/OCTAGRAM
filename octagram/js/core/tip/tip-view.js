@@ -420,3 +420,11 @@ JumpTransitionCodeTip = (function(_super) {
   return JumpTransitionCodeTip;
 
 })(CodeTip);
+
+octagram.CodeTip = CodeTip;
+
+octagram.SingleTransitionCodeTip = SingleTransitionCodeTip;
+
+octagram.BranchTransitionCodeTip = BranchTransitionCodeTip;
+
+octagram.JumpTransitionCodeTip = JumpTransitionCodeTip;

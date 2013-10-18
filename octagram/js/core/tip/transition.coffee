@@ -84,3 +84,7 @@ class NormalTransition extends TipTransition
 class AlterTransition extends TipTransition
   constructor : (src, dst) -> 
     super(Resources.get("alterTransition"), src, dst)
+
+octagram.TipTransition = TipTransition
+octagram.NormalTransition = NormalTransition
+octagram.AlterTransition = AlterTransition

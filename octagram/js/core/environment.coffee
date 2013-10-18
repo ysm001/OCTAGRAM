@@ -11,3 +11,5 @@ class Environment
   @startY = -1
 
   @Mobile = false
+
+octagram.Environment = Environment

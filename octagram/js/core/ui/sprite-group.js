@@ -131,3 +131,7 @@ ImageSprite = (function(_super) {
   return ImageSprite;
 
 })(Sprite);
+
+octagram.SpriteGroup = SpriteGroup;
+
+octagram.GroupedSprite = GroupedSprite;

@@ -59,3 +59,6 @@ class ImageSprite extends Sprite
   constructor : (image, width, height) ->
     super(width || image.width, height || image.height)
     @image = image
+
+octagram.SpriteGroup = SpriteGroup
+octagram.GroupedSprite = GroupedSprite

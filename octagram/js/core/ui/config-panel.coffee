@@ -50,3 +50,5 @@ class ParameterConfigPanel extends SpriteGroup
           for param, i in tip.parameters
             param.setValue(backup[i])
             param.onParameterComplete()
+
+octagram.ParameterSlider = ParameterSlider

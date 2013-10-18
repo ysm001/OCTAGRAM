@@ -1,4 +1,5 @@
 ( ->
+    window.octagram = {}
     s = document.getElementsByTagName("script")
     d = s[s.length-1].src.substring(0, s[s.length-1].src.lastIndexOf("/")+1)
     for arg in arguments
@@ -33,4 +34,6 @@
 	"core/environment.js"
 	"core/octagram-content.js"
 	"core/octagram-core.js"
+	"octagram.js"
 )
+

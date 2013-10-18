@@ -59,3 +59,5 @@ TipFactory = (function() {
   return TipFactory;
 
 })();
+
+octagram.TipFactory = TipFactory;

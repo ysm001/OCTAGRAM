@@ -40,3 +40,5 @@ TouchEffect = (function(_super) {
   return TouchEffect;
 
 })(ImageSprite);
+
+octagram.TouchEffect = TouchEffect;

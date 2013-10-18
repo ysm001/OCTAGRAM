@@ -96,3 +96,9 @@ class CustomInstructionBranchTip extends BranchTip
   deserialize : (serializedVal) ->
     super(serializedVal)
     @instruction.deserialize(serializedVal.instruction)
+
+octagram.Instruction = Instruction
+octagram.ActionInstruction = ActionInstruction
+octagram.BranchInstruction = BranchInstruction
+octagram.CustomInstructionActionTip = CustomInstructionActionTip
+octagram.CustomInstructionBranchTip = CustomInstructionBranchTip

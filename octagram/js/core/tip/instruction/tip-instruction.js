@@ -248,3 +248,13 @@ CustomInstructionBranchTip = (function(_super) {
   return CustomInstructionBranchTip;
 
 })(BranchTip);
+
+octagram.Instruction = Instruction;
+
+octagram.ActionInstruction = ActionInstruction;
+
+octagram.BranchInstruction = BranchInstruction;
+
+octagram.CustomInstructionActionTip = CustomInstructionActionTip;
+
+octagram.CustomInstructionBranchTip = CustomInstructionBranchTip;

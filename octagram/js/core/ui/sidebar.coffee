@@ -85,3 +85,5 @@ class SideTipSelector extends EntityGroup
     @addChild(@tipGroup)
 
     @scrollPosition = 0
+
+octagram.SideTipSelector = SideTipSelector

@@ -227,3 +227,5 @@ Cpu = (function(_super) {
   return Cpu;
 
 })(Group);
+
+octagram.Cpu = Cpu;

@@ -124,3 +124,7 @@ class OctagramContent extends Group
   hide : () -> Game.instance.currentScene.removeChild(@)
 
 
+
+octagram.TipSet = TipSet
+octagram.OctagramContentSet = OctagramContentSet
+octagram.OctagramContent = OctagramContent

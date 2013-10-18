@@ -86,3 +86,5 @@ class Slider extends SpriteGroup
     normValue = x / @getWidth()
     @min + normValue * (@max - @min)
 
+
+octagram.Slider = Slider

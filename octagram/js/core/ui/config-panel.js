@@ -88,3 +88,5 @@ ParameterConfigPanel = (function(_super) {
   return ParameterConfigPanel;
 
 })(SpriteGroup);
+
+octagram.ParameterSlider = ParameterSlider;

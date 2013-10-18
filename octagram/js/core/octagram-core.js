@@ -18,3 +18,5 @@ OctagramCore = (function(_super) {
   return OctagramCore;
 
 })(Core);
+
+octagram.OctagramCore = OctagramCore;

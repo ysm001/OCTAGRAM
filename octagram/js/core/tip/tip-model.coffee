@@ -133,3 +133,12 @@ class ActionTip extends SingleTransitionTip
     @getTransition("next")
 
   clone : () -> tip = @copy(new ActionTip(@getNext()))
+
+octagram.Tip = Tip
+octagram.EmptyTip = EmptyTip
+octagram.StopTip = StopTip
+octagram.ThinkTip = ThinkTip
+octagram.NopTip = NopTip
+octagram.StartTip = StartTip
+octagram.ReturnTip = ReturnTip
+octagram.WallTip = WallTip
