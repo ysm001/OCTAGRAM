@@ -19,11 +19,13 @@
     <script type="text/javascript" src="./js/enchant.js/plugins/ui.enchant.js"></script>
     <script type="text/javascript" src="./js/enchant.js/plugins/widget.enchant.js"></script>
     <script type="text/javascript" src="./js/enchant.js/plugins/model.enchant.js"></script>
+    <script type="text/javascript" src="./js/duplicator.js"></script>
     <script type="text/javascript">
       var VPL_JS_BASE = "./";
       enchant();
       enchant.ui.assets = ['resource/ui/pad.png', 'resource/ui/apad.png', 'resource/ui/icon0.png', 'resource/ui/font0.png'];
       enchant.widget.assets = ['resource/widget/dialog.png'];
+      Duplicator.copyEnchantObject(window)
     </script>
     <script type="text/javascript" src="./js/octagram-loader.js"></script>
     <!--
@@ -38,9 +40,9 @@
   </head>
   <body>
     <div id="enchant-stage"></div>
+    <!--
     <div id="dbg-btns">
       <form>
-        <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
         <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />
         <input type="button" class="btn btn-success" value="save player" name="Save" onClick="savePlayerProgram()" />
         <input type="button" class="btn btn-success" value="load player" name="Save" onClick="loadPlayerProgram()" />
@@ -51,5 +53,6 @@
         <input type="button" class="btn btn-danger" value="execute enemy"  name="Execute Test Code" onClick="executeEnemyProgram()" />
       </form>
     </div>
+    -->
   </body>
 </html>

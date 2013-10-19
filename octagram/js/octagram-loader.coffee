@@ -1,15 +1,6 @@
-copyObjectToLocal = (local) ->
-  ignores = ['Resources', 'TipUtil']
-
-  for key, value of local.parent.octagram
-    if !(key in ignores)
-      console.log('import : ' + key)
-      local[key] = value
-    else console.log('ignore : ' + key)
-
 ( ->
     window.octagram = {}
-    copyObjectToLocal(window)
+    Duplicator.copyOctagramObject(window)
 
     s = document.getElementsByTagName("script")
     d = s[s.length-1].src.substring(0, s[s.length-1].src.lastIndexOf("/")+1)
