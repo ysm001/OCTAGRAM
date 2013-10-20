@@ -1,9 +1,9 @@
 if !IS_MOBILE? then IS_MOBILE = false else Environment.Mobile = true
 
 class Config
-  @GAME_WIDTH = if IS_MOBILE then 640 else 1280
+  @GAME_WIDTH = 640
   @GAME_HEIGHT = 640
-  @GAME_OFFSET_X = if IS_MOBILE then 0 else 640
+  @GAME_OFFSET_X = 0
   @GAME_OFFSET_Y = 0
   @IS_MOBILE : IS_MOBILE
 

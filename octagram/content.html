@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/enchant.js/enchant.js"></script>
+    <script type="text/javascript" src="./js/enchant.js/plugins/ui.enchant.js"></script>
+    <script type="text/javascript" src="./js/enchant.js/plugins/widget.enchant.js"></script>
+    <script type="text/javascript" src="./js/enchant.js/plugins/model.enchant.js"></script>
+    <script type="text/javascript" src="./js/duplicator.js"></script>
+    <script type="text/javascript">
+      enchant();
+      enchant.ui.assets = ['resource/ui/pad.png', 'resource/ui/apad.png', 'resource/ui/icon0.png', 'resource/ui/font0.png'];
+      enchant.widget.assets = ['resource/widget/dialog.png'];
+    </script>
+    <script type="text/javascript" src="./js/octagram-loader.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="enchant-stage"></div>
+  </body>
+</html>

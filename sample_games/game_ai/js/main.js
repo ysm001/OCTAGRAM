@@ -76,10 +76,10 @@ RobotWorld = (function(_super) {
     this.addChild(this._enemy);
   }
 
-  RobotWorld.prototype.initInstructions = function() {
+  RobotWorld.prototype.initInstructions = function(octagram) {
     var enemyProgram, playerProgram;
-    playerProgram = Game.instance.octagrams.createInstance();
-    enemyProgram = Game.instance.octagrams.createInstance();
+    playerProgram = octagram.createProgramInstance();
+    enemyProgram = octagram.createProgramInstance();
     this.playerProgramId = playerProgram.id;
     this.enemyProgramId = enemyProgram.id;
     playerProgram.addInstruction(new MoveInstruction(this._player));
@@ -100,7 +100,7 @@ RobotWorld = (function(_super) {
     enemyProgram.addInstruction(new TurnEnemyScanInstruction(this._enemy, this._player));
     enemyProgram.addInstruction(new HpBranchInstruction(this._enemy));
     enemyProgram.addInstruction(new HoldBulletBranchInstruction(this._enemy));
-    return Game.instance.octagrams.show(this.playerProgramId);
+    return octagram.showProgram(this.playerProgramId);
   };
 
   RobotWorld.prototype.properties = {
@@ -242,8 +242,8 @@ RobotScene = (function(_super) {
 RobotGame = (function(_super) {
   __extends(RobotGame, _super);
 
-  function RobotGame(x, y, width, height) {
-    RobotGame.__super__.constructor.call(this, x, y, width, height, "./js/tip_based_vpl/resource/");
+  function RobotGame(width, height) {
+    RobotGame.__super__.constructor.call(this, width, height);
     this._assetPreload();
     this.keybind(87, 'w');
     this.keybind(65, 'a');
@@ -286,10 +286,13 @@ RobotGame = (function(_super) {
   };
 
   RobotGame.prototype.onload = function() {
+    var _this = this;
     this.scene = new RobotScene(this);
     this.pushScene(this.scene);
-    RobotGame.__super__.onload.apply(this, arguments);
-    this.scene.world.initInstructions();
+    this.octagram = new Octagram('./js/octagram');
+    this.octagram.onload = function() {
+      return _this.scene.world.initInstructions(_this.octagram);
+    };
     this.assets["font0.png"] = this.assets['resources/ui/font0.png'];
     this.assets["apad.png"] = this.assets['resources/ui/apad.png'];
     this.assets["icon0.png"] = this.assets['resources/ui/icon0.png'];
@@ -298,10 +301,10 @@ RobotGame = (function(_super) {
 
   return RobotGame;
 
-})(TipBasedVPL);
+})(Core);
 
 window.onload = function() {
   var game;
-  game = new RobotGame(16, 16, Config.GAME_WIDTH, Config.GAME_HEIGHT);
+  game = new RobotGame(Config.GAME_WIDTH, Config.GAME_HEIGHT);
   return game.start();
 };

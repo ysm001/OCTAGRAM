@@ -11,17 +11,17 @@
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="./js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="./js/third_party/enchant.js/enchant.js"></script>
-    <script type="text/javascript" src="./js/third_party/enchant.js/plugins/ui.enchant.js"></script>
-    <script type="text/javascript" src="./js/third_party/enchant.js/plugins/widget.enchant.js"></script>
-    <script type="text/javascript" src="./js/third_party/enchant.js/plugins/model.enchant.js"></script>
+    <script type="text/javascript" src="./js/octagram/js/enchant.js/enchant.js"></script>
+    <script type="text/javascript" src="./js/octagram/js/enchant.js/plugins/ui.enchant.js"></script>
+    <script type="text/javascript" src="./js/octagram/js/enchant.js/plugins/widget.enchant.js"></script>
+    <script type="text/javascript" src="./js/octagram/js/enchant.js/plugins/model.enchant.js"></script>
     <script type="text/javascript">
       var VPL_JS_BASE = "./";
       enchant();
       enchant.ui.assets = ['resources/ui/pad.png', 'resources/ui/apad.png', 'resources/ui/icon0.png', 'resources/ui/font0.png'];
       enchant.widget.assets = ['resources/widget/dialog.png'];
     </script>
-    <script type="text/javascript" src="./js/tip_based_vpl/js/octagram-loader.js"></script>
+    <script type="text/javascript" src="./js/octagram/js/octagram-loader-client.js"></script>
     <script type="text/javascript" src="./js/ai-robot.js"></script>
     <style type="text/css">
       body {
@@ -31,8 +31,11 @@
     </style>
   </head>
   <body>
-    <div id="enchant-stage"></div>
-    <div id="dbg-btns">
+    <div>
+      <div id="octagram" style="float:left"></div>
+      <div id="enchant-stage" style="float:left"></div>
+    </div>
+    <div id="dbg-btns" style="float:left">
       <form>
         <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
         <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />

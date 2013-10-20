@@ -60,9 +60,9 @@ class RobotWorld extends GroupModel
     @addChild @_player
     @addChild @_enemy
 
-  initInstructions: () ->
-    playerProgram = Game.instance.octagrams.createInstance()
-    enemyProgram = Game.instance.octagrams.createInstance()
+  initInstructions: (octagram) ->
+    playerProgram = octagram.createProgramInstance()
+    enemyProgram = octagram.createProgramInstance()
     @playerProgramId = playerProgram.id
     @enemyProgramId  = enemyProgram.id
 
@@ -86,7 +86,7 @@ class RobotWorld extends GroupModel
     enemyProgram.addInstruction(new HpBranchInstruction(@_enemy))
     enemyProgram.addInstruction(new HoldBulletBranchInstruction(@_enemy))
 
-    Game.instance.octagrams.show(@playerProgramId)
+    octagram.showProgram(@playerProgramId)
 
   properties:
     player:
@@ -162,9 +162,9 @@ class RobotScene extends Scene
     @world.update(@views)
     @views.update(@world)
 
-class RobotGame extends TipBasedVPL
-  constructor: (x, y, width, height) ->
-    super x, y, width, height, "./js/tip_based_vpl/resource/"
+class RobotGame extends Core
+  constructor: (width, height) ->
+    super width, height
     @_assetPreload()
     @keybind(87, 'w')
     @keybind(65, 'a')
@@ -201,14 +201,14 @@ class RobotGame extends TipBasedVPL
   onload: ->
     @scene = new RobotScene @
     @pushScene @scene
-    super
-    @scene.world.initInstructions()
+
+    @octagram = new Octagram('./js/octagram')
+    @octagram.onload = () => @scene.world.initInstructions(@octagram)
     @assets["font0.png"] = @assets['resources/ui/font0.png']
     @assets["apad.png"] = @assets['resources/ui/apad.png']
     @assets["icon0.png"] = @assets['resources/ui/icon0.png']
     @assets["pad.png"] = @assets['resources/ui/pad.png']
-    #Game.instance.vpl.currentVM.show()
 
 window.onload = () ->
-  game = new RobotGame 16, 16, Config.GAME_WIDTH, Config.GAME_HEIGHT
+  game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT
   game.start()
