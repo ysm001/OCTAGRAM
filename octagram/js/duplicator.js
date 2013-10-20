@@ -22,23 +22,6 @@ Duplicator = (function() {
     return _results;
   };
 
-  Duplicator.copyEnchantObject = function(local) {
-    var key, targets, value, _ref, _results;
-    targets = ['Sprite'];
-    _ref = local.parent.enchant;
-    _results = [];
-    for (key in _ref) {
-      value = _ref[key];
-      if ((__indexOf.call(targets, key) >= 0)) {
-        console.log('duplicate : ' + 'enchant.' + key);
-        _results.push(local[key] = value);
-      } else {
-        _results.push(console.log('ignore : ' + 'enchant.' + key));
-      }
-    }
-    return _results;
-  };
-
   return Duplicator;
 
 })();

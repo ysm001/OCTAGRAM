@@ -44,10 +44,10 @@ SpriteGroup = (function(_super) {
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       child = _ref[_i];
-      if (child instanceof Sprite) {
-        _results.push(child.opacity = opacity);
-      } else if (child instanceof SpriteGroup) {
+      if (child.setOpacity != null) {
         _results.push(child.setOpacity(opacity));
+      } else if (child.opacity != null) {
+        _results.push(child.opacity = opacity);
       } else {
         _results.push(void 0);
       }
@@ -61,10 +61,10 @@ SpriteGroup = (function(_super) {
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       child = _ref[_i];
-      if (child instanceof Sprite) {
-        _results.push(child.visible = visible);
-      } else if (child instanceof SpriteGroup) {
+      if (child.setVisible != null) {
         _results.push(child.setVisible(opacity));
+      } else if (child.visible != null) {
+        _results.push(child.visible = visible);
       } else {
         _results.push(void 0);
       }

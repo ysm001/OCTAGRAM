@@ -23,17 +23,17 @@ class SpriteGroup extends Group
 
   setOpacity : (opacity) ->
     for child in @childNodes
-      if child instanceof Sprite
-        child.opacity = opacity
-      else if child instanceof SpriteGroup
+      if child.setOpacity?
         child.setOpacity(opacity)
+      else if child.opacity?
+        child.opacity = opacity
 
   setVisible : (visible) ->
     for child in @childNodes
-      if child instanceof Sprite
-        child.visible = visible
-      else if child instanceof SpriteGroup
+      if child.setVisible?
         child.setVisible(opacity)
+      else if child.visible?
+        child.visible = visible
     
   getWidth : () -> @sprite.width
   getHeight : () -> @sprite.height
