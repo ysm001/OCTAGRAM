@@ -12,15 +12,11 @@
 	"core/ui/sprite-group.js",
 	"core/effect.js",
   "core/tip/tip-model.js",
-	#"core/tip/instruction/tip-instruction.js",
-	#"core/test.js",
   "core/util/util.js",
   "core/resource.js",
 	"core/tip/tip-effect.js",
 	"core/tip/transition.js",
 	"core/tip/tip-view.js",
-  #"core/tip/tip-icon.js",
-  #"core/tip/tip-parameter.js",
 	"core/tip/tip-factory.js",
   "core/tip/instruction/instruction-preset.js",
 	"core/tip/instruction/tip-instruction-stack.js",
@@ -37,7 +33,6 @@
   "core/environment.js"
 	"core/octagram-content.js"
 	"core/octagram-core.js"
-  #"octagram.js"
 )
 
 

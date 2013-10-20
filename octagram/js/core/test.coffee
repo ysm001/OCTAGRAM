@@ -14,6 +14,8 @@ showPlayerProgram = () -> Game.instance.octagrams.show(Game.instance.currentScen
 
 showEnemyProgram = () -> Game.instance.octagrams.show(Game.instance.currentScene.world.enemyProgramId)
 
+getContentWindow = () -> $('iframe')[0].contentWindow
+
 test = () ->
   playerProgram = Game.instance.currentScene.world.playerProgram
   enemyProgram = Game.instance.currentScene.world.enemyProgram
