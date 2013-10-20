@@ -9,7 +9,7 @@
 	"core/event/event.js",
 	#"core/ui/sprite-group.js",
 	#"core/effect.js",
-	"core/tip/tip-model.js",
+  #"core/tip/tip-model.js",
 	"core/tip/instruction/tip-instruction.js",
   "core/test.js",
   "core/util/util.js",
