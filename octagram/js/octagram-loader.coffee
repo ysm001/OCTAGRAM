@@ -34,7 +34,7 @@
 	"core/ui/config-panel.js",
 	"core/ui/ui.js",
 	"core/ui/direction-selector.js",
-  #"core/environment.js"
+  "core/environment.js"
 	"core/octagram-content.js"
 	"core/octagram-core.js"
   #"octagram.js"

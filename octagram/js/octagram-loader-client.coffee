@@ -6,14 +6,14 @@
         document.write('<script type="text/javascript" src="'+d+arg+'"></script>')
 )(
   #"core/util/storage.js",
-	"core/event/event.js",
+  #"core/event/event.js",
 	#"core/ui/sprite-group.js",
 	#"core/effect.js",
   #"core/tip/tip-model.js",
 	"core/tip/instruction/tip-instruction.js",
   "core/test.js",
-  "core/util/util.js",
-  "core/resource.js",
+  #"core/util/util.js",
+  #"core/resource.js",
   #"core/tip/tip-effect.js",
   #"core/tip/transition.js",
   #"core/tip/tip-view.js",
@@ -31,7 +31,7 @@
 	#"core/ui/config-panel.js",
 	#"core/ui/ui.js",
 	#"core/ui/direction-selector.js",
-	"core/environment.js"
+  #"core/environment.js"
   #"core/octagram-content.js"
   #"core/octagram-core.js"
   'octagram.js'
