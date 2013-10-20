@@ -34,11 +34,11 @@ loadEnemyProgram = function() {
 };
 
 showPlayerProgram = function() {
-  return Game.instance.octagrams.show(Game.instance.currentScene.world.playerProgramId);
+  return Game.instance.octagram.showProgram(Game.instance.currentScene.world.playerProgramId);
 };
 
 showEnemyProgram = function() {
-  return Game.instance.octagrams.show(Game.instance.currentScene.world.enemyProgramId);
+  return Game.instance.octagram.showProgram(Game.instance.currentScene.world.enemyProgramId);
 };
 
 getContentWindow = function() {
