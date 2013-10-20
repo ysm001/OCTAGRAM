@@ -10,7 +10,7 @@ if (typeof IS_MOBILE === "undefined" || IS_MOBILE === null) {
 Config = (function() {
   function Config() {}
 
-  Config.GAME_WIDTH = IS_MOBILE ? 640 : 1280;
+  Config.GAME_WIDTH = 640;
 
   Config.GAME_HEIGHT = 640;
 

@@ -3,11 +3,22 @@ var Octagram;
 
 Octagram = (function() {
   function Octagram(path) {
-    var $octagramContent, contentWindow,
+    var $octagramContent, $target, contentWindow,
       _this = this;
     this.core = null;
-    $octagramContent = $('<iframe seamless></iframe>').attr('id', 'octagram-content').attr('src', path + '/content.html').attr('width', '640').attr('height', '640');
-    $('#octagram').append($octagramContent);
+    $octagramContent = $('<iframe seamless></iframe>').attr({
+      id: 'octagram-content',
+      src: path + '/content.html'
+    }).css({
+      width: '640px',
+      height: '640px'
+    });
+    $target = $('#octagram');
+    $target.css({
+      width: '640px',
+      height: '640px'
+    });
+    $target.append($octagramContent);
     contentWindow = $octagramContent[0].contentWindow;
     contentWindow.isContent = true;
     contentWindow.onload = function() {
