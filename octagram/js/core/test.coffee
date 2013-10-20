@@ -10,9 +10,9 @@ saveEnemyProgram = () -> getEnemyProgram().save("enemy")
 loadPlayerProgram = () -> getPlayerProgram().load("player")
 loadEnemyProgram = () -> getEnemyProgram().load("enemy")
 
-showPlayerProgram = () -> Game.instance.octagrams.show(Game.instance.currentScene.world.playerProgramId)
+showPlayerProgram = () -> Game.instance.octagram.showProgram(Game.instance.currentScene.world.playerProgramId)
 
-showEnemyProgram = () -> Game.instance.octagrams.show(Game.instance.currentScene.world.enemyProgramId)
+showEnemyProgram = () -> Game.instance.octagram.showProgram(Game.instance.currentScene.world.enemyProgramId)
 
 getContentWindow = () -> $('iframe')[0].contentWindow
 
