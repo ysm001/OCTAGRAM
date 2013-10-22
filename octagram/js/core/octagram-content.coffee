@@ -117,6 +117,8 @@ class OctagramContent extends Group
     @addPresetInstructions()
     for tip in @tipSet.tips then @ui.side.addTip(tip)
 
+  setMessage : (text) -> @ui.help.setText(text)
+
   show : () -> 
     @setTipToBar()
     Game.instance.currentScene.addChild(@)

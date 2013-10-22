@@ -60,7 +60,7 @@ CodeTip = (function(_super) {
     var pre;
     pre = this.getSelectedTip();
     this.showOnTop();
-    this.topGroup().ui.help.setText(this.description);
+    this.topGroup().setMessage(this.description);
     this.isFirstClick = !this.isSelected();
     this.showSelectedEffect();
     if (pre) {
@@ -228,7 +228,7 @@ CodeTip = (function(_super) {
 
   CodeTip.prototype.onDescriptionChanged = function() {
     if (this.isSelected()) {
-      return this.topGroup().ui.help.setText(this.description);
+      return this.topGroup().setMessage(this.description);
     }
   };
 

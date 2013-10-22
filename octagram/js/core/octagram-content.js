@@ -206,6 +206,10 @@ OctagramContent = (function(_super) {
     return _results;
   };
 
+  OctagramContent.prototype.setMessage = function(text) {
+    return this.ui.help.setText(text);
+  };
+
   OctagramContent.prototype.show = function() {
     this.setTipToBar();
     return Game.instance.currentScene.addChild(this);

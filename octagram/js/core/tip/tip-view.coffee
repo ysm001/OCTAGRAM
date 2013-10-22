@@ -52,7 +52,7 @@ class CodeTip extends SpriteGroup
 
     @showOnTop()
 
-    @topGroup().ui.help.setText(@description)
+    @topGroup().setMessage(@description)
     @isFirstClick = !@isSelected()
     @showSelectedEffect()
 
@@ -157,7 +157,7 @@ class CodeTip extends SpriteGroup
     @onDescriptionChanged()
 
   onDescriptionChanged : () ->
-    if @isSelected() then @topGroup().ui.help.setText(@description)
+    if @isSelected() then @topGroup().setMessage(@description)
 
   setIndex : (idxX, idxY) -> @code.index = {x: idxX, y: idxY}
   getIndex : () -> @code.index
