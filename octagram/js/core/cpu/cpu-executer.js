@@ -102,13 +102,11 @@ Executer = (function(_super) {
   };
 
   Executer.prototype.onStart = function() {
-    console.log("start");
     this.running = true;
     return this.end = false;
   };
 
   Executer.prototype.onStop = function() {
-    console.log("stop");
     this.running = false;
     return this.end = false;
   };

@@ -66,12 +66,10 @@ class Executer extends EventTarget
   stop : () -> @end =true
 
   onStart : () ->
-    console.log("start")
     @running = true
     @end = false
 
   onStop : () -> 
-    console.log("stop")
     @running = false
     @end = false
 
