@@ -5,6 +5,7 @@ class Executer extends EventTarget
     @next = null
     @current = null
     @end = false
+    @running = false
 
   getNext : () -> if @next? then @cpu.getTip(@next.x, @next.y) else null
 
@@ -26,30 +27,54 @@ class Executer extends EventTarget
     if !tip.isAsynchronous()
       setTimeout(@execNext, Executer.latency)
 
+  waitWhileRunning : (callback) ->
+    if @isRunning() 
+      @stop()
+      wait = () => @waitWhileRunning(callback)
+      setTimeout(wait, 100)
+    else callback()
+
   execute : () ->
-    @end = false
-    tip = @cpu.getStartTip()
-    @_execute(tip)
+    @waitWhileRunning(() =>
+      @onStart()
+      tip = @cpu.getStartTip()
+      @_execute(tip)
+    )
 
   execNext : (e) =>
     if @end
       @current.hideExecutionEffect() if @current
+      nextTip = null
+      @current = null
     else
       nextTip = @getNext()
 
-      # asynchronous branch
-      if @current? && @current.isAsynchronous() && e && e.params.result? && @current instanceof BranchTransitionCodeTip
-        @next = if e.params.result then @current.code.getConseq() else @current.code.getAlter()
+    # asynchronous branch
+    if @current? && @current.isAsynchronous() && e && e.params.result? && @current instanceof BranchTransitionCodeTip
+      @next = if e.params.result then @current.code.getConseq() else @current.code.getAlter()
+      nextTip = @getNext()
+
+    if nextTip?
+      if nextTip == @current
+        console.log("error : invalid execution timing.")
+        @next = @current.code.getNext()
         nextTip = @getNext()
 
-      if nextTip?
-        if nextTip == @current
-          console.log("error : invalid execution timing.")
-          @next = @current.code.getNext()
-          nextTip = @getNext()
-
-        @_execute(nextTip)
+      @_execute(nextTip)
+    else @onStop()
 
   stop : () -> @end =true
+
+  onStart : () ->
+    console.log("start")
+    @running = true
+    @end = false
+
+  onStop : () -> 
+    console.log("stop")
+    @running = false
+    @end = false
+
+  isRunning : () -> @running
 
 octagram.Executer = Executer

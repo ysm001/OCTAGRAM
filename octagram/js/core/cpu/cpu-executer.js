@@ -15,6 +15,7 @@ Executer = (function(_super) {
     this.next = null;
     this.current = null;
     this.end = false;
+    this.running = false;
   }
 
   Executer.prototype.getNext = function() {
@@ -45,38 +46,75 @@ Executer = (function(_super) {
     }
   };
 
+  Executer.prototype.waitWhileRunning = function(callback) {
+    var wait,
+      _this = this;
+    if (this.isRunning()) {
+      this.stop();
+      wait = function() {
+        return _this.waitWhileRunning(callback);
+      };
+      return setTimeout(wait, 100);
+    } else {
+      return callback();
+    }
+  };
+
   Executer.prototype.execute = function() {
-    var tip;
-    this.end = false;
-    tip = this.cpu.getStartTip();
-    return this._execute(tip);
+    var _this = this;
+    return this.waitWhileRunning(function() {
+      var tip;
+      _this.onStart();
+      tip = _this.cpu.getStartTip();
+      return _this._execute(tip);
+    });
   };
 
   Executer.prototype.execNext = function(e) {
     var nextTip;
     if (this.end) {
       if (this.current) {
-        return this.current.hideExecutionEffect();
+        this.current.hideExecutionEffect();
       }
+      nextTip = null;
+      this.current = null;
     } else {
       nextTip = this.getNext();
-      if ((this.current != null) && this.current.isAsynchronous() && e && (e.params.result != null) && this.current instanceof BranchTransitionCodeTip) {
-        this.next = e.params.result ? this.current.code.getConseq() : this.current.code.getAlter();
+    }
+    if ((this.current != null) && this.current.isAsynchronous() && e && (e.params.result != null) && this.current instanceof BranchTransitionCodeTip) {
+      this.next = e.params.result ? this.current.code.getConseq() : this.current.code.getAlter();
+      nextTip = this.getNext();
+    }
+    if (nextTip != null) {
+      if (nextTip === this.current) {
+        console.log("error : invalid execution timing.");
+        this.next = this.current.code.getNext();
         nextTip = this.getNext();
       }
-      if (nextTip != null) {
-        if (nextTip === this.current) {
-          console.log("error : invalid execution timing.");
-          this.next = this.current.code.getNext();
-          nextTip = this.getNext();
-        }
-        return this._execute(nextTip);
-      }
+      return this._execute(nextTip);
+    } else {
+      return this.onStop();
     }
   };
 
   Executer.prototype.stop = function() {
     return this.end = true;
+  };
+
+  Executer.prototype.onStart = function() {
+    console.log("start");
+    this.running = true;
+    return this.end = false;
+  };
+
+  Executer.prototype.onStop = function() {
+    console.log("stop");
+    this.running = false;
+    return this.end = false;
+  };
+
+  Executer.prototype.isRunning = function() {
+    return this.running;
   };
 
   return Executer;
