@@ -108,3 +108,11 @@ CakeLog::config('error', array(
 ));
 
 CakePlugin::load(array('TwitterBootstrap'));
+CakePlugin::load('Opauth', array('routes' => true, 'bootstrap' => true));
+
+Configure::write('Opauth.Strategy.Facebook', array(
+    'app_id' => '227112464123144',
+    'app_secret' => 'fdd97d3e4de809e0106519aca9463111'
+));
+
+Configure::write('Opauth.path', '/OCTAGRAM/sample_service/auth/');
