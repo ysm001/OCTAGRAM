@@ -1,5 +1,7 @@
 OCTAGRAM Sample Web Service
 ======
-* Depelop
-    * place the directory OCTAGRAM DocumentRoot/OCTAGRAM
-    * If, after changing the location OCTAGRAM, it must also change Google/Facebool/Github project settings(redirect url etc...).
+## Setup Development Environment
+### place the directory OCTAGRAM DocumentRoot/OCTAGRAM
+    1. If, after changing the location OCTAGRAM, it must also change Google/Facebool/Github project settings(redirect url etc...).
+
+### Import Schema
