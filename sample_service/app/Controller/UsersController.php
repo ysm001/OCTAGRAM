@@ -14,24 +14,42 @@ class UsersController extends AppController {
 	    $data = unserialize(base64_decode($this->data['opauth']));
 	    debug($data);
 
-	    $this->createWithGoogle($data);
+	    $this->loginWithGoogle($data);
 	}
     }
 
-    public function login() {
+    private function update($data) {
+	$user = $this->User->find('first', array('conditions' => array('username' => $data['username'])));
+
+	if ( !$user ) {
+	    $this->User->create();
+	}
+	else {
+	    $data['id'] = $user['User']['id'];
+	    $data['Account']['id'] = $user['Account']['id'];
+	}
+	return $this->User->saveAll($data);
     }
 
-    private function create($data) {
-	$this->User->create();
-	if ($this->User->saveAll($data)) {
-	    $this->setSuccessFlash('success');
-	    $this->redirect(array('action' => 'index'));
+    private function login($data) {
+	$method = null;
+
+	if ($this->update($data)) {
+	    $this->setSuccessFlash('success: create account');
+
+	    if ($this->Auth->login($data)) {
+		$this->setSuccessFlash('success: login');
+		$this->redirect(array('action' => 'index'));
+	    }
+	    else {
+		$this->setErrorFlash('failed: login');
+	    }
 	} else {
-	    $this->setErrorflash('failed');
+	    $this->setErrorflash('failed: create account');
 	}
     }
 
-    private function createWithGoogle($data) {
+    private function loginWithGoogle($data) {
 	$auth = $data['auth'];
 	$info = $auth['info'];
 	$uid  = $auth['uid'];
@@ -47,13 +65,13 @@ class UsersController extends AppController {
 	    'username' =>  $uid,
 	    'password' => $token,
 	    'nickname' => $info['name'],
-	    'Account' => array($account)
+	    'Account' => $account
 	);
 
-	$this->create($user);
+	$this->login($user);
     }
 
-    private function createWithFacebook($data) {
+    private function loginWithFacebook($data) {
     }
 }
 ?>
