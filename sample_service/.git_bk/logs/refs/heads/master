@@ -1,6 +1,0 @@
-0000000000000000000000000000000000000000 25de30afe12d52413cfa3ea71d423f1517fa11cb ryysd <ry.ysd01@gmail.com> 1383113529 +0900	clone: from git@github.com:ryysd/BootstrapCakeStarter.git
-25de30afe12d52413cfa3ea71d423f1517fa11cb 6eebedadd84bf7fb0d0383ba7557c75f5b970953 ryysd <ry.ysd01@gmail.com> 1383115132 +0900	commit: add setup.sh
-6eebedadd84bf7fb0d0383ba7557c75f5b970953 3266fccdb24d7ab2cc6f3ee7ddfa351666a1a193 ryysd <ry.ysd01@gmail.com> 1383115271 +0900	commit: modify setup.sh
-3266fccdb24d7ab2cc6f3ee7ddfa351666a1a193 4335206364afb8df743ec292569db5871b7f32e7 ryysd <ry.ysd01@gmail.com> 1383115480 +0900	commit: modify setup.sh
-4335206364afb8df743ec292569db5871b7f32e7 93f60ef071d45e72cea98e51e5473aebe84a4054 ryysd <ry.ysd01@gmail.com> 1383115608 +0900	commit: modify .htaccess
-93f60ef071d45e72cea98e51e5473aebe84a4054 b7e9f7eb23118c28fd0dec3c949c5ef857a9811f ryysd <ry.ysd01@gmail.com> 1383117407 +0900	commit: modify setup.sh
