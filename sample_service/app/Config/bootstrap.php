@@ -115,4 +115,9 @@ Configure::write('Opauth.Strategy.Facebook', array(
     'app_secret' => 'fdd97d3e4de809e0106519aca9463111'
 ));
 
+Configure::write('Opauth.Strategy.Google', array(
+    'client_id' => '342198722592.apps.googleusercontent.com',
+    'client_secret' => 'fmckieczeLbBPs-apJ8WE_BJ'
+));
+
 Configure::write('Opauth.path', '/OCTAGRAM/sample_service/auth/');
