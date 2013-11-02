@@ -46,6 +46,7 @@ class UsersController extends AppController {
 	$user = array(
 	    'username' =>  $uid,
 	    'password' => $token,
+	    'nickname' => $info['name'],
 	    'Account' => array($account)
 	);
 
