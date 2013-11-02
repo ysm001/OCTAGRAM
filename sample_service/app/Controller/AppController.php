@@ -21,6 +21,7 @@
  */
 
 App::uses('Controller', 'Controller');
+App::import('Vendor', 'oauth', array('file' => 'OAuth'.DS.'oauth_consumer.php'));
 
 /**
  * Application Controller
@@ -32,8 +33,46 @@ App::uses('Controller', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+    public $components = array('Auth', 'Session');
+    public $helpers = array(
+	'Session',
+	'Html' => array('className' => 'TwitterBootstrap.BootstrapHtml'),
+	'Form' => array('className' => 'TwitterBootstrap.BootstrapForm'),
+	'Paginator' => array('className' => 'TwitterBootstrap.BootstrapPaginator'),
+    );
     public function beforeFilter() {
 	parent::beforeFilter();
 	$this->layout = 'bootstrap';
+
+	$this->set('authUser', $this->getAuthUser());
+    }
+
+    public function getAuthUser() {
+	if ( isset($this->Session->read('Auth')['User']) ) {
+	    return $this->Session->read('Auth')['User'];
+	}
+	else return null;
+    }
+
+    protected function setSuccessFlash($message) {
+	$this->Session->setFlash(
+	    $message,
+	    'alert',
+	    array(
+		'plugin' => 'TwitterBootstrap',
+		'class' => 'alert-success'
+	    )
+	);
+    }
+
+    protected function setErrorFlash($message) {
+	$this->Session->setFlash(
+	    $message,
+	    'alert',
+	    array(
+		'plugin' => 'TwitterBootstrap',
+		'class' => 'alert-error'
+	    )
+	);
     }
 }

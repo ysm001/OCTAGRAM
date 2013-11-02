@@ -121,3 +121,4 @@ Configure::write('Opauth.Strategy.Google', array(
 ));
 
 Configure::write('Opauth.path', '/OCTAGRAM/sample_service/auth/');
+Configure::write('Opauth.callback_url', '/OCTAGRAM/sample_service/users/opauth_complete');
