@@ -16,11 +16,10 @@ showEnemyProgram = () -> Game.instance.octagram.showProgram(Game.instance.curren
 
 getContentWindow = () -> $('iframe')[0].contentWindow
 
-test = () ->
-  playerProgram = Game.instance.currentScene.world.playerProgram
-  enemyProgram = Game.instance.currentScene.world.enemyProgram
-  playerProgram.load("test")
-  enemyProgram.load("test")
-
-  playerProgram.execute();
-  enemyProgram.execute();
+savePlayerProgramOnServer = () ->
+  bootbox.prompt("Enter Program Name.", (result)  =>
+    if (!result?) console.log("error") 
+    else 
+      serializedVal = playerProgram.serialize()
+      console.log(result)
+  )

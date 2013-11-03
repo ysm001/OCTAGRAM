@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <?php echo $this->Html->css(array('create'), false, array('inline'=>false)); ?>
-    <?php echo $this->Html->script(array('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'), false, array('inline'=>false)); ?>
+    <?php echo $this->Html->script(array('bootbox'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->script(array('octagram/js/enchant.js/enchant.js'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->script(array('octagram/js/enchant.js/plugins/ui.enchant.js'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->script(array('octagram/js/enchant.js/plugins/widget.enchant.js'), false, array('inline'=>false)); ?>
@@ -25,6 +26,8 @@
     <?php echo $this->Html->script(array('octagram/js/octagram-loader-client.js'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->script(array('robot_battle/js/ai-robot.js'), false, array('inline'=>false)); ?>
 
+    <?php echo $this->Html->script(array('create'), false, array('inline'=>false)); ?>
+
     <style type="text/css">
       body {
         margin: 0;
@@ -42,6 +45,7 @@
         <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
         <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />
         <input type="button" class="btn btn-success" value="save player" name="Save" onClick="savePlayerProgram()" />
+        <input type="button" class="btn btn-success" value="save on server" name="Save" onClick="savePlayerProgramOnServer()" />
         <input type="button" class="btn btn-success" value="load player" name="Save" onClick="loadPlayerProgram()" />
         <input type="button" class="btn btn-success" value="execute player" name="Execute Test Code" onClick="executePlayerProgram()" />
         <input type="button" class="btn btn-danger" value="show enemy" name="Save" onClick="showEnemyProgram()" />

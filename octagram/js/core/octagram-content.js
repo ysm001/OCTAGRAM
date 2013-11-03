@@ -183,6 +183,14 @@ OctagramContent = (function(_super) {
     return this.cpu.save(filename);
   };
 
+  OctagramContent.prototype.serialize = function() {
+    return this.cpu.serialize();
+  };
+
+  OctagramContent.prototype.deserialize = function(serializedVal) {
+    return this.cpu.deserialize(serializedVal);
+  };
+
   OctagramContent.prototype.execute = function() {
     return this.executer.execute();
   };
