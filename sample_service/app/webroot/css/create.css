@@ -6,6 +6,11 @@
     border-radius: 25px 25px 25px 25px / 25px 25px 25px 25px;
 }
 
+.program-container {
+    width: 1280px;
+    height: 640px;
+}
+
 /*
 #dbg-btns {
     text-align: center;

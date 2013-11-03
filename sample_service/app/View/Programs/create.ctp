@@ -33,7 +33,7 @@
     </style>
   </head>
   <body>
-    <div>
+    <div class="program-container">
       <div id="octagram" style="float:left"></div>
       <div id="enchant-stage" style="float:left"></div>
     </div>
