@@ -288,7 +288,7 @@ RobotGame = (function(_super) {
     var _this = this;
     this.scene = new RobotScene(this);
     this.pushScene(this.scene);
-    this.octagram = new Octagram('./js/octagram');
+    this.octagram = new Octagram(Config.OCTAGRAM_DIR);
     this.octagram.onload = function() {
       return _this.scene.world.initInstructions(_this.octagram);
     };

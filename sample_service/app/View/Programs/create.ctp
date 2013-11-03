@@ -14,8 +14,10 @@
 
     <?php $this->Html->scriptStart(array('inline'=>false)); ?>
       var VPL_JS_BASE = "./";
-      var resourceBase = "<?php echo '../'.APP_DIR.'/'.WEBROOT_DIR.'/'.JS_URL.'robot_battle/resources';  ?>";
-      var UserConfig = {R: {RESOURCE_DIR: resourceBase}};
+      var base = "<?php echo '../'.APP_DIR.'/'.WEBROOT_DIR.'/'.JS_URL;  ?>";
+      var octagramBase = base + "/octagram";
+      var resourceBase = base + "/robot_battle/resources";
+      var UserConfig = {OCTAGRAM_DIR: octagramBase, R: {RESOURCE_DIR: resourceBase}};
       enchant();
       enchant.ui.assets = [resourceBase + '/ui/pad.png', resourceBase + '/ui/apad.png', resourceBase + '/ui/icon0.png', resourceBase + '/ui/font0.png'];
       enchant.widget.assets = [resourceBase + '/widget/dialog.png'];

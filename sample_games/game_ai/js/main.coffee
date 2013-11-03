@@ -202,7 +202,7 @@ class RobotGame extends Core
     @scene = new RobotScene @
     @pushScene @scene
 
-    @octagram = new Octagram('./js/octagram')
+    @octagram = new Octagram(Config.OCTAGRAM_DIR)
     @octagram.onload = () => @scene.world.initInstructions(@octagram)
     @assets["font0.png"] = @assets['resources/ui/font0.png']
     @assets["apad.png"] = @assets['resources/ui/apad.png']
