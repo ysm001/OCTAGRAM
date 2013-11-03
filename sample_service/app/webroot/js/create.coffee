@@ -16,6 +16,7 @@ editEnemyProgram = () ->
   $('#edit-player-program').show()
   $('#edit-enemy-program').hide()
   $('#program-container').css('border-color', '#d9534f')
+
   showEnemyProgram()
 
 
@@ -141,7 +142,10 @@ loadProgram = () ->
 loadProgramById = (id) ->
   $.get('load_data', {id: id},  (data) ->
     getCurrentProgram().deserialize(JSON.parse(data))
+    Flash.showSuccess("program has been loaded.")
   )
 
 deleteProgramById = (id) ->
-  $.post('delete', {id: id},  (data) -> )
+  $.post('delete', {id: id},  (data) -> 
+    Flash.showSuccess("program has been deleted.")
+  )

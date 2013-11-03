@@ -172,12 +172,15 @@ loadProgramById = function(id) {
   return $.get('load_data', {
     id: id
   }, function(data) {
-    return getCurrentProgram().deserialize(JSON.parse(data));
+    getCurrentProgram().deserialize(JSON.parse(data));
+    return Flash.showSuccess("program has been loaded.");
   });
 };
 
 deleteProgramById = function(id) {
   return $.post('delete', {
     id: id
-  }, function(data) {});
+  }, function(data) {
+    return Flash.showSuccess("program has been deleted.");
+  });
 };
