@@ -1,5 +1,7 @@
 <?php
 class ProgramsController extends AppController {
+    public $uses = array("User", "Program");
+
     public function create() {}
     public function add() {
 	if ($this->request->is('post')) {
@@ -20,6 +22,38 @@ class ProgramsController extends AppController {
 		    if ( $alreadyExists && $override ) $data['id'] = $program['Program']['id'];
 		    $response['success'] = $this->Program->save($data);
 		}
+	    }
+	}
+
+	$this->response->body(json_encode($response));
+	return $this->response;
+    }
+
+    public function owned_list() {
+	$response = "";
+
+	if ($this->request->is('get')) {
+	    $id = $this->request->query['user_id'];
+
+	    $user = $this->User->findById($id);
+	    if ( $user ) {
+		$response = $user['Program'];
+	    }
+	}
+
+	$this->response->body(json_encode($response));
+	return $this->response;
+    }
+
+    public function load_data() {
+	$response = "";
+
+	if ($this->request->is('get')) {
+	    $id = $this->request->query['id'];
+
+	    $program = $this->Program->findById($id);
+	    if ( $program ) {
+		$response = file_get_contents($program['Program']['data_url']);
 	    }
 	}
 

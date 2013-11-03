@@ -192,7 +192,7 @@ OctagramContent = (function(_super) {
   };
 
   OctagramContent.prototype.deserialize = function(serializedVal) {
-    return this.cpu.deserialize(serializedVal);
+    return this.cpu.deserialize(JSON.parse(serializedVal));
   };
 
   OctagramContent.prototype.execute = function() {
