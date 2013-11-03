@@ -45,9 +45,10 @@
         <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
 	<button type="button" class="btn btn-success" id='edit-player-program' style="display: none"  onClick="editPlayerProgram()">edit player program</button>
 	<button type="button" class="btn btn-danger" id='edit-enemy-program' onClick="editEnemyProgram()">edit enemy program</button>
-	<button type="button" class="btn btn-primary" onClick="saveProgram()">save</button>
-	<button type="button" class="btn btn-primary" onClick="loadProgram()">load</button>
-	<button type="button" class="btn btn-warning" onClick="executeProgram()">execute</button>
+	<button type="button" class="btn btn-success" onClick="saveProgram()">save</button>
+	<button type="button" class="btn btn-success" onClick="loadProgram()">load</button>
+	<button type="button" class="btn btn-primary" onClick="executeProgram()">execute</button>
+	<button type="button" class="btn btn-warning" onClick="stopProgram()">stop</button>
 
 <!--
         <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />
