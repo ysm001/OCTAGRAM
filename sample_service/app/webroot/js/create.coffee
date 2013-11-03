@@ -53,7 +53,7 @@ saveProgramByName = (name, override = false) ->
       response = JSON.parse(data)
 
       if response.success
-        bootbox.alert("program has been saved.")
+        Flash.showSuccess("program has been saved.");
       else if response.exists && !response.override
         bootbox.confirm(name + " is already exists. Do you want to override it?", (result) => 
           if result then saveProgramByName(name, true)

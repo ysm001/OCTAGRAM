@@ -84,7 +84,7 @@ saveProgramByName = function(name, override) {
       var response;
       response = JSON.parse(data);
       if (response.success) {
-        return bootbox.alert("program has been saved.");
+        return Flash.showSuccess("program has been saved.");
       } else if (response.exists && !response.override) {
         return bootbox.confirm(name + " is already exists. Do you want to override it?", function(result) {
           if (result) {

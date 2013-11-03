@@ -13,6 +13,8 @@
 	<!-- Le styles -->
 	<?php echo $this->Html->css('bootstrap.min'); ?>
 	<?php echo $this->Html->css('bootstrap-responsive.min'); ?>
+	<?php echo $this->Html->css('flash'); ?>
+	<?php echo $this->Html->script('flash'); ?>
 
 	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 	<!--[if lt IE 9]>
