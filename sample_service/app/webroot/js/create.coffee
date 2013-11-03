@@ -16,6 +16,14 @@ showEnemyProgram = () -> Game.instance.octagram.showProgram(Game.instance.curren
 
 getContentWindow = () -> $('iframe')[0].contentWindow
 
+executeProgram = () ->
+  getPlayerProgram().execute()
+  getEnemyProgram().execute()
+
+stopProgram = () ->
+  getPlayerProgram().stop()
+  getEnemyProgram().stop()
+
 saveProgram = (override = false) ->
   bootbox.prompt("Enter Program Name.", (name)  => 
     if name then saveProgramByName(name, override)
@@ -92,7 +100,7 @@ loadProgram = () ->
     )
 
   $modal = 
-    $('<div></div>').attr({class: 'modal', tabIndex: '-1', role: 'dialog'}).append(
+    $('<div></div>').attr({class: 'modal fade', tabIndex: '-1', role: 'dialog'}).append(
       $('<div></div>').attr('class', 'modal-dialog').append(
         $('<div></div>').attr('class', 'modal-content').append(
           $modalHeader
@@ -102,7 +110,10 @@ loadProgram = () ->
       )
     )
 
-  $modal.modal()
+  $modal.modal({
+    keyboard: true,
+    show: true
+  })
 
 loadProgramById = (id) ->
   $.get('load_data', {id: id},  (data) ->

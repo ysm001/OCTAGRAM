@@ -43,6 +43,13 @@
     <div id="dbg-btns" style="float:left">
       <form>
         <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
+	<button type="button" class="btn btn-success" onClick="showPlayerProgram()">show player</button>
+	<button type="button" class="btn btn-danger" onClick="showEnemyProgram()">show enemy</button>
+	<button type="button" class="btn btn-primary" onClick="saveProgram()">save</button>
+	<button type="button" class="btn btn-primary" onClick="loadProgram()">load</button>
+	<button type="button" class="btn btn-warning" onClick="executeProgram()">execute</button>
+
+<!--
         <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />
         <input type="button" class="btn btn-success" value="save player" name="Save" onClick="savePlayerProgram()" />
         <input type="button" class="btn btn-success" value="save on server" name="Save" onClick="saveProgram()" />
@@ -52,6 +59,7 @@
         <input type="button" class="btn btn-danger" value="save enemy"  name="Save" onClick="saveEnemyProgram()" />
         <input type="button" class="btn btn-danger" value="load enemy"  name="Save" onClick="loadEnemyProgram()" />
         <input type="button" class="btn btn-danger" value="execute enemy"  name="Execute Test Code" onClick="executeEnemyProgram()" />
+-->
       </form>
     </div>
   </body>
