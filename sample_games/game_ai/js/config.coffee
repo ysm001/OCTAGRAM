@@ -13,7 +13,7 @@ class Config
   @EDITOR_MOBILE_OFFSET_Y = 640 - 128
 
 class Config.R
-  @RESOURCE_DIR : "resources"
+  @RESOURCE_DIR : if (UserConfig? && UserConfig.R?) then UserConfig.R.RESOURCE_DIR || "resources" else "resources"
   @CHAR :
     PLAYER : "#{R.RESOURCE_DIR}/robot/player.png"
     ENEMY : "#{R.RESOURCE_DIR}/robot/enemy.png"

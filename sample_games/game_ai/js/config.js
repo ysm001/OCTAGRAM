@@ -35,7 +35,7 @@ Config = (function() {
 Config.R = (function() {
   function R() {}
 
-  R.RESOURCE_DIR = "resources";
+  R.RESOURCE_DIR = (typeof UserConfig !== "undefined" && UserConfig !== null) && (UserConfig.R != null) ? UserConfig.R.RESOURCE_DIR || "resources" : "resources";
 
   R.CHAR = {
     PLAYER: "" + R.RESOURCE_DIR + "/robot/player.png",

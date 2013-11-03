@@ -187,7 +187,7 @@ class RobotGame extends Core
   _assetPreload: ->
     load = (hash) =>
       for k,path of hash
-        Debug.log "load image #{path}"
+        #Debug.log "load image #{path}"
         @preload path
 
     load R.CHAR

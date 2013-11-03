@@ -271,7 +271,6 @@ RobotGame = (function(_super) {
       _results = [];
       for (k in hash) {
         path = hash[k];
-        Debug.log("load image " + path);
         _results.push(_this.preload(path));
       }
       return _results;
