@@ -33,7 +33,7 @@ App::import('Vendor', 'oauth', array('file' => 'OAuth'.DS.'oauth_consumer.php'))
  * @link http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-    public $components = array('Auth', 'Session');
+    public $components = array('Auth' => array('loginAction' => '/users/signin'), 'Session');
     public $helpers = array(
 	'Session',
 	'Html' => array('className' => 'TwitterBootstrap.BootstrapHtml'),

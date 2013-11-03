@@ -3,7 +3,11 @@ class UsersController extends AppController {
     public function beforeFilter() {
 	parent::beforeFilter();
 
-	$this->Auth->allow('index', 'opauth_complete');
+	$this->Auth->allow('index', 'signin', 'opauth_complete');
+
+	if ( $this->action == 'signin' ) {
+	    $this->layout = 'bootstrap-nonavbar';
+	}
     }
 
     public function index() {
@@ -15,6 +19,9 @@ class UsersController extends AppController {
 
 	    $this->loginWithGoogle($data);
 	}
+    }
+
+    public function signin() {
     }
 
     private function update($data) {
