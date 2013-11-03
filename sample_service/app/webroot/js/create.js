@@ -109,9 +109,10 @@ saveProgramByName = function(name, override) {
 };
 
 loadProgram = function() {
-  var $body, $modal, $modalBody, $modalHeader, $table, onItemSelected, title;
+  var $body, $head, $modal, $modalBody, $modalHeader, $table, onItemSelected, title;
   $table = $('<table></table>').attr('class', 'table table-striped table-hover');
   $body = $('<tbody></tbody>');
+  $head = $('<thead></thead>').append($('<tr></tr>').append($('<th></th>').text("Name")).append($('<th></th>').text("Comment")).append($('<th></th>').text("Updated")));
   onItemSelected = function() {
     var programId;
     programId = $(this).attr('program-id');
@@ -121,16 +122,21 @@ loadProgram = function() {
   $.get("owned_list", {
     user_id: getUserId()
   }, function(data) {
-    var $btn, $title, $tr, program, programs, _i, _len, _results;
+    var $btn, $comment, $title, $tr, $updated, program, programs, _i, _len, _results;
     programs = JSON.parse(data);
     _results = [];
     for (_i = 0, _len = programs.length; _i < _len; _i++) {
       program = programs[_i];
-      $tr = $('<tr></tr>');
+      $tr = $('<tr></tr>').attr('program-id', program.id).click(onItemSelected);
       $title = $('<td></td>').attr({
-        "class": 'loadtable-title',
-        'program-id': program.id
-      }).text(program.name).click(onItemSelected);
+        "class": 'loadtable-title'
+      }).text(program.name);
+      $comment = $('<td></td>').attr({
+        "class": 'loadtable-title'
+      }).text(program.comment);
+      $updated = $('<td></td>').attr({
+        "class": 'loadtable-title'
+      }).text(program.modified);
       $btn = $('<td></td>').attr({
         "class": 'loadtable-btn'
       }).append($('<button></button>').attr({
@@ -138,10 +144,13 @@ loadProgram = function() {
         'program-id': program.id
       }).text('load').click(onItemSelected));
       $tr.append($title);
+      $tr.append($comment);
+      $tr.append($updated);
       _results.push($body.append($tr));
     }
     return _results;
   });
+  $table.append($head);
   $table.append($body);
   $modalBody = $('<div></div>').attr('class', 'modal-body').append($table);
   title = "Select Program";

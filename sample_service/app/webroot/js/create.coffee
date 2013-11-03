@@ -60,6 +60,12 @@ saveProgramByName = (name, override = false) ->
 loadProgram = () ->
   $table = $('<table></table>').attr('class', 'table table-striped table-hover')
   $body = $('<tbody></tbody>')
+  $head = $('<thead></thead>').append(
+    $('<tr></tr>')
+      .append($('<th></th>').text("Name"))
+      .append($('<th></th>').text("Comment"))
+      .append($('<th></th>').text("Updated"))
+  );
 
   onItemSelected = () -> 
     programId = $(@).attr('program-id')
@@ -69,10 +75,12 @@ loadProgram = () ->
   $.get("owned_list", {user_id: getUserId()}, (data) -> 
     programs = JSON.parse(data)
     for program in programs
-      $tr = $('<tr></tr>')
+      $tr = $('<tr></tr>').attr('program-id', program.id).click(onItemSelected)
 
-      $title = $('<td></td>').attr(class: 'loadtable-title', 'program-id': program.id).text(program.name)
-        .click(onItemSelected)
+      $title = $('<td></td>').attr(class: 'loadtable-title').text(program.name)
+
+      $comment = $('<td></td>').attr(class: 'loadtable-title' ).text(program.comment)
+      $updated = $('<td></td>').attr(class: 'loadtable-title' ).text(program.modified)
 
       $btn = 
         $('<td></td>').attr(class: 'loadtable-btn').append(
@@ -80,10 +88,13 @@ loadProgram = () ->
             .click(onItemSelected)
         )
       $tr.append($title)
+      $tr.append($comment)
+      $tr.append($updated)
       #$tr.append($btn)
       $body.append($tr)
   )
 
+  $table.append($head)
   $table.append($body)
 
   $modalBody = 
