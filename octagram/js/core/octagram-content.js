@@ -81,6 +81,10 @@ OctagramContentSet = (function() {
     return this.octagrams[id];
   };
 
+  OctagramContentSet.prototype.getCurrentInstance = function() {
+    return this.currentInstance;
+  };
+
   OctagramContentSet.prototype.show = function(id) {
     if (this.currentInstance) {
       this.currentInstance.hide();

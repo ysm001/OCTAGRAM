@@ -1,5 +1,6 @@
 getPlayerProgram = () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.playerProgramId)
 getEnemyProgram = () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.enemyProgramId)
+getCurrentProgram = () -> Game.instance.octagram.getCurrentInstance()
 
 executePlayerProgram = () -> getPlayerProgram().execute()
 executeEnemyProgram = () -> getEnemyProgram().execute()
@@ -16,15 +17,17 @@ showEnemyProgram = () -> Game.instance.octagram.showProgram(Game.instance.curren
 
 getContentWindow = () -> $('iframe')[0].contentWindow
 
-savePlayerProgramOnServer = (override = false) ->
-  bootbox.prompt("Enter Program Name.", (name)  => savePlayerProgramOnServerWithName(name, override))
+saveProgram = (override = false) ->
+  bootbox.prompt("Enter Program Name.", (name)  => 
+    if !name then saveProgram(override)
+    else saveProgramWithName(name, override)
+  )
 
-savePlayerProgramOnServerWithName = (name, override = false) ->
+saveProgramWithName = (name, override = false) ->
   if (!name?) 
     console.log("error") 
   else 
-    playerProgram = getPlayerProgram()
-    serializedVal = playerProgram.serialize()
+    serializedVal = getCurrentProgram().serialize()
 
     program = {
       program:
@@ -43,9 +46,8 @@ savePlayerProgramOnServerWithName = (name, override = false) ->
         bootbox.alert("program has been saved.")
       else if response.exists && !response.override
         bootbox.confirm(name + " is already exists. Do you want to override it?", (result) => 
-          if result then savePlayerProgramOnServerWithName(name, true)
+          if result then saveProgramWithName(name, true)
         ); 
       else
         bootbox.alert(data);
     );
-

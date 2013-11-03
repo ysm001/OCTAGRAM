@@ -23,6 +23,7 @@ class Octagram
   createProgramInstance : () -> @core.octagrams.createInstance()
   showProgram : (program) -> @core.octagrams.show(program)
   getInstance : (id) -> @core.octagrams.getInstance(id)
+  getCurrentInstance : () -> @core.octagrams.getCurrentInstance()
    
   onload : () ->
 

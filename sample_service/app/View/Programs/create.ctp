@@ -45,7 +45,7 @@
         <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
         <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />
         <input type="button" class="btn btn-success" value="save player" name="Save" onClick="savePlayerProgram()" />
-        <input type="button" class="btn btn-success" value="save on server" name="Save" onClick="savePlayerProgramOnServer()" />
+        <input type="button" class="btn btn-success" value="save on server" name="Save" onClick="saveProgram()" />
         <input type="button" class="btn btn-success" value="load player" name="Save" onClick="loadPlayerProgram()" />
         <input type="button" class="btn btn-success" value="execute player" name="Execute Test Code" onClick="executePlayerProgram()" />
         <input type="button" class="btn btn-danger" value="show enemy" name="Save" onClick="showEnemyProgram()" />

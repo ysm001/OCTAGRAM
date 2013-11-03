@@ -23,6 +23,7 @@ class OctagramContentSet
 
   removeInstance : (id) ->
   getInstance : (id) -> @octagrams[id]
+  getCurrentInstance : () -> return @currentInstance
 
   show : (id) -> 
     @currentInstance.hide() if @currentInstance
