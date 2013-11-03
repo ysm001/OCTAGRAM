@@ -16,22 +16,36 @@ showEnemyProgram = () -> Game.instance.octagram.showProgram(Game.instance.curren
 
 getContentWindow = () -> $('iframe')[0].contentWindow
 
-savePlayerProgramOnServer = () ->
-  bootbox.prompt("Enter Program Name.", (result)  =>
-    if (!result?) 
-      console.log("error") 
-    else 
-      playerProgram = getPlayerProgram()
-      serializedVal = playerProgram.serialize()
+savePlayerProgramOnServer = (override = false) ->
+  bootbox.prompt("Enter Program Name.", (name)  => savePlayerProgramOnServerWithName(name, override))
 
-      program = {
-        name: result,
+savePlayerProgramOnServerWithName = (name, override = false) ->
+  if (!name?) 
+    console.log("error") 
+  else 
+    playerProgram = getPlayerProgram()
+    serializedVal = playerProgram.serialize()
+
+    program = {
+      program:
+        name: name,
         comment: "",
         serialized_data: serializedVal,
-        user_id: getUserId() 
-      }
-      console.log(program);
-      $.post( "add", program, ( data) => 
+        user_id: getUserId(),
+      override: override
+    }
+
+    console.log(program);
+    $.post( "add", program, ( data) => 
+      response = JSON.parse(data)
+
+      if response.success
+        bootbox.alert("program has been saved.")
+      else if response.exists && !response.override
+        bootbox.confirm(name + " is already exists. Do you want to override it?", (result) => 
+          if result then savePlayerProgramOnServerWithName(name, true)
+        ); 
+      else
         bootbox.alert(data);
-      );
-  )
+    );
+
