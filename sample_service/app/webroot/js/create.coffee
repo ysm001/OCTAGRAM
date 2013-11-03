@@ -2,17 +2,22 @@ getPlayerProgram = () -> Game.instance.octagram.getInstance(Game.instance.curren
 getEnemyProgram = () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.enemyProgramId)
 getCurrentProgram = () -> Game.instance.octagram.getCurrentInstance()
 
-executePlayerProgram = () -> getPlayerProgram().execute()
-executeEnemyProgram = () -> getEnemyProgram().execute()
-
-savePlayerProgram = () -> getPlayerProgram().save("player")
-saveEnemyProgram = () -> getEnemyProgram().save("enemy")
-
-loadPlayerProgram = () -> getPlayerProgram().load("player")
-loadEnemyProgram = () -> getEnemyProgram().load("enemy")
-
 showPlayerProgram = () -> Game.instance.octagram.showProgram(Game.instance.currentScene.world.playerProgramId)
 showEnemyProgram = () -> Game.instance.octagram.showProgram(Game.instance.currentScene.world.enemyProgramId)
+
+editPlayerProgram = () ->
+  $('#edit-player-program').hide()
+  $('#edit-enemy-program').show()
+  $('#program-container').css('border-color', '#5cb85c')
+
+  showPlayerProgram()
+
+editEnemyProgram = () ->
+  $('#edit-player-program').show()
+  $('#edit-enemy-program').hide()
+  $('#program-container').css('border-color', '#d9534f')
+  showEnemyProgram()
+
 
 getContentWindow = () -> $('iframe')[0].contentWindow
 

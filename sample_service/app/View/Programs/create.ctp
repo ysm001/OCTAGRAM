@@ -36,15 +36,15 @@
     </style>
   </head>
   <body>
-    <div class="program-container">
+    <div id="program-container">
       <div id="octagram" style="float:left"></div>
       <div id="enchant-stage" style="float:left"></div>
     </div>
-    <div id="dbg-btns" style="float:left">
+    <div id="dbg-btns" style="float:left; margin-top: 10px">
       <form>
         <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
-	<button type="button" class="btn btn-success" onClick="showPlayerProgram()">show player</button>
-	<button type="button" class="btn btn-danger" onClick="showEnemyProgram()">show enemy</button>
+	<button type="button" class="btn btn-success" id='edit-player-program' style="display: none"  onClick="editPlayerProgram()">edit player program</button>
+	<button type="button" class="btn btn-danger" id='edit-enemy-program' onClick="editEnemyProgram()">edit enemy program</button>
 	<button type="button" class="btn btn-primary" onClick="saveProgram()">save</button>
 	<button type="button" class="btn btn-primary" onClick="loadProgram()">load</button>
 	<button type="button" class="btn btn-warning" onClick="executeProgram()">execute</button>
