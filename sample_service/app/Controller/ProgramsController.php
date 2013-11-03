@@ -61,6 +61,25 @@ class ProgramsController extends AppController {
 	return $this->response;
     }
 
+    public function delete() {
+	$response = "false";
+
+	if ($this->request->is('post')) {
+	    $id = $this->request->data['id'];
+
+	    $program = $this->Program->findById($id);
+	    if ( $program ) {
+		unlink($program['Program']['data_url']);
+		$this->Program->delete($id);
+
+		$response = "true";
+	    }
+	}
+
+	$this->response->body($response);
+	return $this->response;
+    }
+
     private function saveProgram($userId, $name, $data, $override = false) {
 	$dir = $this->getUserProgramDir($userId);
 
@@ -76,7 +95,7 @@ class ProgramsController extends AppController {
 	return false;
     }
 
-    public function register_presets_programs($user_id) {
+    private function registerPresetPrograms($user_id) {
     }
 
     private function getPresetPrograms($user_id) {

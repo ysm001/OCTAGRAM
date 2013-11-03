@@ -67,15 +67,20 @@ loadProgram = () ->
       .append($('<th></th>').text(""))
   );
 
-  onItemSelected = () -> 
+  onItemLoad = () -> 
     programId = $(@).attr('program-id')
     loadProgramById(programId)
+    $modal.modal('hide')
+
+  onItemDelete = () ->
+    programId = $(@).attr('program-id')
+    deleteProgramById(programId)
     $modal.modal('hide')
 
   $.get("owned_list", {user_id: getUserId()}, (data) -> 
     programs = JSON.parse(data)
     for program in programs
-      $tr = $('<tr></tr>').attr('program-id', program.id).click(onItemSelected)
+      $tr = $('<tr></tr>')
 
       $title = $('<td></td>').attr(class: 'loadtable-title').text(program.name)
       if ( program.is_preset ) 
@@ -84,8 +89,10 @@ loadProgram = () ->
 
       #$comment = $('<td></td>').attr(class: 'loadtable-title' ).text(program.comment)
       #$updated = $('<td></td>').attr(class: 'loadtable-btn' ).text(program.modified)
-      $delete = $('<td></td>').attr(class: 'loadtable-btn' )
-        .append($('<button></button>').attr(class: "btn btn-danger").text("Delete"))
+
+      $delete = $('<td></td>').attr(class: 'loadtable-btn')
+        .append($('<button></button>').attr(class: "btn btn-success", 'program-id': program.id).text("Load").click(onItemLoad))
+        .append($('<button style="margin-left:10px"></button>').attr(class: "btn btn-danger", 'program-id': program.id).text("Delete").click(onItemDelete))
 
       $tr.append($title)
       #$tr.append($comment)
@@ -130,3 +137,6 @@ loadProgramById = (id) ->
   $.get('load_data', {id: id},  (data) ->
     getCurrentProgram().deserialize(JSON.parse(data))
   )
+
+deleteProgramById = (id) ->
+  $.post('delete', {id: id},  (data) -> )
