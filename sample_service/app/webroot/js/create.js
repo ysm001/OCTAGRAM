@@ -48,12 +48,22 @@ getContentWindow = function() {
 savePlayerProgramOnServer = function() {
   var _this = this;
   return bootbox.prompt("Enter Program Name.", function(result) {
-    var serializedVal;
-    if ((result == null)(console.log("error"))) {
-
+    var playerProgram, program, serializedVal;
+    if (result == null) {
+      return console.log("error");
     } else {
+      playerProgram = getPlayerProgram();
       serializedVal = playerProgram.serialize();
-      return console.log(result);
+      program = {
+        name: result,
+        comment: "",
+        serialized_data: serializedVal,
+        user_id: getUserId()
+      };
+      console.log(program);
+      return $.post("add", program, function(data) {
+        return bootbox.alert(data);
+      });
     }
   });
 };

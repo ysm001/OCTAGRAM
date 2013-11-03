@@ -106,7 +106,7 @@ class OctagramContent extends Group
   load : (filename) -> @cpu.load(filename)
   save : (filename) -> @cpu.save(filename)
 
-  serialize : () -> @cpu.serialize()
+  serialize : () -> JSON.stringify(@cpu.serialize())
   deserialize : (serializedVal) -> @cpu.deserialize(serializedVal)
 
   execute : () -> @executer.execute()

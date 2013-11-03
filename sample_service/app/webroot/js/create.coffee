@@ -18,8 +18,20 @@ getContentWindow = () -> $('iframe')[0].contentWindow
 
 savePlayerProgramOnServer = () ->
   bootbox.prompt("Enter Program Name.", (result)  =>
-    if (!result?) console.log("error") 
+    if (!result?) 
+      console.log("error") 
     else 
+      playerProgram = getPlayerProgram()
       serializedVal = playerProgram.serialize()
-      console.log(result)
+
+      program = {
+        name: result,
+        comment: "",
+        serialized_data: serializedVal,
+        user_id: getUserId() 
+      }
+      console.log(program);
+      $.post( "add", program, ( data) => 
+        bootbox.alert(data);
+      );
   )

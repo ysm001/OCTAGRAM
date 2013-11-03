@@ -48,10 +48,8 @@ class AppController extends Controller {
     }
 
     public function getAuthUser() {
-	if ( isset($this->Session->read('Auth')['User']) ) {
-	    return $this->Session->read('Auth')['User'];
-	}
-	else return null;
+	$user = $this->Auth->user();
+	return $user ? $user : null;
     }
 
     protected function setSuccessFlash($message) {

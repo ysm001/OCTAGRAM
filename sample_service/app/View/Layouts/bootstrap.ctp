@@ -67,12 +67,16 @@
 		<?php echo $this->fetch('content'); ?>
 	</div> <!-- /container -->
 
+	<?php if ( $authUser ) : ?>
+	<div id="uid" style="display:none"><?= $authUser['id'] ?></div>
+        <?php endif ?>
+	<script type="text/javascript">function getUserId() { return parseInt($('#uid').text()); }</script>
+
 	<!-- Le javascript
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 	<?php echo $this->Html->script('bootstrap.min'); ?>
 	<?php echo $this->fetch('script'); ?>
-
 </body>
 </html>

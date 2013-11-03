@@ -12,7 +12,6 @@ class UsersController extends AppController {
     public function opauth_complete() {
 	if ( isset($this->data['opauth']) ) {
 	    $data = unserialize(base64_decode($this->data['opauth']));
-	    debug($data);
 
 	    $this->loginWithGoogle($data);
 	}
@@ -35,6 +34,7 @@ class UsersController extends AppController {
 	$method = null;
 
 	if ($this->update($data)) {
+	    $data['id'] = $this->User->id;
 	    if ($this->Auth->login($data)) {
 		$this->redirect(array('controller' => 'pages', 'action' => 'home'));
 	    }

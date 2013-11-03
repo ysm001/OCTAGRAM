@@ -184,7 +184,7 @@ OctagramContent = (function(_super) {
   };
 
   OctagramContent.prototype.serialize = function() {
-    return this.cpu.serialize();
+    return JSON.stringify(this.cpu.serialize());
   };
 
   OctagramContent.prototype.deserialize = function(serializedVal) {
