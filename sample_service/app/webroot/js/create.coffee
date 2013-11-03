@@ -62,9 +62,9 @@ loadProgram = () ->
   $body = $('<tbody></tbody>')
   $head = $('<thead></thead>').append(
     $('<tr></tr>')
-      .append($('<th></th>').text("Name"))
-      .append($('<th></th>').text("Comment"))
-      .append($('<th></th>').text("Updated"))
+      .append($('<th></th>').text(""))
+      #.append($('<th></th>').text("Comment"))
+      .append($('<th></th>').text(""))
   );
 
   onItemSelected = () -> 
@@ -78,19 +78,19 @@ loadProgram = () ->
       $tr = $('<tr></tr>').attr('program-id', program.id).click(onItemSelected)
 
       $title = $('<td></td>').attr(class: 'loadtable-title').text(program.name)
+      if ( program.is_preset ) 
+        $label = $('<span style="margin-left: 10px"></span>').attr(class: 'label label-info').text("preset");
+        $title.append($label)
 
-      $comment = $('<td></td>').attr(class: 'loadtable-title' ).text(program.comment)
-      $updated = $('<td></td>').attr(class: 'loadtable-title' ).text(program.modified)
+      #$comment = $('<td></td>').attr(class: 'loadtable-title' ).text(program.comment)
+      #$updated = $('<td></td>').attr(class: 'loadtable-btn' ).text(program.modified)
+      $delete = $('<td></td>').attr(class: 'loadtable-btn' )
+        .append($('<button></button>').attr(class: "btn btn-danger").text("Delete"))
 
-      $btn = 
-        $('<td></td>').attr(class: 'loadtable-btn').append(
-          $('<button></button>').attr({class: 'btn btn-success btn-lg', 'program-id': program.id}).text('load')
-            .click(onItemSelected)
-        )
       $tr.append($title)
-      $tr.append($comment)
-      $tr.append($updated)
-      #$tr.append($btn)
+      #$tr.append($comment)
+      #$tr.append($updated)
+      $tr.append($delete)
       $body.append($tr)
   )
 

@@ -62,7 +62,7 @@ class ProgramsController extends AppController {
     }
 
     private function saveProgram($userId, $name, $data, $override = false) {
-	$dir = $this->getProgramDir($userId);
+	$dir = $this->getUserProgramDir($userId);
 
 	if ( file_exists($dir) || mkdir($dir, 0777, true) ) {
 	    $path = $dir.$name;
@@ -76,8 +76,44 @@ class ProgramsController extends AppController {
 	return false;
     }
 
-    private function getProgramDir($userId) { 
+    public function register_presets_programs($user_id) {
+    }
+
+    private function getPresetPrograms($user_id) {
+	$dir = $this->getPresetProgramDir();
+	$programs = [];
+
+	if ( file_exists($dir) ) {
+	    $handle = opendir($dir);
+	    if ( $handle ) {
+		while ( false !== ( $file = readdir($handle) ) ) {
+		    $path = $dir.$file;
+
+		    if ( !is_dir($path)  ) {
+			$program = array(
+			    'name' => $file,
+			    'data_url' => $path,
+			    'user_id' => $user_id,
+			    'is_preset' => true,
+			    'modified' => date("Y-m-d H:i:s", filemtime($path))
+			);
+
+			$programs []= $program;
+		    }
+		}
+
+		closedir($handle);
+	    }
+	}
+
+	return $programs;
+    }
+
+    private function getUserProgramDir($userId) { 
 	return WWW_ROOT.'files/programs/'.$userId.'/'; 
+    }
+    private function getPresetProgramDir() { 
+	return WWW_ROOT.'files/programs/presets'.'/'; 
     }
 }
 ?>
