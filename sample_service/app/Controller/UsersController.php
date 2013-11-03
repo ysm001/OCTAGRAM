@@ -35,11 +35,8 @@ class UsersController extends AppController {
 	$method = null;
 
 	if ($this->update($data)) {
-	    $this->setSuccessFlash('success: create account');
-
 	    if ($this->Auth->login($data)) {
-		$this->setSuccessFlash('success: login');
-		$this->redirect(array('action' => 'index'));
+		$this->redirect(array('controller' => 'pages', 'action' => 'home'));
 	    }
 	    else {
 		$this->setErrorFlash('failed: login');
