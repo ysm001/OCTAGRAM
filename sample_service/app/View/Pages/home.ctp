@@ -12,7 +12,7 @@
 	   <?php echo $this->Html->image('140x140.png', array('class' => 'img-circle top-icon'));?>
           <h2>プログラミング</h2>
           <p>OCTAGRAMを用いてAIプログラミングを行います。</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+	  <p><?php echo $this->Html->link('View details »', '/programs/create', array('class' => 'btn btn-default')); ?></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
 	   <?php echo $this->Html->image('140x140.png', array('class' => 'img-circle top-icon'));?>

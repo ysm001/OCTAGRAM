@@ -45,7 +45,7 @@
           </div>
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-              <li ><a href="#">Home</a></li>
+	      <li><?php echo $this->Html->link('Home', '/pages/home'); ?></li>
               <li><a href="#">Tutorial</a></li>
               <li><a href="#">Share</a></li>
             </ul>
