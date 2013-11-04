@@ -146,7 +146,7 @@ Config.R.String = (function() {
 
   String.ENEMY = "エネミー";
 
-  String.CANNOTMOVE = "移動てきません。";
+  String.CANNOTMOVE = "移動できません。";
 
   String.CANNOTSHOT = "弾切れです。";
 
@@ -162,6 +162,10 @@ Config.R.String = (function() {
 
   String.move = function(s, x, y) {
     return "" + s + "は(" + x + "," + y + ")に移動しました。";
+  };
+
+  String.state = function(hp, energy) {
+    return "(HP: " + hp + ", エネルギー: " + energy + ")";
   };
 
   String.die = function(s) {

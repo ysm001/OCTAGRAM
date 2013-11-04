@@ -36,7 +36,7 @@ class MsgBox extends ViewGroup
       player = evt.target
       point = evt.params
       if point != false
-        @print R.String.move(player.name, point.x+1, point.y+1)
+        @print R.String.move(player.name, point.x+1, point.y+1) + R.String.state(player.hp, player.energy)
       else
         @print R.String.CANNOTMOVE
 
@@ -44,7 +44,7 @@ class MsgBox extends ViewGroup
       player = evt.target
       ret = evt.params
       if ret != false
-        @print R.String.shot(player.name)
+        @print R.String.shot(player.name) + R.String.state(player.hp, player.energy)
       else
         @print R.String.CANNOTSHOT
 

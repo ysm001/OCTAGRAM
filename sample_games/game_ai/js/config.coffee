@@ -81,11 +81,12 @@ class Config.Energy
 class Config.R.String
   @PLAYER : "プレイヤー"
   @ENEMY : "エネミー"
-  @CANNOTMOVE : "移動てきません。"
+  @CANNOTMOVE : "移動できません。"
   @CANNOTSHOT : "弾切れです。"
   @CANNOTPICKUP : "弾を補充できません。"
 
   @pickup: (s) -> "#{s}は弾を一つ補充しました。"
   @shot: (s) -> "#{s}は攻撃しました。"
   @move: (s, x, y) -> "#{s}は(#{x},#{y})に移動しました。"
+  @state: (hp, energy) -> "(HP: #{hp}, エネルギー: #{energy})"
   @die: (s) -> "#{s}はHPが0になりました。"

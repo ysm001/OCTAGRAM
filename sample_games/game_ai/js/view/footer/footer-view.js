@@ -59,7 +59,7 @@ MsgBox = (function(_super) {
       player = evt.target;
       point = evt.params;
       if (point !== false) {
-        return _this.print(R.String.move(player.name, point.x + 1, point.y + 1));
+        return _this.print(R.String.move(player.name, point.x + 1, point.y + 1) + R.String.state(player.hp, player.energy));
       } else {
         return _this.print(R.String.CANNOTMOVE);
       }
@@ -69,7 +69,7 @@ MsgBox = (function(_super) {
       player = evt.target;
       ret = evt.params;
       if (ret !== false) {
-        return _this.print(R.String.shot(player.name));
+        return _this.print(R.String.shot(player.name) + R.String.state(player.hp, player.energy));
       } else {
         return _this.print(R.String.CANNOTSHOT);
       }

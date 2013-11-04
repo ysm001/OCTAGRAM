@@ -1,7 +1,7 @@
 R = Config.R
 
 class Plate extends ViewSprite
-  @MAX_ENERGY = 120
+  @MAX_ENERGY = 90
   @HEIGHT = 74
   @WIDTH = 64
   @STATE_NORMAL = 0
@@ -68,9 +68,10 @@ class Plate extends ViewSprite
     @setState(robot.plateState)
 
   update: () ->
+    # natural recovery every 5 sec
     if Plate.MAX_ENERGY > @energy and @age % 90 == 0
-      @saveEnergy(Plate.MAX_ENERGY / 10)
-      console.log "save"
+      @saveEnergy(Plate.MAX_ENERGY / 9)
+      console.log @age, @energy
 
 class Map extends ViewGroup
   @WIDTH = 9

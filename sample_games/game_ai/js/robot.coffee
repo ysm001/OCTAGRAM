@@ -132,6 +132,7 @@ class Robot extends SpriteModel
     @y = Math.round @y
 
     @onKeyInput Game.instance.input
+    # natural recovery every 5 sec
     if Robot.MAX_ENERGY > @energy and @age % 150 == 0
       @supplyEnergy(Robot.MAX_ENERGY / 12)
     return true

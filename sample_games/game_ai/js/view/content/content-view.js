@@ -8,7 +8,7 @@ R = Config.R;
 Plate = (function(_super) {
   __extends(Plate, _super);
 
-  Plate.MAX_ENERGY = 120;
+  Plate.MAX_ENERGY = 90;
 
   Plate.HEIGHT = 74;
 
@@ -103,8 +103,8 @@ Plate = (function(_super) {
 
   Plate.prototype.update = function() {
     if (Plate.MAX_ENERGY > this.energy && this.age % 90 === 0) {
-      this.saveEnergy(Plate.MAX_ENERGY / 10);
-      return console.log("save");
+      this.saveEnergy(Plate.MAX_ENERGY / 9);
+      return console.log(this.age, this.energy);
     }
   };
 
