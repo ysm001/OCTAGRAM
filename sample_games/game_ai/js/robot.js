@@ -334,12 +334,12 @@ Robot = (function(_super) {
       onComplete = function() {};
     }
     ret = false;
-    if (this.enoughEnergy(Config.Energy.SHOT)) {
+    if (!this.enoughEnergy(Config.Energy.SHOT)) {
       return ret;
     }
     blt = BulletFactory.create(BulletType.NORMAL, this);
     blt.shot(this.x, this.y, this.direct);
-    setTimeout(onComplete, Util.toMillisec(b.maxFrame));
+    setTimeout(onComplete, Util.toMillisec(blt.maxFrame));
     ret = {
       type: BulletType.NORMAL
     };

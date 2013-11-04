@@ -71,7 +71,6 @@ class RandomMoveInstruction extends ActionInstruction
       rand = Random.nextInt() % InstrCommon.getDirectSize()
       direct = InstrCommon.getRobotDirect(rand)
       plate = Map.instance.getTargetPoision(@robot.currentPlate, direct.value)
-      console.log plate
     ret = @robot.move(direct.value, () => @onComplete())
     @setAsynchronous(ret != false)
     # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
@@ -241,7 +240,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
     @setAsynchronous(true)
 
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に所持している弾丸の射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり#{Config.Frame.ROBOT_TURN}フレーム)
+      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり#{Config.Frame.ROBOT_TURN}フレーム)
       "
     )
     # parameter 1
@@ -269,11 +268,10 @@ class TurnEnemyScanInstruction extends BranchInstruction
     i = 0
     turnOnComplete = (robot) =>
       if i < count
-        if @robot.bulletQueue.size() > 0
-          bullet = @robot.bulletQueue.index(0)
-          if bullet.withinRange(@robot, @opponent, @robot.direct)
-            @onComplete(true)
-            return
+        bullet = BulletFactory.create(BulletType.NORMAL, @robot)
+        if bullet.withinRange(@robot, @opponent, @robot.direct)
+          @onComplete(true)
+          return
         i+=1
         @robot.turn(turnOnComplete)
       else
@@ -305,43 +303,43 @@ class TurnEnemyScanInstruction extends BranchInstruction
   getIcon: () ->
     return @icon
 
-class ItemScanMoveInstruction extends ActionInstruction
-  ###
-    Item Scan and Move Instruction
-  ###
-
-  constructor : (@robot) ->
-    super
-    @setAsynchronous(true)
-    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32)
-
-  action : () ->
-    setTimeout((() =>
-      ret = false
-      target = null
-      targetDirect = null
-      Map.instance.eachSurroundingPlate @robot.currentPlate, (plate, direct) =>
-        if target is null and plate.spot?
-          target = plate
-          targetDirect = direct
-      if target?
-        ret = @robot.move(targetDirect, () => @onComplete())
-        if ret == false
-          @onComplete()
-        # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
-      else
-        @onComplete())
-    ,Util.toMillisec(Config.Frame.ROBOT_WAIT))
-
-  clone : () ->
-    obj = @copy(new ItemScanMoveInstruction(@robot))
-    return obj
-
-  mkDescription: () ->
-    "周囲1マスを探索し、弾丸を見つけた場合、そのマスへ進みます。<br>  (消費フレーム #{Config.Frame.ROBOT_WAIT + Config.Frame.ROBOT_MOVE}フレーム)"
-
-  getIcon: () ->
-    return @icon
+#class ItemScanMoveInstruction extends ActionInstruction
+#  ###
+#    Item Scan and Move Instruction
+#  ###
+#
+#  constructor : (@robot) ->
+#    super
+#    @setAsynchronous(true)
+#    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32)
+#
+#  action : () ->
+#    setTimeout((() =>
+#      ret = false
+#      target = null
+#      targetDirect = null
+#      Map.instance.eachSurroundingPlate @robot.currentPlate, (plate, direct) =>
+#        if target is null and plate.spot?
+#          target = plate
+#          targetDirect = direct
+#      if target?
+#        ret = @robot.move(targetDirect, () => @onComplete())
+#        if ret == false
+#          @onComplete()
+#        # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
+#      else
+#        @onComplete())
+#    ,Util.toMillisec(Config.Frame.ROBOT_WAIT))
+#
+#  clone : () ->
+#    obj = @copy(new ItemScanMoveInstruction(@robot))
+#    return obj
+#
+#  mkDescription: () ->
+#    "周囲1マスを探索し、弾丸を見つけた場合、そのマスへ進みます。<br>  (消費フレーム #{Config.Frame.ROBOT_WAIT + Config.Frame.ROBOT_MOVE}フレーム)"
+#
+#  getIcon: () ->
+#    return @icon
 
 class ShotInstruction extends ActionInstruction
   ###
@@ -411,43 +409,36 @@ class HpBranchInstruction extends BranchInstruction
   getIcon: () ->
     return @icon
 
-
-class HoldBulletBranchInstruction extends BranchInstruction
-  ###
-    Hold Bullet Instruction
-  ###
-
-  constructor: (@robot) ->
+class EnergyBranchInstruction extends BranchInstruction
+  constructor : (@robot) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "ストレートバレッドの保有弾数が#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
+      "エネルギーが#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
     )
-
-    # parameter 1
-    column = "保有弾数"
-    labels = [0..5]
+     # parameter 2
+    column = "HP"
+    labels = {}
+    for i in [1..Robot.MAX_ENERGY]
+      labels[String(i)] = i
     # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @sizeParam = new TipParameter(column, 0, 0, 5, 1)
-    @sizeParam.id = "size"
-    @addParameter(@sizeParam)
-    @tipInfo.addParameter(@sizeParam.id, column, labels, 0)
+    @energyParam = new TipParameter(column, 0, 1, Robot.MAX_ENERGY, 1)
+    @energyParam.id = "size"
+    @addParameter(@energyParam)
+    @tipInfo.addParameter(@energyParam.id, column, labels, 1)
 
     @icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32)
 
-  action: () ->
-    if @robot.bulletQueue.size() >= @sizeParam.value
-      return true
-    else
-      return false
+  action : () ->
+    @energyParam.value <= @robot.energy
 
   clone : () ->
-    obj = @copy(new HoldBulletBranchInstruction(@robot))
-    obj.sizeParam.value = @sizeParam.value
-    return obj
+    obj = @copy(new EnergyBranchInstruction(@robot))
+    obj.energyParam.value = @energyParam.value
+    obj
 
   onParameterChanged : (parameter) ->
-    if parameter.id == @sizeParam.id
-      @sizeParam = parameter
+    if parameter.id == @energyParam.id
+      @energyParam = parameter
     @tipInfo.changeLabel(parameter.id, parameter.value)
 
   mkDescription: () ->
@@ -458,3 +449,51 @@ class HoldBulletBranchInstruction extends BranchInstruction
 
   getIcon: () ->
     return @icon
+
+
+#class HoldBulletBranchInstruction extends BranchInstruction
+#  ###
+#    Hold Bullet Instruction
+#  ###
+#
+#  constructor: (@robot) ->
+#    super
+#    @tipInfo = new TipInfo((labels) ->
+#      "ストレートバレッドの保有弾数が#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
+#    )
+#
+#    # parameter 1
+#    column = "保有弾数"
+#    labels = [0..5]
+#    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
+#    @sizeParam = new TipParameter(column, 0, 0, 5, 1)
+#    @sizeParam.id = "size"
+#    @addParameter(@sizeParam)
+#    @tipInfo.addParameter(@sizeParam.id, column, labels, 0)
+#
+#    @icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32)
+#
+#  action: () ->
+#    if @robot.bulletQueue.size() >= @sizeParam.value
+#      return true
+#    else
+#      return false
+#
+#  clone : () ->
+#    obj = @copy(new HoldBulletBranchInstruction(@robot))
+#    obj.sizeParam.value = @sizeParam.value
+#    return obj
+#
+#  onParameterChanged : (parameter) ->
+#    if parameter.id == @sizeParam.id
+#      @sizeParam = parameter
+#    @tipInfo.changeLabel(parameter.id, parameter.value)
+#
+#  mkDescription: () ->
+#    @tipInfo.getDescription()
+#
+#  mkLabel: (parameter) ->
+#    @tipInfo.getLabel(parameter.id)
+#
+#  getIcon: () ->
+#    return @icon

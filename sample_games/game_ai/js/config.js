@@ -121,15 +121,15 @@ Config.Frame = (function() {
 Config.Energy = (function() {
   function Energy() {}
 
-  Energy.MOVE = 12;
+  Energy.MOVE = 6;
 
-  Energy.APPROACH = 20;
+  Energy.APPROACH = 8;
 
-  Energy.LEAVE = 20;
+  Energy.LEAVE = 8;
 
-  Energy.SHOT = 80;
+  Energy.SHOT = 30;
 
-  Energy.TURN = 12;
+  Energy.TURN = 6;
 
   return Energy;
 

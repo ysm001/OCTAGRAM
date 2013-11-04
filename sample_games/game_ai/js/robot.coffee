@@ -218,7 +218,7 @@ class Robot extends SpriteModel
 
   shot: (onComplete = () ->) ->
     ret = false
-    if @enoughEnergy(Config.Energy.SHOT)
+    unless @enoughEnergy(Config.Energy.SHOT)
       return ret
     #unless @bulletQueue.empty()
     #  for b in @bulletQueue.dequeue()
@@ -227,7 +227,7 @@ class Robot extends SpriteModel
     #    ret = type:BulletType.NORMAL
     blt = BulletFactory.create(BulletType.NORMAL, @)
     blt.shot(@x, @y, @direct)
-    setTimeout(onComplete, Util.toMillisec(b.maxFrame))
+    setTimeout(onComplete, Util.toMillisec(blt.maxFrame))
     ret = type:BulletType.NORMAL
     @dispatchEvent(new RobotEvent('shot', ret))
     @consumeEnergy(Config.Energy.LEAVE) if ret

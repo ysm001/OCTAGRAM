@@ -81,20 +81,18 @@ RobotWorld = (function(_super) {
     playerProgram.addInstruction(new RandomMoveInstruction(this._player));
     playerProgram.addInstruction(new ApproachInstruction(this._player, this._enemy));
     playerProgram.addInstruction(new LeaveInstruction(this._player, this._enemy));
-    playerProgram.addInstruction(new ItemScanMoveInstruction(this._player, this._enemy));
     playerProgram.addInstruction(new ShotInstruction(this._player));
     playerProgram.addInstruction(new TurnEnemyScanInstruction(this._player, this._enemy));
     playerProgram.addInstruction(new HpBranchInstruction(this._player));
-    playerProgram.addInstruction(new HoldBulletBranchInstruction(this._player));
+    playerProgram.addInstruction(new EnergyBranchInstruction(this._player));
     enemyProgram.addInstruction(new MoveInstruction(this._enemy));
     enemyProgram.addInstruction(new RandomMoveInstruction(this._enemy));
     enemyProgram.addInstruction(new ApproachInstruction(this._enemy, this._player));
     enemyProgram.addInstruction(new LeaveInstruction(this._enemy, this._player));
-    enemyProgram.addInstruction(new ItemScanMoveInstruction(this._enemy, this._player));
     enemyProgram.addInstruction(new ShotInstruction(this._enemy));
     enemyProgram.addInstruction(new TurnEnemyScanInstruction(this._enemy, this._player));
     enemyProgram.addInstruction(new HpBranchInstruction(this._enemy));
-    enemyProgram.addInstruction(new HoldBulletBranchInstruction(this._enemy));
+    enemyProgram.addInstruction(new EnergyBranchInstruction(this._enemy));
     return octagram.showProgram(this.playerProgramId);
   };
 

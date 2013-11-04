@@ -65,21 +65,19 @@ class RobotWorld extends GroupModel
     playerProgram.addInstruction(new RandomMoveInstruction(@_player))
     playerProgram.addInstruction(new ApproachInstruction(@_player, @_enemy))
     playerProgram.addInstruction(new LeaveInstruction(@_player, @_enemy))
-    playerProgram.addInstruction(new ItemScanMoveInstruction(@_player, @_enemy))
     playerProgram.addInstruction(new ShotInstruction(@_player))
     playerProgram.addInstruction(new TurnEnemyScanInstruction(@_player, @_enemy))
     playerProgram.addInstruction(new HpBranchInstruction(@_player))
-    playerProgram.addInstruction(new HoldBulletBranchInstruction(@_player))
+    playerProgram.addInstruction(new EnergyBranchInstruction(@_player))
 
     enemyProgram.addInstruction(new MoveInstruction(@_enemy))
     enemyProgram.addInstruction(new RandomMoveInstruction(@_enemy))
     enemyProgram.addInstruction(new ApproachInstruction(@_enemy, @_player))
     enemyProgram.addInstruction(new LeaveInstruction(@_enemy, @_player))
-    enemyProgram.addInstruction(new ItemScanMoveInstruction(@_enemy, @_player))
     enemyProgram.addInstruction(new ShotInstruction(@_enemy))
     enemyProgram.addInstruction(new TurnEnemyScanInstruction(@_enemy, @_player))
     enemyProgram.addInstruction(new HpBranchInstruction(@_enemy))
-    enemyProgram.addInstruction(new HoldBulletBranchInstruction(@_enemy))
+    enemyProgram.addInstruction(new EnergyBranchInstruction(@_enemy))
 
     octagram.showProgram(@playerProgramId)
 

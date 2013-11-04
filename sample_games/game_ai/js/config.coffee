@@ -71,11 +71,11 @@ class Config.Frame
 
 class Config.Energy
 
-  @MOVE     = 12
-  @APPROACH = 20
-  @LEAVE    = 20
-  @SHOT     = 80
-  @TURN     = 12
+  @MOVE     = 6
+  @APPROACH = 8
+  @LEAVE    = 8
+  @SHOT     = 30
+  @TURN     = 6
 
 class Config.R.String
   @PLAYER : "プレイヤー"
