@@ -14,7 +14,16 @@
   "bullet.js",
   "item.js",
   "robot.js",
-  "enchantAI/instr.js",
+  "octagram_instruction/common.js",
+  "octagram_instruction/approach-instruction.js",
+  "octagram_instruction/energy-branch-instruction.js",
+  "octagram_instruction/eney-distance-instruction.js",
+  "octagram_instruction/hp-branch-instruction.js",
+  "octagram_instruction/leave-instruction.js",
+  "octagram_instruction/move-instruction.js"
+  "octagram_instruction/random-move-instruction.js"
+  "octagram_instruction/shot-instruction.js",
+  "octagram_instruction/turn-enemy-scan-instruction.js",
   "view/view.js",
   "view/header/hp-view.js",
   "view/header/energy-view.js",
