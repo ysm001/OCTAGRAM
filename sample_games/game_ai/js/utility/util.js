@@ -20,7 +20,7 @@ RobotEvent = (function(_super) {
 })(enchant.Event);
 
 Direct = (function() {
-  var bit, _directs;
+  var bit, _direct_len, _directs;
 
   function Direct() {}
 
@@ -38,6 +38,8 @@ Direct = (function() {
 
   _directs = [Direct.RIGHT, Direct.RIGHT | Direct.DOWN, Direct.LEFT | Direct.DOWN, Direct.LEFT, Direct.LEFT | Direct.UP, Direct.RIGHT | Direct.UP];
 
+  _direct_len = _directs.length;
+
   Direct.each = function(func) {
     var i, _i, _len, _results;
     _results = [];
@@ -53,7 +55,18 @@ Direct = (function() {
     for (i = _i = 0, _len = _directs.length; _i < _len; i = ++_i) {
       v = _directs[i];
       if (v === direct) {
-        return _directs[(i + 1) % _directs.length];
+        return _directs[(i + 1) % _direct_len];
+      }
+    }
+    return direct;
+  };
+
+  Direct.prev = function(direct) {
+    var i, v, _i, _len;
+    for (i = _i = 0, _len = _directs.length; _i < _len; i = ++_i) {
+      v = _directs[i];
+      if (v === direct) {
+        return _directs[(i + _direct_len - 1) % _direct_len];
       }
     }
     return direct;

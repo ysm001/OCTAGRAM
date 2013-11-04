@@ -1,10 +1,7 @@
-
-
 toi = (i) ->
   parseInt(i)
 
 class RobotEvent extends enchant.Event
-
   constructor: (type, @params = {}) ->
     super(type)
 
@@ -23,19 +20,25 @@ class Direct
     Direct.LEFT | Direct.UP
     Direct.RIGHT | Direct.UP
   ]
-  @each : (func) ->
+  _direct_len = _directs.length
+  @each: (func) ->
     for i in _directs
       func(i)
   
   @next: (direct) ->
     for v, i in _directs
-      return _directs[(i+1) % _directs.length] if v == direct
+      return _directs[(i+1) % _direct_len] if v == direct
+    return direct
+
+  @prev: (direct) ->
+    for v, i in _directs
+      return _directs[(i+_direct_len-1) % _direct_len] if v == direct
     return direct
 
 class Point
-  constructor : (@x, @y) ->
+  constructor: (@x, @y) ->
 
-  length : () ->
+  length: ->
     Math.sqrt(@x*@x+@y*@y)
 
   sub: (point) ->
@@ -49,8 +52,7 @@ class Point
     return @
 
 class Util
-
-  @toMillisec : (frame) ->
+  @toMillisec: (frame) ->
     frame * 1000 / Game.instance.fps
 
   @includedAngle: (vec1, vec2) ->
@@ -63,7 +65,7 @@ class Util
     tmp * Math.acos(dot/(len1*len2))
 
 
-  @lengthPointToPoint : (p1, p2) ->
+  @lengthPointToPoint: (p1, p2) ->
     x = Math.abs(p1.x - p2.x)
     y = Math.abs(p1.y - p2.y)
     Math.sqrt(x*x + y*y)
@@ -77,7 +79,7 @@ class Util
   @toCartesianCoordinates: (r, rad) ->
     return new Point(r * Math.cos(rad), r * Math.sin(rad))
 
-  @dispatchEvent : (name, hash) ->
+  @dispatchEvent: (name, hash) ->
     evt = document.createEvent('UIEvent', false)
     evt.initUIEvent(name, true, true)
     for k, v of hash
@@ -86,7 +88,6 @@ class Util
 
 
 class Stack
-
   constructor: (@maxSize) ->
     @s = []
 

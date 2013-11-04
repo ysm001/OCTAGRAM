@@ -62,7 +62,7 @@ class Config.R
     REST_BULLET : "#{R.RESOURCE_DIR}/tip/rest_bullet.png"
 
 class Config.Frame
-  @DIAMETER = 2
+  @DIAMETER = 1
 
   @ROBOT_MOVE = 12 / Frame.DIAMETER
   @ROBOT_WAIT = 8 / Frame.DIAMETER

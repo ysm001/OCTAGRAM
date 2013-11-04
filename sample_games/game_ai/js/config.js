@@ -104,7 +104,7 @@ Config.R = (function() {
 Config.Frame = (function() {
   function Frame() {}
 
-  Frame.DIAMETER = 2;
+  Frame.DIAMETER = 1;
 
   Frame.ROBOT_MOVE = 12 / Frame.DIAMETER;
 
