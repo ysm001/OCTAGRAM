@@ -61,6 +61,8 @@ Robot = (function(_super) {
 
   Robot.MAX_HP = 6;
 
+  Robot.MAX_ENERGY = 100;
+
   DIRECT_FRAME = {};
 
   DIRECT_FRAME[Direct.NONE] = 0;
@@ -96,14 +98,15 @@ Robot = (function(_super) {
     Robot.__super__.constructor.call(this, width, height);
     this.name = "robot";
     this.setup("hp", Robot.MAX_HP);
+    this.setup("energy", Robot.MAX_ENERGY);
     this._bulletQueue = new ItemQueue([], 5);
     this.plateState = 0;
-    RobotWorld.instance.addChild(this);
     plate = Map.instance.getPlate(0, 0);
     this.prevPlate = this.currentPlate = plate;
+    this._animated = false;
+    RobotWorld.instance.addChild(this);
     pos = plate.getAbsolutePos();
     this.moveTo(pos.x, pos.y);
-    this._animated = false;
   }
 
   Robot.prototype.properties = {

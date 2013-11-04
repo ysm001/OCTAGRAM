@@ -17,7 +17,7 @@ ViewWorld = (function(_super) {
     this.y = y;
     this.background = new Background(0, 0);
     this.header = new Header(16, 16);
-    this.map = new Map(16, 48);
+    this.map = new Map(16, 68);
     this.footer = new Footer(25, this.map.y + this.map.height);
     this.addChild(this.background);
     this.addChild(this.header);

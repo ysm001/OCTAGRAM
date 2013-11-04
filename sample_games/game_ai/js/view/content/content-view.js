@@ -159,7 +159,7 @@ Map = (function(_super) {
 
   function Map(x, y) {
     this._createRondomSpot = __bind(this._createRondomSpot, this);
-    var i, list, offset, plate, tx, ty, _i, _j, _k, _ref, _ref1;
+    var list, offset, plate, tx, ty, _i, _j, _ref, _ref1;
     if (Map.instance != null) {
       return Map.instance;
     }
@@ -179,9 +179,6 @@ Map = (function(_super) {
         this.addChild(plate);
       }
       this.plateMatrix.push(list);
-    }
-    for (i = _k = 0; _k <= 7; i = ++_k) {
-      this._createRondomSpot();
     }
     this.x = x;
     this.y = y;
@@ -204,10 +201,7 @@ Map = (function(_super) {
     }
   };
 
-  Map.prototype.initEvent = function(world) {
-    world.player.addEventListener('pickup', this._createRondomSpot);
-    return world.enemy.addEventListener('pickup', this._createRondomSpot);
-  };
+  Map.prototype.initEvent = function(world) {};
 
   Map.prototype.getPlate = function(x, y) {
     if ((0 <= x && x < Map.WIDTH) && (0 <= y && y < Map.HEIGHT)) {

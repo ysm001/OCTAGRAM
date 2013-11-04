@@ -16,9 +16,11 @@
   "robot.js",
   "enchantAI/instr.js",
   "view/view.js",
-  "view/header.js",
-  "view/content.js",
-  "view/footer.js",
+  "view/header/hp-view.js",
+  "view/header/energy-view.js",
+  "view/header/header-view.js",
+  "view/content/content-view.js",
+  "view/footer/footer-view.js",
   "main.js"
 )
 

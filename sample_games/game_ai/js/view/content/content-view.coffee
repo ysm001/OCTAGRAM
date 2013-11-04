@@ -128,8 +128,8 @@ class Map extends ViewGroup
         @addChild plate
       @plateMatrix.push list
 
-    for i in [0..7]
-      @_createRondomSpot()
+    #for i in [0..7]
+    #  @_createRondomSpot()
 
     @x = x
     @y = y
@@ -145,8 +145,8 @@ class Map extends ViewGroup
       plate.setSpot(Spot.TYPE_NORMAL_BULLET) if plate != null
 
   initEvent: (world) ->
-    world.player.addEventListener 'pickup', @_createRondomSpot
-    world.enemy.addEventListener 'pickup', @_createRondomSpot
+    #world.player.addEventListener 'pickup', @_createRondomSpot
+    #world.enemy.addEventListener 'pickup', @_createRondomSpot
 
   getPlate: (x, y) ->
     if 0 <= x < Map.WIDTH and 0 <= y < Map.HEIGHT

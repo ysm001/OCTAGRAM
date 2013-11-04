@@ -29,7 +29,8 @@ class ItemQueue
     @collection.length
 
 class Robot extends SpriteModel
-  @MAX_HP = 6
+  @MAX_HP     : 6
+  @MAX_ENERGY : 100
 
   DIRECT_FRAME                             = {}
   DIRECT_FRAME[Direct.NONE]                = 0
@@ -53,15 +54,16 @@ class Robot extends SpriteModel
     @name = "robot"
     # @hp = Robot.MAX_HP
     @setup("hp", Robot.MAX_HP)
+    @setup("energy", Robot.MAX_ENERGY)
     @_bulletQueue = new ItemQueue [], 5
     @plateState = 0
 
-    RobotWorld.instance.addChild @
     plate = Map.instance.getPlate(0,0)
     @prevPlate = @currentPlate = plate
+    @_animated = false
+    RobotWorld.instance.addChild @
     pos = plate.getAbsolutePos()
     @moveTo pos.x, pos.y
-    @_animated = false
 
   properties:
     direct:

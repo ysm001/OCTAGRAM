@@ -12,7 +12,7 @@ class ViewWorld extends Group
 
     @background = new Background 0, 0
     @header = new Header 16, 16
-    @map = new Map 16, 48
+    @map = new Map 16, 68
     @footer = new Footer(25, @map.y + @map.height)
 
     @addChild @background

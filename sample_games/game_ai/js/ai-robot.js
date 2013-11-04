@@ -9,7 +9,7 @@
     _results.push(document.write('<script type="text/javascript" src="' + d + arg + '"></script>'));
   }
   return _results;
-})("third_party/underscore-min.js", "third_party/mt.js", "config.js", "utility/util.js", "utility/debug.js", "effect.js", "bullet.js", "item.js", "robot.js", "enchantAI/instr.js", "view/view.js", "view/header.js", "view/content.js", "view/footer.js", "main.js");
+})("third_party/underscore-min.js", "third_party/mt.js", "config.js", "utility/util.js", "utility/debug.js", "effect.js", "bullet.js", "item.js", "robot.js", "enchantAI/instr.js", "view/view.js", "view/header/hp-view.js", "view/header/energy-view.js", "view/header/header-view.js", "view/content/content-view.js", "view/footer/footer-view.js", "main.js");
 
 (function() {
   var classes, cls, _i, _len, _results;

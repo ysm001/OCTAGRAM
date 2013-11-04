@@ -48,10 +48,10 @@ Config.R = (function() {
     HP_RED: "" + R.RESOURCE_DIR + "/background/hp_red.png",
     HP_GREEN: "" + R.RESOURCE_DIR + "/background/hp_green.png",
     HP_ENCLOSE: "" + R.RESOURCE_DIR + "/background/hpenclose.png",
+    ENERGY: "" + R.RESOURCE_DIR + "/background/energy.png",
     PLATE: "" + R.RESOURCE_DIR + "/background/plate.png",
     MSGBOX: "" + R.RESOURCE_DIR + "/background/msgbox.png",
-    STATUS_BOX: "" + R.RESOURCE_DIR + "/background/statusbox.png",
-    NEXT_BUTTON: "" + R.RESOURCE_DIR + "/background/next_button.png"
+    STATUS_BOX: "" + R.RESOURCE_DIR + "/background/statusbox.png"
   };
 
   R.UI = {
