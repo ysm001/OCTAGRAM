@@ -26,7 +26,7 @@ class RandomMoveInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-    "移動可能なマスにランダムに移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})"
+    "移動可能なマスにランダムに移動します。<br>(消費エネルギー #{Config.Energy.MOVE} 消費フレーム #{Config.Frame.ROBOT_MOVE})"
 
   getIcon: () ->
     @icon.frame = 0

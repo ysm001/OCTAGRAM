@@ -18,7 +18,7 @@ TurnEnemyScanInstruction = (function(_super) {
     TurnEnemyScanInstruction.__super__.constructor.apply(this, arguments);
     this.setAsynchronous(true);
     this.tipInfo = new TipInfo(function(labels) {
-      return "" + labels[0] + "に" + labels[1] + "回ターンします。<br>その途中に射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり" + Config.Frame.ROBOT_TURN + "フレーム)      ";
+      return "" + labels[0] + "に" + labels[1] + "回ターンします。<br>その途中に射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費エネルギー 1ターン当たり" + Config.Energy.TURN + " 消費フレーム 1ターン当たり" + Config.Frame.ROBOT_TURN + "フレーム)      ";
     });
     column = "回転方向";
     labels = ["時計回り", "反時計回り"];

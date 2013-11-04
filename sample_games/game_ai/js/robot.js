@@ -63,6 +63,8 @@ Robot = (function(_super) {
 
   Robot.MAX_ENERGY = 240;
 
+  Robot.STEAL_ENERGY_UNIT = 40;
+
   DIRECT_FRAME = {};
 
   DIRECT_FRAME[Direct.NONE] = 0;
@@ -135,6 +137,11 @@ Robot = (function(_super) {
       get: function() {
         return this.currentPlate.pos;
       }
+    },
+    currentPlateEnergy: {
+      get: function() {
+        return this.currentPlate.energy;
+      }
     }
   };
 
@@ -194,6 +201,8 @@ Robot = (function(_super) {
   Robot.prototype.supplyEnergy = function(value) {
     if (this.energy + value <= Robot.MAX_ENERGY) {
       return this.energy += value;
+    } else {
+      return this.energy = Robot.MAX_ENERGY;
     }
   };
 
@@ -209,6 +218,9 @@ Robot = (function(_super) {
     this.x = Math.round(this.x);
     this.y = Math.round(this.y);
     this.onKeyInput(Game.instance.input);
+    if (Robot.MAX_ENERGY > this.energy && this.age % 150 === 0) {
+      this.supplyEnergy(Robot.MAX_ENERGY / 12);
+    }
     return true;
   };
 
@@ -336,7 +348,7 @@ Robot = (function(_super) {
         type: BulletType.NORMAL
       };
       this.dispatchEvent(new RobotEvent('shot', ret));
-      this.consumeEnergy(Config.Energy.LEAVE);
+      this.consumeEnergy(Config.Energy.SHOT);
     }
     return ret;
   };
@@ -350,7 +362,20 @@ Robot = (function(_super) {
       _this.direct = Direct.next(_this.direct);
       onComplete(_this);
       return _this.dispatchEvent(new RobotEvent('turn', {}));
-    }), Util.toMillisec(Config.Frame.ROBOT_TURN));
+    }), this.consumeEnergy(Config.Energy.TURN), Util.toMillisec(Config.Frame.ROBOT_TURN));
+  };
+
+  Robot.prototype.supply = function(onComplete) {
+    var _this = this;
+    if (onComplete == null) {
+      onComplete = function() {};
+    }
+    this.parentNode.addChild(new NormalEnpowerEffect(this.x, this.y));
+    this.supplyEnergy(this.currentPlate.stealEnergy(Robot.STEAL_ENERGY_UNIT));
+    return setTimeout((function() {
+      onComplete(_this);
+      return _this.dispatchEvent(new RobotEvent('turn', {}));
+    }), Util.toMillisec(Config.Frame.ROBOT_SUPPLY));
   };
 
   return Robot;

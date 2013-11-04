@@ -8,6 +8,8 @@ R = Config.R;
 Plate = (function(_super) {
   __extends(Plate, _super);
 
+  Plate.MAX_ENERGY = 120;
+
   Plate.HEIGHT = 74;
 
   Plate.WIDTH = 64;
@@ -28,6 +30,7 @@ Plate = (function(_super) {
     this.x = x;
     this.y = y;
     this.lock = false;
+    this.energy = Plate.MAX_ENERGY;
     this.image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE];
     this.pravState = Plate.STATE_NORMAL;
     this.addEventListener('away', function(evt) {
@@ -61,6 +64,23 @@ Plate = (function(_super) {
     return this.setState(this.prevState);
   };
 
+  Plate.prototype.stealEnergy = function(value) {
+    if (this.energy - value >= 0) {
+      this.energy -= value;
+    } else {
+      value = this.energy;
+    }
+    return value;
+  };
+
+  Plate.prototype.saveEnergy = function(value) {
+    if (this.energy + value <= Plate.MAX_ENERGY) {
+      return this.energy += value;
+    } else {
+      return this.energy = Plate.MAX_ENERGY;
+    }
+  };
+
   Plate.prototype.getAbsolutePos = function() {
     var i, offsetX, offsetY;
     i = this.parentNode;
@@ -79,6 +99,13 @@ Plate = (function(_super) {
 
   Plate.prototype.onRobotRide = function(robot) {
     return this.setState(robot.plateState);
+  };
+
+  Plate.prototype.update = function() {
+    if (Plate.MAX_ENERGY > this.energy && this.age % 90 === 0) {
+      this.saveEnergy(Plate.MAX_ENERGY / 10);
+      return console.log("save");
+    }
   };
 
   return Plate;
@@ -123,7 +150,7 @@ Map = (function(_super) {
     this.x = x;
     this.y = y;
     this.width = Map.WIDTH * Map.UNIT_WIDTH;
-    this.height = (Map.HEIGHT - 1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 16;
+    this.height = (Map.HEIGHT - 1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 8;
   }
 
   Map.prototype.initEvent = function(world) {};
@@ -233,7 +260,21 @@ Map = (function(_super) {
     return null;
   };
 
-  Map.prototype.update = function() {};
+  Map.prototype.update = function() {
+    var tx, ty, _i, _ref, _results;
+    _results = [];
+    for (ty = _i = 0, _ref = Map.HEIGHT; 0 <= _ref ? _i < _ref : _i > _ref; ty = 0 <= _ref ? ++_i : --_i) {
+      _results.push((function() {
+        var _j, _ref1, _results1;
+        _results1 = [];
+        for (tx = _j = 0, _ref1 = Map.WIDTH; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; tx = 0 <= _ref1 ? ++_j : --_j) {
+          _results1.push(this.plateMatrix[ty][tx].update());
+        }
+        return _results1;
+      }).call(this));
+    }
+    return _results;
+  };
 
   return Map;
 

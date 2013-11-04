@@ -29,8 +29,9 @@ class ItemQueue
     @collection.length
 
 class Robot extends SpriteModel
-  @MAX_HP     : 6
-  @MAX_ENERGY : 240
+  @MAX_HP            : 6
+  @MAX_ENERGY        : 240
+  @STEAL_ENERGY_UNIT : 40
 
   DIRECT_FRAME                             = {}
   DIRECT_FRAME[Direct.NONE]                = 0
@@ -74,6 +75,8 @@ class Robot extends SpriteModel
       set:(value) -> @_animated = value
     pos:
       get: () -> @currentPlate.pos
+    currentPlateEnergy:
+      get: () -> @currentPlate.energy
 
   _moveDirect: (direct, onComplete = () ->) ->
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
@@ -114,6 +117,8 @@ class Robot extends SpriteModel
   supplyEnergy: (value) ->
     if @energy + value <= Robot.MAX_ENERGY
       @energy += value
+    else
+      @energy = Robot.MAX_ENERGY
 
   enoughEnergy: (value) ->
     (@energy - value) >= 0
@@ -127,6 +132,8 @@ class Robot extends SpriteModel
     @y = Math.round @y
 
     @onKeyInput Game.instance.input
+    if Robot.MAX_ENERGY > @energy and @age % 150 == 0
+      @supplyEnergy(Robot.MAX_ENERGY / 12)
     return true
 
   onKeyInput: (input) ->
@@ -135,10 +142,11 @@ class Robot extends SpriteModel
   # Robot API
   # * move
   # * moveImmediately
-  # * approach -> move
-  # * leave -> move
+  # * approach
+  # * leave
   # * shot
   # * turn
+  # * currentPlateEnergy
   # ===============
 
   move: (direct, onComplete = () ->) ->
@@ -204,7 +212,6 @@ class Robot extends SpriteModel
       @consumeEnergy(Config.Energy.LEAVE) if ret
     ret
 
-
   moveImmediately: (plate) ->
     ret = @_move plate, () =>
       pos = plate.getAbsolutePos()
@@ -221,7 +228,7 @@ class Robot extends SpriteModel
       setTimeout(onComplete, Util.toMillisec(blt.maxFrame))
       ret = type:BulletType.NORMAL
       @dispatchEvent(new RobotEvent('shot', ret))
-      @consumeEnergy(Config.Energy.LEAVE)
+      @consumeEnergy(Config.Energy.SHOT)
     ret
 
   turn: (onComplete = () ->) ->
@@ -229,7 +236,17 @@ class Robot extends SpriteModel
       @direct = Direct.next(@direct)
       onComplete(@)
       @dispatchEvent(new RobotEvent('turn', {}))),
+      @consumeEnergy(Config.Energy.TURN)
       Util.toMillisec(Config.Frame.ROBOT_TURN)
+    )
+
+  supply: (onComplete = () ->) ->
+    @parentNode.addChild new NormalEnpowerEffect(@x, @y)
+    @supplyEnergy(@currentPlate.stealEnergy(Robot.STEAL_ENERGY_UNIT))
+    setTimeout((() =>
+      onComplete(@)
+      @dispatchEvent(new RobotEvent('turn', {}))),
+      Util.toMillisec(Config.Frame.ROBOT_SUPPLY)
     )
 
 class PlayerRobot extends Robot

@@ -1,6 +1,7 @@
 R = Config.R
 
 class Plate extends ViewSprite
+  @MAX_ENERGY = 120
   @HEIGHT = 74
   @WIDTH = 64
   @STATE_NORMAL = 0
@@ -13,6 +14,7 @@ class Plate extends ViewSprite
     @x = x
     @y = y
     @lock = false
+    @energy = Plate.MAX_ENERGY
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE]
     @pravState = Plate.STATE_NORMAL
     @addEventListener 'away', (evt) =>
@@ -37,6 +39,19 @@ class Plate extends ViewSprite
   setPrevState: () ->
     @setState(@prevState)
 
+  stealEnergy: (value) ->
+    if @energy - value >= 0
+      @energy -= value
+    else
+      value = @energy
+    value
+
+  saveEnergy: (value) ->
+    if @energy + value <= Plate.MAX_ENERGY
+      @energy += value
+    else
+      @energy = Plate.MAX_ENERGY
+
   getAbsolutePos: () ->
     i = @parentNode
     offsetX = offsetY = 0
@@ -44,16 +59,18 @@ class Plate extends ViewSprite
       offsetX += i.x
       offsetY += i.y
       i = i.parentNode
-
     new Point(@x + offsetX, @y + offsetY)
 
   onRobotAway: (robot) ->
     @setState(Plate.STATE_NORMAL)
-    #Debug.log "onRobotAway #{@lock}"
 
   onRobotRide: (robot) ->
     @setState(robot.plateState)
-    # Debug.log "onRobotRide #{@lock}"
+
+  update: () ->
+    if Plate.MAX_ENERGY > @energy and @age % 90 == 0
+      @saveEnergy(Plate.MAX_ENERGY / 10)
+      console.log "save"
 
 class Map extends ViewGroup
   @WIDTH = 9
@@ -95,7 +112,7 @@ class Map extends ViewGroup
     @x = x
     @y = y
     @width = Map.WIDTH * Map.UNIT_WIDTH
-    @height = (Map.HEIGHT-1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 16
+    @height = (Map.HEIGHT-1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 8
 
   initEvent: (world) ->
 
@@ -172,5 +189,6 @@ class Map extends ViewGroup
     return null
 
   update: () ->
-    return
-
+    for ty in [0...Map.HEIGHT]
+      for tx in [0...Map.WIDTH]
+        @plateMatrix[ty][tx].update()

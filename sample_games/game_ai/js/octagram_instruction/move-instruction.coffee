@@ -15,7 +15,7 @@ class MoveInstruction extends ActionInstruction
     @directParam = new TipParameter(column, 0, 0, 5, 1)
     @directParam.id = "direct"
     @addParameter(@directParam)
-    @tipInfo = new TipInfo((labels) -> "#{labels[0]}に1マス移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})")
+    @tipInfo = new TipInfo((labels) -> "#{labels[0]}に1マス移動します。<br>(消費エネルギー #{Config.Energy.MOVE} 消費フレーム #{Config.Frame.ROBOT_MOVE})")
     @tipInfo.addParameter(@directParam.id, column, labels, 0)
 
     @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)

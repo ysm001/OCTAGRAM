@@ -41,7 +41,7 @@ RandomMoveInstruction = (function(_super) {
   };
 
   RandomMoveInstruction.prototype.mkDescription = function() {
-    return "移動可能なマスにランダムに移動します。<br>(消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
+    return "移動可能なマスにランダムに移動します。<br>(消費エネルギー " + Config.Energy.MOVE + " 消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
   };
 
   RandomMoveInstruction.prototype.getIcon = function() {

@@ -66,18 +66,22 @@ class RobotWorld extends GroupModel
     playerProgram.addInstruction(new ApproachInstruction(@_player, @_enemy))
     playerProgram.addInstruction(new LeaveInstruction(@_player, @_enemy))
     playerProgram.addInstruction(new ShotInstruction(@_player))
+    playerProgram.addInstruction(new SupplyInstruction(@_player))
     playerProgram.addInstruction(new TurnEnemyScanInstruction(@_player, @_enemy))
     playerProgram.addInstruction(new HpBranchInstruction(@_player))
     playerProgram.addInstruction(new EnergyBranchInstruction(@_player))
+    playerProgram.addInstruction(new ResourceBranchInstruction(@_player))
 
     enemyProgram.addInstruction(new MoveInstruction(@_enemy))
     enemyProgram.addInstruction(new RandomMoveInstruction(@_enemy))
     enemyProgram.addInstruction(new ApproachInstruction(@_enemy, @_player))
     enemyProgram.addInstruction(new LeaveInstruction(@_enemy, @_player))
     enemyProgram.addInstruction(new ShotInstruction(@_enemy))
+    enemyProgram.addInstruction(new SupplyInstruction(@_enemy))
     enemyProgram.addInstruction(new TurnEnemyScanInstruction(@_enemy, @_player))
     enemyProgram.addInstruction(new HpBranchInstruction(@_enemy))
     enemyProgram.addInstruction(new EnergyBranchInstruction(@_enemy))
+    enemyProgram.addInstruction(new ResourceBranchInstruction(@_enemy))
 
     octagram.showProgram(@playerProgramId)
 
@@ -135,7 +139,6 @@ class RobotWorld extends GroupModel
     i.update() for i in @_robots
 
   update: (views)->
-    #@swicher.update()
     @updateItems()
     @updateRobots()
     @updateBullets()

@@ -67,13 +67,15 @@ class Config.Frame
   @ROBOT_MOVE = 12 / Frame.DIAMETER
   @ROBOT_WAIT = 8 / Frame.DIAMETER
   @ROBOT_TURN = 8 / Frame.DIAMETER
+  @ROBOT_SUPPLY = 32 / Frame.DIAMETER
   @BULLET = 16 / Frame.DIAMETER
+  @SUPPLY = 16 / Frame.DIAMETER
 
 class Config.Energy
   @MOVE     = 6
   @APPROACH = 8
   @LEAVE    = 8
-  @SHOT     = 30
+  @SHOT     = 40
   @TURN     = 6
 
 class Config.R.String

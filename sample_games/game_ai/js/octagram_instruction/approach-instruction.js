@@ -35,7 +35,7 @@ ApproachInstruction = (function(_super) {
   };
 
   ApproachInstruction.prototype.mkDescription = function() {
-    return "敵に近づくように移動します。<br>(消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
+    return "敵に近づくように移動します。<br>(消費エネルギー " + Config.Energy.APPROACH + " 消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
   };
 
   ApproachInstruction.prototype.getIcon = function() {

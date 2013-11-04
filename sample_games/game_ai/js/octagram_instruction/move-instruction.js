@@ -22,7 +22,7 @@ MoveInstruction = (function(_super) {
     this.directParam.id = "direct";
     this.addParameter(this.directParam);
     this.tipInfo = new TipInfo(function(labels) {
-      return "" + labels[0] + "に1マス移動します。<br>(消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
+      return "" + labels[0] + "に1マス移動します。<br>(消費エネルギー " + Config.Energy.MOVE + " 消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
     });
     this.tipInfo.addParameter(this.directParam.id, column, labels, 0);
     this.icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32);

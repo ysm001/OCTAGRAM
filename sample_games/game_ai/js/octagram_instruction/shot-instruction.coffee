@@ -18,7 +18,7 @@ class ShotInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-     "ストレートバレットを撃ちます。<br>射程距離:前方方向に距離5<br>(消費フレーム #{Config.Frame.BULLET}フレーム)"
+     "ストレートバレットを撃ちます。<br>射程距離:前方方向に距離5<br>(消費エネルギー #{Config.Energy.SHOT} 消費フレーム #{Config.Frame.BULLET}フレーム)"
 
   mkLabel: (parameter) ->
     @tipInfo.getLabel(parameter.id)

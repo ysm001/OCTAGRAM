@@ -9,7 +9,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
     @setAsynchronous(true)
 
     @tipInfo = new TipInfo((labels) ->
-      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費フレーム 1回転当たり#{Config.Frame.ROBOT_TURN}フレーム)
+      "#{labels[0]}に#{labels[1]}回ターンします。<br>その途中に射程圏内に入っていれば、<br>青い矢印に進みます。<br>そうでなければ赤い矢印に進みます。<br>(消費エネルギー 1ターン当たり#{Config.Energy.TURN} 消費フレーム 1ターン当たり#{Config.Frame.ROBOT_TURN}フレーム)
       "
     )
     # parameter 1

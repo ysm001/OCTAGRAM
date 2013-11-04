@@ -112,7 +112,11 @@ Config.Frame = (function() {
 
   Frame.ROBOT_TURN = 8 / Frame.DIAMETER;
 
+  Frame.ROBOT_SUPPLY = 32 / Frame.DIAMETER;
+
   Frame.BULLET = 16 / Frame.DIAMETER;
+
+  Frame.SUPPLY = 16 / Frame.DIAMETER;
 
   return Frame;
 
@@ -127,7 +131,7 @@ Config.Energy = (function() {
 
   Energy.LEAVE = 8;
 
-  Energy.SHOT = 30;
+  Energy.SHOT = 40;
 
   Energy.TURN = 6;
 

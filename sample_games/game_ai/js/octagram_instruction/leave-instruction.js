@@ -35,7 +35,7 @@ LeaveInstruction = (function(_super) {
   };
 
   LeaveInstruction.prototype.mkDescription = function() {
-    return "敵から離れるように移動します。<br>(消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
+    return "敵から離れるように移動します。<br>(消費エネルギー " + Config.Energy.LEAVE + " 消費フレーム " + Config.Frame.ROBOT_MOVE + ")";
   };
 
   LeaveInstruction.prototype.getIcon = function() {

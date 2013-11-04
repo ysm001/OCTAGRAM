@@ -18,7 +18,7 @@ class LeaveInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-    "敵から離れるように移動します。<br>(消費フレーム #{Config.Frame.ROBOT_MOVE})"
+    "敵から離れるように移動します。<br>(消費エネルギー #{Config.Energy.LEAVE} 消費フレーム #{Config.Frame.ROBOT_MOVE})"
 
   getIcon: () ->
     @icon.frame = 0

@@ -17,7 +17,10 @@ class PlayerEnergy extends MeterView
   initEvent: (world) ->
     # callback on the HP of enemy changed
     world.player.addObserver "energy", (energy) =>
-      @decreaseForce(world.player.energy - energy) if energy < world.player.energy
+      if energy < world.player.energy
+        @decreaseForce(world.player.energy - energy)
+      else
+        @increaseForce(energy - world.player.energy)
 
 class EnemyEnergy extends MeterView
 
@@ -37,4 +40,7 @@ class EnemyEnergy extends MeterView
   initEvent: (world) ->
     # callback on the HP of enemy changed
     world.enemy.addObserver "energy", (energy) =>
-      @decreaseForce(world.enemy.energy - energy) if energy < world.enemy.energy
+      if energy < world.enemy.energy
+        @decreaseForce(world.enemy.energy - energy)
+      else
+        @increaseForce(energy - world.enemy.energy)
