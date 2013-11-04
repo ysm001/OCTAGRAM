@@ -26,6 +26,7 @@
     <?php echo $this->Html->script(array('octagram/js/octagram-loader-client.js'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->script(array('robot_battle/js/ai-robot.js'), false, array('inline'=>false)); ?>
 
+    <?php echo $this->Html->script(array('program'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->script(array('create'), false, array('inline'=>false)); ?>
 
     <style type="text/css">
