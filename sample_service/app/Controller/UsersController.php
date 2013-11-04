@@ -24,6 +24,10 @@ class UsersController extends AppController {
     public function signin() {
     }
 
+    public function signout() {
+	$this->redirect($this->Auth->logout());
+    }
+
     private function update($data) {
 	$user = $this->User->find('first', array('conditions' => array('username' => $data['username'])));
 

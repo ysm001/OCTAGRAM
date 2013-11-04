@@ -52,13 +52,18 @@
               <li><a href="#">Share</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-	      <li><a href="#">
-                <?php if ( $authUser ) :  ?>
-                <?php echo $authUser['nickname'] ?>
-                <?php else :  ?>           
-		  Guest
-                <?php endif  ?>           
-              </a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <?php if ( $authUser ) :  ?>
+                        <?php echo $authUser['nickname'] ?>
+                        <?php else :  ?>           
+                	  Guest
+                        <?php endif  ?>           
+                 <b class="caret"></b></a>
+                 <ul class="dropdown-menu">
+	           <li><?php echo $this->Html->link('Logout', '/users/signout'); ?></li>
+                 </ul>
+              </li>
             </ul>
           </div>
         </div>
