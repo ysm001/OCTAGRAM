@@ -30,7 +30,7 @@ class ItemQueue
 
 class Robot extends SpriteModel
   @MAX_HP     : 6
-  @MAX_ENERGY : 250
+  @MAX_ENERGY : 240
 
   DIRECT_FRAME                             = {}
   DIRECT_FRAME[Direct.NONE]                = 0
@@ -78,20 +78,7 @@ class Robot extends SpriteModel
     bulletQueue:
       get: () -> @_bulletQueue
 
-  directFrame: (direct) ->
-    DIRECT_FRAME[direct]
-
-  # ===============
-  # Robot API
-  # * move
-  # * moveDirect
-  # * approach
-  # * leave 
-  # * shot
-  # * turn
-  # ===============
-
-  move: (direct, onComplete = () ->) ->
+  _moveDirect: (direct, onComplete = () ->) ->
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
     @direct = direct
     ret = @_move plate, () =>
@@ -104,8 +91,70 @@ class Robot extends SpriteModel
           onComplete()
     ret
 
+  _move: (plate, closure) ->
+    ret = false
+    @prevPlate = @currentPlate
+    # plate is exists and not locked
+    if plate? and plate.lock == false
+      pos = plate.getAbsolutePos()
+      @currentPlate = plate
+      closure()
+      ret = new Point plate.ix, plate.iy
+    else
+      ret = false
+    ret
+
+  directFrame: (direct) ->
+    DIRECT_FRAME[direct]
+
+  consumeEnergy: (value) ->
+    if @energy - value >= 0
+      @energy -= value
+      return true
+    else
+      return false
+
+  supplyEnergy: (value) ->
+    if @energy + value <= Robot.MAX_ENERGY
+      @energy += value
+
+  enoughEnergy: (value) ->
+    (@energy - value) >= 0
+
+  damege: () ->
+    @hp -= 1
+
+  update: ->
+    # Why the @x @y does it become a floating-point number?
+    @x = Math.round @x
+    @y = Math.round @y
+
+    @onKeyInput Game.instance.input
+    return true
+
+  onKeyInput: (input) ->
+
+  # ===============
+  # Robot API
+  # * move
+  # * moveImmediately
+  # * approach -> move
+  # * leave -> move
+  # * shot
+  # * turn
+  # ===============
+
+  move: (direct, onComplete = () ->) ->
+    ret = false
+    if @enoughEnergy(Config.Energy.MOVE)
+      ret = @_moveDirect(direct, onComplete)
+      @consumeEnergy(Config.Energy.MOVE) if ret
+    ret
+
   approach: (robot, onComplete = () ->) ->
     ret = false
+    unless @enoughEnergy(Config.Energy.APPROACH)
+      return ret
     enemyPos = robot.pos
     robotPos = @pos
     robotPos.sub(enemyPos)
@@ -126,13 +175,14 @@ class Robot extends SpriteModel
         direct |= Direct.LEFT
 
     if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
-      ret = @move(direct, onComplete)
-    if ret == false
-      onComplete()
+      ret = @_moveDirect(direct, onComplete)
+      @consumeEnergy(Config.Energy.APPROACH) if ret
     ret
 
   leave: (robot, onComplete = () ->) ->
     ret = false
+    unless @enoughEnergy(Config.Energy.LEAVE)
+      return ret
     enemyPos = robot.pos
     robotPos = @pos
     robotPos.sub(enemyPos)
@@ -153,13 +203,12 @@ class Robot extends SpriteModel
         direct |= Direct.RIGHT
 
     if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
-      ret = @move(direct, onComplete)
-    if ret == false
-      onComplete()
+      ret = @_moveDirect(direct, onComplete)
+      @consumeEnergy(Config.Energy.LEAVE) if ret
     ret
 
 
-  moveDirect: (plate) ->
+  moveImmediately: (plate) ->
     ret = @_move plate, () =>
       pos = plate.getAbsolutePos()
       @moveTo pos.x, pos.y
@@ -167,27 +216,21 @@ class Robot extends SpriteModel
       @currentPlate.dispatchEvent(new RobotEvent('ride', robot:@))
     ret
 
-  _move: (plate, closure) ->
-    ret = false
-    @prevPlate = @currentPlate
-    # plate is exists and not locked
-    if plate? and plate.lock == false
-      pos = plate.getAbsolutePos()
-      @currentPlate = plate
-      closure()
-      ret = new Point plate.ix, plate.iy
-    else
-      ret = false
-    ret
-
   shot: (onComplete = () ->) ->
     ret = false
-    unless @bulletQueue.empty()
-      for b in @bulletQueue.dequeue()
-        b.shot(@x, @y, @direct)
-        setTimeout(onComplete, Util.toMillisec(b.maxFrame))
-        ret = type:BulletType.NORMAL
+    if @enoughEnergy(Config.Energy.SHOT)
+      return ret
+    #unless @bulletQueue.empty()
+    #  for b in @bulletQueue.dequeue()
+    #    b.shot(@x, @y, @direct)
+    #    setTimeout(onComplete, Util.toMillisec(b.maxFrame))
+    #    ret = type:BulletType.NORMAL
+    blt = BulletFactory.create(BulletType.NORMAL, @)
+    blt.shot(@x, @y, @direct)
+    setTimeout(onComplete, Util.toMillisec(b.maxFrame))
+    ret = type:BulletType.NORMAL
     @dispatchEvent(new RobotEvent('shot', ret))
+    @consumeEnergy(Config.Energy.LEAVE) if ret
     ret
 
   pickup: (onComplete = () ->) ->
@@ -208,19 +251,6 @@ class Robot extends SpriteModel
       @dispatchEvent(new RobotEvent('turn', {}))),
       Util.toMillisec(Config.Frame.ROBOT_TURN)
     )
-
-  damege: () ->
-    @hp -= 1
-
-  update: ->
-    # Why the @x @y does it become a floating-point number?
-    @x = Math.round @x
-    @y = Math.round @y
-
-    @onKeyInput Game.instance.input
-    return true
-
-  onKeyInput: (input) ->
 
 class PlayerRobot extends Robot
   @WIDTH = 64

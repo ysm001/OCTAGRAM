@@ -65,11 +65,14 @@ class RandomMoveInstruction extends ActionInstruction
 
   action : () ->
     ret = false
+    plate = null
     # get random direct
-    while !ret
+    while plate == null
       rand = Random.nextInt() % InstrCommon.getDirectSize()
       direct = InstrCommon.getRobotDirect(rand)
-      ret = @robot.move(direct.value, () => @onComplete())
+      plate = Map.instance.getTargetPoision(@robot.currentPlate, direct.value)
+      console.log plate
+    ret = @robot.move(direct.value, () => @onComplete())
     @setAsynchronous(ret != false)
     # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 
@@ -95,7 +98,8 @@ class ApproachInstruction extends ActionInstruction
     @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
 
   action: () ->
-    @robot.approach(@enemy, () => @onComplete())
+    ret = @robot.approach(@enemy, () => @onComplete())
+    @setAsynchronous(ret != false)
 
   clone: () ->
     obj = @copy(new ApproachInstruction(@robot, @enemy))
@@ -119,7 +123,8 @@ class LeaveInstruction extends ActionInstruction
     @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
 
   action : () ->
-    @robot.leave(@enemy, () => @onComplete())
+    ret = @robot.leave(@enemy, () => @onComplete())
+    @setAsynchronous(ret != false)
 
   clone : () ->
     obj = @copy(new LeaveInstruction(@robot, @enemy))

@@ -108,16 +108,19 @@ RandomMoveInstruction = (function(_super) {
   }
 
   RandomMoveInstruction.prototype.action = function() {
-    var direct, rand, ret,
+    var direct, plate, rand, ret,
       _this = this;
     ret = false;
-    while (!ret) {
+    plate = null;
+    while (plate === null) {
       rand = Random.nextInt() % InstrCommon.getDirectSize();
       direct = InstrCommon.getRobotDirect(rand);
-      ret = this.robot.move(direct.value, function() {
-        return _this.onComplete();
-      });
+      plate = Map.instance.getTargetPoision(this.robot.currentPlate, direct.value);
+      console.log(plate);
     }
+    ret = this.robot.move(direct.value, function() {
+      return _this.onComplete();
+    });
     return this.setAsynchronous(ret !== false);
   };
 
@@ -157,10 +160,12 @@ ApproachInstruction = (function(_super) {
   }
 
   ApproachInstruction.prototype.action = function() {
-    var _this = this;
-    return this.robot.approach(this.enemy, function() {
+    var ret,
+      _this = this;
+    ret = this.robot.approach(this.enemy, function() {
       return _this.onComplete();
     });
+    return this.setAsynchronous(ret !== false);
   };
 
   ApproachInstruction.prototype.clone = function() {
@@ -199,10 +204,12 @@ LeaveInstruction = (function(_super) {
   }
 
   LeaveInstruction.prototype.action = function() {
-    var _this = this;
-    return this.robot.leave(this.enemy, function() {
+    var ret,
+      _this = this;
+    ret = this.robot.leave(this.enemy, function() {
       return _this.onComplete();
     });
+    return this.setAsynchronous(ret !== false);
   };
 
   LeaveInstruction.prototype.clone = function() {

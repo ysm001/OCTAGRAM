@@ -118,6 +118,23 @@ Config.Frame = (function() {
 
 })();
 
+Config.Energy = (function() {
+  function Energy() {}
+
+  Energy.MOVE = 12;
+
+  Energy.APPROACH = 20;
+
+  Energy.LEAVE = 20;
+
+  Energy.SHOT = 80;
+
+  Energy.TURN = 12;
+
+  return Energy;
+
+})();
+
 Config.R.String = (function() {
   function String() {}
 

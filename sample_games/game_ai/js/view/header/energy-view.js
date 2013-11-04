@@ -28,7 +28,7 @@ PlayerEnergy = (function(_super) {
     var _this = this;
     return world.player.addObserver("energy", function(energy) {
       if (energy < world.player.energy) {
-        return _this.decreaseForce(PART_WIDTH);
+        return _this.decreaseForce(world.player.energy - energy);
       }
     });
   };
@@ -62,7 +62,7 @@ EnemyEnergy = (function(_super) {
     var _this = this;
     return world.enemy.addObserver("energy", function(energy) {
       if (energy < world.enemy.energy) {
-        return _this.decreaseForce(PART_WIDTH);
+        return _this.decreaseForce(world.enemy.energy - energy);
       }
     });
   };

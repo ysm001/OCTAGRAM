@@ -43,8 +43,7 @@ RobotWorld = (function(_super) {
   __extends(RobotWorld, _super);
 
   function RobotWorld(x, y, scene) {
-    var plate,
-      _this = this;
+    var _this = this;
     if (RobotWorld.instance != null) {
       return RobotWorld.instance;
     }
@@ -64,11 +63,7 @@ RobotWorld = (function(_super) {
       }
     });
     this._player = new PlayerRobot(this);
-    plate = Map.instance.getPlate(6, 4);
-    this._player.moveDirect(plate);
     this._enemy = new EnemyRobot(this);
-    plate = Map.instance.getPlate(1, 1);
-    this._enemy.moveDirect(plate);
     this._robots.push(this._player);
     this._robots.push(this._enemy);
     scene.addChild(this);
@@ -119,9 +114,9 @@ RobotWorld = (function(_super) {
   RobotWorld.prototype.initialize = function(views) {
     var plate;
     plate = Map.instance.getPlate(6, 4);
-    this.player.moveDirect(plate);
+    this.player.moveImmediately(plate);
     plate = Map.instance.getPlate(1, 1);
-    return this.enemy.moveDirect(plate);
+    return this.enemy.moveImmediately(plate);
   };
 
   RobotWorld.prototype.collisionBullet = function(bullet, robot) {

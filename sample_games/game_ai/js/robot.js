@@ -61,7 +61,7 @@ Robot = (function(_super) {
 
   Robot.MAX_HP = 6;
 
-  Robot.MAX_ENERGY = 250;
+  Robot.MAX_ENERGY = 240;
 
   DIRECT_FRAME = {};
 
@@ -144,11 +144,7 @@ Robot = (function(_super) {
     }
   };
 
-  Robot.prototype.directFrame = function(direct) {
-    return DIRECT_FRAME[direct];
-  };
-
-  Robot.prototype.move = function(direct, onComplete) {
+  Robot.prototype._moveDirect = function(direct, onComplete) {
     var plate, ret,
       _this = this;
     if (onComplete == null) {
@@ -173,12 +169,81 @@ Robot = (function(_super) {
     return ret;
   };
 
+  Robot.prototype._move = function(plate, closure) {
+    var pos, ret;
+    ret = false;
+    this.prevPlate = this.currentPlate;
+    if ((plate != null) && plate.lock === false) {
+      pos = plate.getAbsolutePos();
+      this.currentPlate = plate;
+      closure();
+      ret = new Point(plate.ix, plate.iy);
+    } else {
+      ret = false;
+    }
+    return ret;
+  };
+
+  Robot.prototype.directFrame = function(direct) {
+    return DIRECT_FRAME[direct];
+  };
+
+  Robot.prototype.consumeEnergy = function(value) {
+    if (this.energy - value >= 0) {
+      this.energy -= value;
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  Robot.prototype.supplyEnergy = function(value) {
+    if (this.energy + value <= Robot.MAX_ENERGY) {
+      return this.energy += value;
+    }
+  };
+
+  Robot.prototype.enoughEnergy = function(value) {
+    return (this.energy - value) >= 0;
+  };
+
+  Robot.prototype.damege = function() {
+    return this.hp -= 1;
+  };
+
+  Robot.prototype.update = function() {
+    this.x = Math.round(this.x);
+    this.y = Math.round(this.y);
+    this.onKeyInput(Game.instance.input);
+    return true;
+  };
+
+  Robot.prototype.onKeyInput = function(input) {};
+
+  Robot.prototype.move = function(direct, onComplete) {
+    var ret;
+    if (onComplete == null) {
+      onComplete = function() {};
+    }
+    ret = false;
+    if (this.enoughEnergy(Config.Energy.MOVE)) {
+      ret = this._moveDirect(direct, onComplete);
+      if (ret) {
+        this.consumeEnergy(Config.Energy.MOVE);
+      }
+    }
+    return ret;
+  };
+
   Robot.prototype.approach = function(robot, onComplete) {
     var direct, enemyPos, ret, robotPos;
     if (onComplete == null) {
       onComplete = function() {};
     }
     ret = false;
+    if (!this.enoughEnergy(Config.Energy.APPROACH)) {
+      return ret;
+    }
     enemyPos = robot.pos;
     robotPos = this.pos;
     robotPos.sub(enemyPos);
@@ -200,10 +265,10 @@ Robot = (function(_super) {
       }
     }
     if (direct !== Direct.NONE && direct !== Direct.UP && direct !== Direct.DOWN) {
-      ret = this.move(direct, onComplete);
-    }
-    if (ret === false) {
-      onComplete();
+      ret = this._moveDirect(direct, onComplete);
+      if (ret) {
+        this.consumeEnergy(Config.Energy.APPROACH);
+      }
     }
     return ret;
   };
@@ -214,6 +279,9 @@ Robot = (function(_super) {
       onComplete = function() {};
     }
     ret = false;
+    if (!this.enoughEnergy(Config.Energy.LEAVE)) {
+      return ret;
+    }
     enemyPos = robot.pos;
     robotPos = this.pos;
     robotPos.sub(enemyPos);
@@ -235,15 +303,15 @@ Robot = (function(_super) {
       }
     }
     if (direct !== Direct.NONE && direct !== Direct.UP && direct !== Direct.DOWN) {
-      ret = this.move(direct, onComplete);
-    }
-    if (ret === false) {
-      onComplete();
+      ret = this._moveDirect(direct, onComplete);
+      if (ret) {
+        this.consumeEnergy(Config.Energy.LEAVE);
+      }
     }
     return ret;
   };
 
-  Robot.prototype.moveDirect = function(plate) {
+  Robot.prototype.moveImmediately = function(plate) {
     var ret,
       _this = this;
     ret = this._move(plate, function() {
@@ -260,39 +328,25 @@ Robot = (function(_super) {
     return ret;
   };
 
-  Robot.prototype._move = function(plate, closure) {
-    var pos, ret;
-    ret = false;
-    this.prevPlate = this.currentPlate;
-    if ((plate != null) && plate.lock === false) {
-      pos = plate.getAbsolutePos();
-      this.currentPlate = plate;
-      closure();
-      ret = new Point(plate.ix, plate.iy);
-    } else {
-      ret = false;
-    }
-    return ret;
-  };
-
   Robot.prototype.shot = function(onComplete) {
-    var b, ret, _i, _len, _ref;
+    var blt, ret;
     if (onComplete == null) {
       onComplete = function() {};
     }
     ret = false;
-    if (!this.bulletQueue.empty()) {
-      _ref = this.bulletQueue.dequeue();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        b = _ref[_i];
-        b.shot(this.x, this.y, this.direct);
-        setTimeout(onComplete, Util.toMillisec(b.maxFrame));
-        ret = {
-          type: BulletType.NORMAL
-        };
-      }
+    if (this.enoughEnergy(Config.Energy.SHOT)) {
+      return ret;
     }
+    blt = BulletFactory.create(BulletType.NORMAL, this);
+    blt.shot(this.x, this.y, this.direct);
+    setTimeout(onComplete, Util.toMillisec(b.maxFrame));
+    ret = {
+      type: BulletType.NORMAL
+    };
     this.dispatchEvent(new RobotEvent('shot', ret));
+    if (ret) {
+      this.consumeEnergy(Config.Energy.LEAVE);
+    }
     return ret;
   };
 
@@ -328,19 +382,6 @@ Robot = (function(_super) {
       return _this.dispatchEvent(new RobotEvent('turn', {}));
     }), Util.toMillisec(Config.Frame.ROBOT_TURN));
   };
-
-  Robot.prototype.damege = function() {
-    return this.hp -= 1;
-  };
-
-  Robot.prototype.update = function() {
-    this.x = Math.round(this.x);
-    this.y = Math.round(this.y);
-    this.onKeyInput(Game.instance.input);
-    return true;
-  };
-
-  Robot.prototype.onKeyInput = function(input) {};
 
   return Robot;
 

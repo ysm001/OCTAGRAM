@@ -69,6 +69,14 @@ class Config.Frame
   @ROBOT_TURN = 8 / Frame.DIAMETER
   @BULLET = 16 / Frame.DIAMETER
 
+class Config.Energy
+
+  @MOVE     = 12
+  @APPROACH = 20
+  @LEAVE    = 20
+  @SHOT     = 80
+  @TURN     = 12
+
 class Config.R.String
   @PLAYER : "プレイヤー"
   @ENEMY : "エネミー"

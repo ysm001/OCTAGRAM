@@ -47,12 +47,7 @@ class RobotWorld extends GroupModel
         @addChild(data)
 
     @_player = new PlayerRobot @
-    plate = Map.instance.getPlate(6,4)
-    @_player.moveDirect(plate)
-
     @_enemy = new EnemyRobot @
-    plate = Map.instance.getPlate(1,1)
-    @_enemy.moveDirect(plate)
 
     @_robots.push @_player
     @_robots.push @_enemy
@@ -96,10 +91,10 @@ class RobotWorld extends GroupModel
 
   initialize: (views)->
     plate = Map.instance.getPlate(6,4)
-    @player.moveDirect(plate)
+    @player.moveImmediately(plate)
 
     plate = Map.instance.getPlate(1,1)
-    @enemy.moveDirect(plate)
+    @enemy.moveImmediately(plate)
 
   collisionBullet: (bullet, robot) ->
     return bullet.holder != robot and bullet.within(robot, 32)
