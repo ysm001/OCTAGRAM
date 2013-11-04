@@ -70,7 +70,6 @@ class Config.Frame
   @BULLET = 16 / Frame.DIAMETER
 
 class Config.Energy
-
   @MOVE     = 6
   @APPROACH = 8
   @LEAVE    = 8
