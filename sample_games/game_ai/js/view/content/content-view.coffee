@@ -1,29 +1,5 @@
 R = Config.R
 
-class Spot
-  @TYPE_NORMAL_BULLET = 1
-  @SIZE = 3
-
-  constructor: (@type, point) ->
-    switch @type
-      when Spot.TYPE_NORMAL_BULLET
-        @effect = new SpotNormalEffect(point.x, point.y + 5)
-        @resultFunc = (robot, plate) ->
-          point = plate.getAbsolutePos()
-          robot.pickup()
-          robot.parentNode.addChild new NormalEnpowerEffect(point.x, point.y)
-
-  @createRandom: (point) ->
-    type = Math.floor(Math.random() * (Spot.SIZE)) + 1
-    return new Spot(type, poit)
-
-  @getRandomType: () ->
-    return Math.floor(Math.random() * (Spot.SIZE)) + 1
-
-class NormalSpot extends Spot
-  constructor: (@plate) ->
-
-
 class Plate extends ViewSprite
   @HEIGHT = 74
   @WIDTH = 64
@@ -38,7 +14,6 @@ class Plate extends ViewSprite
     @y = y
     @lock = false
     @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE]
-    @spotEnabled = false
     @pravState = Plate.STATE_NORMAL
     @addEventListener 'away', (evt) =>
       @onRobotAway(evt.params.robot)
@@ -72,12 +47,6 @@ class Plate extends ViewSprite
 
     new Point(@x + offsetX, @y + offsetY)
 
-  setSpot: (type) ->
-    if @spotEnabled is false
-      @spotEnabled = true
-      @spot = new Spot type, @
-      @parentNode.addChild @spot.effect
-
   onRobotAway: (robot) ->
     @setState(Plate.STATE_NORMAL)
     #Debug.log "onRobotAway #{@lock}"
@@ -85,11 +54,6 @@ class Plate extends ViewSprite
   onRobotRide: (robot) ->
     @setState(robot.plateState)
     # Debug.log "onRobotRide #{@lock}"
-    if @spotEnabled is true
-      @parentNode.removeChild @spot.effect
-      @spot.resultFunc robot, @
-      @spot = null
-      @spotEnabled = false
 
 class Map extends ViewGroup
   @WIDTH = 9
@@ -128,25 +92,12 @@ class Map extends ViewGroup
         @addChild plate
       @plateMatrix.push list
 
-    #for i in [0..7]
-    #  @_createRondomSpot()
-
     @x = x
     @y = y
     @width = Map.WIDTH * Map.UNIT_WIDTH
     @height = (Map.HEIGHT-1) * (Map.UNIT_HEIGHT - offset) + Map.UNIT_HEIGHT + 16
 
-  _createRondomSpot: () =>
-      loop
-        tx = Math.floor(Random.nextInt() % Map.WIDTH)
-        ty = Math.floor(Random.nextInt() % Map.HEIGHT)
-        plate = @getPlate(ty, tx)
-        break if plate != null and plate.spotEnabled == false
-      plate.setSpot(Spot.TYPE_NORMAL_BULLET) if plate != null
-
   initEvent: (world) ->
-    #world.player.addEventListener 'pickup', @_createRondomSpot
-    #world.enemy.addEventListener 'pickup', @_createRondomSpot
 
   getPlate: (x, y) ->
     if 0 <= x < Map.WIDTH and 0 <= y < Map.HEIGHT

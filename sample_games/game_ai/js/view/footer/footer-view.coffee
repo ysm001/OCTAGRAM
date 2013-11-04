@@ -48,14 +48,6 @@ class MsgBox extends ViewGroup
       else
         @print R.String.CANNOTSHOT
 
-    world.player.addEventListener 'pickup', (evt) =>
-      player = evt.target
-      ret = evt.params
-      if ret != false
-        @print R.String.pickup(player.name)
-      else
-        @print R.String.CANNOTPICKUP
-
     # callback on the HP of enemy changed
     world.player.addObserver "hp", (hp) =>
       @print R.String.die(world.player.name) if hp <= 0

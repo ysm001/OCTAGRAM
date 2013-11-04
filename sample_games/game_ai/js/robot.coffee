@@ -54,7 +54,6 @@ class Robot extends SpriteModel
     @name = "robot"
     @setup("hp", Robot.MAX_HP)
     @setup("energy", Robot.MAX_ENERGY)
-    @_bulletQueue = new ItemQueue [], 5
     @plateState = 0
 
     plate = Map.instance.getPlate(0,0)
@@ -75,8 +74,6 @@ class Robot extends SpriteModel
       set:(value) -> @_animated = value
     pos:
       get: () -> @currentPlate.pos
-    bulletQueue:
-      get: () -> @_bulletQueue
 
   _moveDirect: (direct, onComplete = () ->) ->
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
@@ -218,30 +215,13 @@ class Robot extends SpriteModel
 
   shot: (onComplete = () ->) ->
     ret = false
-    unless @enoughEnergy(Config.Energy.SHOT)
-      return ret
-    #unless @bulletQueue.empty()
-    #  for b in @bulletQueue.dequeue()
-    #    b.shot(@x, @y, @direct)
-    #    setTimeout(onComplete, Util.toMillisec(b.maxFrame))
-    #    ret = type:BulletType.NORMAL
-    blt = BulletFactory.create(BulletType.NORMAL, @)
-    blt.shot(@x, @y, @direct)
-    setTimeout(onComplete, Util.toMillisec(blt.maxFrame))
-    ret = type:BulletType.NORMAL
-    @dispatchEvent(new RobotEvent('shot', ret))
-    @consumeEnergy(Config.Energy.LEAVE) if ret
-    ret
-
-  pickup: (onComplete = () ->) ->
-    ret = false
-    blt = BulletFactory.create(BulletType.NORMAL, @)
-    ret = @bulletQueue.enqueue(blt) if @bulletQueue?
-    if ret != false
-      item = new NormalBulletItem(@x, @y)
-      item.setOnCompleteEvent(onComplete)
+    if @enoughEnergy(Config.Energy.SHOT)
+      blt = BulletFactory.create(BulletType.NORMAL, @)
+      blt.shot(@x, @y, @direct)
+      setTimeout(onComplete, Util.toMillisec(blt.maxFrame))
       ret = type:BulletType.NORMAL
-    @dispatchEvent(new RobotEvent('pickup', ret))
+      @dispatchEvent(new RobotEvent('shot', ret))
+      @consumeEnergy(Config.Energy.LEAVE)
     ret
 
   turn: (onComplete = () ->) ->
@@ -285,11 +265,7 @@ class PlayerRobot extends Robot
     else if input.c == true and input.p == true
       @animated = true
       ret = @move(Direct.RIGHT | Direct.DOWN, @onDebugComplete)
-    else if input.q == true and input.m == true
-      @animated = true
-      ret = @pickup(@onDebugComplete)
     else if input.q == true and input.n == true
-      @animated = true
       @animated = true
       ret = @shot(@onDebugComplete)
 

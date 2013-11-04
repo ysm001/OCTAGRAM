@@ -99,7 +99,6 @@ Robot = (function(_super) {
     this.name = "robot";
     this.setup("hp", Robot.MAX_HP);
     this.setup("energy", Robot.MAX_ENERGY);
-    this._bulletQueue = new ItemQueue([], 5);
     this.plateState = 0;
     plate = Map.instance.getPlate(0, 0);
     this.prevPlate = this.currentPlate = plate;
@@ -135,11 +134,6 @@ Robot = (function(_super) {
     pos: {
       get: function() {
         return this.currentPlate.pos;
-      }
-    },
-    bulletQueue: {
-      get: function() {
-        return this._bulletQueue;
       }
     }
   };
@@ -334,40 +328,16 @@ Robot = (function(_super) {
       onComplete = function() {};
     }
     ret = false;
-    if (!this.enoughEnergy(Config.Energy.SHOT)) {
-      return ret;
-    }
-    blt = BulletFactory.create(BulletType.NORMAL, this);
-    blt.shot(this.x, this.y, this.direct);
-    setTimeout(onComplete, Util.toMillisec(blt.maxFrame));
-    ret = {
-      type: BulletType.NORMAL
-    };
-    this.dispatchEvent(new RobotEvent('shot', ret));
-    if (ret) {
-      this.consumeEnergy(Config.Energy.LEAVE);
-    }
-    return ret;
-  };
-
-  Robot.prototype.pickup = function(onComplete) {
-    var blt, item, ret;
-    if (onComplete == null) {
-      onComplete = function() {};
-    }
-    ret = false;
-    blt = BulletFactory.create(BulletType.NORMAL, this);
-    if (this.bulletQueue != null) {
-      ret = this.bulletQueue.enqueue(blt);
-    }
-    if (ret !== false) {
-      item = new NormalBulletItem(this.x, this.y);
-      item.setOnCompleteEvent(onComplete);
+    if (this.enoughEnergy(Config.Energy.SHOT)) {
+      blt = BulletFactory.create(BulletType.NORMAL, this);
+      blt.shot(this.x, this.y, this.direct);
+      setTimeout(onComplete, Util.toMillisec(blt.maxFrame));
       ret = {
         type: BulletType.NORMAL
       };
+      this.dispatchEvent(new RobotEvent('shot', ret));
+      this.consumeEnergy(Config.Energy.LEAVE);
     }
-    this.dispatchEvent(new RobotEvent('pickup', ret));
     return ret;
   };
 
@@ -428,11 +398,7 @@ PlayerRobot = (function(_super) {
     } else if (input.c === true && input.p === true) {
       this.animated = true;
       ret = this.move(Direct.RIGHT | Direct.DOWN, this.onDebugComplete);
-    } else if (input.q === true && input.m === true) {
-      this.animated = true;
-      ret = this.pickup(this.onDebugComplete);
     } else if (input.q === true && input.n === true) {
-      this.animated = true;
       this.animated = true;
       ret = this.shot(this.onDebugComplete);
     }

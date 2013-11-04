@@ -74,16 +74,6 @@ MsgBox = (function(_super) {
         return _this.print(R.String.CANNOTSHOT);
       }
     });
-    world.player.addEventListener('pickup', function(evt) {
-      var player, ret;
-      player = evt.target;
-      ret = evt.params;
-      if (ret !== false) {
-        return _this.print(R.String.pickup(player.name));
-      } else {
-        return _this.print(R.String.CANNOTPICKUP);
-      }
-    });
     return world.player.addObserver("hp", function(hp) {
       if (hp <= 0) {
         return _this.print(R.String.die(world.player.name));

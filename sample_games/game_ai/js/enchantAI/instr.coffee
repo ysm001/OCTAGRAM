@@ -303,44 +303,6 @@ class TurnEnemyScanInstruction extends BranchInstruction
   getIcon: () ->
     return @icon
 
-#class ItemScanMoveInstruction extends ActionInstruction
-#  ###
-#    Item Scan and Move Instruction
-#  ###
-#
-#  constructor : (@robot) ->
-#    super
-#    @setAsynchronous(true)
-#    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32)
-#
-#  action : () ->
-#    setTimeout((() =>
-#      ret = false
-#      target = null
-#      targetDirect = null
-#      Map.instance.eachSurroundingPlate @robot.currentPlate, (plate, direct) =>
-#        if target is null and plate.spot?
-#          target = plate
-#          targetDirect = direct
-#      if target?
-#        ret = @robot.move(targetDirect, () => @onComplete())
-#        if ret == false
-#          @onComplete()
-#        # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
-#      else
-#        @onComplete())
-#    ,Util.toMillisec(Config.Frame.ROBOT_WAIT))
-#
-#  clone : () ->
-#    obj = @copy(new ItemScanMoveInstruction(@robot))
-#    return obj
-#
-#  mkDescription: () ->
-#    "周囲1マスを探索し、弾丸を見つけた場合、そのマスへ進みます。<br>  (消費フレーム #{Config.Frame.ROBOT_WAIT + Config.Frame.ROBOT_MOVE}フレーム)"
-#
-#  getIcon: () ->
-#    return @icon
-
 class ShotInstruction extends ActionInstruction
   ###
     Shot Instruction
@@ -449,51 +411,3 @@ class EnergyBranchInstruction extends BranchInstruction
 
   getIcon: () ->
     return @icon
-
-
-#class HoldBulletBranchInstruction extends BranchInstruction
-#  ###
-#    Hold Bullet Instruction
-#  ###
-#
-#  constructor: (@robot) ->
-#    super
-#    @tipInfo = new TipInfo((labels) ->
-#      "ストレートバレッドの保有弾数が#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
-#    )
-#
-#    # parameter 1
-#    column = "保有弾数"
-#    labels = [0..5]
-#    # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-#    @sizeParam = new TipParameter(column, 0, 0, 5, 1)
-#    @sizeParam.id = "size"
-#    @addParameter(@sizeParam)
-#    @tipInfo.addParameter(@sizeParam.id, column, labels, 0)
-#
-#    @icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32)
-#
-#  action: () ->
-#    if @robot.bulletQueue.size() >= @sizeParam.value
-#      return true
-#    else
-#      return false
-#
-#  clone : () ->
-#    obj = @copy(new HoldBulletBranchInstruction(@robot))
-#    obj.sizeParam.value = @sizeParam.value
-#    return obj
-#
-#  onParameterChanged : (parameter) ->
-#    if parameter.id == @sizeParam.id
-#      @sizeParam = parameter
-#    @tipInfo.changeLabel(parameter.id, parameter.value)
-#
-#  mkDescription: () ->
-#    @tipInfo.getDescription()
-#
-#  mkLabel: (parameter) ->
-#    @tipInfo.getLabel(parameter.id)
-#
-#  getIcon: () ->
-#    return @icon
