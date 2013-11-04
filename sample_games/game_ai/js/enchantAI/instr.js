@@ -157,37 +157,10 @@ ApproachInstruction = (function(_super) {
   }
 
   ApproachInstruction.prototype.action = function() {
-    var direct, enemyPos, ret, robotPos,
-      _this = this;
-    ret = false;
-    enemyPos = this.enemy.pos;
-    robotPos = this.robot.pos;
-    robotPos.sub(enemyPos);
-    direct = Direct.NONE;
-    if (robotPos.x > 0) {
-      direct |= Direct.LEFT;
-    } else if (robotPos.x < 0) {
-      direct |= Direct.RIGHT;
-    }
-    if (robotPos.y > 0) {
-      direct |= Direct.UP;
-      if (robotPos.x === 0) {
-        direct |= Direct.RIGHT;
-      }
-    } else if (robotPos.y < 0) {
-      direct |= Direct.DOWN;
-      if (robotPos.x === 0) {
-        direct |= Direct.LEFT;
-      }
-    }
-    if (direct !== Direct.NONE && direct !== Direct.UP && direct !== Direct.DOWN) {
-      ret = this.robot.move(direct, function() {
-        return _this.onComplete();
-      });
-    }
-    if (ret === false) {
-      return this.onComplete();
-    }
+    var _this = this;
+    return this.robot.approach(this.enemy, function() {
+      return _this.onComplete();
+    });
   };
 
   ApproachInstruction.prototype.clone = function() {
@@ -226,37 +199,10 @@ LeaveInstruction = (function(_super) {
   }
 
   LeaveInstruction.prototype.action = function() {
-    var direct, enemyPos, ret, robotPos,
-      _this = this;
-    ret = false;
-    enemyPos = this.enemy.pos;
-    robotPos = this.robot.pos;
-    robotPos.sub(enemyPos);
-    direct = Direct.NONE;
-    if (robotPos.x >= 0) {
-      direct |= Direct.RIGHT;
-    } else if (robotPos.x < 0) {
-      direct |= Direct.LEFT;
-    }
-    if (robotPos.y >= 0) {
-      direct |= Direct.DOWN;
-      if (robotPos.x === 0) {
-        direct |= Direct.LEFT;
-      }
-    } else if (robotPos.y < 0) {
-      direct |= Direct.UP;
-      if (robotPos.x === 0) {
-        direct |= Direct.RIGHT;
-      }
-    }
-    if (direct !== Direct.NONE && direct !== Direct.UP && direct !== Direct.DOWN) {
-      ret = this.robot.move(direct, function() {
-        return _this.onComplete();
-      });
-    }
-    if (ret === false) {
-      return this.onComplete();
-    }
+    var _this = this;
+    return this.robot.leave(this.enemy, function() {
+      return _this.onComplete();
+    });
   };
 
   LeaveInstruction.prototype.clone = function() {

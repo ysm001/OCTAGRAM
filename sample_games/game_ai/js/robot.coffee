@@ -30,7 +30,7 @@ class ItemQueue
 
 class Robot extends SpriteModel
   @MAX_HP     : 6
-  @MAX_ENERGY : 100
+  @MAX_ENERGY : 250
 
   DIRECT_FRAME                             = {}
   DIRECT_FRAME[Direct.NONE]                = 0
@@ -52,7 +52,6 @@ class Robot extends SpriteModel
   constructor: (width, height) ->
     super width, height
     @name = "robot"
-    # @hp = Robot.MAX_HP
     @setup("hp", Robot.MAX_HP)
     @setup("energy", Robot.MAX_ENERGY)
     @_bulletQueue = new ItemQueue [], 5
@@ -82,6 +81,16 @@ class Robot extends SpriteModel
   directFrame: (direct) ->
     DIRECT_FRAME[direct]
 
+  # ===============
+  # Robot API
+  # * move
+  # * moveDirect
+  # * approach
+  # * leave 
+  # * shot
+  # * turn
+  # ===============
+
   move: (direct, onComplete = () ->) ->
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
     @direct = direct
@@ -94,6 +103,61 @@ class Robot extends SpriteModel
           @dispatchEvent(new RobotEvent('move', ret))
           onComplete()
     ret
+
+  approach: (robot, onComplete = () ->) ->
+    ret = false
+    enemyPos = robot.pos
+    robotPos = @pos
+    robotPos.sub(enemyPos)
+
+    direct = Direct.NONE
+    if robotPos.x > 0
+     direct |=  Direct.LEFT
+    else if robotPos.x < 0
+     direct |=  Direct.RIGHT
+
+    if robotPos.y > 0
+      direct |=  Direct.UP
+      if robotPos.x == 0
+        direct |= Direct.RIGHT
+    else if robotPos.y < 0
+      direct |=  Direct.DOWN
+      if robotPos.x == 0
+        direct |= Direct.LEFT
+
+    if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
+      ret = @move(direct, onComplete)
+    if ret == false
+      onComplete()
+    ret
+
+  leave: (robot, onComplete = () ->) ->
+    ret = false
+    enemyPos = robot.pos
+    robotPos = @pos
+    robotPos.sub(enemyPos)
+
+    direct = Direct.NONE
+    if robotPos.x >= 0
+     direct |=  Direct.RIGHT
+    else if robotPos.x < 0
+     direct |=  Direct.LEFT
+
+    if robotPos.y >= 0
+      direct |=  Direct.DOWN
+      if robotPos.x == 0
+        direct |= Direct.LEFT
+    else if robotPos.y < 0
+      direct |=  Direct.UP
+      if robotPos.x == 0
+        direct |= Direct.RIGHT
+
+    if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
+      ret = @move(direct, onComplete)
+    if ret == false
+      onComplete()
+    ret
+
 
   moveDirect: (plate) ->
     ret = @_move plate, () =>

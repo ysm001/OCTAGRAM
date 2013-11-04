@@ -89,38 +89,15 @@ class ApproachInstruction extends ActionInstruction
     Approach Instruction
   ###
 
-  constructor : (@robot, @enemy) ->
+  constructor: (@robot, @enemy) ->
     super
     @setAsynchronous(true)
     @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
 
-  action : () ->
-    ret = false
-    enemyPos = @enemy.pos
-    robotPos = @robot.pos
-    robotPos.sub(enemyPos)
+  action: () ->
+    @robot.approach(@enemy, () => @onComplete())
 
-    direct = Direct.NONE
-    if robotPos.x > 0
-     direct |=  Direct.LEFT
-    else if robotPos.x < 0
-     direct |=  Direct.RIGHT
-
-    if robotPos.y > 0
-      direct |=  Direct.UP
-      if robotPos.x == 0
-        direct |= Direct.RIGHT
-    else if robotPos.y < 0
-      direct |=  Direct.DOWN
-      if robotPos.x == 0
-        direct |= Direct.LEFT
-
-    if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
-      ret = @robot.move(direct, () => @onComplete())
-    if ret == false
-      @onComplete()
-
-  clone : () ->
+  clone: () ->
     obj = @copy(new ApproachInstruction(@robot, @enemy))
     return obj
 
@@ -142,30 +119,7 @@ class LeaveInstruction extends ActionInstruction
     @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
 
   action : () ->
-    ret = false
-    enemyPos = @enemy.pos
-    robotPos = @robot.pos
-    robotPos.sub(enemyPos)
-
-    direct = Direct.NONE
-    if robotPos.x >= 0
-     direct |=  Direct.RIGHT
-    else if robotPos.x < 0
-     direct |=  Direct.LEFT
-
-    if robotPos.y >= 0
-      direct |=  Direct.DOWN
-      if robotPos.x == 0
-        direct |= Direct.LEFT
-    else if robotPos.y < 0
-      direct |=  Direct.UP
-      if robotPos.x == 0
-        direct |= Direct.RIGHT
-
-    if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
-      ret = @robot.move(direct, () => @onComplete())
-    if ret == false
-      @onComplete()
+    @robot.leave(@enemy, () => @onComplete())
 
   clone : () ->
     obj = @copy(new LeaveInstruction(@robot, @enemy))

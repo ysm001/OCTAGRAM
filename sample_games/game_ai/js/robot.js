@@ -61,7 +61,7 @@ Robot = (function(_super) {
 
   Robot.MAX_HP = 6;
 
-  Robot.MAX_ENERGY = 100;
+  Robot.MAX_ENERGY = 250;
 
   DIRECT_FRAME = {};
 
@@ -170,6 +170,76 @@ Robot = (function(_super) {
         return onComplete();
       });
     });
+    return ret;
+  };
+
+  Robot.prototype.approach = function(robot, onComplete) {
+    var direct, enemyPos, ret, robotPos;
+    if (onComplete == null) {
+      onComplete = function() {};
+    }
+    ret = false;
+    enemyPos = robot.pos;
+    robotPos = this.pos;
+    robotPos.sub(enemyPos);
+    direct = Direct.NONE;
+    if (robotPos.x > 0) {
+      direct |= Direct.LEFT;
+    } else if (robotPos.x < 0) {
+      direct |= Direct.RIGHT;
+    }
+    if (robotPos.y > 0) {
+      direct |= Direct.UP;
+      if (robotPos.x === 0) {
+        direct |= Direct.RIGHT;
+      }
+    } else if (robotPos.y < 0) {
+      direct |= Direct.DOWN;
+      if (robotPos.x === 0) {
+        direct |= Direct.LEFT;
+      }
+    }
+    if (direct !== Direct.NONE && direct !== Direct.UP && direct !== Direct.DOWN) {
+      ret = this.move(direct, onComplete);
+    }
+    if (ret === false) {
+      onComplete();
+    }
+    return ret;
+  };
+
+  Robot.prototype.leave = function(robot, onComplete) {
+    var direct, enemyPos, ret, robotPos;
+    if (onComplete == null) {
+      onComplete = function() {};
+    }
+    ret = false;
+    enemyPos = robot.pos;
+    robotPos = this.pos;
+    robotPos.sub(enemyPos);
+    direct = Direct.NONE;
+    if (robotPos.x >= 0) {
+      direct |= Direct.RIGHT;
+    } else if (robotPos.x < 0) {
+      direct |= Direct.LEFT;
+    }
+    if (robotPos.y >= 0) {
+      direct |= Direct.DOWN;
+      if (robotPos.x === 0) {
+        direct |= Direct.LEFT;
+      }
+    } else if (robotPos.y < 0) {
+      direct |= Direct.UP;
+      if (robotPos.x === 0) {
+        direct |= Direct.RIGHT;
+      }
+    }
+    if (direct !== Direct.NONE && direct !== Direct.UP && direct !== Direct.DOWN) {
+      ret = this.move(direct, onComplete);
+    }
+    if (ret === false) {
+      onComplete();
+    }
     return ret;
   };
 
