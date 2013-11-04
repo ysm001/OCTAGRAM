@@ -29,10 +29,19 @@ class UsersController extends AppController {
 
 	if ( !$user ) {
 	    $this->User->create();
+
+	    $statistic = array(
+		'score' => 0,
+		'winning_percentage' => 0.0,
+		'combat_num' => 0
+	    );
+
+	    $data['Statistic'] = $statistic;
 	}
 	else {
 	    $data['id'] = $user['User']['id'];
 	    $data['Account']['id'] = $user['Account']['id'];
+	    $data['Statistic']['id'] = $user['Statistic']['id'];
 	}
 	return $this->User->saveAll($data);
     }

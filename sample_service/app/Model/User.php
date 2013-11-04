@@ -4,6 +4,10 @@ class User extends AppModel {
 	'Account' => array(
 	    'className' => 'Account',
 	    'foreignKey' => 'user_id'
+	),
+	'Statistic' => array(
+	    'className' => 'Statistic',
+	    'foreignKey' => 'user_id'
 	)
     );
     public $hasMany = array(
