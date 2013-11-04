@@ -6,7 +6,7 @@ var Footer, MsgBox, R,
 R = Config.R;
 
 MsgBox = (function(_super) {
-  var MsgWindow;
+  var Msg, MsgWindow;
 
   __extends(MsgBox, _super);
 
@@ -37,19 +37,58 @@ MsgBox = (function(_super) {
 
   })(ViewSprite);
 
+  Msg = (function(_super1) {
+    var SIZE;
+
+    __extends(Msg, _super1);
+
+    SIZE = 4;
+
+    function Msg() {
+      var i, label, _i;
+      Msg.__super__.constructor.apply(this, arguments);
+      this.labels = [];
+      this.labelTexts = ["", "", "", ""];
+      for (i = _i = 1; 1 <= SIZE ? _i <= SIZE : _i >= SIZE; i = 1 <= SIZE ? ++_i : --_i) {
+        label = new Label;
+        label.font = "14px 'Meiryo UI'";
+        label.color = '#FFF';
+        label.x = 10;
+        label.y = 24 * i + 6;
+        label.width = MsgWindow.WIDTH * 0.9;
+        this.addChild(label);
+        this.labels.push(label);
+      }
+    }
+
+    Msg.prototype.add = function(string) {
+      this.labelTexts[3] = this.labelTexts[2];
+      this.labelTexts[2] = this.labelTexts[1];
+      this.labelTexts[1] = this.labelTexts[0];
+      return this.labelTexts[0] = string;
+    };
+
+    Msg.prototype.print = function() {
+      var i, _i, _results;
+      _results = [];
+      for (i = _i = 0; 0 <= SIZE ? _i < SIZE : _i > SIZE; i = 0 <= SIZE ? ++_i : --_i) {
+        _results.push(this.labels[i].text = this.labelTexts[i]);
+      }
+      return _results;
+    };
+
+    return Msg;
+
+  })(ViewGroup);
+
   function MsgBox(x, y) {
     MsgBox.__super__.constructor.call(this, MsgWindow.WIDTH, MsgWindow.HEIGHT);
     this.x = x;
     this.y = y;
     this.window = new MsgWindow(0, 0);
     this.addChild(this.window);
-    this.label = new Label;
-    this.label.font = "16px 'Meiryo UI'";
-    this.label.color = '#FFF';
-    this.label.x = 10;
-    this.label.y = 30;
-    this.addChild(this.label);
-    this.label.width = MsgWindow.WIDTH * 0.9;
+    this.msg = new Msg();
+    this.addChild(this.msg);
   }
 
   MsgBox.prototype.initEvent = function(world) {
@@ -74,6 +113,22 @@ MsgBox = (function(_super) {
         return _this.print(R.String.CANNOTSHOT);
       }
     });
+    world.player.addEventListener('supply', function(evt) {
+      var player, ret;
+      player = evt.target;
+      ret = evt.params.energy;
+      if (ret !== false) {
+        return _this.print(R.String.supply(player.name, ret) + R.String.state(player.hp, player.energy));
+      }
+    });
+    world.player.addEventListener('turn', function(evt) {
+      var player, ret;
+      player = evt.target;
+      ret = evt.params;
+      if (ret !== false) {
+        return _this.print(R.String.turn(player.name) + R.String.state(player.hp, player.energy));
+      }
+    });
     return world.player.addObserver("hp", function(hp) {
       if (hp <= 0) {
         return _this.print(R.String.die(world.player.name));
@@ -82,7 +137,8 @@ MsgBox = (function(_super) {
   };
 
   MsgBox.prototype.print = function(msg) {
-    return this.label.text = "" + msg;
+    this.msg.add(msg);
+    return this.msg.print();
   };
 
   return MsgBox;

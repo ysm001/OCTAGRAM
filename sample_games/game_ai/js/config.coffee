@@ -87,6 +87,8 @@ class Config.R.String
 
   @pickup: (s) -> "#{s}は弾を一つ補充しました。"
   @shot: (s) -> "#{s}は攻撃しました。"
+  @turn: (s) -> "#{s}は敵をサーチしています。"
   @move: (s, x, y) -> "#{s}は(#{x},#{y})に移動しました。"
-  @state: (hp, energy) -> "(HP: #{hp}, エネルギー: #{energy})"
+  @supply: (s, e) -> "#{s}は#{e}エネルギー補給しました。"
+  @state: (h, e) -> "(HP: #{h}, エネルギー: #{e})"
   @die: (s) -> "#{s}はHPが0になりました。"

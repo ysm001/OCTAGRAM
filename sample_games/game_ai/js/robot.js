@@ -63,7 +63,7 @@ Robot = (function(_super) {
 
   Robot.MAX_ENERGY = 240;
 
-  Robot.STEAL_ENERGY_UNIT = 40;
+  Robot.STEAL_ENERGY_UNIT = 30;
 
   DIRECT_FRAME = {};
 
@@ -200,10 +200,13 @@ Robot = (function(_super) {
 
   Robot.prototype.supplyEnergy = function(value) {
     if (this.energy + value <= Robot.MAX_ENERGY) {
-      return this.energy += value;
+      this.energy += value;
+      return value;
     } else {
-      return this.energy = Robot.MAX_ENERGY;
+      value = Robot.MAX_ENERGY - this.energy;
+      this.energy = Robot.MAX_ENERGY;
     }
+    return value;
   };
 
   Robot.prototype.enoughEnergy = function(value) {
@@ -361,20 +364,24 @@ Robot = (function(_super) {
     return setTimeout((function() {
       _this.direct = Direct.next(_this.direct);
       onComplete(_this);
+      _this.consumeEnergy(Config.Energy.TURN);
       return _this.dispatchEvent(new RobotEvent('turn', {}));
-    }), this.consumeEnergy(Config.Energy.TURN), Util.toMillisec(Config.Frame.ROBOT_TURN));
+    }), Util.toMillisec(Config.Frame.ROBOT_TURN));
   };
 
   Robot.prototype.supply = function(onComplete) {
-    var _this = this;
+    var ret,
+      _this = this;
     if (onComplete == null) {
       onComplete = function() {};
     }
     this.parentNode.addChild(new NormalEnpowerEffect(this.x, this.y));
-    this.supplyEnergy(this.currentPlate.stealEnergy(Robot.STEAL_ENERGY_UNIT));
+    ret = this.supplyEnergy(this.currentPlate.stealEnergy(Robot.STEAL_ENERGY_UNIT));
+    this.dispatchEvent(new RobotEvent('supply', {
+      energy: ret
+    }));
     return setTimeout((function() {
-      onComplete(_this);
-      return _this.dispatchEvent(new RobotEvent('turn', {}));
+      return onComplete(_this);
     }), Util.toMillisec(Config.Frame.ROBOT_SUPPLY));
   };
 

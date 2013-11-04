@@ -31,7 +31,7 @@ class ItemQueue
 class Robot extends SpriteModel
   @MAX_HP            : 6
   @MAX_ENERGY        : 240
-  @STEAL_ENERGY_UNIT : 40
+  @STEAL_ENERGY_UNIT : 30
 
   DIRECT_FRAME                             = {}
   DIRECT_FRAME[Direct.NONE]                = 0
@@ -117,8 +117,11 @@ class Robot extends SpriteModel
   supplyEnergy: (value) ->
     if @energy + value <= Robot.MAX_ENERGY
       @energy += value
+      return value
     else
+      value = Robot.MAX_ENERGY - @energy
       @energy = Robot.MAX_ENERGY
+    return value
 
   enoughEnergy: (value) ->
     (@energy - value) >= 0
@@ -236,17 +239,17 @@ class Robot extends SpriteModel
     setTimeout((() =>
       @direct = Direct.next(@direct)
       onComplete(@)
-      @dispatchEvent(new RobotEvent('turn', {}))),
       @consumeEnergy(Config.Energy.TURN)
+      @dispatchEvent(new RobotEvent('turn', {}))),
       Util.toMillisec(Config.Frame.ROBOT_TURN)
     )
 
   supply: (onComplete = () ->) ->
     @parentNode.addChild new NormalEnpowerEffect(@x, @y)
-    @supplyEnergy(@currentPlate.stealEnergy(Robot.STEAL_ENERGY_UNIT))
+    ret = @supplyEnergy(@currentPlate.stealEnergy(Robot.STEAL_ENERGY_UNIT))
+    @dispatchEvent(new RobotEvent('supply', energy:ret))
     setTimeout((() =>
-      onComplete(@)
-      @dispatchEvent(new RobotEvent('turn', {}))),
+      onComplete(@)),
       Util.toMillisec(Config.Frame.ROBOT_SUPPLY)
     )
 

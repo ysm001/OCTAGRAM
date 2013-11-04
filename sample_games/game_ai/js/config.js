@@ -160,12 +160,20 @@ Config.R.String = (function() {
     return "" + s + "は攻撃しました。";
   };
 
+  String.turn = function(s) {
+    return "" + s + "は敵をサーチしています。";
+  };
+
   String.move = function(s, x, y) {
     return "" + s + "は(" + x + "," + y + ")に移動しました。";
   };
 
-  String.state = function(hp, energy) {
-    return "(HP: " + hp + ", エネルギー: " + energy + ")";
+  String.supply = function(s, e) {
+    return "" + s + "は" + e + "エネルギー補給しました。";
+  };
+
+  String.state = function(h, e) {
+    return "(HP: " + h + ", エネルギー: " + e + ")";
   };
 
   String.die = function(s) {
