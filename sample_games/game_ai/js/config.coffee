@@ -12,8 +12,10 @@ class Config
   @EDITOR_MOBILE_OFFSET_X = 640 - 128
   @EDITOR_MOBILE_OFFSET_Y = 640 - 128
 
+  @OCTAGRAM_DIR : if (UserConfig?) then UserConfig.OCTAGRAM_DIR else "./js/octagram"
+
 class Config.R
-  @RESOURCE_DIR : "resources"
+  @RESOURCE_DIR : if (UserConfig? && UserConfig.R?) then UserConfig.R.RESOURCE_DIR  else "resources"
   @CHAR :
     PLAYER : "#{R.RESOURCE_DIR}/robot/player.png"
     ENEMY : "#{R.RESOURCE_DIR}/robot/enemy.png"

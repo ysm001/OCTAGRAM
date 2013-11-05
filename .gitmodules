@@ -1,0 +1,6 @@
+[submodule "cakephp"]
+	path = cakephp
+	url = git://github.com/cakephp/cakephp.git
+[submodule "sample_service/cakephp"]
+	path = sample_service/cakephp
+	url = git://github.com/cakephp/cakephp.git

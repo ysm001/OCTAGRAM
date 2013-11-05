@@ -28,6 +28,8 @@ Config = (function() {
 
   Config.EDITOR_MOBILE_OFFSET_Y = 640 - 128;
 
+  Config.OCTAGRAM_DIR = (typeof UserConfig !== "undefined" && UserConfig !== null) ? UserConfig.OCTAGRAM_DIR : "./js/octagram";
+
   return Config;
 
 })();
@@ -35,7 +37,7 @@ Config = (function() {
 Config.R = (function() {
   function R() {}
 
-  R.RESOURCE_DIR = "resources";
+  R.RESOURCE_DIR = (typeof UserConfig !== "undefined" && UserConfig !== null) && (UserConfig.R != null) ? UserConfig.R.RESOURCE_DIR : "resources";
 
   R.CHAR = {
     PLAYER: "" + R.RESOURCE_DIR + "/robot/player.png",

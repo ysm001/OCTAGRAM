@@ -24,4 +24,3 @@ test = () ->
 
   playerProgram.execute();
   enemyProgram.execute();
-

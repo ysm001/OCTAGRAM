@@ -23,6 +23,7 @@ class OctagramContentSet
 
   removeInstance : (id) ->
   getInstance : (id) -> @octagrams[id]
+  getCurrentInstance : () -> return @currentInstance
 
   show : (id) -> 
     @currentInstance.hide() if @currentInstance
@@ -105,6 +106,9 @@ class OctagramContent extends Group
 
   load : (filename) -> @cpu.load(filename)
   save : (filename) -> @cpu.save(filename)
+
+  serialize : () -> JSON.stringify(@cpu.serialize())
+  deserialize : (serializedVal) -> @cpu.deserialize(JSON.parse(serializedVal))
 
   execute : () -> @executer.execute()
   stop : () -> @executer.stop()
