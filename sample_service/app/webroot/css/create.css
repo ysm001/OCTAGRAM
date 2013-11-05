@@ -1,0 +1,26 @@
+#content {
+    margin: 0 auto;
+    margin-top: 100px;
+    width: 1334px;
+    height: 644;
+    border:solid 20px #1f1f1f; 
+    border-radius: 25px 25px 25px 25px / 25px 25px 25px 25px;
+}
+
+#program-container {
+    border: 3px solid #5cb85c;
+    width: 1286px;
+    height: 646px;
+}
+
+.container {
+    max-width: none !important;
+    width: 1286px !important;
+}
+
+
+/*
+#dbg-btns {
+    text-align: center;
+}
+*/

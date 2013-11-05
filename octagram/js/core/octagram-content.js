@@ -81,6 +81,10 @@ OctagramContentSet = (function() {
     return this.octagrams[id];
   };
 
+  OctagramContentSet.prototype.getCurrentInstance = function() {
+    return this.currentInstance;
+  };
+
   OctagramContentSet.prototype.show = function(id) {
     if (this.currentInstance) {
       this.currentInstance.hide();
@@ -181,6 +185,14 @@ OctagramContent = (function(_super) {
 
   OctagramContent.prototype.save = function(filename) {
     return this.cpu.save(filename);
+  };
+
+  OctagramContent.prototype.serialize = function() {
+    return JSON.stringify(this.cpu.serialize());
+  };
+
+  OctagramContent.prototype.deserialize = function(serializedVal) {
+    return this.cpu.deserialize(JSON.parse(serializedVal));
   };
 
   OctagramContent.prototype.execute = function() {

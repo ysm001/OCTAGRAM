@@ -45,6 +45,10 @@ Octagram = (function() {
     return this.core.octagrams.getInstance(id);
   };
 
+  Octagram.prototype.getCurrentInstance = function() {
+    return this.core.octagrams.getCurrentInstance();
+  };
+
   Octagram.prototype.onload = function() {};
 
   return Octagram;

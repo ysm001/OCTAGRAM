@@ -186,7 +186,7 @@ class RobotScene extends Scene
     @views.update(@world)
 
 class RobotGame extends Core
-  constructor: (width, height) ->
+  constructor: (width, height, @callback) ->
     super width, height
     @_assetPreload()
     @keybind(87, 'w')
@@ -210,7 +210,7 @@ class RobotGame extends Core
   _assetPreload: ->
     load = (hash) =>
       for k,path of hash
-        Debug.log "load image #{path}"
+        #Debug.log "load image #{path}"
         @preload path
 
     load R.CHAR
@@ -225,13 +225,16 @@ class RobotGame extends Core
     @scene = new RobotScene @
     @pushScene @scene
 
-    @octagram = new Octagram('./js/octagram')
-    @octagram.onload = () => @scene.world.initInstructions(@octagram)
+    @octagram = new Octagram(Config.OCTAGRAM_DIR)
+    @octagram.onload = () => 
+      @scene.world.initInstructions(@octagram)
+      if @callback then @callback()
+
     @assets["font0.png"] = @assets['resources/ui/font0.png']
     @assets["apad.png"] = @assets['resources/ui/apad.png']
     @assets["icon0.png"] = @assets['resources/ui/icon0.png']
     @assets["pad.png"] = @assets['resources/ui/pad.png']
 
-window.onload = () ->
-  game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT
+runGame = (callback) ->
+  game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT, callback
   game.start()
