@@ -161,6 +161,10 @@ Plate = (function(_super) {
     }
   };
 
+  Plate.prototype.reset = function() {
+    return this.saveEnergy(Plate.MAX_ENERGY);
+  };
+
   return Plate;
 
 })(ViewGroup);
@@ -322,6 +326,22 @@ Map = (function(_super) {
         _results1 = [];
         for (tx = _j = 0, _ref1 = Map.WIDTH; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; tx = 0 <= _ref1 ? ++_j : --_j) {
           _results1.push(this.plateMatrix[ty][tx].update());
+        }
+        return _results1;
+      }).call(this));
+    }
+    return _results;
+  };
+
+  Map.prototype.reset = function() {
+    var tx, ty, _i, _ref, _results;
+    _results = [];
+    for (ty = _i = 0, _ref = Map.HEIGHT; 0 <= _ref ? _i < _ref : _i > _ref; ty = 0 <= _ref ? ++_i : --_i) {
+      _results.push((function() {
+        var _j, _ref1, _results1;
+        _results1 = [];
+        for (tx = _j = 0, _ref1 = Map.WIDTH; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; tx = 0 <= _ref1 ? ++_j : --_j) {
+          _results1.push(this.plateMatrix[ty][tx].reset());
         }
         return _results1;
       }).call(this));

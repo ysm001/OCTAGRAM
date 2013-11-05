@@ -8,10 +8,10 @@ class ResourceBranchInstruction extends BranchInstruction
      # parameter 2
     column = "エネルギー"
     labels = {}
-    for i in [0..Robot.MAX_ENERGY]
+    for i in [0..Plate.MAX_ENERGY]
       labels[String(i)] = i
     # sliderタイトル, 初期値, 最小値, 最大値, 増大値
-    @energyParam = new TipParameter(column, 0, 0, Robot.MAX_ENERGY, 1)
+    @energyParam = new TipParameter(column, 0, 0, Plate.MAX_ENERGY, 1)
     @energyParam.id = "size"
     @addParameter(@energyParam)
     @tipInfo.addParameter(@energyParam.id, column, labels, 1)

@@ -15,10 +15,10 @@ ResourceBranchInstruction = (function(_super) {
     });
     column = "エネルギー";
     labels = {};
-    for (i = _i = 0, _ref = Robot.MAX_ENERGY; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+    for (i = _i = 0, _ref = Plate.MAX_ENERGY; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
       labels[String(i)] = i;
     }
-    this.energyParam = new TipParameter(column, 0, 0, Robot.MAX_ENERGY, 1);
+    this.energyParam = new TipParameter(column, 0, 0, Plate.MAX_ENERGY, 1);
     this.energyParam.id = "size";
     this.addParameter(this.energyParam);
     this.tipInfo.addParameter(this.energyParam.id, column, labels, 1);

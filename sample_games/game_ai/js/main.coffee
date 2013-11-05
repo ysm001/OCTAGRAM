@@ -28,6 +28,9 @@ class ViewWorld extends Group
   update: (world) ->
     @map.update()
 
+  reset: () ->
+    @map.reset()
+
 class RobotWorld extends GroupModel
   constructor: (x, y, scene) ->
     if RobotWorld.instance?
@@ -167,19 +170,24 @@ class RobotScene extends Scene
     super @
     @views = new ViewWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
     @world = new RobotWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
+    __this = @
     @world.addEventListener 'gameEnd', (evt) ->
       #console.log "scene gameEnd"
       params = evt.params
       for id in [@enemyProgramId, @playerProgramId]
         prg = @octagram.getInstance(id)
         prg.stop()
-      setTimeout((() => @reset()), 1000)
+      setTimeout((() -> __this.restart()), 2000)
 
     @views.initEvent @world
     @world.initialize()
 
   onenterframe: ->
     @update()
+
+  restart: () =>
+    @views.reset()
+    @world.reset()
     
   update: ->
     @world.update(@views)
@@ -226,7 +234,7 @@ class RobotGame extends Core
     @pushScene @scene
 
     @octagram = new Octagram(Config.OCTAGRAM_DIR)
-    @octagram.onload = () => 
+    @octagram.onload = () =>
       @scene.world.initInstructions(@octagram)
       if @callback then @callback()
 

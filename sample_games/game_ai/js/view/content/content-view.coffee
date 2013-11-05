@@ -104,6 +104,9 @@ class Plate extends ViewGroup
       @saveEnergy(Plate.MAX_ENERGY / 9)
       #console.log @age, @energy
 
+  reset: () ->
+    @saveEnergy(Plate.MAX_ENERGY)
+
 class Map extends ViewGroup
   @WIDTH = 9
   @HEIGHT = 7
@@ -224,3 +227,8 @@ class Map extends ViewGroup
     for ty in [0...Map.HEIGHT]
       for tx in [0...Map.WIDTH]
         @plateMatrix[ty][tx].update()
+
+  reset: () ->
+    for ty in [0...Map.HEIGHT]
+      for tx in [0...Map.WIDTH]
+        @plateMatrix[ty][tx].reset()
