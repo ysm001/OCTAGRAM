@@ -9,22 +9,19 @@
       <!-- Three columns of text below the carousel -->
       <div class="row">
         <div class="col-lg-4">
-	   <?php echo $this->Html->image('140x140.png', array('class' => 'img-circle top-icon'));?>
+	   <?php echo $this->Html->image('140x140.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'programs', 'action' => 'create')));?>
           <h2>プログラミング</h2>
           <p>OCTAGRAMを用いてAIプログラミングを行います。</p>
-	  <p><?php echo $this->Html->link('View details »', '/programs/create', array('class' => 'btn btn-default')); ?></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-	   <?php echo $this->Html->image('140x140.png', array('class' => 'img-circle top-icon'));?>
+	   <?php echo $this->Html->image('140x140.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'combats', 'action' => 'index')));?>
           <h2>対戦</h2>
           <p>他のユーザのAIと対戦を行います。</p>
-	  <p><?php echo $this->Html->link('View details »', '/combats/index', array('class' => 'btn btn-default')); ?></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-	   <?php echo $this->Html->image('140x140.png', array('class' => 'img-circle top-icon'));?>
+	   <?php echo $this->Html->image('140x140.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'programs', 'pages' => 'home')));?>
           <h2>ランキング</h2>
           <p>ランキングを表示します。</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 
