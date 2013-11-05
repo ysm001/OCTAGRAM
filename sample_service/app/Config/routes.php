@@ -46,3 +46,11 @@
  * the built-in default routes.
  */
 	require CAKE . 'Config' . DS . 'routes.php';
+
+/**
+ * setting cake project root url.
+ */
+if (!defined('ROOT_URL')) {
+    define('ROOT_URL', h(Router::url('/', true)));
+}
+
