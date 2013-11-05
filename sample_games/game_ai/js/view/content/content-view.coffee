@@ -1,6 +1,6 @@
 R = Config.R
 
-class Plate extends ViewSprite
+class Plate extends ViewGroup
   @MAX_ENERGY = 90
   @HEIGHT = 74
   @WIDTH = 64
@@ -8,15 +8,38 @@ class Plate extends ViewSprite
   @STATE_PLAYER = 1
   @STATE_ENEMY = 2
   @STATE_SELECTED = 3
-  
+
+  class Body extends Sprite
+    constructor: () ->
+      super Plate.WIDTH, Plate.HEIGHT
+      @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE]
+
+  class EnergyOverlay extends Sprite
+    constructor: () ->
+      super Plate.WIDTH, Plate.HEIGHT
+      @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE_ENERGY]
+      @opacity = 0
+
+  class Overlay extends Sprite
+    constructor: () ->
+      super Plate.WIDTH, Plate.HEIGHT
+      @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE_OVERLAY]
+
   constructor: (x, y, @ix, @iy) ->
     super Plate.WIDTH, Plate.HEIGHT
     @x = x
     @y = y
     @lock = false
     @energy = Plate.MAX_ENERGY
-    @image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE]
     @pravState = Plate.STATE_NORMAL
+    @body = new Body()
+    @overlay = new Overlay()
+    @energyOverlay = new EnergyOverlay()
+
+    @addChild @body
+    @addChild @energyOverlay
+    @addChild @overlay
+
     @addEventListener 'away', (evt) =>
       @onRobotAway(evt.params.robot)
 
@@ -29,12 +52,18 @@ class Plate extends ViewSprite
       get: () -> new Point(toi(Math.ceil(@iy/2)) + @ix, @iy)
 
   setState: (state) ->
-    @pravState = @frame
-    @frame = state
+    @pravState = @overlay.frame
+    @overlay.frame = state
     if state is Plate.STATE_PLAYER or state is Plate.STATE_ENEMY
       @lock = true
     else
       @lock = false
+
+  setBody: () ->
+    if @energy <= 0
+      @energyOverlay.opacity = 1
+    else
+      @energyOverlay.opacity = (Plate.MAX_ENERGY - @energy) / Plate.MAX_ENERGY
 
   setPrevState: () ->
     @setState(@prevState)
@@ -44,6 +73,7 @@ class Plate extends ViewSprite
       @energy -= value
     else
       value = @energy
+    @setBody()
     value
 
   saveEnergy: (value) ->
@@ -51,6 +81,7 @@ class Plate extends ViewSprite
       @energy += value
     else
       @energy = Plate.MAX_ENERGY
+    @setBody()
 
   getAbsolutePos: () ->
     i = @parentNode

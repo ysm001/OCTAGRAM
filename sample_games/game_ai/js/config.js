@@ -50,6 +50,8 @@ Config.R = (function() {
     HP_ENCLOSE: "" + R.RESOURCE_DIR + "/background/hpenclose.png",
     ENERGY: "" + R.RESOURCE_DIR + "/background/energy.png",
     PLATE: "" + R.RESOURCE_DIR + "/background/plate.png",
+    PLATE_OVERLAY: "" + R.RESOURCE_DIR + "/background/plate_overlay.png",
+    PLATE_ENERGY: "" + R.RESOURCE_DIR + "/background/plate_energy.png",
     MSGBOX: "" + R.RESOURCE_DIR + "/background/msgbox.png",
     STATUS_BOX: "" + R.RESOURCE_DIR + "/background/statusbox.png"
   };

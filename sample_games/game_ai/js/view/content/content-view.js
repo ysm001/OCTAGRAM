@@ -6,6 +6,8 @@ var Map, Plate, R,
 R = Config.R;
 
 Plate = (function(_super) {
+  var Body, EnergyOverlay, Overlay;
+
   __extends(Plate, _super);
 
   Plate.MAX_ENERGY = 90;
@@ -22,6 +24,43 @@ Plate = (function(_super) {
 
   Plate.STATE_SELECTED = 3;
 
+  Body = (function(_super1) {
+    __extends(Body, _super1);
+
+    function Body() {
+      Body.__super__.constructor.call(this, Plate.WIDTH, Plate.HEIGHT);
+      this.image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE];
+    }
+
+    return Body;
+
+  })(Sprite);
+
+  EnergyOverlay = (function(_super1) {
+    __extends(EnergyOverlay, _super1);
+
+    function EnergyOverlay() {
+      EnergyOverlay.__super__.constructor.call(this, Plate.WIDTH, Plate.HEIGHT);
+      this.image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE_ENERGY];
+      this.opacity = 0;
+    }
+
+    return EnergyOverlay;
+
+  })(Sprite);
+
+  Overlay = (function(_super1) {
+    __extends(Overlay, _super1);
+
+    function Overlay() {
+      Overlay.__super__.constructor.call(this, Plate.WIDTH, Plate.HEIGHT);
+      this.image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE_OVERLAY];
+    }
+
+    return Overlay;
+
+  })(Sprite);
+
   function Plate(x, y, ix, iy) {
     var _this = this;
     this.ix = ix;
@@ -31,8 +70,13 @@ Plate = (function(_super) {
     this.y = y;
     this.lock = false;
     this.energy = Plate.MAX_ENERGY;
-    this.image = Game.instance.assets[R.BACKGROUND_IMAGE.PLATE];
     this.pravState = Plate.STATE_NORMAL;
+    this.body = new Body();
+    this.overlay = new Overlay();
+    this.energyOverlay = new EnergyOverlay();
+    this.addChild(this.body);
+    this.addChild(this.energyOverlay);
+    this.addChild(this.overlay);
     this.addEventListener('away', function(evt) {
       return _this.onRobotAway(evt.params.robot);
     });
@@ -51,12 +95,20 @@ Plate = (function(_super) {
   };
 
   Plate.prototype.setState = function(state) {
-    this.pravState = this.frame;
-    this.frame = state;
+    this.pravState = this.overlay.frame;
+    this.overlay.frame = state;
     if (state === Plate.STATE_PLAYER || state === Plate.STATE_ENEMY) {
       return this.lock = true;
     } else {
       return this.lock = false;
+    }
+  };
+
+  Plate.prototype.setBody = function() {
+    if (this.energy <= 0) {
+      return this.energyOverlay.opacity = 1;
+    } else {
+      return this.energyOverlay.opacity = (Plate.MAX_ENERGY - this.energy) / Plate.MAX_ENERGY;
     }
   };
 
@@ -70,15 +122,17 @@ Plate = (function(_super) {
     } else {
       value = this.energy;
     }
+    this.setBody();
     return value;
   };
 
   Plate.prototype.saveEnergy = function(value) {
     if (this.energy + value <= Plate.MAX_ENERGY) {
-      return this.energy += value;
+      this.energy += value;
     } else {
-      return this.energy = Plate.MAX_ENERGY;
+      this.energy = Plate.MAX_ENERGY;
     }
+    return this.setBody();
   };
 
   Plate.prototype.getAbsolutePos = function() {
@@ -109,7 +163,7 @@ Plate = (function(_super) {
 
   return Plate;
 
-})(ViewSprite);
+})(ViewGroup);
 
 Map = (function(_super) {
   __extends(Map, _super);
