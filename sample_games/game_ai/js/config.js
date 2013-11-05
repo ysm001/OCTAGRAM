@@ -118,7 +118,9 @@ Config.Frame = (function() {
     Frame.ROBOT_WAIT = 8 / Frame.DIAMETER;
     Frame.ROBOT_TURN = 8 / Frame.DIAMETER;
     Frame.ROBOT_SUPPLY = 32 / Frame.DIAMETER;
-    return Frame.BULLET = 16 / Frame.DIAMETER;
+    Frame.BULLET = 16 / Frame.DIAMETER;
+    Frame.NATURAL_MAP_ENERGY_RECAVERY = 92 / Frame.DIAMETER;
+    return Frame.NATURAL_ROBOT_ENERGY_RECAVERY = 152 / Frame.DIAMETER;
   };
 
   setAllFrame();

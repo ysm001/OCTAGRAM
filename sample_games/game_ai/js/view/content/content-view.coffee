@@ -100,7 +100,7 @@ class Plate extends ViewGroup
 
   update: () ->
     # natural recovery every 5 sec
-    if Plate.MAX_ENERGY > @energy and @age % 90 == 0
+    if Plate.MAX_ENERGY > @energy and @age % Config.Frame.NATURAL_MAP_ENERGY_RECAVERY == 0
       @saveEnergy(Plate.MAX_ENERGY / 9)
       #console.log @age, @energy
 

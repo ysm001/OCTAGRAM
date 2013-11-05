@@ -156,7 +156,7 @@ Plate = (function(_super) {
   };
 
   Plate.prototype.update = function() {
-    if (Plate.MAX_ENERGY > this.energy && this.age % 90 === 0) {
+    if (Plate.MAX_ENERGY > this.energy && this.age % Config.Frame.NATURAL_MAP_ENERGY_RECAVERY === 0) {
       return this.saveEnergy(Plate.MAX_ENERGY / 9);
     }
   };

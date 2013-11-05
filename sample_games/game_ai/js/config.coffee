@@ -69,12 +69,14 @@ class Config.Frame
   @DIAMETER = 1
 
   setAllFrame = () ->
-    Frame.ROBOT_MOVE            = 12 / Frame.DIAMETER
-    Frame.ROBOT_HIGH_SEEPD_MOVE = 8 / Frame.DIAMETER
-    Frame.ROBOT_WAIT            = 8 / Frame.DIAMETER
-    Frame.ROBOT_TURN            = 8 / Frame.DIAMETER
-    Frame.ROBOT_SUPPLY          = 32 / Frame.DIAMETER
-    Frame.BULLET                = 16 / Frame.DIAMETER
+    Frame.ROBOT_MOVE                    =  12 / Frame.DIAMETER
+    Frame.ROBOT_HIGH_SEEPD_MOVE         =   8 / Frame.DIAMETER
+    Frame.ROBOT_WAIT                    =   8 / Frame.DIAMETER
+    Frame.ROBOT_TURN                    =   8 / Frame.DIAMETER
+    Frame.ROBOT_SUPPLY                  =  32 / Frame.DIAMETER
+    Frame.BULLET                        =  16 / Frame.DIAMETER
+    Frame.NATURAL_MAP_ENERGY_RECAVERY   =  92 / Frame.DIAMETER
+    Frame.NATURAL_ROBOT_ENERGY_RECAVERY = 152 / Frame.DIAMETER
   setAllFrame()
 
   @setGameSpeed: (diameter = 1) ->
@@ -86,12 +88,12 @@ class Config.Frame
     diameter
 
 class Config.Energy
-  @MOVE                = 8
+  @MOVE                =  8
   @HIGH_SEEPD_MOVE     = 14
   @APPROACH            = 10
   @LEAVE               = 10
   @SHOT                = 60
-  @TURN                = 8
+  @TURN                =  8
 
 class Config.R.String
   @PLAYER : "プレイヤー"
