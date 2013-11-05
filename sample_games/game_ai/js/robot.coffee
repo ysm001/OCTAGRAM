@@ -142,6 +142,12 @@ class Robot extends SpriteModel
 
   onKeyInput: (input) ->
 
+  reset: (x, y) ->
+    @hp = Robot.MAX_HP
+    @energy = Robot.MAX_ENERGY
+    plate = Map.instance.getPlate(x,y)
+    @moveImmediately(plate)
+
   # ===============
   # Robot API
   # * move

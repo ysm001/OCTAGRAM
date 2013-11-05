@@ -180,6 +180,10 @@ Config.R.String = (function() {
     return "" + s + "はHPが0になりました。";
   };
 
+  String.win = function(s) {
+    return "" + s + "の勝利になります。";
+  };
+
   return String;
 
 })();

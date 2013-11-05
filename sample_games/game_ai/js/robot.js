@@ -229,6 +229,14 @@ Robot = (function(_super) {
 
   Robot.prototype.onKeyInput = function(input) {};
 
+  Robot.prototype.reset = function(x, y) {
+    var plate;
+    this.hp = Robot.MAX_HP;
+    this.energy = Robot.MAX_ENERGY;
+    plate = Map.instance.getPlate(x, y);
+    return this.moveImmediately(plate);
+  };
+
   Robot.prototype.move = function(direct, onComplete) {
     var ret;
     if (onComplete == null) {

@@ -55,9 +55,29 @@ class RobotWorld extends GroupModel
     @addChild @_player
     @addChild @_enemy
 
-  initInstructions: (octagram) ->
-    playerProgram = octagram.createProgramInstance()
-    enemyProgram = octagram.createProgramInstance()
+    @diePlayer = false
+
+    @player.addObserver "hp", (hp) =>
+      if hp <= 0 and @diePlayer == false
+        @diePlayer = @player
+        @dispatchEvent(new RobotEvent('gameEnd', {lose:@player, win:@enemy}))
+
+    @enemy.addObserver "hp", (hp) =>
+      if hp <= 0 and @diePlayer == false
+        @diePlayer = @enemy
+        @dispatchEvent(new RobotEvent('gameEnd', {win:@player, lose:@enemy}))
+
+  properties:
+    player:
+      get:() -> @_player
+    enemy:
+      get:() -> @_enemy
+    robots:
+      get:() -> @_robots
+
+  initInstructions: (@octagram) ->
+    playerProgram = @octagram.createProgramInstance()
+    enemyProgram = @octagram.createProgramInstance()
     @playerProgramId = playerProgram.id
     @enemyProgramId  = enemyProgram.id
 
@@ -83,19 +103,13 @@ class RobotWorld extends GroupModel
     enemyProgram.addInstruction(new EnergyBranchInstruction(@_enemy))
     enemyProgram.addInstruction(new ResourceBranchInstruction(@_enemy))
 
-    octagram.showProgram(@playerProgramId)
-
-  properties:
-    player:
-      get:() -> @_player
-    enemy:
-      get:() -> @_enemy
+    @octagram.showProgram(@playerProgramId)
 
   initialize: (views)->
-    plate = Map.instance.getPlate(6,4)
+    plate = Map.instance.getPlate(1, 1)
     @player.moveImmediately(plate)
 
-    plate = Map.instance.getPlate(1,1)
+    plate = Map.instance.getPlate(7, 5)
     @enemy.moveImmediately(plate)
 
   collisionBullet: (bullet, robot) ->
@@ -135,6 +149,11 @@ class RobotWorld extends GroupModel
       break if animated == true
     return animated
 
+  reset: () ->
+    @enemy.reset(7, 5)
+    @player.reset(1, 1)
+    @diePlayer = false
+
   updateRobots: () ->
     i.update() for i in @_robots
 
@@ -148,6 +167,14 @@ class RobotScene extends Scene
     super @
     @views = new ViewWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
     @world = new RobotWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
+    @world.addEventListener 'gameEnd', (evt) ->
+      #console.log "scene gameEnd"
+      params = evt.params
+      for id in [@enemyProgramId, @playerProgramId]
+        prg = @octagram.getInstance(id)
+        prg.stop()
+      setTimeout((() => @reset()), 1000)
+
     @views.initEvent @world
     @world.initialize()
 

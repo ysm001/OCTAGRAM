@@ -92,3 +92,4 @@ class Config.R.String
   @supply: (s, e) -> "#{s}は#{e}エネルギー補給しました。"
   @state: (h, e) -> "(HP: #{h}, エネルギー: #{e})"
   @die: (s) -> "#{s}はHPが0になりました。"
+  @win: (s) -> "#{s}の勝利になります。"

@@ -82,8 +82,12 @@ class MsgBox extends ViewGroup
         @print R.String.turn(player.name) + R.String.state(player.hp, player.energy)
 
     # callback on the HP of enemy changed
-    world.player.addObserver "hp", (hp) =>
-      @print R.String.die(world.player.name) if hp <= 0
+    world.addEventListener "gameEnd", (evt) =>
+      #console.log "footer gameEnd"
+      params = evt.params
+      loseRobotName = params.lose.name
+      winRobotName = params.win.name
+      @print R.String.die(loseRobotName) + R.String.win(winRobotName)
 
   print: (msg) ->
     @msg.add(msg)

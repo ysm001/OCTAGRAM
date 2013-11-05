@@ -26,7 +26,9 @@ PlayerHp = (function(_super) {
     var _this = this;
     return world.player.addObserver("hp", function(hp) {
       if (hp < world.player.hp) {
-        return _this.decreaseForce(PART_WIDTH);
+        return _this.decreaseForce(PART_WIDTH * (world.player.hp - hp));
+      } else {
+        return _this.increaseForce(PART_WIDTH * (hp - world.player.hp));
       }
     });
   };
@@ -58,7 +60,9 @@ EnemyHp = (function(_super) {
     var _this = this;
     return world.enemy.addObserver("hp", function(hp) {
       if (hp < world.enemy.hp) {
-        return _this.decreaseForce(PART_WIDTH);
+        return _this.decreaseForce(PART_WIDTH * (world.enemy.hp - hp));
+      } else {
+        return _this.increaseForce(PART_WIDTH * (hp - world.enemy.hp));
       }
     });
   };

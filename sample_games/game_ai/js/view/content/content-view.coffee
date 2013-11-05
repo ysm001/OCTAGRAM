@@ -71,7 +71,7 @@ class Plate extends ViewSprite
     # natural recovery every 5 sec
     if Plate.MAX_ENERGY > @energy and @age % 90 == 0
       @saveEnergy(Plate.MAX_ENERGY / 9)
-      console.log @age, @energy
+      #console.log @age, @energy
 
 class Map extends ViewGroup
   @WIDTH = 9

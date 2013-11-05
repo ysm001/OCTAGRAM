@@ -69,12 +69,50 @@ RobotWorld = (function(_super) {
     scene.addChild(this);
     this.addChild(this._player);
     this.addChild(this._enemy);
+    this.diePlayer = false;
+    this.player.addObserver("hp", function(hp) {
+      if (hp <= 0 && _this.diePlayer === false) {
+        _this.diePlayer = _this.player;
+        return _this.dispatchEvent(new RobotEvent('gameEnd', {
+          lose: _this.player,
+          win: _this.enemy
+        }));
+      }
+    });
+    this.enemy.addObserver("hp", function(hp) {
+      if (hp <= 0 && _this.diePlayer === false) {
+        _this.diePlayer = _this.enemy;
+        return _this.dispatchEvent(new RobotEvent('gameEnd', {
+          win: _this.player,
+          lose: _this.enemy
+        }));
+      }
+    });
   }
+
+  RobotWorld.prototype.properties = {
+    player: {
+      get: function() {
+        return this._player;
+      }
+    },
+    enemy: {
+      get: function() {
+        return this._enemy;
+      }
+    },
+    robots: {
+      get: function() {
+        return this._robots;
+      }
+    }
+  };
 
   RobotWorld.prototype.initInstructions = function(octagram) {
     var enemyProgram, playerProgram;
-    playerProgram = octagram.createProgramInstance();
-    enemyProgram = octagram.createProgramInstance();
+    this.octagram = octagram;
+    playerProgram = this.octagram.createProgramInstance();
+    enemyProgram = this.octagram.createProgramInstance();
     this.playerProgramId = playerProgram.id;
     this.enemyProgramId = enemyProgram.id;
     playerProgram.addInstruction(new MoveInstruction(this._player));
@@ -97,27 +135,14 @@ RobotWorld = (function(_super) {
     enemyProgram.addInstruction(new HpBranchInstruction(this._enemy));
     enemyProgram.addInstruction(new EnergyBranchInstruction(this._enemy));
     enemyProgram.addInstruction(new ResourceBranchInstruction(this._enemy));
-    return octagram.showProgram(this.playerProgramId);
-  };
-
-  RobotWorld.prototype.properties = {
-    player: {
-      get: function() {
-        return this._player;
-      }
-    },
-    enemy: {
-      get: function() {
-        return this._enemy;
-      }
-    }
+    return this.octagram.showProgram(this.playerProgramId);
   };
 
   RobotWorld.prototype.initialize = function(views) {
     var plate;
-    plate = Map.instance.getPlate(6, 4);
-    this.player.moveImmediately(plate);
     plate = Map.instance.getPlate(1, 1);
+    this.player.moveImmediately(plate);
+    plate = Map.instance.getPlate(7, 5);
     return this.enemy.moveImmediately(plate);
   };
 
@@ -190,6 +215,12 @@ RobotWorld = (function(_super) {
     return animated;
   };
 
+  RobotWorld.prototype.reset = function() {
+    this.enemy.reset(7, 5);
+    this.player.reset(1, 1);
+    return this.diePlayer = false;
+  };
+
   RobotWorld.prototype.updateRobots = function() {
     var i, _i, _len, _ref, _results;
     _ref = this._robots;
@@ -219,6 +250,20 @@ RobotScene = (function(_super) {
     RobotScene.__super__.constructor.call(this, this);
     this.views = new ViewWorld(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
     this.world = new RobotWorld(Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, this);
+    this.world.addEventListener('gameEnd', function(evt) {
+      var id, params, prg, _i, _len, _ref,
+        _this = this;
+      params = evt.params;
+      _ref = [this.enemyProgramId, this.playerProgramId];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        id = _ref[_i];
+        prg = this.octagram.getInstance(id);
+        prg.stop();
+      }
+      return setTimeout((function() {
+        return _this.reset();
+      }), 1000);
+    });
     this.views.initEvent(this.world);
     this.world.initialize();
   }

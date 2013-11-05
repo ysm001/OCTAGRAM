@@ -14,9 +14,13 @@ class PlayerHp extends MeterView
       backgroundImage: R.BACKGROUND_IMAGE.HP_ENCLOSE
 
   initEvent: (world) ->
-    # callback on the HP of enemy changed
+    # callback on the HP of player changed
     world.player.addObserver "hp", (hp) =>
-      @decreaseForce(PART_WIDTH) if hp < world.player.hp
+      if hp < world.player.hp
+        @decreaseForce(PART_WIDTH * (world.player.hp - hp))
+      else
+        #console.log "hp gameEnd", hp, world.player.hp
+        @increaseForce(PART_WIDTH * (hp - world.player.hp))
 
 class EnemyHp extends MeterView
 
@@ -35,4 +39,8 @@ class EnemyHp extends MeterView
   initEvent: (world) ->
     # callback on the HP of enemy changed
     world.enemy.addObserver "hp", (hp) =>
-      @decreaseForce(PART_WIDTH) if hp < world.enemy.hp
+      if hp < world.enemy.hp
+        @decreaseForce(PART_WIDTH * (world.enemy.hp - hp))
+      else
+        #console.log "hp gameEnd", hp, world.enemy.hp
+        @increaseForce(PART_WIDTH * (hp - world.enemy.hp))

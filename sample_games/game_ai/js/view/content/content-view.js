@@ -103,8 +103,7 @@ Plate = (function(_super) {
 
   Plate.prototype.update = function() {
     if (Plate.MAX_ENERGY > this.energy && this.age % 90 === 0) {
-      this.saveEnergy(Plate.MAX_ENERGY / 9);
-      return console.log(this.age, this.energy);
+      return this.saveEnergy(Plate.MAX_ENERGY / 9);
     }
   };
 
