@@ -2,14 +2,16 @@
 var ProgramSelector, ProgramStorage;
 
 ProgramSelector = (function() {
-  function ProgramSelector() {}
+  function ProgramSelector() {
+    this.target = "../programs/";
+  }
 
   ProgramSelector.prototype.modal = function(options) {
     var $body, $head, $modal, $modalBody, $modalHeader, $table, title;
     $table = $('<table></table>').attr('class', 'table table-striped table-hover');
     $body = $('<tbody></tbody>');
     $head = $('<thead></thead>').append($('<tr></tr>').append($('<th></th>').text("")).append($('<th></th>').text("")));
-    $.get("owned_list", {
+    $.get(this.target + "owned_list", {
       user_id: getUserId()
     }, function(data) {
       var $btns, $label, $title, $tr, button, callback, idx, program, programs, _i, _j, _len, _len1, _ref, _results;
@@ -19,7 +21,7 @@ ProgramSelector = (function() {
         program = programs[_i];
         $tr = $('<tr></tr>');
         $title = $('<td></td>').attr({
-          "class": 'loadtable-title'
+          "class": 'selector-title'
         }).text(program.name);
         if (program.is_preset) {
           $label = $('<span style="margin-left: 10px"></span>').attr({
@@ -28,7 +30,7 @@ ProgramSelector = (function() {
           $title.append($label);
         }
         $btns = $('<td></td>').attr({
-          "class": 'loadtable-btn'
+          "class": 'selector-btn'
         });
         callback = (function() {
           var _j, _len1, _ref, _results1;
@@ -153,7 +155,7 @@ ProgramStorage = (function() {
   };
 
   ProgramStorage.prototype.loadProgramById = function(id) {
-    return $.get('load_data', {
+    return $.get(this.target + 'load_data', {
       id: id
     }, function(data) {
       getCurrentProgram().deserialize(JSON.parse(data));
@@ -162,7 +164,7 @@ ProgramStorage = (function() {
   };
 
   ProgramStorage.prototype.deleteProgramById = function(id) {
-    return $.post('delete', {
+    return $.post(this.target + 'delete', {
       id: id
     }, function(data) {
       return Flash.showSuccess("program has been deleted.");

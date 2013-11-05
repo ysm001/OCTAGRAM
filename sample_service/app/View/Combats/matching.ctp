@@ -15,7 +15,7 @@
 
     <?php $this->Html->scriptStart(array('inline'=>false)); ?>
       var VPL_JS_BASE = "./";
-      var base = "<?php echo '../../'.APP_DIR.'/'.WEBROOT_DIR.'/'.JS_URL;  ?>";
+      var base = getRoot() + "<?php echo APP_DIR.'/'.WEBROOT_DIR.'/'.JS_URL;  ?>";
       var octagramBase = base + "/octagram";
       var resourceBase = base + "/robot_battle/resources";
       var UserConfig = {OCTAGRAM_DIR: octagramBase, R: {RESOURCE_DIR: resourceBase}};

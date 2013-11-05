@@ -1,4 +1,7 @@
 class ProgramSelector
+  constructor : () ->
+    @target = "../programs/" 
+
   modal : (options) ->
     $table = $('<table></table>').attr('class', 'table table-striped table-hover')
     $body = $('<tbody></tbody>')
@@ -9,17 +12,17 @@ class ProgramSelector
         .append($('<th></th>').text(""))
     );
  
-    $.get("owned_list", {user_id: getUserId()}, (data) -> 
+    $.get(@target + "owned_list", {user_id: getUserId()}, (data) -> 
       programs = JSON.parse(data)
       for program in programs
         $tr = $('<tr></tr>')
   
-        $title = $('<td></td>').attr(class: 'loadtable-title').text(program.name)
+        $title = $('<td></td>').attr(class: 'selector-title').text(program.name)
         if ( program.is_preset ) 
           $label = $('<span style="margin-left: 10px"></span>').attr(class: 'label label-info').text("preset");
           $title.append($label)
   
-        $btns = $('<td></td>').attr(class: 'loadtable-btn')
+        $btns = $('<td></td>').attr(class: 'selector-btn')
 
         callback = (button.handler for button in options.buttons)
         for button, idx in options.buttons
@@ -122,13 +125,13 @@ class ProgramStorage
       )
 
   loadProgramById : (id) ->
-    $.get('load_data', {id: id},  (data) ->
+    $.get(@target + 'load_data', {id: id},  (data) ->
       getCurrentProgram().deserialize(JSON.parse(data))
       Flash.showSuccess("program has been loaded.")
     )
 
   deleteProgramById : (id) ->
-    $.post('delete', {id: id},  (data) -> 
+    $.post(@target + 'delete', {id: id},  (data) -> 
       Flash.showSuccess("program has been deleted.")
     )
 

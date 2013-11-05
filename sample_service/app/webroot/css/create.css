@@ -13,15 +13,6 @@
     height: 646px;
 }
 
-.loadtable-title {
-    vertical-align: middle !important;
-}
-
-.loadtable-btn {
-    text-align: right !important;
-}
-
-
 .container {
     max-width: none !important;
     width: 1286px !important;

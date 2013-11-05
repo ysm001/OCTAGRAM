@@ -77,7 +77,11 @@
 	<?php if ( $authUser ) : ?>
 	<div id="uid" style="display:none"><?= $authUser['id'] ?></div>
         <?php endif ?>
-	<script type="text/javascript">function getUserId() { return parseInt($('#uid').text()); }</script>
+	<div id="webroot" style="display:none"><?= ROOT_URL ?></div>
+	<script type="text/javascript">
+	    function getUserId() { return parseInt($('#uid').text()); }
+	    function getRoot() { return $('#webroot').text(); }
+	</script>
 
 	<!-- Le javascript
     ================================================== -->

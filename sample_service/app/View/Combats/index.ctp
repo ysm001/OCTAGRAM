@@ -1,3 +1,7 @@
+<?php echo $this->Html->css(array('program'), false, array('inline'=>false)); ?>
+<?php echo $this->Html->script(array('program'), false, array('inline'=>false)); ?>
+<?php echo $this->Html->script(array('combat'), false, array('inline'=>false)); ?>
+
 <?php
    $pageInfo = $this->params['paging']['Program'];
 ?>
@@ -35,12 +39,12 @@
     <!-- pagenation end -->
    
     <!-- table -->  
-    <table class='table table table-striped'>
+    <table class='table table table-striped table-hover'>
       <tr><th style='width:100px;'></th><th>敵プログラム名</th><th>対戦相手</th><th>更新日時</th></tr>
       <?php foreach($programs as $p) { ?> 
       <tr>
         <td>
-   	<p><?php echo $this->Html->link('Battle »', '/combats/matching/'.$p['Program']['id'], array('class' => 'btn btn-default')); ?></p>
+	<div class='btn btn-default btn-battle' program-id='<?php echo $p["Program"]["id"]?>'>Battle »</div>
         </td>
         <td><p class="text-primary"><?php echo $p['Program']['name']; ?></p></td>
         <td><?php echo $p['User']['nickname']; ?></td>
