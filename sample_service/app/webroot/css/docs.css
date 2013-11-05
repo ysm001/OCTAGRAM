@@ -1298,7 +1298,6 @@ h3 {
 .nav > .active:focus > a {
 	color: #ffffff;
 	background-color: #428bca;
-	border-radius: 5px;
 }
 #sidebar .nav .nav {
 	display: none;
