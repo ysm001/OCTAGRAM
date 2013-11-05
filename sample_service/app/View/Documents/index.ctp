@@ -17,7 +17,7 @@
 	      <li><a href="#sub-header1-1"><i class="icon-chevron-right"></i> 動作命令</a></li>
 	      <li><a href="#sub-header1-2"><i class="icon-chevron-right"></i> 分岐命令</a></li>
 	      <li><a href="#sub-header1-3"><i class="icon-chevron-right"></i> 組み込み命令</a></li>
-	      <li><a href="#sub-header1-45"><i class="icon-chevron-right"></i> 変数操作命令</a>
+	      <li><a href="#sub-header1-4"><i class="icon-chevron-right"></i> 変数操作命令</a>
                 <ul class="nav">
 	          <li><a href="#sub-header1-4-1"><i class="icon-chevron-right"></i> 変数への代入</a></li>
 	          <li><a href="#sub-header1-4-2"><i class="icon-chevron-right"></i> 変数の四則演算</a></li>
