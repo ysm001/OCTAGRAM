@@ -31,7 +31,7 @@ class ItemQueue
 class Robot extends SpriteModel
   @MAX_HP            : 6
   @MAX_ENERGY        : 240
-  @STEAL_ENERGY_UNIT : 30
+  @STEAL_ENERGY_UNIT : 80
 
   DIRECT_FRAME                             = {}
   DIRECT_FRAME[Direct.NONE]                = 0
