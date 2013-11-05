@@ -1,7 +1,6 @@
 <?php
 class ProgramsController extends AppController {
     public $uses = array("User", "Program");
-    public $components = array("Path");
 
     public function create() {}
     public function add() {
