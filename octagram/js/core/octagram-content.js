@@ -75,6 +75,10 @@ OctagramContentSet = (function() {
     return instance;
   };
 
+  OctagramContentSet.prototype.addInstance = function(instance) {
+    return this.octagram[instance.id] = instance;
+  };
+
   OctagramContentSet.prototype.removeInstance = function(id) {};
 
   OctagramContentSet.prototype.getInstance = function(id) {
@@ -156,23 +160,27 @@ OctagramContent = (function(_super) {
     this.tipSet.addTip(returnTip);
     this.tipSet.addTip(stopTip);
     this.tipSet.addTip(nopTip, Resources.get("iconNop"));
-    this.tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"));
-    this.tipSet.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"));
-    return this.tipSet.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"));
+    return this.tipSet.addInstruction(new SubroutineInstruction(null));
+    /*
+    @tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new CounterPushInstruction(counters, stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new CounterPopInstruction(counters, stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackAddInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackSubInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackMulInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackDivInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackModInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackXorInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackGrtInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackSwpInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackNotInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"))
+    @tipSet.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"))
+    */
+
   };
 
   OctagramContent.prototype.clearInstructions = function() {

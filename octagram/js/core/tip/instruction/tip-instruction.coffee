@@ -58,7 +58,13 @@ class BranchInstruction extends Instruction
   action : () -> false
   clone : () -> @copy(new BranchInstruction())
 
+class SubroutineInstruction extends Instruction
+  constructor : (@subroutine) ->
+    super()
+
+  clone : () -> @copy(new SubroutineInstruction)
+
 octagram.Instruction = Instruction
 octagram.ActionInstruction = ActionInstruction
 octagram.BranchInstruction = BranchInstruction
-
+octagram.SubroutineInstruction = SubroutineInstruction

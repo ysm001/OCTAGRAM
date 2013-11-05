@@ -255,7 +255,12 @@ class JumpTransitionCodeTip extends CodeTip
   setNext : (x, y) -> @code.setNext({x:x, y:y})
   clone : () -> @copy(new JumpTransitionCodeTip(@code.clone()))
 
+class SingleTransitionSubroutineCodeTip extends SingleTransitionCodeTip
+  constructor : (code) -> super(code)
+  clone : () -> @copy(new SingleTransitionSubroutineCodeTip(@code.clone()))
+
 octagram.CodeTip = CodeTip
 octagram.SingleTransitionCodeTip = SingleTransitionCodeTip
 octagram.BranchTransitionCodeTip = BranchTransitionCodeTip
 octagram.JumpTransitionCodeTip = JumpTransitionCodeTip
+octagram.SingleTransitionSubroutineCodeTip = SingleTransitionSubroutineCodeTip

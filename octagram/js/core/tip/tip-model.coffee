@@ -70,6 +70,10 @@ class ThinkTip extends SingleTransitionTip
   constructor : (next) -> super(next)
   clone : () -> @copy(new ThinkTip(@getNext()))
 
+class SubroutineTip extends ThinkTip
+  constructor : (next, @subroutine) -> super(next)
+  clone : () -> @copy(new SubroutineTip(@getNext()))
+
 #####################################################
 # Nopチップ
 #####################################################
@@ -145,3 +149,4 @@ octagram.NopTip = NopTip
 octagram.StartTip = StartTip
 octagram.ReturnTip = ReturnTip
 octagram.WallTip = WallTip
+octagram.SubroutineTip = SubroutineTip

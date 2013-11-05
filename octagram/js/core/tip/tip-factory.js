@@ -42,6 +42,10 @@ TipFactory = (function() {
     return new SingleTransitionCodeTip(code);
   };
 
+  TipFactory.createSubroutineTip = function(code) {
+    return new SingleTransitionSubroutineCodeTip(code);
+  };
+
   TipFactory.createNopTip = function() {
     return TipFactory.createThinkTip(new NopTip());
   };
@@ -51,6 +55,8 @@ TipFactory = (function() {
       return TipFactory.createActionTip(new CustomInstructionActionTip(inst));
     } else if (inst instanceof BranchInstruction) {
       return TipFactory.createBranchTip(new CustomInstructionBranchTip(inst));
+    } else if (inst instanceof SubroutineInstruction) {
+      return TipFactory.createSubroutineTip(new SubroutineTip(null, inst.subroutine));
     } else {
       return console.log("error : invalid instruction type.");
     }

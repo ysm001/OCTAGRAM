@@ -20,6 +20,8 @@ class OctagramContentSet
     instance = new OctagramContent(@x, @y, @xnum, @ynum)
     @octagrams[instance.id] = instance
     instance
+    
+  addInstance : (instance) -> @octagram[instance.id] = instance
 
   removeInstance : (id) ->
   getInstance : (id) -> @octagrams[id]
@@ -84,6 +86,9 @@ class OctagramContent extends Group
     @tipSet.addTip(returnTip)
     @tipSet.addTip(stopTip)
     @tipSet.addTip(nopTip, Resources.get("iconNop"))
+    @tipSet.addInstruction(new SubroutineInstruction(null))
+
+    ###
     @tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
     @tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))
     @tipSet.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"))
@@ -101,6 +106,7 @@ class OctagramContent extends Group
     @tipSet.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"))
     @tipSet.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"))
     @tipSet.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"))
+    ###
 
   clearInstructions : () -> @tipSet.clear()
 

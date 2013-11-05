@@ -15,12 +15,16 @@ class TipFactory
   @createActionTip  : (code) -> new SingleTransitionCodeTip(code)
   @createBranchTip  : (code) -> new BranchTransitionCodeTip(code)
   @createThinkTip   : (code) -> new SingleTransitionCodeTip(code)
+  @createSubroutineTip: (code) -> new SingleTransitionSubroutineCodeTip(code)
   @createNopTip : () -> TipFactory.createThinkTip(new NopTip())
   @createInstructionTip : (inst) -> 
     if inst instanceof ActionInstruction
       TipFactory.createActionTip(new CustomInstructionActionTip(inst))
     else if inst instanceof BranchInstruction
       TipFactory.createBranchTip(new CustomInstructionBranchTip(inst))
+    else if inst instanceof SubroutineInstruction
+      TipFactory.createSubroutineTip(new SubroutineTip(null, inst.subroutine))
+
     else console.log("error : invalid instruction type.")
 
 octagram.TipFactory = TipFactory
