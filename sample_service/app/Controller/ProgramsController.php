@@ -1,6 +1,7 @@
 <?php
 class ProgramsController extends AppController {
     public $uses = array("User", "Program");
+    public $components = array("Path");
 
     public function create() {}
     public function add() {
@@ -53,7 +54,7 @@ class ProgramsController extends AppController {
 
 	    $program = $this->Program->findById($id);
 	    if ( $program ) {
-		$response = file_get_contents($program['Program']['data_url']);
+		$response = file_get_contents($_SERVER['DOCUMENT_ROOT'].$program['Program']['data_url']);
 	    }
 	}
 
@@ -81,14 +82,14 @@ class ProgramsController extends AppController {
     }
 
     private function saveProgram($userId, $name, $data, $override = false) {
-	$dir = $this->getUserProgramDir($userId);
+	$reldir = $this->getUserProgramDir($userId);
+	$absdir = $_SERVER['DOCUMENT_ROOT'].$reldir;
 
-	if ( file_exists($dir) || mkdir($dir, 0777, true) ) {
-	    $path = $dir.$name;
-	    if ( /*!file_exists($path) || $override*/true ) {
-		if ( file_put_contents($path, $data, LOCK_EX) ) {
-		    return $path;
-		}
+	if ( file_exists($absdir) || mkdir($absdir, 0777, true) ) {
+	    $relpath = $reldir.$name;
+	    $abspath = $absdir.$name;
+	    if ( file_put_contents($abspath, $data, LOCK_EX) ) {
+		return $relpath;
 	    }
 	}
 
@@ -129,10 +130,11 @@ class ProgramsController extends AppController {
     }
 
     private function getUserProgramDir($userId) { 
-	return WWW_ROOT.'files/programs/'.$userId.'/'; 
+	return $this->webroot.APP_DIR.'/'.WEBROOT_DIR.'/files/programs/'.$userId.'/'; 
     }
+
     private function getPresetProgramDir() { 
-	return WWW_ROOT.'files/programs/presets'.'/'; 
+	return $this->webroot.APP_DIR.'/'.WEBROOT_DIR.'/files/programs/presets'.'/'; 
     }
 }
 ?>

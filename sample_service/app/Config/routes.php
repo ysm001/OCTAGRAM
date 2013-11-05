@@ -53,4 +53,3 @@
 if (!defined('ROOT_URL')) {
     define('ROOT_URL', h(Router::url('/', true)));
 }
-
