@@ -2,3 +2,4 @@
 /app/Config/database.php
 .DS_Store
 *.swp
+/app/webroot/files/*
