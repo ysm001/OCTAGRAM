@@ -9,7 +9,7 @@ git submodule init
 git submodule update
 git submodule foreach 'git pull origin master' or git submodule foreach 'git checkout master; git pull'
 
-sed -i -e s/path_to_approot_from_documentroot/$1/ .htaccess
+sed -i -e s/OCTAGRAM/$1/ .htaccess
 rm .htaccess-e
 
 mkdir -p ./app/tmp/models
