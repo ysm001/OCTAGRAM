@@ -16,6 +16,9 @@
 	<?php echo $this->Html->css('flash'); ?>
 	<?php echo $this->Html->script('flash'); ?>
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<?php echo $this->Html->script('bootstrap'); ?>
+
 	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 	<!--[if lt IE 9]>
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -48,7 +51,7 @@
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
 	      <li><?php echo $this->Html->link('Home', '/pages/home'); ?></li>
-              <li><a href="#">Tutorial</a></li>
+	      <li><?php echo $this->Html->link('Document', '/documents/index'); ?></li>
               <li><a href="#">Share</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -87,8 +90,6 @@
 	<!-- Le javascript
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-	<?php echo $this->Html->script('bootstrap.min'); ?>
 	<?php echo $this->fetch('script'); ?>
 </body>
 </html>
