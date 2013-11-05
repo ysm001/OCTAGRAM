@@ -19,21 +19,32 @@
                 </ul>
               </li>
               <li>
-                <a href="#game-rule"><i class="icon-chevron-right"></i>ゲームルール</a>
+                <a href="#game-rule"><i class="icon-chevron-right"></i>ゲームルール & 詳細</a>
                 <ul class="nav">
                   <li><a href="#game-rule-overview"><i class="icon-chevron-right"></i>全体図</a></li>
                   <li><a href="#game-rule-hp-energy"><i class="icon-chevron-right"></i>HPとエネルギー</a></li>
                   <li><a href="#game-rule-stage"><i class="icon-chevron-right"></i>ステージ</a></li>
-                  <li><a href="#game-rule-player"><i class="icon-chevron-right"></i>戦闘機</a></li>
+                  <li><a href="#game-rule-fighter"><i class="icon-chevron-right"></i>戦闘機</a></li>
                   <li><a href="#game-rule-msg"><i class="icon-chevron-right"></i>メッセージボックス</a></li>
+                  <li><a href="#game-rule-flow"><i class="icon-chevron-right"></i>ゲームの流れ</a></li>
                 </ul>
               </li>
+              <!--<li>
+                <a href="#game-instruction"><i class="icon-chevron-right"></i>命令詳細</a>
+                <ul class="nav">
+                  <li><a href="#game-instruction-move"><i class="icon-chevron-right"></i>移動</a></li>
+                  <li><a href="#game-instruction-random-move"><i class="icon-chevron-right"></i>ランダム移動</a></li>
+                  <li><a href="#game-instruction-approach"><i class="icon-chevron-right"></i>接近</a></li>
+                  <li><a href="#game-instruction-leave"><i class="icon-chevron-right"></i>逃避</a></li>
+                  <li><a href="#game-instruction-shot"><i class="icon-chevron-right"></i>ショット</a></li>
+                </ul>
+                </li>-->
             </ul>
           </div>
         </div><!-- /span3 bs-docs-sidebar -->
   
         <div class="col-sm-9">
-          <section id="header1">
+          <section id="game-description">
             <div class="page-header">
               <h2>ゲーム概要</h2>
             </div>
@@ -65,7 +76,7 @@
   
           <section id="game-rule">
             <div class="page-header">
-              <h3>ゲームルール</h3>
+              <h3>ゲームルール & 詳細</h3>
             </div>
             <section id="game-rule-overview">
             <dl>
@@ -127,6 +138,7 @@
                 </ul>
                 </dd>
                 <dd>例えば、左端の場合は以下の図のようになる</dd>
+                </br>
                 <?php echo $this->Html->image("document/game/map-end-explain.png"); ?>
                 </br>
                 </br>
@@ -134,11 +146,12 @@
                 <dd>マスからエネルギーを補給した場合、その分貯蔵しているエネルギーは減る。</dd>
                 <dd>しかし、一定時間ごとに減った分のエネルギーが回復する。</dd>
                 <dd>エネルギーが補給されたマスは色で判断することができ、枯渇している分だけ色は濃くなる。</dd>
+                </br>
                 <?php echo $this->Html->image("document/game/map-energy.png"); ?>
             </dl>
             </section>
 
-            <section id="game-rule-player">
+            <section id="game-rule-fighter">
             <dl>
                 <dt>自機④</dt>
                 <dd>プレイヤー。プログラムで動かす、戦闘機</dd>
@@ -150,6 +163,8 @@
                         <li>ショット : 自機から弾丸を発射する 敵機に弾丸を当てた場合ダメージを与え HP が減らすことができる</li>
                         <li>敵の探索 : 敵がショットの射程圏内にいるか探索する</li>
                         <li>エネルギーの補給 : 現在いるマスからエネルギーを補給する</li>
+                        <li>バリアー : バリアーをはる バリアーをはっているときに相手の弾丸が当たった場合、吸収して HP と エネルギーを回復する</li>
+                        <li>etc</li>
                     </ul>
                     </li>
                 </ul>
@@ -162,14 +177,83 @@
             <section id="game-rule-msg">
             <dl>
                 <dt>メッセージボックス⑥</dt>
-                <dd>自機の行動のログを出力する</dd>
+                <dd>自機の行動のログを出力する。</dd>
+                <dd>ログは最大 4 件まで表示される。</dd>
+                <dd>行動のログの後には自機の HP とエネルギーを表示する。</dd>
+                </br>
+                <?php echo $this->Html->image("document/game/msgbox.png"); ?>
             </dl>
+            <br>
             </section>
-        </section>
+
+            <section id="game-rule-flow">
+              <h4>ゲームの流れ</h4>
+              <hr>
+              <ol>
+                  <li>対戦（ゲーム）を行う相手のプログラムを選択する</li>
+                  <li>ゲームに使用するプログラムを自分で作成した中から選択する</li>
+                  <li>ゲーム開始前は自機は (1,1) 敵機は (8, 6)に配置される</li>
+                  <li>ゲーム開始ボタンを押すとゲームは進行する</li>
+                  <li>ゲームはリアルタイムに進行し、戦闘機は指定されたフレームとエネルギー消費して行動（移動、ショット等）する</li>
+                  <li>ゲームはどちらかの HP が 0 になる、もしくは 120 秒（2分）経過するまで行われる</li>
+                  <li>その時に HP が多い方は勝者となる</li>
+                  <li>HP が同じ場合は引き分けとし、決着がつくまで再度対戦させる</li>
+              </ol>
+              <p>なおゲームの結果は勝者、敗者が決定した時点で保存される。</p>
+              <p>ゲーム途中でリロードや別ページに移動等を行い、ゲームを放棄した場合そのゲームの結果は負けとなる。</p>
+              <p>また、高速対戦を行うことができ最大 4倍速 でゲームを進行させることができる</p>
+              <h4>レート</h4>
+              <p>ゲームの結果に応じて、使用したプログラムにはレートが付けられる。</p>
+              <p>レートは勝率、その対戦の HP 残量、消費エネルギー量から計算される。</p>
+              <p>なお、レートはランキングで使用され、そのプログラムの順位を確認することができる。</p>
+            </section>
+          </section>
+
+          <!--<section id="game-instruction">
+            <div class="page-header">
+              <h3>命令詳細</h3>
+            </div>
+            <section id="game-instruction-move">
+              <h4>移動</h4>
+              <blockquote>
+                  <p>隣接している指定したマスに移動する</p>
+              </blockquote>
+            </section>
+
+            <section id="game-instruction-random-move">
+              <h4>ランダム移動</h4>
+              <blockquote>
+                  <p>隣接しているマスにランダムに移動する</p>
+              </blockquote>
+            </section>
+
+            <section id="game-instruction-approach">
+              <h4>接近</h4>
+              <blockquote>
+                  <p>敵機に近づくように移動します</p>
+              </blockquote>
+            </section>
+
+            <section id="game-instruction-leave">
+              <h4>逃避</h4>
+              <blockquote>
+                  <p>敵機から離れるように移動します</p>
+              </blockquote>
+            </section>
+
+            <section id="game-instruction-shot">
+              <h4>ショット</h4>
+              <blockquote>
+                  <p>前方 5 マスに弾丸を発射する 敵に当たった場合には相手にダメージを与える</p>
+              </blockquote>
+            </section>
+            </section>-->
         </div><!-- /span9 -->
 
         </div><!-- /row -->
         <hr>
+        <br>
+        <br>
     </div><!-- /container -->
 
     <!-- Affixに必要なコード -->
