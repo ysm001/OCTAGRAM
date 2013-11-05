@@ -1,7 +1,4 @@
 class ProgramSelector
-  constructor : () ->
-    @target = "../programs/" 
-
   modal : (options) ->
     $table = $('<table></table>').attr('class', 'table table-striped table-hover')
     $body = $('<tbody></tbody>')
@@ -12,7 +9,7 @@ class ProgramSelector
         .append($('<th></th>').text(""))
     );
  
-    $.get(@target + "owned_list", {user_id: getUserId()}, (data) -> 
+    $.get(getRequestURL('programs', 'owned_list'), {user_id: getUserId()}, (data) -> 
       programs = JSON.parse(data)
       for program in programs
         $tr = $('<tr></tr>')
@@ -111,7 +108,7 @@ class ProgramStorage
         override: override
       }
   
-      $.post( "add", program, ( data) => 
+      $.post(getRequestURL('programs', 'add'), program, ( data) => 
         response = JSON.parse(data)
   
         if response.success
@@ -124,15 +121,15 @@ class ProgramStorage
           bootbox.alert(data);
       )
 
-  loadProgramById : (id) ->
-    $.get(@target + 'load_data', {id: id},  (data) ->
+  loadProgramById : (id, callback) ->
+    $.get(getRequestURL('programs', 'load_data'), {id: id},  (data) ->
       getCurrentProgram().deserialize(JSON.parse(data))
       Flash.showSuccess("program has been loaded.")
+      if callback then callback()
     )
 
-  deleteProgramById : (id) ->
-    $.post(@target + 'delete', {id: id},  (data) -> 
+  deleteProgramById : (id, callback) ->
+    $.post(getRequestURL('programs', 'delete'), {id: id},  (data) -> 
       Flash.showSuccess("program has been deleted.")
+      if callback then callback()
     )
-
-

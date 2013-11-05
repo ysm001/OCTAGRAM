@@ -16,9 +16,9 @@ class CombatsController extends AppController {
         $this->set('programs',$this->paginate('Program'));
     }
     
-    public function matching($id) {
-        // pr($id);
-        
+    public function matching($playerId, $enemyId) {
+	$this->set('playerId', $playerId);
+	$this->set('enemyId', $enemyId);
     }
     
 }

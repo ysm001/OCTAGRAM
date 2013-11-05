@@ -81,6 +81,7 @@
 	<script type="text/javascript">
 	    function getUserId() { return parseInt($('#uid').text()); }
 	    function getRoot() { return $('#webroot').text(); }
+	    function getRequestURL(controller, action) {return getRoot() + controller + '/' + action}
 	</script>
 
 	<!-- Le javascript

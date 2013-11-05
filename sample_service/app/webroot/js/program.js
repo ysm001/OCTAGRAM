@@ -2,16 +2,14 @@
 var ProgramSelector, ProgramStorage;
 
 ProgramSelector = (function() {
-  function ProgramSelector() {
-    this.target = "../programs/";
-  }
+  function ProgramSelector() {}
 
   ProgramSelector.prototype.modal = function(options) {
     var $body, $head, $modal, $modalBody, $modalHeader, $table, title;
     $table = $('<table></table>').attr('class', 'table table-striped table-hover');
     $body = $('<tbody></tbody>');
     $head = $('<thead></thead>').append($('<tr></tr>').append($('<th></th>').text("")).append($('<th></th>').text("")));
-    $.get(this.target + "owned_list", {
+    $.get(getRequestURL('programs', 'owned_list'), {
       user_id: getUserId()
     }, function(data) {
       var $btns, $label, $title, $tr, button, callback, idx, program, programs, _i, _j, _len, _len1, _ref, _results;
@@ -136,7 +134,7 @@ ProgramStorage = (function() {
         },
         override: override
       };
-      return $.post("add", program, function(data) {
+      return $.post(getRequestURL('programs', 'add'), program, function(data) {
         var response;
         response = JSON.parse(data);
         if (response.success) {
@@ -154,20 +152,26 @@ ProgramStorage = (function() {
     }
   };
 
-  ProgramStorage.prototype.loadProgramById = function(id) {
-    return $.get(this.target + 'load_data', {
+  ProgramStorage.prototype.loadProgramById = function(id, callback) {
+    return $.get(getRequestURL('programs', 'load_data'), {
       id: id
     }, function(data) {
       getCurrentProgram().deserialize(JSON.parse(data));
-      return Flash.showSuccess("program has been loaded.");
+      Flash.showSuccess("program has been loaded.");
+      if (callback) {
+        return callback();
+      }
     });
   };
 
-  ProgramStorage.prototype.deleteProgramById = function(id) {
-    return $.post(this.target + 'delete', {
+  ProgramStorage.prototype.deleteProgramById = function(id, callback) {
+    return $.post(getRequestURL('programs', 'delete'), {
       id: id
     }, function(data) {
-      return Flash.showSuccess("program has been deleted.");
+      Flash.showSuccess("program has been deleted.");
+      if (callback) {
+        return callback();
+      }
     });
   };
 

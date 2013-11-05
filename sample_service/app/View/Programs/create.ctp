@@ -36,6 +36,12 @@
         padding: 0;
       }
     </style>
+
+    <script type="text/javascript">
+        window.onload = function() {
+	    runGame();
+        }
+    </script>
   </head>
   <body>
     <div id="program-container">

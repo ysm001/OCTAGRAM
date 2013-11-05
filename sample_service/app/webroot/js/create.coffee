@@ -23,6 +23,7 @@ editEnemyProgram = () ->
 
 saveProgram = (override = false) -> programStorage.saveProgram(override)
 loadProgram = () -> programStorage.loadProgram()
+loadProgramById = (id, callback) -> programStorage.loadProgramById(id, callback)
 
 getContentWindow = () -> $('iframe')[0].contentWindow
 
@@ -33,4 +34,5 @@ executeProgram = () ->
 stopProgram = () ->
   getPlayerProgram().stop()
   getEnemyProgram().stop()
+
 

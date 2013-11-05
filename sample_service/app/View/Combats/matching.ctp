@@ -35,6 +35,25 @@
         padding: 0;
       }
     </style>
+
+    <script type="text/javascript">
+        matchingStart = function(playerId, enemyId) {
+	    editPlayerProgram();
+	    loadProgramById(playerId, function() {
+	        editEnemyProgram();
+		loadProgramById(enemyId, function() {
+	            executeProgram();
+	            editPlayerProgram();
+		})
+	    });
+        }
+
+        window.onload = function() {
+	    runGame(function() {
+		matchingStart(<?= $playerId ?>, <?= $enemyId ?>);
+	    });
+        }
+    </script>
   </head>
   <body>
     <div id="program-container">
