@@ -1,7 +1,10 @@
 OCTAGRAM Sample Web Service
 ======
 ## Setup Development Environment
-### Place the directory OCTAGRAM DocumentRoot/OCTAGRAM
-    1. If, after changing the location OCTAGRAM, it must also change Google/Facebool/Github project settings(redirect url etc...).
+### install submodules
+1. git submodule init
+2. git submodule update
 
-### Import Schema
+### modify .htaccess
+### make cake tmp directories
+### modify database.php 
