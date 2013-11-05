@@ -106,32 +106,35 @@ Config.R = (function() {
 })();
 
 Config.Frame = (function() {
+  var setAllFrame;
+
   function Frame() {}
 
   Frame.DIAMETER = 1;
 
-  Frame.ROBOT_MOVE = 12 / Frame.DIAMETER;
+  setAllFrame = function() {
+    Frame.ROBOT_MOVE = 12 / Frame.DIAMETER;
+    Frame.ROBOT_HIGH_SEEPD_MOVE = 8 / Frame.DIAMETER;
+    Frame.ROBOT_WAIT = 8 / Frame.DIAMETER;
+    Frame.ROBOT_TURN = 8 / Frame.DIAMETER;
+    Frame.ROBOT_SUPPLY = 32 / Frame.DIAMETER;
+    return Frame.BULLET = 16 / Frame.DIAMETER;
+  };
 
-  Frame.ROBOT_HIGH_SEEPD_MOVE = 8 / Frame.DIAMETER;
-
-  Frame.ROBOT_WAIT = 8 / Frame.DIAMETER;
-
-  Frame.ROBOT_TURN = 8 / Frame.DIAMETER;
-
-  Frame.ROBOT_SUPPLY = 32 / Frame.DIAMETER;
-
-  Frame.BULLET = 16 / Frame.DIAMETER;
+  setAllFrame();
 
   Frame.setGameSpeed = function(diameter) {
     if (diameter == null) {
       diameter = 1;
     }
-    if ((0 < diameter && diameter < 8) && diameter % 2 === 0) {
+    if ((0 < diameter && diameter <= 4) && diameter % 2 === 0) {
       Config.Frame.DIAMETER = diameter;
     }
     if (diameter === 1) {
-      return Config.Frame.DIAMETER = 1;
+      Config.Frame.DIAMETER = 1;
     }
+    setAllFrame();
+    return diameter;
   };
 
   return Frame;

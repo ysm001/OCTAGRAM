@@ -68,18 +68,22 @@ class Config.R
 class Config.Frame
   @DIAMETER = 1
 
-  @ROBOT_MOVE            = 12 / Frame.DIAMETER
-  @ROBOT_HIGH_SEEPD_MOVE = 8 / Frame.DIAMETER
-  @ROBOT_WAIT            = 8 / Frame.DIAMETER
-  @ROBOT_TURN            = 8 / Frame.DIAMETER
-  @ROBOT_SUPPLY          = 32 / Frame.DIAMETER
-  @BULLET                = 16 / Frame.DIAMETER
+  setAllFrame = () ->
+    Frame.ROBOT_MOVE            = 12 / Frame.DIAMETER
+    Frame.ROBOT_HIGH_SEEPD_MOVE = 8 / Frame.DIAMETER
+    Frame.ROBOT_WAIT            = 8 / Frame.DIAMETER
+    Frame.ROBOT_TURN            = 8 / Frame.DIAMETER
+    Frame.ROBOT_SUPPLY          = 32 / Frame.DIAMETER
+    Frame.BULLET                = 16 / Frame.DIAMETER
+  setAllFrame()
 
   @setGameSpeed: (diameter = 1) ->
-    if 0 < diameter < 8 and diameter % 2 == 0
+    if 0 < diameter <= 4 and diameter % 2 == 0
       Config.Frame.DIAMETER = diameter
     if diameter == 1
       Config.Frame.DIAMETER = 1
+    setAllFrame()
+    diameter
 
 class Config.Energy
   @MOVE                = 8
