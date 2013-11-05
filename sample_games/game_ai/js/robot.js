@@ -221,7 +221,7 @@ Robot = (function(_super) {
     this.x = Math.round(this.x);
     this.y = Math.round(this.y);
     this.onKeyInput(Game.instance.input);
-    if (Robot.MAX_ENERGY > this.energy && this.age % 150 === 0) {
+    if (Robot.MAX_ENERGY > this.energy && this.age % Config.Frame.NATURAL_ROBOT_ENERGY_RECAVERY === 0) {
       this.supplyEnergy(Robot.MAX_ENERGY / 12);
     }
     return true;

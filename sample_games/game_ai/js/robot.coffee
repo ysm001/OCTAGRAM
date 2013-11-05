@@ -136,7 +136,7 @@ class Robot extends SpriteModel
 
     @onKeyInput Game.instance.input
     # natural recovery every 5 sec
-    if Robot.MAX_ENERGY > @energy and @age % 150 == 0
+    if Robot.MAX_ENERGY > @energy and @age % Config.Frame.NATURAL_ROBOT_ENERGY_RECAVERY == 0
       @supplyEnergy(Robot.MAX_ENERGY / 12)
     return true
 
