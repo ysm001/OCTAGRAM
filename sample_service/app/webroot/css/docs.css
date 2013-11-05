@@ -501,6 +501,13 @@ body {
   font-size: 90%;
 }
 
+.bs-sidebar .nav .nav .nav > li > a {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 50px;
+    font-size: 90%;
+}
+
 /* Show and affix the side nav when space allows it */
 @media (min-width: 992px) {
   .bs-sidebar .nav > .active > ul {
