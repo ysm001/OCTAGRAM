@@ -63,7 +63,7 @@ Robot = (function(_super) {
 
   Robot.MAX_ENERGY = 240;
 
-  Robot.STEAL_ENERGY_UNIT = 30;
+  Robot.STEAL_ENERGY_UNIT = 80;
 
   DIRECT_FRAME = {};
 

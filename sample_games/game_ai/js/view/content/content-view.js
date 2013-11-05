@@ -10,7 +10,7 @@ Plate = (function(_super) {
 
   __extends(Plate, _super);
 
-  Plate.MAX_ENERGY = 90;
+  Plate.MAX_ENERGY = 160;
 
   Plate.HEIGHT = 74;
 
@@ -157,7 +157,7 @@ Plate = (function(_super) {
 
   Plate.prototype.update = function() {
     if (Plate.MAX_ENERGY > this.energy && this.age % Config.Frame.NATURAL_MAP_ENERGY_RECAVERY === 0) {
-      return this.saveEnergy(Plate.MAX_ENERGY / 9);
+      return this.saveEnergy(Plate.MAX_ENERGY / 10);
     }
   };
 
