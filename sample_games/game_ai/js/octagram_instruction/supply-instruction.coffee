@@ -18,7 +18,7 @@ class SupplyInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-     "現在いるマスからエネルギーを最大#{Robot.STEAL_ENERGY_UNIT}補給します。<br>#{Robot.STEAL_ENERGY_UNIT}未満しか残っていない場合はその分補給します。<br>(消費エネルギー 0 消費フレーム #{Config.Frame.SUPPLY}フレーム)"
+     "現在いるマスからエネルギーを最大#{Robot.STEAL_ENERGY_UNIT}補給します。<br>#{Robot.STEAL_ENERGY_UNIT}未満しか残っていない場合はその分補給します。<br>(消費エネルギー 0 消費フレーム #{Config.Frame.ROBOT_SUPPLY}フレーム)"
 
   mkLabel: (parameter) ->
     @tipInfo.getLabel(parameter.id)

@@ -112,6 +112,8 @@ Config.Frame = (function() {
 
   Frame.ROBOT_MOVE = 12 / Frame.DIAMETER;
 
+  Frame.ROBOT_HIGH_SEEPD_MOVE = 8 / Frame.DIAMETER;
+
   Frame.ROBOT_WAIT = 8 / Frame.DIAMETER;
 
   Frame.ROBOT_TURN = 8 / Frame.DIAMETER;
@@ -120,7 +122,17 @@ Config.Frame = (function() {
 
   Frame.BULLET = 16 / Frame.DIAMETER;
 
-  Frame.SUPPLY = 16 / Frame.DIAMETER;
+  Frame.setGameSpeed = function(diameter) {
+    if (diameter == null) {
+      diameter = 1;
+    }
+    if ((0 < diameter && diameter < 8) && diameter % 2 === 0) {
+      Config.Frame.DIAMETER = diameter;
+    }
+    if (diameter === 1) {
+      return Config.Frame.DIAMETER = 1;
+    }
+  };
 
   return Frame;
 
@@ -129,15 +141,17 @@ Config.Frame = (function() {
 Config.Energy = (function() {
   function Energy() {}
 
-  Energy.MOVE = 6;
+  Energy.MOVE = 8;
 
-  Energy.APPROACH = 8;
+  Energy.HIGH_SEEPD_MOVE = 14;
 
-  Energy.LEAVE = 8;
+  Energy.APPROACH = 10;
 
-  Energy.SHOT = 40;
+  Energy.LEAVE = 10;
 
-  Energy.TURN = 6;
+  Energy.SHOT = 60;
+
+  Energy.TURN = 8;
 
   return Energy;
 

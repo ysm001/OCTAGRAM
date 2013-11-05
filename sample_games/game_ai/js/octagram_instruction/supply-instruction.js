@@ -34,7 +34,7 @@ SupplyInstruction = (function(_super) {
   };
 
   SupplyInstruction.prototype.mkDescription = function() {
-    return "現在いるマスからエネルギーを最大" + Robot.STEAL_ENERGY_UNIT + "補給します。<br>" + Robot.STEAL_ENERGY_UNIT + "未満しか残っていない場合はその分補給します。<br>(消費エネルギー 0 消費フレーム " + Config.Frame.SUPPLY + "フレーム)";
+    return "現在いるマスからエネルギーを最大" + Robot.STEAL_ENERGY_UNIT + "補給します。<br>" + Robot.STEAL_ENERGY_UNIT + "未満しか残っていない場合はその分補給します。<br>(消費エネルギー 0 消費フレーム " + Config.Frame.ROBOT_SUPPLY + "フレーム)";
   };
 
   SupplyInstruction.prototype.mkLabel = function(parameter) {

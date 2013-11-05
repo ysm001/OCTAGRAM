@@ -68,19 +68,26 @@ class Config.R
 class Config.Frame
   @DIAMETER = 1
 
-  @ROBOT_MOVE = 12 / Frame.DIAMETER
-  @ROBOT_WAIT = 8 / Frame.DIAMETER
-  @ROBOT_TURN = 8 / Frame.DIAMETER
-  @ROBOT_SUPPLY = 32 / Frame.DIAMETER
-  @BULLET = 16 / Frame.DIAMETER
-  @SUPPLY = 16 / Frame.DIAMETER
+  @ROBOT_MOVE            = 12 / Frame.DIAMETER
+  @ROBOT_HIGH_SEEPD_MOVE = 8 / Frame.DIAMETER
+  @ROBOT_WAIT            = 8 / Frame.DIAMETER
+  @ROBOT_TURN            = 8 / Frame.DIAMETER
+  @ROBOT_SUPPLY          = 32 / Frame.DIAMETER
+  @BULLET                = 16 / Frame.DIAMETER
+
+  @setGameSpeed: (diameter = 1) ->
+    if 0 < diameter < 8 and diameter % 2 == 0
+      Config.Frame.DIAMETER = diameter
+    if diameter == 1
+      Config.Frame.DIAMETER = 1
 
 class Config.Energy
-  @MOVE     = 6
-  @APPROACH = 8
-  @LEAVE    = 8
-  @SHOT     = 40
-  @TURN     = 6
+  @MOVE                = 8
+  @HIGH_SEEPD_MOVE     = 14
+  @APPROACH            = 10
+  @LEAVE               = 10
+  @SHOT                = 60
+  @TURN                = 8
 
 class Config.R.String
   @PLAYER : "プレイヤー"
