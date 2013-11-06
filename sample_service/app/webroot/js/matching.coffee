@@ -13,6 +13,7 @@ class Mathing
 $ ->
   mathing = new Mathing()
 
+  Config.Frame.setGameSpeed(4)
   options = { 
     onload:  ()->mathing.start(playerId, enemyId);
     onend: (result) -> console.log(result)

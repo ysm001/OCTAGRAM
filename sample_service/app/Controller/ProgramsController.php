@@ -1,6 +1,6 @@
 <?php
 class ProgramsController extends AppController {
-    public $uses = array("User", "Program");
+    public $uses = array("User", "Program", "Statistic");
 
     public function create() {}
     public function add() {
@@ -19,8 +19,9 @@ class ProgramsController extends AppController {
                     $this->Program->create();
 
                     $data['data_url'] = $data_url;
+		    $data['Statistic'] = $this->Statistic->create();
                     if ( $alreadyExists && $override ) $data['id'] = $program['Program']['id'];
-                    $response['success'] = $this->Program->save($data);
+                    $response['success'] = $this->Program->saveAll($data);
                 }
             }
         }
