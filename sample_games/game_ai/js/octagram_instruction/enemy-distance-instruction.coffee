@@ -6,7 +6,6 @@ class EnemyDistanceInstruction extends BranchInstruction
 
   constructor : (@robot, @enemy) ->
     super
-    @setAsynchronous(true)
 
     @tipInfo = new TipInfo((labels) ->
       "敵との距離が#{labels[0]}の場合青い矢印に進みます。<br>そうでなければ、赤い矢印に進みます。
@@ -23,8 +22,20 @@ class EnemyDistanceInstruction extends BranchInstruction
 
     @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
 
+    @conditions = [
+      () => 0 < @_distance() <= 3,
+      () => 3 < @_distance() <= 7,
+      () => 7 < @_distance(),
+    ]
+
+  _distance: () ->
+    enemyPos = @enemy.pos
+    robotPos = @robot.pos
+    robotPos.sub(enemyPos)
+    robotPos.length()
+
   action : () ->
-    true
+    (@conditions[@distanceParam.value])()
 
   clone : () ->
     obj = @copy(new EnemyDistanceInstruction(@robot, @enemy))

@@ -92,6 +92,7 @@ class RobotWorld extends GroupModel
     playerProgram.addInstruction(new SupplyInstruction(@_player))
     playerProgram.addInstruction(new TurnEnemyScanInstruction(@_player, @_enemy))
     playerProgram.addInstruction(new HpBranchInstruction(@_player))
+    playerProgram.addInstruction(new EnemyDistanceInstruction(@_player, @_enemy))
     playerProgram.addInstruction(new EnergyBranchInstruction(@_player))
     playerProgram.addInstruction(new ResourceBranchInstruction(@_player))
 
@@ -103,6 +104,7 @@ class RobotWorld extends GroupModel
     enemyProgram.addInstruction(new SupplyInstruction(@_enemy))
     enemyProgram.addInstruction(new TurnEnemyScanInstruction(@_enemy, @_player))
     enemyProgram.addInstruction(new HpBranchInstruction(@_enemy))
+    enemyProgram.addInstruction(new EnemyDistanceInstruction(@_enemy, @_player))
     enemyProgram.addInstruction(new EnergyBranchInstruction(@_enemy))
     enemyProgram.addInstruction(new ResourceBranchInstruction(@_enemy))
 
