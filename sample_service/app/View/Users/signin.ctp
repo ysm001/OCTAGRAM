@@ -2,7 +2,8 @@
 
 <?php $this->Html->scriptStart(array('inline'=>false)); ?>
 window.onload = function() {
-    var height = document.documentElement.clientHeight
+    var minHeight = 650;
+    var height = document.documentElement.clientHeight > minHeight ? document.documentElement.clientHeight : minHeight;
     $('.bs-header').css('height', height);
     $(window).resize(function() {
       height = document.documentElement.clientHeight > height ? document.documentElement.clientHeight : height;
@@ -35,15 +36,13 @@ $('a[href^="#"]').click(function(event) {
     </div>
     <div class="form-signin"> 
         <p><?php echo $this->Html->link('Sign in with Google', '/auth/google', array('class' => 'btn btn-lg btn-primary btn-block')); ?></p>
-        <p><?php echo $this->Html->link('Learn more', '#feature1', array('class' => 'btn btn-lg btn-success btn-block')); ?></p>
+        <p><?php echo $this->Html->link('Features', '#feature1', array('class' => 'btn btn-lg btn-success btn-block')); ?></p>
     </div>
   </div>
 </div>
 <?php $this->end(); ?>
 
       <!-- START THE FEATURETTES -->
-
-      <hr class="featurette-divider">
 
       <div id="feature1" class="row featurette">
         <div class="col-md-7">
