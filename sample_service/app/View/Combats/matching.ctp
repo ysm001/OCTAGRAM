@@ -49,9 +49,12 @@
         }
 
         window.onload = function() {
-	    runGame(function() {
-		matchingStart(<?= $playerId ?>, <?= $enemyId ?>);
-	    });
+	    var options = { 
+		onload:  function() {
+		  matchingStart(<?= $playerId ?>, <?= $enemyId ?>);
+	       }
+            };
+	    runGame(options);
         }
     </script>
   </head>
