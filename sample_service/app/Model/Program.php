@@ -5,5 +5,12 @@ class Program extends AppModel {
             'className' => 'User',
         )
     );
+
+    public $hasOne = array(
+	'Statistic' => array(
+	    'className' => 'Statistic',
+	    'foreignKey' => 'program_id'
+	)
+    );
 }
 ?>

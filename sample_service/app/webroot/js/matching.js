@@ -22,6 +22,7 @@ Mathing = (function() {
 $(function() {
   var mathing, options;
   mathing = new Mathing();
+  Config.Frame.setGameSpeed(4);
   options = {
     onload: function() {
       return mathing.start(playerId, enemyId);
