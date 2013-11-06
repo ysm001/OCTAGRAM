@@ -1,44 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>
-		<?php echo __('CakePHP: the rapid development php framework:'); ?>
-		<?php echo $title_for_layout; ?>
-	</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="author" content="">
+<?php $this->extend('bootstrap-nonavbar'); ?>
 
-	<!-- Le styles -->
-	<?php echo $this->Html->css('bootstrap.min'); ?>
-	<?php echo $this->Html->css('bootstrap-responsive.min'); ?>
-	<?php echo $this->Html->css('flash'); ?>
-	<?php echo $this->Html->script('flash'); ?>
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-	<?php echo $this->Html->script('bootstrap'); ?>
-
-	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-	<!--[if lt IE 9]>
-	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-
-	<!-- Le fav and touch icons -->
-	<!--
-	<link rel="shortcut icon" href="/ico/favicon.ico">
-	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/ico/apple-touch-icon-144-precomposed.png">
-	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/ico/apple-touch-icon-114-precomposed.png">
-	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/ico/apple-touch-icon-72-precomposed.png">
-	<link rel="apple-touch-icon-precomposed" href="/ico/apple-touch-icon-57-precomposed.png">
-	-->
-	<?php
-	echo $this->fetch('meta');
-	echo $this->fetch('css');
-	?>
-</head>
-
-<body>
+<?php echo $this->Html->script('flash'); ?>
+<?php echo $this->Html->css('flash'); ?>
+<?php $this->start('header'); ?>
         <div class="navbar navbar-default">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -78,6 +42,7 @@
             </ul>
           </div>
         </div>
+<?php $this->end(); ?>
 
 	<div class="container">
 		<?php echo $this->Session->flash(); ?>
@@ -85,6 +50,7 @@
 		<?php echo $this->fetch('content'); ?>
 	</div> <!-- /container -->
 
+<?php $this->start('footer'); ?>
 	<?php if ( $authUser ) : ?>
 	<div id="uid" style="display:none"><?= $authUser['id'] ?></div>
         <?php endif ?>
@@ -94,10 +60,4 @@
 	    function getRoot() { return $('#webroot').text(); }
 	    function getRequestURL(controller, action) {return getRoot() + controller + '/' + action}
 	</script>
-
-	<!-- Le javascript
-    ================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-	<?php echo $this->fetch('script'); ?>
-</body>
-</html>
+<?php $this->end(); ?>
