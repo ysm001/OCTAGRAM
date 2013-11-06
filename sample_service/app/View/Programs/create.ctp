@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <?php echo $this->Html->css(array('create'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->css(array('program'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->script(array('bootbox'), false, array('inline'=>false)); ?>

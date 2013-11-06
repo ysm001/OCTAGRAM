@@ -136,6 +136,7 @@ ProgramStorage = (function() {
       };
       return $.post(getRequestURL('programs', 'add'), program, function(data) {
         var response;
+        bootbox.alert(data);
         response = JSON.parse(data);
         if (response.success) {
           return Flash.showSuccess("program has been saved.");

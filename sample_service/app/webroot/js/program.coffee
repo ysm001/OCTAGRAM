@@ -109,10 +109,11 @@ class ProgramStorage
       }
   
       $.post(getRequestURL('programs', 'add'), program, ( data) => 
+        bootbox.alert(data)
         response = JSON.parse(data)
   
         if response.success
-          Flash.showSuccess("program has been saved.");
+          Flash.showSuccess("program has been saved.")
         else if response.exists && !response.override
           bootbox.confirm(name + " is already exists. Do you want to override it?", (result) => 
             if result then @saveProgramByName(name, true)

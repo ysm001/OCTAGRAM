@@ -117,10 +117,10 @@ Config.Frame = (function() {
     Frame.ROBOT_HIGH_SEEPD_MOVE = 8 / Frame.DIAMETER;
     Frame.ROBOT_WAIT = 8 / Frame.DIAMETER;
     Frame.ROBOT_TURN = 8 / Frame.DIAMETER;
-    Frame.ROBOT_SUPPLY = 32 / Frame.DIAMETER;
-    Frame.BULLET = 16 / Frame.DIAMETER;
-    Frame.NATURAL_MAP_ENERGY_RECAVERY = 92 / Frame.DIAMETER;
-    return Frame.NATURAL_ROBOT_ENERGY_RECAVERY = 152 / Frame.DIAMETER;
+    Frame.ROBOT_SUPPLY = 72 / Frame.DIAMETER;
+    Frame.BULLET = 20 / Frame.DIAMETER;
+    Frame.NATURAL_MAP_ENERGY_RECAVERY = 100 / Frame.DIAMETER;
+    return Frame.NATURAL_ROBOT_ENERGY_RECAVERY = 192 / Frame.DIAMETER;
   };
 
   setAllFrame();
@@ -154,7 +154,7 @@ Config.Energy = (function() {
 
   Energy.LEAVE = 10;
 
-  Energy.SHOT = 60;
+  Energy.SHOT = 45;
 
   Energy.TURN = 8;
 
