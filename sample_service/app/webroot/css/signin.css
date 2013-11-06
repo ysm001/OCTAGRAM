@@ -13,13 +13,32 @@ body {
     padding-bottom: 0;
 }
 
-.featurette-divider {
-    border-top: 1px solid #aaa;
+.featurette {
+    height: 500px;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#feature1 {
+    background: #ecf0f1;
+}
+
+#feature2 {
+    background: #3498db;
+}
+
+#feature3 {
+    background: #2ecc71;
 }
 
 .bs-header .container {
     width: 100%;
     height: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 100%;
 }
 
 .octagram-logo-img-container, .octagram-logo-text-container {
