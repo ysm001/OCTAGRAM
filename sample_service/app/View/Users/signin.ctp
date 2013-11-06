@@ -46,7 +46,7 @@ $('a[href^="#"]').click(function(event) {
 
       <div id="feature1" class="row featurette">
         <div class="col-md-7">
-          <h2 class="featurette-heading">First featurette heading. </h2>
+          <h2 class="featurette-heading">First. </h2>
           <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
         </div>
         <div class="col-md-5">
@@ -63,14 +63,14 @@ $('a[href^="#"]').click(function(event) {
            -->
         </div>
         <div class="col-md-7">
-          <h2 class="featurette-heading">Oh yeah, it's that good. </h2>
+          <h2 class="featurette-heading">Second. </h2>
           <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
         </div>
       </div>
 
       <div id="feature3" class="row featurette">
         <div class="col-md-7">
-          <h2 class="featurette-heading">And lastly, this one. </h2>
+          <h2 class="featurette-heading">Third. </h2>
           <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
         </div>
         <div class="col-md-5">

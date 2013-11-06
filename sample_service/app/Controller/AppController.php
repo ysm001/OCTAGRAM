@@ -45,6 +45,9 @@ class AppController extends Controller {
 	$this->layout = 'bootstrap';
 
 	$this->set('authUser', $this->getAuthUser());
+
+	// tmp
+	$this->set('serviceName', 'Fight OCTAGRAM');
     }
 
     public function getAuthUser() {

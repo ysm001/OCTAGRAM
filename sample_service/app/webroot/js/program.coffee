@@ -109,7 +109,6 @@ class ProgramStorage
       }
   
       $.post(getRequestURL('programs', 'add'), program, ( data) => 
-        bootbox.alert(data)
         response = JSON.parse(data)
   
         if response.success

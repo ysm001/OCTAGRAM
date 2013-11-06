@@ -1,5 +1,4 @@
    <?php echo $this->Html->css(array('docs'), false, array('inline'=>false)); ?>
-   <?php $serviceName = "Fight OCTAGRAM"  ?>
     
   <!-- Scrollspyの設定をbodyタグに記入 -->
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
