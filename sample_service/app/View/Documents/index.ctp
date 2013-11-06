@@ -1,4 +1,5 @@
    <?php echo $this->Html->css(array('docs'), false, array('inline'=>false)); ?>
+   <?php $serviceName = "Fight OCTAGRAM"  ?>
     
   <!-- Scrollspyの設定をbodyタグに記入 -->
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -14,8 +15,10 @@
 	  <li>
 	    <a href="#octagram-overview"><i class="icon-chevron-right"></i> OCTAGRAMの概要</a>
             <ul class="nav">
+	      <li><a href="#what-is-fight-octagram"><i class="icon-chevron-right"></i> <?php echo $serviceName ?>とは </a></li>
 	      <li><a href="#what-is-octagram"><i class="icon-chevron-right"></i> OCTAGRAMとは </a></li>
             </ul>
+	    <li><a href="#how-to-octagram"><i class="icon-chevron-right"></i> OCTAGRAMの使い方 </a></li>
           </li>
 
 	  <li>
@@ -55,35 +58,99 @@
       <div class="col-sm-9">
         <section id="octagram-overview">
           <div class="page-header">
-            <h1>OCTAGRAMの概要</h2>
+            <h1>概要</h1>
+	    <p>本章では、本サービス(<?php echo $serviceName ?>)の概要と、プログラミング言語OCTAGRAMに関して説明します。</p>
           </div>
+
+          <section id="what-is-octagram">
+	  <h2><?php echo $serviceName ?>とは</h2>
+            <blockquote>
+              <p>プログラミング言語OCTAGRAMを使ったゲームAIプログラミングを通して、ゲーム感覚でプログラミングの考え方を学ぶwebサービス</p>
+            </blockquote>
+            <br><br><br>
+          </section>
 
           <section id="what-is-octagram">
             <h2>OCTAGRAMとは</h2>
             <blockquote>
-            <p>OCTAGRAM = プログラミング教育を目的とした直感的なビジュアルプログラミング言語</p>
+            <p>プログラミング教育を目的とした直感的なビジュアルプログラミング言語</p>
             </blockquote>
-            <p>用意された命令を矢印で接続していくことにより、直感的にプログラムを組む事が可能です。</p>
-            <p>プログラミングの考え方を理解するために重要な、制御構造の概念やアルゴリズムの組み方の概念を理解することを目的としています。</p>
+            <p>命令をパズルのように組み合わせることにより、直感的にプログラムを組む事が可能な言語です。</p>
             <br><br><br>
           </section>
         </section>
 
+        <section id="how-to-octagram">
+	  <div class="page-header">
+            <h1>OCTAGRAMの使い方</h1>
+            <p>本章では、OCTAGRAMの使い方について説明します。</p>
+          </div>
+          <h3 class="text-primary">全体図</h3>
+	  <?php echo $this->Html->image('document/octagram/octagram_screen.png');?>
+          <h3 class="text-primary">① プログラム編集領域</h3>
+          <p>プログラムを編集する領域です。</p><br>
+          <h3 class="text-primary">② 命令チップ</h3>
+	   <?php echo $this->Html->image('document/octagram/octagram_tip.png');?>
+          <p>プログラムを組むための命令チップです。</p>
+          <p>プログラム開始地点から実行が始まり、矢印に沿って順番に命令が実行されていきます。</p>
+          <p>チップが置かれていない方向へ進んだり、停止チップを実行することによってプログラムが停止します。</p>
+          <p>また、プログラム編集領域の外へ進むと、プログラムの開始地点へ戻ります。</p>
+          <p>命令チップの詳細な説明は「<a class="href" href="#header1">OCTAGRAMの命令</a>」を参照して下さい。</a></p>
+          <br>
+          <br>
+	  <h3 class="text-primary">③ 命令チップ選択領域</h3>
+          <p>命令チップを選択する領域です。</p>
+          <p>ここから、プログラム編集領域にチップをドラッグすることによってチップを配置します。</p>
+          <br>
+	  <h3 class="text-primary">④ メッセージ表示領域</h3>
+          <p>各種メッセージが表示される領域です。</p>
+          <br><br><br>
+
+        </section>
+
+
         <section id="header1">
           <div class="page-header">
-            <h1>OCTAGRAMの命令</h2>
-            <p>本章では、ゲーム内で利用する各命令の詳細について説明します。</p>
+            <h1>OCTAGRAMの命令</h1>
+	    <p>本章では、<?php echo $serviceName ?>内で利用する各命令の一部について説明します。</p>
           </div>
 
           <section id="sub-header1-1">
             <h2>動作命令</h2>
+	    <?php echo $this->Html->image('document/octagram/action_tip.png');?>
             <p>キャラクターなどを動作させる命令です。</p>
+            <br>
+            <h3 class="text-primary">移動命令</h3>
+            <p>プレイヤーを、指定した進行方向へ移動させます。</p>
+            <br>
+            <h3 class="text-primary">ランダム移動命令</h3>
+            <p>プレイヤーを、ランダムな進行方向へ移動させます。</p>
+            <br>
+            <h3 class="text-primary">接近命令</h3>
+            <p>プレイヤーを、敵に近づくように移動させます。</p>
+            <br>
+            <h3 class="text-primary">離脱命令</h3>
+            <p>プレイヤーを、敵からは慣れるように移動させます。</p>
+            <br>
+
             <br><br><br>
           </section>
 
           <section id="sub-header1-2">
             <h2>分岐命令</h2>
+	    <?php echo $this->Html->image('document/octagram/branch_tip.png');?>
             <p>条件によって進行方向を変化させる命令です。</p>
+            <p>チップから2本の矢印が伸びており、条件によって進行方向が変わります。</p>
+            <br>
+
+            <h3 class="text-primary">ランダム分岐命令</h3>
+            <p>ランダムにプログラムの進行方向を分岐させます。</p>
+            <br>
+
+            <h3 class="text-primary">残りHP分岐命令</h3>
+            <p>プレイヤーの残りHPによって進行方向を分岐させます。</p>
+            <br>
+
             <br><br><br>
           </section>
 
@@ -92,17 +159,20 @@
             <p>あらかじめシステムに用意されている命令です。</p>
             <section id="sub-header1-3-1">
               <h3 class="text-primary">停止</h3>
+	       <?php echo $this->Html->image('document/octagram/stop_tip.png');?>
                <p>プログラムを停止させます。</p>
                <br><br><br>
             </section>
             <section id="sub-header1-3-2">
               <h3 class="text-primary">ノップ</h3>
+	       <?php echo $this->Html->image('document/octagram/nop_tip.png');?>
               <p>何もしないで次へ進みます。</p>
               <p>遠距離のチップ同士を接続する時などに利用します。</p>
               <br><br><br>
             </section>
             <section id="sub-header1-3-2">
               <h3 class="text-primary">リターン</h3>
+	       <?php echo $this->Html->image('document/octagram/return_tip.png');?>
               <p>プログラムの開始地点へ戻ります。</p>
               <br><br><br>
             </section>
