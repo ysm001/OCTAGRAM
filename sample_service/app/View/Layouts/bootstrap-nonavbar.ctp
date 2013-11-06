@@ -1,4 +1,4 @@
-_<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -34,6 +34,7 @@ _<!DOCTYPE html>
 </head>
 
 <body>
+        <?php echo $this->fetch('header'); ?>
 	<div class="container">
 		<?php echo $this->Session->flash(); ?>
 		<?php echo $this->fetch('content'); ?>

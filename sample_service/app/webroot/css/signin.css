@@ -1,9 +1,49 @@
+html {
+    height: 100%;
+    width: 100%;
+}
+
 body {
     padding-top: 40px;
     padding-bottom: 40px;
     background-color: #eee;
-    background-image: url("../app/webroot/img/sigin_back.png");
-    background-size:cover;
+    height: 100%;
+    width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.bs-header .container {
+    width: 100%;
+    height: 100%;
+}
+
+.octagram-logo-img-container, .octagram-logo-text-container {
+    width: 100%;
+}
+
+.octagram-logo-container {
+    width: 100%;
+    height: 80%;
+    text-align: center;
+}
+
+.octagram-logo-img, .octagram-logo-text {
+    height: 100%;
+}
+.octagram-logo-img-container {
+    height: 80%;
+}
+
+.octagram-logo-text-container {
+    height: 20%;
+}
+
+
+.bs-header {
+    background: #211D2E;
+    width: 100%;
+    height: 100%;
 }
 
 .form-signin {
