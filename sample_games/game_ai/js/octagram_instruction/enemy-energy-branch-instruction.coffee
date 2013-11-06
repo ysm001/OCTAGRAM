@@ -1,9 +1,9 @@
 
-class EnergyBranchInstruction extends BranchInstruction
-  constructor : (@robot) ->
+class EnemyEnergyBranchInstruction extends BranchInstruction
+  constructor : (@enemy) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "エネルギー残量が#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
+      "敵機のエネルギー残量が#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
     )
      # parameter 2
     column = "エネルギー"
@@ -19,10 +19,10 @@ class EnergyBranchInstruction extends BranchInstruction
     @icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32)
 
   action : () ->
-    @energyParam.value <= @robot.energy
+    @energyParam.value <= @enemy.energy
 
   clone : () ->
-    obj = @copy(new EnergyBranchInstruction(@robot))
+    obj = @copy(new EnemyEnergyBranchInstruction(@enemy))
     obj.energyParam.value = @energyParam.value
     obj
 
@@ -39,3 +39,7 @@ class EnergyBranchInstruction extends BranchInstruction
 
   getIcon: () ->
     return @icon
+        
+
+
+

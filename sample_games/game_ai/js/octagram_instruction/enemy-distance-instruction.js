@@ -18,7 +18,7 @@ EnemyDistanceInstruction = (function(_super) {
     this.enemy = enemy;
     EnemyDistanceInstruction.__super__.constructor.apply(this, arguments);
     this.tipInfo = new TipInfo(function(labels) {
-      return "敵との距離が" + labels[0] + "の場合青い矢印に進みます。<br>そうでなければ、赤い矢印に進みます。      ";
+      return "敵機との距離が" + labels[0] + "の場合青い矢印に進みます。<br>そうでなければ、赤い矢印に進みます。      ";
     });
     column = "距離";
     labels = ["近距離", "中距離", "遠距離"];

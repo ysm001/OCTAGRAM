@@ -130,6 +130,7 @@ RobotWorld = (function(_super) {
     playerProgram.addInstruction(new HpBranchInstruction(this._player));
     playerProgram.addInstruction(new EnemyDistanceInstruction(this._player, this._enemy));
     playerProgram.addInstruction(new EnergyBranchInstruction(this._player));
+    playerProgram.addInstruction(new EnemyEnergyBranchInstruction(this._enemy));
     playerProgram.addInstruction(new ResourceBranchInstruction(this._player));
     enemyProgram.addInstruction(new MoveInstruction(this._enemy));
     enemyProgram.addInstruction(new RandomMoveInstruction(this._enemy));
@@ -141,6 +142,7 @@ RobotWorld = (function(_super) {
     enemyProgram.addInstruction(new HpBranchInstruction(this._enemy));
     enemyProgram.addInstruction(new EnemyDistanceInstruction(this._enemy, this._player));
     enemyProgram.addInstruction(new EnergyBranchInstruction(this._enemy));
+    enemyProgram.addInstruction(new EnemyEnergyBranchInstruction(this._player));
     enemyProgram.addInstruction(new ResourceBranchInstruction(this._enemy));
     return this.octagram.showProgram(this.playerProgramId);
   };

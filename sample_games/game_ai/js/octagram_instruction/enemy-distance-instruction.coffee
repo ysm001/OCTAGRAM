@@ -8,7 +8,7 @@ class EnemyDistanceInstruction extends BranchInstruction
     super
 
     @tipInfo = new TipInfo((labels) ->
-      "敵との距離が#{labels[0]}の場合青い矢印に進みます。<br>そうでなければ、赤い矢印に進みます。
+      "敵機との距離が#{labels[0]}の場合青い矢印に進みます。<br>そうでなければ、赤い矢印に進みます。
       "
     )
     # parameter 1

@@ -23,6 +23,7 @@
   "octagram_instruction/supply-instruction.js",
   "octagram_instruction/turn-enemy-scan-instruction.js",
   "octagram_instruction/energy-branch-instruction.js",
+  "octagram_instruction/enemy-energy-branch-instruction.js",
   "octagram_instruction/enemy-distance-instruction.js",
   "octagram_instruction/hp-branch-instruction.js",
   "octagram_instruction/resource-branch-instruction.js",
