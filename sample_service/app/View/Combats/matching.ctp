@@ -28,6 +28,7 @@
 
     <?php echo $this->Html->script(array('program'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->script(array('create'), false, array('inline'=>false)); ?>
+    <?php echo $this->Html->script(array('matching'), false, array('inline'=>false)); ?>
 
     <style type="text/css">
       body {
@@ -37,26 +38,10 @@
     </style>
 
     <script type="text/javascript">
-        matchingStart = function(playerId, enemyId) {
-	    editPlayerProgram();
-	    loadProgramById(playerId, function() {
-	        editEnemyProgram();
-		loadProgramById(enemyId, function() {
-	            executeProgram();
-	            editPlayerProgram();
-		})
-	    });
-        }
-
-        window.onload = function() {
-	    var options = { 
-		onload:  function() {
-		  matchingStart(<?= $playerId ?>, <?= $enemyId ?>);
-	       }
-            };
-	    runGame(options);
-        }
+      playerId = <?php echo $playerId ?>;
+      enemyId = <?php echo $enemyId ?>;
     </script>
+
   </head>
   <body>
     <div id="program-container">
