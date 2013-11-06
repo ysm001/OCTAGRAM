@@ -9,7 +9,7 @@
       <!-- Three columns of text below the carousel -->
       <div class="row">
         <div class="col-lg-4">
-	   <?php echo $this->Html->image('top_icon_programming.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'programs', 'action' => 'create')));?>
+	   <?php echo $this->Html->image('top_icon_programming.png', array('class' => 'top-icon', 'url' => array('controller' => 'programs', 'action' => 'create')));?>
           <h2>プログラミング</h2>
           <p>OCTAGRAMを用いてAIプログラミングを行います。</p>
         </div><!-- /.col-lg-4 -->
