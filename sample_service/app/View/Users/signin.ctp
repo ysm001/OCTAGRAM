@@ -1,5 +1,17 @@
 <?php echo $this->Html->css(array('signin'), false, array('inline'=>false)); ?>
 
+<?php $this->Html->scriptStart(array('inline'=>false)); ?>
+window.onload = function() {
+    var height = document.documentElement.clientHeight
+    $('.bs-header').css('height', height);
+    $(window).resize(function() {
+      height = document.documentElement.clientHeight > height ? document.documentElement.clientHeight : height;
+      $('.bs-header').css('height', height);
+    });
+}
+<?php $this->Html->scriptEnd(); ?>
+
+
 <?php $this->start('header'); ?>
 <div class="bs-header" id="content">
   <div class="container">
