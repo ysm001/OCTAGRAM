@@ -218,6 +218,9 @@ class Robot extends SpriteModel
         direct |= Direct.RIGHT
 
     if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
+      plate = Map.instance.getTargetPoision(@currentPlate, direct)
+      unless plate
+        direct &= ~(Direct.DOWN | Direct.UP)
       ret = @_moveDirect(direct, onComplete)
       @consumeEnergy(Config.Energy.LEAVE) if ret
     ret

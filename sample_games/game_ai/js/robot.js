@@ -291,7 +291,7 @@ Robot = (function(_super) {
   };
 
   Robot.prototype.leave = function(robot, onComplete) {
-    var direct, enemyPos, ret, robotPos;
+    var direct, enemyPos, plate, ret, robotPos;
     if (onComplete == null) {
       onComplete = function() {};
     }
@@ -320,6 +320,10 @@ Robot = (function(_super) {
       }
     }
     if (direct !== Direct.NONE && direct !== Direct.UP && direct !== Direct.DOWN) {
+      plate = Map.instance.getTargetPoision(this.currentPlate, direct);
+      if (!plate) {
+        direct &= ~(Direct.DOWN | Direct.UP);
+      }
       ret = this._moveDirect(direct, onComplete);
       if (ret) {
         this.consumeEnergy(Config.Energy.LEAVE);
