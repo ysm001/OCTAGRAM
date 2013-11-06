@@ -25,10 +25,12 @@ body {
 
 #feature2 {
     background: #3498db;
+    color: #fff;
 }
 
 #feature3 {
     background: #2ecc71;
+    color: #fff;
 }
 
 .bs-header .container {
