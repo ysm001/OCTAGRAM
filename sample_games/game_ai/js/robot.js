@@ -102,6 +102,7 @@ Robot = (function(_super) {
     this.setup("hp", Robot.MAX_HP);
     this.setup("energy", Robot.MAX_ENERGY);
     this.plateState = 0;
+    this._consumptionEnergy = 0;
     plate = Map.instance.getPlate(0, 0);
     this.prevPlate = this.currentPlate = plate;
     this._animated = false;
@@ -141,6 +142,11 @@ Robot = (function(_super) {
     currentPlateEnergy: {
       get: function() {
         return this.currentPlate.energy;
+      }
+    },
+    consumptionEnergy: {
+      get: function() {
+        return this._consumptionEnergy;
       }
     }
   };
@@ -192,6 +198,7 @@ Robot = (function(_super) {
   Robot.prototype.consumeEnergy = function(value) {
     if (this.energy - value >= 0) {
       this.energy -= value;
+      this._consumptionEnergy += value;
       return true;
     } else {
       return false;
@@ -291,7 +298,7 @@ Robot = (function(_super) {
   };
 
   Robot.prototype.leave = function(robot, onComplete) {
-    var direct, enemyPos, ret, robotPos;
+    var direct, enemyPos, plate, ret, robotPos;
     if (onComplete == null) {
       onComplete = function() {};
     }
@@ -320,6 +327,10 @@ Robot = (function(_super) {
       }
     }
     if (direct !== Direct.NONE && direct !== Direct.UP && direct !== Direct.DOWN) {
+      plate = Map.instance.getTargetPoision(this.currentPlate, direct);
+      if (!plate) {
+        direct &= ~(Direct.DOWN | Direct.UP);
+      }
       ret = this._moveDirect(direct, onComplete);
       if (ret) {
         this.consumeEnergy(Config.Energy.LEAVE);

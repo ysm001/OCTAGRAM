@@ -56,6 +56,7 @@ class Robot extends SpriteModel
     @setup("hp", Robot.MAX_HP)
     @setup("energy", Robot.MAX_ENERGY)
     @plateState = 0
+    @_consumptionEnergy = 0
 
     plate = Map.instance.getPlate(0,0)
     @prevPlate = @currentPlate = plate
@@ -77,6 +78,8 @@ class Robot extends SpriteModel
       get: () -> @currentPlate.pos
     currentPlateEnergy:
       get: () -> @currentPlate.energy
+    consumptionEnergy:
+      get: () -> @_consumptionEnergy
 
   _moveDirect: (direct, onComplete = () ->) ->
     plate = Map.instance.getTargetPoision(@currentPlate, direct)
@@ -110,6 +113,7 @@ class Robot extends SpriteModel
   consumeEnergy: (value) ->
     if @energy - value >= 0
       @energy -= value
+      @_consumptionEnergy += value
       return true
     else
       return false
@@ -218,6 +222,9 @@ class Robot extends SpriteModel
         direct |= Direct.RIGHT
 
     if direct != Direct.NONE and direct != Direct.UP and direct != Direct.DOWN
+      plate = Map.instance.getTargetPoision(@currentPlate, direct)
+      unless plate
+        direct &= ~(Direct.DOWN | Direct.UP)
       ret = @_moveDirect(direct, onComplete)
       @consumeEnergy(Config.Energy.LEAVE) if ret
     ret

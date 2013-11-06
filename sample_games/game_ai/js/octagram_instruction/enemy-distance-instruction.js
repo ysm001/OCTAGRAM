@@ -12,13 +12,13 @@ EnemyDistanceInstruction = (function(_super) {
 
 
   function EnemyDistanceInstruction(robot, enemy) {
-    var column, labels;
+    var column, labels,
+      _this = this;
     this.robot = robot;
     this.enemy = enemy;
     EnemyDistanceInstruction.__super__.constructor.apply(this, arguments);
-    this.setAsynchronous(true);
     this.tipInfo = new TipInfo(function(labels) {
-      return "敵との距離が" + labels[0] + "の場合青い矢印に進みます。<br>そうでなければ、赤い矢印に進みます。      ";
+      return "敵機との距離が" + labels[0] + "の場合青い矢印に進みます。<br>そうでなければ、赤い矢印に進みます。      ";
     });
     column = "距離";
     labels = ["近距離", "中距離", "遠距離"];
@@ -27,10 +27,29 @@ EnemyDistanceInstruction = (function(_super) {
     this.addParameter(this.distanceParam);
     this.tipInfo.addParameter(this.distanceParam.id, column, labels, 0);
     this.icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32);
+    this.conditions = [
+      function() {
+        var _ref;
+        return (0 < (_ref = _this._distance()) && _ref <= 3);
+      }, function() {
+        var _ref;
+        return (3 < (_ref = _this._distance()) && _ref <= 7);
+      }, function() {
+        return 7 < _this._distance();
+      }
+    ];
   }
 
+  EnemyDistanceInstruction.prototype._distance = function() {
+    var enemyPos, robotPos;
+    enemyPos = this.enemy.pos;
+    robotPos = this.robot.pos;
+    robotPos.sub(enemyPos);
+    return robotPos.length();
+  };
+
   EnemyDistanceInstruction.prototype.action = function() {
-    return true;
+    return this.conditions[this.distanceParam.value]();
   };
 
   EnemyDistanceInstruction.prototype.clone = function() {

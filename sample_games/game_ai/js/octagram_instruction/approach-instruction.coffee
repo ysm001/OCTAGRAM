@@ -18,7 +18,7 @@ class ApproachInstruction extends ActionInstruction
     return obj
 
   mkDescription: () ->
-    "敵に近づくように移動します。<br>(消費エネルギー #{Config.Energy.APPROACH} 消費フレーム #{Config.Frame.ROBOT_MOVE})"
+    "敵機に近づくように移動します。<br>(消費エネルギー #{Config.Energy.APPROACH} 消費フレーム #{Config.Frame.ROBOT_MOVE})"
 
   getIcon: () ->
     @icon.frame = 0

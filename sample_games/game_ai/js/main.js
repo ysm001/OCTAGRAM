@@ -128,7 +128,9 @@ RobotWorld = (function(_super) {
     playerProgram.addInstruction(new SupplyInstruction(this._player));
     playerProgram.addInstruction(new TurnEnemyScanInstruction(this._player, this._enemy));
     playerProgram.addInstruction(new HpBranchInstruction(this._player));
+    playerProgram.addInstruction(new EnemyDistanceInstruction(this._player, this._enemy));
     playerProgram.addInstruction(new EnergyBranchInstruction(this._player));
+    playerProgram.addInstruction(new EnemyEnergyBranchInstruction(this._enemy));
     playerProgram.addInstruction(new ResourceBranchInstruction(this._player));
     enemyProgram.addInstruction(new MoveInstruction(this._enemy));
     enemyProgram.addInstruction(new RandomMoveInstruction(this._enemy));
@@ -138,7 +140,9 @@ RobotWorld = (function(_super) {
     enemyProgram.addInstruction(new SupplyInstruction(this._enemy));
     enemyProgram.addInstruction(new TurnEnemyScanInstruction(this._enemy, this._player));
     enemyProgram.addInstruction(new HpBranchInstruction(this._enemy));
+    enemyProgram.addInstruction(new EnemyDistanceInstruction(this._enemy, this._player));
     enemyProgram.addInstruction(new EnergyBranchInstruction(this._enemy));
+    enemyProgram.addInstruction(new EnemyEnergyBranchInstruction(this._player));
     enemyProgram.addInstruction(new ResourceBranchInstruction(this._enemy));
     return this.octagram.showProgram(this.playerProgramId);
   };
@@ -267,9 +271,10 @@ RobotScene = (function(_super) {
         prg = this.octagram.getInstance(id);
         prg.stop();
       }
-      return setTimeout((function() {
+      setTimeout((function() {
         return __this.restart();
       }), 2000);
+      return __this.dispatchEvent(new RobotEvent("gameEnd", params));
     });
     this.views.initEvent(this.world);
     this.world.initialize();
@@ -296,8 +301,8 @@ RobotScene = (function(_super) {
 RobotGame = (function(_super) {
   __extends(RobotGame, _super);
 
-  function RobotGame(width, height, callback) {
-    this.callback = callback;
+  function RobotGame(width, height, options) {
+    this.options = options;
     RobotGame.__super__.constructor.call(this, width, height);
     this._assetPreload();
     this.keybind(87, 'w');
@@ -346,9 +351,14 @@ RobotGame = (function(_super) {
     this.octagram = new Octagram(Config.OCTAGRAM_DIR);
     this.octagram.onload = function() {
       _this.scene.world.initInstructions(_this.octagram);
-      if (_this.callback) {
-        return _this.callback();
+      if (_this.options && _this.options.onload) {
+        _this.options.onload();
       }
+      return _this.scene.addEventListener("gameEnd", function(evt) {
+        if (_this.options && _this.options.onend) {
+          return _this.options.onend(evt.params);
+        }
+      });
     };
     this.assets["font0.png"] = this.assets['resources/ui/font0.png'];
     this.assets["apad.png"] = this.assets['resources/ui/apad.png'];
@@ -360,8 +370,8 @@ RobotGame = (function(_super) {
 
 })(Core);
 
-runGame = function(callback) {
+runGame = function(options) {
   var game;
-  game = new RobotGame(Config.GAME_WIDTH, Config.GAME_HEIGHT, callback);
+  game = new RobotGame(Config.GAME_WIDTH, Config.GAME_HEIGHT, options);
   return game.start();
 };
