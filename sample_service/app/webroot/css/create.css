@@ -1,16 +1,16 @@
 #content {
     margin: 0 auto;
     margin-top: 100px;
-    width: 1334px;
-    height: 644;
+    width: 1340px;
+    height: 650;
     border:solid 20px #1f1f1f; 
     border-radius: 25px 25px 25px 25px / 25px 25px 25px 25px;
 }
 
 #program-container {
-    border: 3px solid #5cb85c;
-    width: 1286px;
-    height: 646px;
+    border: 5px solid #5cb85c;
+    width: 1290px;
+    height: 650px;
 }
 
 .container {
