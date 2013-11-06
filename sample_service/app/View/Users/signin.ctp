@@ -9,6 +9,16 @@ window.onload = function() {
       $('.bs-header').css('height', height);
     });
 }
+
+$('a[href^="#"]').click(function(event) {
+      var id = $(this).attr("href");
+      var offset = 0;
+      var target = $(id).offset().top - offset;
+      $('html, body').animate({scrollTop:target}, 500);
+      event.preventDefault();
+      return false;
+});
+
 <?php $this->Html->scriptEnd(); ?>
 
 
@@ -25,6 +35,7 @@ window.onload = function() {
     </div>
     <div class="form-signin"> 
         <p><?php echo $this->Html->link('Sign in with Google', '/auth/google', array('class' => 'btn btn-lg btn-primary btn-block')); ?></p>
+        <p><?php echo $this->Html->link('Learn more', '#feature1', array('class' => 'btn btn-lg btn-success btn-block')); ?></p>
     </div>
   </div>
 </div>
@@ -34,7 +45,7 @@ window.onload = function() {
 
       <hr class="featurette-divider">
 
-      <div class="row featurette">
+      <div id="feature1" class="row featurette">
         <div class="col-md-7">
           <h2 class="featurette-heading">First featurette heading. <span class="text-muted">It'll blow your mind.</span></h2>
           <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
@@ -46,7 +57,7 @@ window.onload = function() {
 
       <hr class="featurette-divider">
 
-      <div class="row featurette">
+      <div id="feature2" class="row featurette">
         <div class="col-md-5">
 	   <?php echo $this->Html->image('500x500.png', array('class' => 'featurette-image img-responsive'));?>
         </div>
@@ -58,7 +69,7 @@ window.onload = function() {
 
       <hr class="featurette-divider">
 
-      <div class="row featurette">
+      <div id="feature3" class="row featurette">
         <div class="col-md-7">
           <h2 class="featurette-heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
           <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
