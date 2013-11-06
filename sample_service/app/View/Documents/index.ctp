@@ -12,6 +12,13 @@
         <div class="bs-sidebar hidden-print affix" role="complementary">
         <ul class="nav nav-list bs-sidenav bs-docs-sidenav">
 	  <li>
+	    <a href="#octagram-overview"><i class="icon-chevron-right"></i> OCTAGRAMの概要</a>
+            <ul class="nav">
+	      <li><a href="#what-is-octagram"><i class="icon-chevron-right"></i> OCTAGRAMとは </a></li>
+            </ul>
+          </li>
+
+	  <li>
 	    <a href="#header1"><i class="icon-chevron-right"></i> OCTAGRAMの命令</a>
             <ul class="nav">
 	      <li><a href="#sub-header1-1"><i class="icon-chevron-right"></i> 動作命令</a></li>
@@ -32,14 +39,40 @@
               <li><a href="#sub-header1-6"><i class="icon-chevron-right"></i> サブルーチン</a></li>
             </ul>
           </li>
+
+	  <li>
+	    <a href="#octagram-framework"><i class="icon-chevron-right"></i> OCTAGRAM Framework</a>
+            <ul class="nav">
+              <li>
+	        <a href="#octagram-api"><i class="icon-chevron-right"></i> OCTAGRAM API</a>
+              </li>
+            </ul>
+          </li>
         </ul>
         </div>
       </div><!-- /span3 bs-docs-sidebar -->
                 
       <div class="col-sm-9">
+        <section id="octagram-overview">
+          <div class="page-header">
+            <h1>OCTAGRAMの概要</h2>
+          </div>
+
+          <section id="what-is-octagram">
+            <h2>OCTAGRAMとは</h2>
+            <blockquote>
+            <p>OCTAGRAM = プログラミング教育を目的とした直感的なビジュアルプログラミング言語</p>
+            </blockquote>
+            <p>用意された命令を矢印で接続していくことにより、直感的にプログラムを組む事が可能です。</p>
+            <p>プログラミングの考え方を理解するために重要な、制御構造の概念やアルゴリズムの組み方の概念を理解することを目的としています。</p>
+            <br><br><br>
+          </section>
+        </section>
+
         <section id="header1">
           <div class="page-header">
             <h1>OCTAGRAMの命令</h2>
+            <p>本章では、ゲーム内で利用する各命令の詳細について説明します。</p>
           </div>
 
           <section id="sub-header1-1">
@@ -121,27 +154,24 @@
           <br>
           <br>
         </section>
+        <section id="octagram-framework">
+          <div class="page-header">
+            <h2>OCTAGRAM Framework</h2>
+            <p>本章では、フレームワークとしてのOCTAGRAMの利用法について説明します。<b class="text-danger">(開発者向け)</b></p>
+          </div>
+          <p>OCTAGRAMはライブラリとして利用することができ、ゲームに限らずJavaScriptで記述された任意のアプリケーションに利用することができます。</p>
+          <section id="octagram-api">
+            <h3>OCTAGRAM API</h3>
+            <p class="text-danger">準備中</p>
+          </section>
+          <br><br><br>
+        </section>
+
 
 
       </div><!-- /span9 -->
                     
       </div><!-- /row -->
-             <br>
-          <br>
-          <br>     <br>
-          <br>
-          <br>     <br>
-          <br>
-          <br>     <br>
-          <br>
-          <br>     <br>
-          <br>
-          <br>     <br>
-          <br>
-          <br>     <br>
-          <br>
-          <br>     <br>
-          <br>
           <br>
       
       <hr>

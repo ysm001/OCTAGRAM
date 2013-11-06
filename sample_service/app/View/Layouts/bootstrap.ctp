@@ -56,6 +56,7 @@
                  <ul class="dropdown-menu">
 	           <li><?php echo $this->Html->link('OCTAGRAM', '/documents/index'); ?></li>
 	           <li><?php echo $this->Html->link('Game', '/documents/game'); ?></li>
+	           <li><?php echo $this->Html->link('Tutorial', '/pages/home'); ?></li>
                  </ul>
               </li>
 
