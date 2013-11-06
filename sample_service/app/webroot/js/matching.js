@@ -2,16 +2,43 @@
 var Mathing;
 
 Mathing = (function() {
-  function Mathing() {}
+  function Mathing(playerId, enemyId) {
+    this.playerId = playerId;
+    this.enemyId = enemyId;
+  }
 
-  Mathing.prototype.start = function(playerId, enemyId) {
+  Mathing.prototype.start = function() {
     editPlayerProgram();
-    return loadProgramById(playerId, function() {
+    return loadProgramById(this.playerId, function() {
       editEnemyProgram();
-      return loadProgramById(enemyId, function() {
+      return loadProgramById(this.enemyId, function() {
         executeProgram();
         return editPlayerProgram();
       });
+    });
+  };
+
+  Mathing.prototype.end = function(result) {
+    var enemyResult, isPlayerWin, playerResult, target;
+    target = getRequestURL('statistics', 'push_result');
+    isPlayerWin = result.win instanceof PlayerRobot;
+    playerResult = {
+      damage: 0,
+      damaged: 0,
+      win: +isPlayerWin,
+      program_id: this.playerId
+    };
+    enemyResult = {
+      damage: 0,
+      damaged: 0,
+      win: +(!isPlayerWin),
+      program_id: this.enemyId
+    };
+    $.post(target, playerResult, function(response) {
+      return console.log(response);
+    });
+    return $.post(target, enemyResult, function(response) {
+      return console.log(response);
     });
   };
 
@@ -21,14 +48,14 @@ Mathing = (function() {
 
 $(function() {
   var mathing, options;
-  mathing = new Mathing();
+  mathing = new Mathing(playerId, enemyId);
   Config.Frame.setGameSpeed(4);
   options = {
     onload: function() {
-      return mathing.start(playerId, enemyId);
+      return mathing.start();
     },
     onend: function(result) {
-      return console.log(result);
+      return mathing.end(result);
     }
   };
   return runGame(options);
