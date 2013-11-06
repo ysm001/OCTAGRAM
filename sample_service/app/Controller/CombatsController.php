@@ -22,3 +22,4 @@ class CombatsController extends AppController {
     }
     
 }
+?>

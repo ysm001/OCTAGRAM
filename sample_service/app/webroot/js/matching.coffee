@@ -12,25 +12,33 @@ class Mathing
     )
 
   end : (result) ->
-    target = getRequestURL('statistics', 'push_result')
+    target = getRequestURL('battle_logs', 'save')
     isPlayerWin = result.win instanceof PlayerRobot 
+    player = if isPlayerWin then result.win else result.lose
+    enemy  = if !isPlayerWin then result.win else result.lose
 
     playerResult = {
-      damage : 0,
-      damaged: 0,
-      win: +isPlayerWin,
-      program_id: @playerId
+      opponent_id: enemyId,
+      is_winner: +isPlayerWin,
+      program_id: @playerId,
+      remaining_hp: player.hp,
+      consumed_energy: player.consumptionEnergy
     }
 
     enemyResult = {
-      damage : 0,
-      damaged: 0,
-      win: +(!isPlayerWin),
-      program_id: @enemyId
+      opponent_id: playerId,
+      is_winner: +!isPlayerWin,
+      program_id: @enemyId,
+      remaining_hp: enemy.hp,
+      consumed_energy: enemy.consumptionEnergy
     }
 
-    $.post(target, playerResult, (response) -> console.log(response))
-    $.post(target, enemyResult, (response) -> console.log(response))
+    data = {
+      challenger: playerResult,
+      defender: enemyResult
+    }
+
+    $.post(target, data, (response) -> console.log(response))
 
 $ ->
   mathing = new Mathing(playerId, enemyId)

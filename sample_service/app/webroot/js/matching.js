@@ -19,25 +19,30 @@ Mathing = (function() {
   };
 
   Mathing.prototype.end = function(result) {
-    var enemyResult, isPlayerWin, playerResult, target;
-    target = getRequestURL('statistics', 'push_result');
+    var data, enemy, enemyResult, isPlayerWin, player, playerResult, target;
+    target = getRequestURL('battle_logs', 'save');
     isPlayerWin = result.win instanceof PlayerRobot;
+    player = isPlayerWin ? result.win : result.lose;
+    enemy = !isPlayerWin ? result.win : result.lose;
     playerResult = {
-      damage: 0,
-      damaged: 0,
-      win: +isPlayerWin,
-      program_id: this.playerId
+      opponent_id: enemyId,
+      is_winner: +isPlayerWin,
+      program_id: this.playerId,
+      remaining_hp: player.hp,
+      consumed_energy: player.consumptionEnergy
     };
     enemyResult = {
-      damage: 0,
-      damaged: 0,
-      win: +(!isPlayerWin),
-      program_id: this.enemyId
+      opponent_id: playerId,
+      is_winner: +(!isPlayerWin),
+      program_id: this.enemyId,
+      remaining_hp: enemy.hp,
+      consumed_energy: enemy.consumptionEnergy
     };
-    $.post(target, playerResult, function(response) {
-      return console.log(response);
-    });
-    return $.post(target, enemyResult, function(response) {
+    data = {
+      challenger: playerResult,
+      defender: enemyResult
+    };
+    return $.post(target, data, function(response) {
       return console.log(response);
     });
   };

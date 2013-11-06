@@ -6,9 +6,9 @@ class Program extends AppModel {
         )
     );
 
-    public $hasOne = array(
-	'Statistic' => array(
-	    'className' => 'Statistic',
+    public $hasMany = array(
+	'BattleLog' => array(
+	    'className' => 'BattleLog',
 	    'foreignKey' => 'program_id'
 	)
     );

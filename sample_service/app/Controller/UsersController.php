@@ -45,7 +45,6 @@ class UsersController extends AppController {
 	else {
 	    $data['id'] = $user['User']['id'];
 	    $data['Account']['id'] = $user['Account']['id'];
-	    $data['Statistic']['id'] = $user['Statistic']['id'];
 	}
 	return $this->User->saveAll($data);
     }
