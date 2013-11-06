@@ -102,6 +102,7 @@ Robot = (function(_super) {
     this.setup("hp", Robot.MAX_HP);
     this.setup("energy", Robot.MAX_ENERGY);
     this.plateState = 0;
+    this._consumptionEnergy = 0;
     plate = Map.instance.getPlate(0, 0);
     this.prevPlate = this.currentPlate = plate;
     this._animated = false;
@@ -141,6 +142,11 @@ Robot = (function(_super) {
     currentPlateEnergy: {
       get: function() {
         return this.currentPlate.energy;
+      }
+    },
+    consumptionEnergy: {
+      get: function() {
+        return this._consumptionEnergy;
       }
     }
   };
@@ -192,6 +198,7 @@ Robot = (function(_super) {
   Robot.prototype.consumeEnergy = function(value) {
     if (this.energy - value >= 0) {
       this.energy -= value;
+      this._consumptionEnergy += value;
       return true;
     } else {
       return false;

@@ -182,6 +182,7 @@ class RobotScene extends Scene
         prg = @octagram.getInstance(id)
         prg.stop()
       setTimeout((() -> __this.restart()), 2000)
+      __this.dispatchEvent(new RobotEvent("gameEnd", params))
 
     @views.initEvent @world
     @world.initialize()
@@ -198,7 +199,7 @@ class RobotScene extends Scene
     @views.update(@world)
 
 class RobotGame extends Core
-  constructor: (width, height, @callback) ->
+  constructor: (width, height, @options) ->
     super width, height
     @_assetPreload()
     @keybind(87, 'w')
@@ -240,13 +241,15 @@ class RobotGame extends Core
     @octagram = new Octagram(Config.OCTAGRAM_DIR)
     @octagram.onload = () =>
       @scene.world.initInstructions(@octagram)
-      if @callback then @callback()
+      if @options and @options.onload then @options.onload()
+      @scene.addEventListener "gameEnd", (evt) =>
+        if @options and @options.onend then @options.onend(evt.params)
 
     @assets["font0.png"] = @assets['resources/ui/font0.png']
     @assets["apad.png"] = @assets['resources/ui/apad.png']
     @assets["icon0.png"] = @assets['resources/ui/icon0.png']
     @assets["pad.png"] = @assets['resources/ui/pad.png']
 
-runGame = (callback) ->
-  game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT, callback
+runGame = (options) ->
+  game = new RobotGame Config.GAME_WIDTH, Config.GAME_HEIGHT, options
   game.start()
