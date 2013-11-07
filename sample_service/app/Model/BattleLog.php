@@ -10,5 +10,12 @@ class BattleLog extends AppModel {
 	}
 	return true;
     }
+
+    public $belongsTo = array(
+	'Program' => array(
+	    'className'    => 'Program',
+	    'foreignKey'   => 'program_id'
+	)
+    );
 }
 ?>

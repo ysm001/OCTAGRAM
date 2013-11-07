@@ -55,7 +55,7 @@ class UsersController extends AppController {
 	if ($this->update($data)) {
 	    $data['id'] = $this->User->id;
 	    if ($this->Auth->login($data)) {
-		$this->redirect(array('controller' => 'pages', 'action' => 'home'));
+		$this->redirect(array('controller' => 'fronts', 'action' => 'home'));
 	    }
 	    else {
 		$this->setErrorFlash('failed: login');
