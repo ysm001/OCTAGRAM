@@ -47,7 +47,7 @@ class AppController extends Controller {
 	$this->set('authUser', $this->getAuthUser());
 
 	// tmp
-	$this->set('serviceName', 'Fight OCTAGRAM');
+	$this->set('serviceName', 'Code Combat');
     }
 
     public function getAuthUser() {

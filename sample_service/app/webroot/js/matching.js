@@ -2,16 +2,48 @@
 var Mathing;
 
 Mathing = (function() {
-  function Mathing() {}
+  function Mathing(playerId, enemyId) {
+    this.playerId = playerId;
+    this.enemyId = enemyId;
+  }
 
-  Mathing.prototype.start = function(playerId, enemyId) {
+  Mathing.prototype.start = function() {
     editPlayerProgram();
-    return loadProgramById(playerId, function() {
+    return loadProgramById(this.playerId, function() {
       editEnemyProgram();
-      return loadProgramById(enemyId, function() {
+      return loadProgramById(this.enemyId, function() {
         executeProgram();
         return editPlayerProgram();
       });
+    });
+  };
+
+  Mathing.prototype.end = function(result) {
+    var data, enemy, enemyResult, isPlayerWin, player, playerResult, target;
+    target = getRequestURL('battle_logs', 'save');
+    isPlayerWin = result.win instanceof PlayerRobot;
+    player = isPlayerWin ? result.win : result.lose;
+    enemy = !isPlayerWin ? result.win : result.lose;
+    playerResult = {
+      opponent_id: enemyId,
+      is_winner: +isPlayerWin,
+      program_id: this.playerId,
+      remaining_hp: player.hp,
+      consumed_energy: player.consumptionEnergy
+    };
+    enemyResult = {
+      opponent_id: playerId,
+      is_winner: +(!isPlayerWin),
+      program_id: this.enemyId,
+      remaining_hp: enemy.hp,
+      consumed_energy: enemy.consumptionEnergy
+    };
+    data = {
+      challenger: playerResult,
+      defender: enemyResult
+    };
+    return $.post(target, data, function(response) {
+      return console.log(response);
     });
   };
 
@@ -21,14 +53,14 @@ Mathing = (function() {
 
 $(function() {
   var mathing, options;
-  mathing = new Mathing();
+  mathing = new Mathing(playerId, enemyId);
   Config.Frame.setGameSpeed(4);
   options = {
     onload: function() {
-      return mathing.start(playerId, enemyId);
+      return mathing.start();
     },
     onend: function(result) {
-      return console.log(result);
+      return mathing.end(result);
     }
   };
   return runGame(options);

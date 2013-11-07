@@ -10,17 +10,17 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Fight OCTAGRAM</a>
+	    <a class="navbar-brand" href="#"><?php echo $serviceName; ?></a>
           </div>
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-	      <li><?php echo $this->Html->link('Home', '/pages/home'); ?></li>
+	      <li><?php echo $this->Html->link('Home', '/fronts/home'); ?></li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Document<b class="caret"></b></a>
                  <ul class="dropdown-menu">
 	           <li><?php echo $this->Html->link('OCTAGRAM', '/documents/index'); ?></li>
 	           <li><?php echo $this->Html->link('Game', '/documents/game'); ?></li>
-	           <li><?php echo $this->Html->link('Tutorial', '/pages/home'); ?></li>
+	           <li><?php echo $this->Html->link('Tutorial', '/fronts/home'); ?></li>
                  </ul>
               </li>
 

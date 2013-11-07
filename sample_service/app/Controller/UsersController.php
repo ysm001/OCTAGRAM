@@ -45,7 +45,6 @@ class UsersController extends AppController {
 	else {
 	    $data['id'] = $user['User']['id'];
 	    $data['Account']['id'] = $user['Account']['id'];
-	    $data['Statistic']['id'] = $user['Statistic']['id'];
 	}
 	return $this->User->saveAll($data);
     }
@@ -56,7 +55,7 @@ class UsersController extends AppController {
 	if ($this->update($data)) {
 	    $data['id'] = $this->User->id;
 	    if ($this->Auth->login($data)) {
-		$this->redirect(array('controller' => 'pages', 'action' => 'home'));
+		$this->redirect(array('controller' => 'fronts', 'action' => 'home'));
 	    }
 	    else {
 		$this->setErrorFlash('failed: login');
