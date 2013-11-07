@@ -1,0 +1,17 @@
+#program-container {
+    background: #000;
+}
+
+#battle-result {
+    background: #000;
+    float: left;
+    width: 640px;
+    height: 640px;
+}
+
+#filter {
+    position: absolute;
+    width: 640px;
+    height: 640px;
+    position: 0 0 0 0;
+}

@@ -8,6 +8,7 @@ Mathing = (function() {
   }
 
   Mathing.prototype.start = function() {
+    this.disableInput();
     editPlayerProgram();
     return loadProgramById(this.playerId, function() {
       editEnemyProgram();
@@ -42,9 +43,32 @@ Mathing = (function() {
       challenger: playerResult,
       defender: enemyResult
     };
+    this.showResult();
     return $.post(target, data, function(response) {
-      return console.log(response);
+      if (response === "true") {
+        return Flash.showSuccess("result has been saved.");
+      } else {
+        return Flash.showError("error");
+      }
     });
+  };
+
+  Mathing.prototype.createResultView = function() {};
+
+  Mathing.prototype.showResult = function() {
+    var $result,
+      _this = this;
+    $result = $('<div></div>').attr('id', 'battle-result');
+    return $('#enchant-stage').fadeOut('fast', function() {
+      $(_this).remove();
+      return $('#program-container').append($result);
+    });
+  };
+
+  Mathing.prototype.disableInput = function() {
+    var $filter;
+    $filter = $('<div></div>').attr('id', 'filter');
+    return $('#program-container').append($filter);
   };
 
   return Mathing;

@@ -2,6 +2,8 @@ class Mathing
   constructor: (@playerId, @enemyId) ->
 
   start : () ->
+    @disableInput()
+
     editPlayerProgram()
     loadProgramById(@playerId, () ->
       editEnemyProgram()
@@ -38,7 +40,27 @@ class Mathing
       defender: enemyResult
     }
 
-    $.post(target, data, (response) -> console.log(response))
+    @showResult()
+    $.post(
+      target, data, (response) -> 
+        if ( response == "true" ) 
+          Flash.showSuccess("result has been saved.") 
+        else 
+          Flash.showError("error")
+    )
+
+  createResultView : () ->
+
+  showResult : () ->
+    $result = $('<div></div>').attr('id', 'battle-result')
+    $('#enchant-stage').fadeOut('fast', () => 
+      $(@).remove()
+      $('#program-container').append($result)
+    )
+
+  disableInput : () ->
+    $filter = $('<div></div>').attr('id', 'filter')
+    $('#program-container').append($filter)
 
 $ ->
   mathing = new Mathing(playerId, enemyId)
