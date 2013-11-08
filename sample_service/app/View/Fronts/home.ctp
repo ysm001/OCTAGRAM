@@ -37,8 +37,8 @@
     
      <?php foreach($associations as $p) { ?>
  
-     <div class="row battle-log">
-	 <div class="battle-log-challenger col-sm-4" program-id="<?php echo $p['ChallengerBattleLog']['Program']['id']; ?>" user-id="<?php echo $p['ChallengerBattleLog']['Program']['User']['id']; ?>">
+     <div class="row battle-log" style="padding-top:5px; padding-bottom:5px">
+	 <div class="battle-log-challenger col-sm-4 program-cell" program-id="<?php echo $p['ChallengerBattleLog']['Program']['id']; ?>" user-id="<?php echo $p['ChallengerBattleLog']['Program']['User']['id']; ?>">
 	     <div class="row">
 		 <div class="col-sm-6">
 		     <div class="img">
@@ -56,7 +56,7 @@
 	     <div class="text-danger" style="font-size:large;">V.S.</div>
 	     <div class="text-muted"><?php echo (new DateTime($p['BattleLogAssociation']['created']))->format('Y-m-d H:i'); ?></div>
 	 </div>
-	 <div class="battle-log-defender col-sm-4" program-id="<?php echo $p['DefenderBattleLog']['Program']['id']; ?>" user-id="<?php echo $p['DefenderBattleLog']['Program']['User']['id']; ?>">
+	 <div class="battle-log-defender col-sm-4 program-cell" program-id="<?php echo $p['DefenderBattleLog']['Program']['id']; ?>" user-id="<?php echo $p['DefenderBattleLog']['Program']['User']['id']; ?>">
 	     <div class="row">
 	     <?php if ($p['DefenderBattleLog']['is_winner']) { ?><div class="col-sm-6 text-primary"><?php } else { ?><div class="col-sm-6 text-danger"><?php } ?>
 		     <div class="name" style="font-size:small;"><?php echo $p['DefenderBattleLog']['Program']['User']['nickname']; ?></div>

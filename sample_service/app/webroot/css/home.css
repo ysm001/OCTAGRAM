@@ -65,3 +65,7 @@
   font-weight: bold;
   font-size: 24px;
 }
+
+.program-cell:hover{
+    background-color: #e6e6e6;
+}
