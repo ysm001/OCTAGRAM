@@ -84,8 +84,13 @@ body {
     max-width: 330px;
     padding: 15px;
     margin: 0 auto;
-    margin-top: 500;
-    background: #fff;
+}
+.form-signin .signin-btn {
+    border: 0px; 
+    color: #FFF;
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 10px;
 }
 
 .form-signin .form-signin-heading,

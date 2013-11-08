@@ -9,6 +9,9 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
 
 <?php $this->start('content-without-container'); ?>
   <!-- Three columns of text below the carousel -->
+<div class="wrapper">
+
+<div class="menu-wrapper">
 <div class="container">
   <div class="row menu">
     <div class="menu-item col-sm-4">
@@ -27,6 +30,7 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
       <p>ランキングを表示します。</p>
     </div><!-- /.col-lg-4 -->
   </div><!-- /.row -->
+</div>
 </div>
 
 <div class="battle-log-wrapper">
@@ -55,8 +59,8 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
 		 </div>
 	    </div>
 	 </div>
-	 <div class="battle-log-vs col-sm-4" style="margin-top: 10px;">
-	     <div class="text-danger" style="font-size:large;">V.S.</div>
+	 <div class="battle-log-vs col-sm-4">
+	     <div class="text-danger">V.S.</div>
 	     <div class="text-muted"><?php echo (new DateTime($p['BattleLogAssociation']['created']))->format('Y-m-d H:i'); ?></div>
 	 </div>
 	 <div class="battle-log-defender col-sm-4 program-cell" program-id="<?php echo $p['DefenderBattleLog']['Program']['id']; ?>" user-id="<?php echo $p['DefenderBattleLog']['Program']['User']['id']; ?>">
@@ -108,3 +112,5 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
 </div> 
 </div> 
 <?php $this->end(); ?>
+
+</div>
