@@ -31,7 +31,18 @@ class UsersController extends AppController {
     }
 
     public function profile() {
-    
+        if (!empty($this->data)) {
+            if ($this->User->save($this->data)) {
+                $this->Session->setFlash("保存しました", 'dissmiss', array('class' => 'alert alert-success alert-dismissable'));
+            } else {
+                $this->Session->setFlash("保存に失敗しました", 'default', array('class' => 'alert alert-danger'));
+            }
+            $this->redirect('/users/profile');
+        } else {
+            $user = $this->Auth->user();
+            $user = $this->User->find('first', array('conditions' => array('User.id' => $user['id'])));
+            $this->set('user', $user);
+        }
     }
 
     private function update($data) {

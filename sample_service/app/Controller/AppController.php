@@ -35,45 +35,45 @@ App::import('Vendor', 'oauth', array('file' => 'OAuth'.DS.'oauth_consumer.php'))
 class AppController extends Controller {
     public $components = array('Auth' => array('loginAction' => '/users/signin'), 'Session');
     public $helpers = array(
-	'Session',
-	'Html' => array('className' => 'TwitterBootstrap.BootstrapHtml'),
-	'Form' => array('className' => 'TwitterBootstrap.BootstrapForm'),
-	'Paginator' => array('className' => 'TwitterBootstrap.BootstrapPaginator'),
+        'Session',
+        'Html' => array('className' => 'TwitterBootstrap.BootstrapHtml'),
+        'Form' => array('className' => 'TwitterBootstrap.BootstrapForm'),
+        'Paginator' => array('className' => 'TwitterBootstrap.BootstrapPaginator'),
     );
     public function beforeFilter() {
-	parent::beforeFilter();
-	$this->layout = 'bootstrap';
+        parent::beforeFilter();
+        $this->layout = 'bootstrap';
 
-	$this->set('authUser', $this->getAuthUser());
+        $this->set('authUser', $this->getAuthUser());
 
-	// tmp
-	$this->set('serviceName', 'Code Combat');
+        // tmp
+        $this->set('serviceName', 'Code Combat');
     }
 
     public function getAuthUser() {
-	$user = $this->Auth->user();
-	return $user ? $user : null;
+        $user = $this->Auth->user();
+        return $user ? $user : null;
     }
 
     protected function setSuccessFlash($message) {
-	$this->Session->setFlash(
-	    $message,
-	    'alert',
-	    array(
-		'plugin' => 'TwitterBootstrap',
-		'class' => 'alert-success'
-	    )
-	);
+        $this->Session->setFlash(
+            $message,
+            'alert',
+            array(
+                'plugin' => 'TwitterBootstrap',
+                'class' => 'alert-success'
+            )
+        );
     }
 
     protected function setErrorFlash($message) {
-	$this->Session->setFlash(
-	    $message,
-	    'alert',
-	    array(
-		'plugin' => 'TwitterBootstrap',
-		'class' => 'alert-error'
-	    )
-	);
+        $this->Session->setFlash(
+            $message,
+            'alert',
+            array(
+                'plugin' => 'TwitterBootstrap',
+                'class' => 'alert-error'
+            )
+        );
     }
 }
