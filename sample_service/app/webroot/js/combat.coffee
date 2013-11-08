@@ -4,7 +4,7 @@ window.onload = () ->
   moveToBattlePage = (playerId, enemyId) ->
     location.href = getRoot() + "combats/matching/" + playerId + "/" + enemyId
 
-  $('.btn-battle').click(() -> selector.modal(
+  $('.program-row').click(() -> selector.modal(
     buttons: [{
       type: "success",
       text: "Select",

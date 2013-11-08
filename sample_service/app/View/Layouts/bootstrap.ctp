@@ -3,6 +3,7 @@
 <?php echo $this->Html->script(array('bootbox'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script('flash'); ?>
 <?php echo $this->Html->css('flash'); ?>
+<?php echo $this->Html->css('docs'); ?>
 <?php $this->start('header'); ?>
         <div class="navbar navbar-default">
           <div class="navbar-header">

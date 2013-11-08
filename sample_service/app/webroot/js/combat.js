@@ -5,7 +5,7 @@ window.onload = function() {
   moveToBattlePage = function(playerId, enemyId) {
     return location.href = getRoot() + "combats/matching/" + playerId + "/" + enemyId;
   };
-  return $('.btn-battle').click(function() {
+  return $('.program-row').click(function() {
     var _this = this;
     return selector.modal({
       buttons: [
