@@ -76,5 +76,17 @@ class Program extends AppModel {
     public function getAbsolutePresetProgramDir($root) {
         return $_SERVER['DOCUMENT_ROOT'].$this->getPresetProgramDir($root);
     }
+
+    public function afterFind($results, $primary = false) {
+        foreach ($results as $key => $val) {
+            if (isset($val['User']) && !empty($val['User']['cc_name'])) {
+                $results[$key]['User']['nickname'] = $val['User']['cc_name'];
+            }
+            if (isset($val['cc_name']) && !empty($val['cc_name'])) {
+                $results[$key]['nickname'] = $val['cc_name'];
+            }
+        }
+        return $results;
+    }
 }
 ?>
