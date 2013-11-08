@@ -39,18 +39,13 @@
        </blockquote>
        <?php if ($pageInfo['count'] > 0) { ?>
         
-        <?php
-        $email = "tamanyan.sss@gmail.com";
-        $size = 40;
-        $grav_url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "&s=" . $size;
-        ?>
          <?php foreach($associations as $p) { ?> 
          <div class="row battle-log">
              <div class="battle-log-challenger col-sm-4" program-id="<?php echo $p['ChallengerBattleLog']['Program']['id']; ?>" user-id="<?php echo $p['ChallengerBattleLog']['Program']['User']['id']; ?>">
                  <div class="row">
                      <div class="col-sm-6">
                          <div class="img">
-                             <img class="img-rounded" src="<?php echo $grav_url; ?>" height="80" alt="" />
+			 <img class="img-rounded" src="<?php echo $p['ChallengerBattleLog']['Program']['User']['icon_url'] ?>" height="80" alt="" />
                          </div>
                      </div>
                      <div class="col-sm-6">
@@ -70,7 +65,7 @@
                      </div>
                      <div class="col-sm-6">
                          <div class="img">
-                             <img class="img-rounded" src="<?php echo $grav_url; ?>" alt="" />
+                             <img class="img-rounded" src="<?php echo $p['DefenderBattleLog']['Program']['User']['icon_url'] ?>" height="80" alt="" />
                          </div>
                      </div>
                 </div>

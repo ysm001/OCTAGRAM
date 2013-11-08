@@ -12,19 +12,14 @@ class CombatsController extends AppController {
         )
     );
 
-    public function beforeFilter() {
-        parent::beforeFilter();
-        $user = $this->Auth->user();
-        $this->Paginator->settings = array(
-            'conditions' => array('Program.user_id !=' => $user['id']),
-        );
-    }
     public function index() {
+        $user = $this->Auth->user();
         $this->Paginator->settings = array(
             'limit' => 20,
             'order' => array('Program.modified' => 'desc'),
-            'conditions' => array('Program.is_preset' => '0')
+            'conditions' => array('Program.is_preset' => '0', 'Program.user_id !=' => $user['id'])
         );
+
         $this->set('programs',$this->Paginator->paginate('Program'));
     }
 
