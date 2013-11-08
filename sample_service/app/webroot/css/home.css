@@ -40,9 +40,6 @@
 .inline {
   display: inline;
 }
-.battle-log {
-  padding: 5px;
-}
 
 .battle-log :hover {
   cursor: pointer;
@@ -68,4 +65,32 @@
 
 .program-cell:hover{
     background-color: #e6e6e6;
+}
+
+.battle-log-wrapper {
+    background: #111;
+}
+
+.menu, .battle-log-container {
+    margin: 0 auto;
+}
+
+body {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.battle-log {
+    background: #fff;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.battle-log-header {
+    color: #fff;
+}
+
+.program-cell {
+    padding: 10px;
+    border-radius: 20px;
 }

@@ -64,6 +64,5 @@
 
 		<?php echo $this->fetch('content'); ?>
 	</div> <!-- /container -->
-
 <?php $this->start('footer'); ?>
 <?php $this->end(); ?>
