@@ -17,7 +17,7 @@
           <p>OCTAGRAMを用いてAIプログラミングを行います。</p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-	   <?php echo $this->Html->image('top_icon_vs.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'combats', 'action' => 'home')));?>
+	   <?php echo $this->Html->image('top_icon_vs.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'combats', 'action' => 'index')));?>
           <h2>対戦</h2>
           <p>他のユーザのAIと対戦を行います。</p>
         </div><!-- /.col-lg-4 -->
