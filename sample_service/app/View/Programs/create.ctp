@@ -49,7 +49,15 @@
     </div>
     <div id="dbg-btns" style="float:left; margin-top: 10px">
       <form>
-        <!--<input type="button" class="btn btn-default" value="generate"       name="Generate Test Code" onClick="generateTestCode()" />-->
+	<button type="button" class="btn btn-lg btn-success" id='edit-player-program' style="display: none">edit player program</button>
+	<button type="button" class="btn btn-lg btn-danger"  id='edit-enemy-program'>edit enemy program</button>
+	<button type="button" class="btn btn-lg btn-success" id="save">save</button>
+	<button type="button" class="btn btn-lg btn-success" id="load">load</button>
+	<button type="button" class="btn btn-lg btn-primary" id="run">run</button>
+	<button type="button" class="btn btn-lg btn-warning" id="stop" disabled=disabled>stop</button>
+	<button type="button" class="btn btn-lg btn-warning" id="restart" disabled=disabled>restart</button>
+
+<!--
 	<button type="button" class="btn btn-lg btn-success" id='edit-player-program' style="display: none"  onClick="editPlayerProgram()">edit player program</button>
 	<button type="button" class="btn btn-lg btn-danger" id='edit-enemy-program' onClick="editEnemyProgram()">edit enemy program</button>
 	<button type="button" class="btn btn-lg btn-success" onClick="saveProgram()">save</button>
@@ -57,17 +65,6 @@
 	<button type="button" class="btn btn-lg btn-primary" onClick="executeProgram()">run</button>
 	<button type="button" class="btn btn-lg btn-warning" onClick="resetProgram()">stop</button>
 	<button type="button" class="btn btn-lg btn-warning" onClick="restartProgram()">restart</button>
-
-<!--
-        <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />
-        <input type="button" class="btn btn-success" value="save player" name="Save" onClick="savePlayerProgram()" />
-        <input type="button" class="btn btn-success" value="save on server" name="Save" onClick="saveProgram()" />
-        <input type="button" class="btn btn-success" value="load player" name="Save" onClick="loadPlayerProgram()" />
-        <input type="button" class="btn btn-success" value="execute player" name="Execute Test Code" onClick="executePlayerProgram()" />
-        <input type="button" class="btn btn-danger" value="show enemy" name="Save" onClick="showEnemyProgram()" />
-        <input type="button" class="btn btn-danger" value="save enemy"  name="Save" onClick="saveEnemyProgram()" />
-        <input type="button" class="btn btn-danger" value="load enemy"  name="Save" onClick="loadEnemyProgram()" />
-        <input type="button" class="btn btn-danger" value="execute enemy"  name="Execute Test Code" onClick="executeEnemyProgram()" />
 -->
       </form>
     </div>
