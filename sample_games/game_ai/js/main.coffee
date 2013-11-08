@@ -181,7 +181,6 @@ class RobotScene extends Scene
       for id in [@enemyProgramId, @playerProgramId]
         prg = @octagram.getInstance(id)
         prg.stop()
-      setTimeout((() -> __this.restart()), 2000)
       __this.dispatchEvent(new RobotEvent("gameEnd", params))
 
     @views.initEvent @world

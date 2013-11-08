@@ -83,7 +83,28 @@ class Mathing
     $result.append($label);
     $result.append($enemyResult);
 
+    $result.append(@createResultButton())
+
     $result
+
+  retry: () ->
+    $('#battle-result').fadeOut('fast', () =>
+      $('#enchant-stage').fadeIn('fast', () =>
+        Game.instance.currentScene.restart()
+        executeProgram()
+      )
+    )
+
+  createResultButton : () ->
+    $retryButton = $('<div></div>').attr({id: 'retry-btn', class: 'btn btn-lg btn-success result-btn'}).text('Retry').click(@retry)
+    $backButton = $('<a></a>').attr({id: 'back-btn', class: 'btn btn-lg btn-danger result-btn'}).attr('href', getRequestURL('fronts', 'home')).text('Back')
+
+    $buttons = $('<div></div>').attr('class', 'result-btns')
+
+    $buttons.append($retryButton)
+    $buttons.append($backButton)
+
+    $buttons
 
   showResult : (result) ->
     playerData = {
@@ -104,7 +125,7 @@ class Mathing
       win:false 
     }
 
-    $result = @createResultView(playerData, enemyData) # $('<div></div>').attr('id', 'battle-result')
+    $result = @createResultView(playerData, enemyData)
     $('#enchant-stage').fadeOut('fast', () => 
       $(@).remove()
       $('#program-container').append($result)

@@ -35,6 +35,16 @@
     font-size: 15px;
 }
 
+.result-btns {
+    text-align: center;
+    margin-top: 500px;
+}
+
+.result-btn {
+    width: 100px;
+    margin-right: 20px;
+}
+
 .program-name {
     font-size: 32px;
     height: 60px;

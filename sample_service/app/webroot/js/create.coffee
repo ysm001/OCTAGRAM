@@ -7,6 +7,25 @@ getCurrentProgram = () -> Game.instance.octagram.getCurrentInstance()
 showPlayerProgram = () -> Game.instance.octagram.showProgram(Game.instance.currentScene.world.playerProgramId)
 showEnemyProgram = () -> Game.instance.octagram.showProgram(Game.instance.currentScene.world.enemyProgramId)
 
+playerRunning = false
+enemyRunning = false
+
+resetProgram = (onReset) ->
+  stopProgram()
+
+  restart = () -> 
+    if (!playerRunning && !enemyRunning) 
+      Game.instance.currentScene.restart()
+      if onReset then onReset()
+    else setTimeout(restart, 100)
+
+  setTimeout(restart, 100)
+
+restartProgram = () ->
+  resetProgram(() -> 
+    console.log("aaaaaa")
+    executeProgram())
+
 editPlayerProgram = () ->
   $('#edit-player-program').hide()
   $('#edit-enemy-program').show()
@@ -28,8 +47,11 @@ loadProgramById = (id, callback) -> programStorage.loadProgramById(id, callback)
 getContentWindow = () -> $('iframe')[0].contentWindow
 
 executeProgram = () ->
-  getPlayerProgram().execute()
-  getEnemyProgram().execute()
+  playerRunning = true
+  enemyRunning = true
+
+  getPlayerProgram().execute({onStop: () -> playerRunning = false})
+  getEnemyProgram().execute({onStop: () -> enemyRunning = false})
 
 stopProgram = () ->
   getPlayerProgram().stop()

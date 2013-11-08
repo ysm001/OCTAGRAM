@@ -7,6 +7,8 @@ class Executer extends EventTarget
     @end = false
     @running = false
 
+    @options = null
+
   getNext : () -> if @next? then @cpu.getTip(@next.x, @next.y) else null
 
   _execute : (tip) ->
@@ -34,7 +36,9 @@ class Executer extends EventTarget
       setTimeout(wait, 100)
     else callback()
 
-  execute : () ->
+  execute : (options) ->
+    @options = options
+
     @waitWhileRunning(() =>
       @onStart()
       tip = @cpu.getStartTip()
@@ -72,6 +76,8 @@ class Executer extends EventTarget
   onStop : () -> 
     @running = false
     @end = false
+    
+    if (@options && @options.onStop) then @options.onStop()
 
   isRunning : () -> @running
 

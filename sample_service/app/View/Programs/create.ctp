@@ -55,7 +55,8 @@
 	<button type="button" class="btn btn-lg btn-success" onClick="saveProgram()">save</button>
 	<button type="button" class="btn btn-lg btn-success" onClick="loadProgram()">load</button>
 	<button type="button" class="btn btn-lg btn-primary" onClick="executeProgram()">run</button>
-	<button type="button" class="btn btn-lg btn-warning" onClick="stopProgram()">stop</button>
+	<button type="button" class="btn btn-lg btn-warning" onClick="resetProgram()">stop</button>
+	<button type="button" class="btn btn-lg btn-warning" onClick="restartProgram()">restart</button>
 
 <!--
         <input type="button" class="btn btn-success" value="show player" name="Save" onClick="showPlayerProgram()" />

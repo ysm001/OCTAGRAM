@@ -195,8 +195,8 @@ OctagramContent = (function(_super) {
     return this.cpu.deserialize(JSON.parse(serializedVal));
   };
 
-  OctagramContent.prototype.execute = function() {
-    return this.executer.execute();
+  OctagramContent.prototype.execute = function(options) {
+    return this.executer.execute(options);
   };
 
   OctagramContent.prototype.stop = function() {

@@ -84,7 +84,34 @@ Mathing = (function() {
     $result.append($playerResult);
     $result.append($label);
     $result.append($enemyResult);
+    $result.append(this.createResultButton());
     return $result;
+  };
+
+  Mathing.prototype.retry = function() {
+    var _this = this;
+    return $('#battle-result').fadeOut('fast', function() {
+      return $('#enchant-stage').fadeIn('fast', function() {
+        Game.instance.currentScene.restart();
+        return executeProgram();
+      });
+    });
+  };
+
+  Mathing.prototype.createResultButton = function() {
+    var $backButton, $buttons, $retryButton;
+    $retryButton = $('<div></div>').attr({
+      id: 'retry-btn',
+      "class": 'btn btn-lg btn-success result-btn'
+    }).text('Retry').click(this.retry);
+    $backButton = $('<a></a>').attr({
+      id: 'back-btn',
+      "class": 'btn btn-lg btn-danger result-btn'
+    }).attr('href', getRequestURL('fronts', 'home')).text('Back');
+    $buttons = $('<div></div>').attr('class', 'result-btns');
+    $buttons.append($retryButton);
+    $buttons.append($backButton);
+    return $buttons;
   };
 
   Mathing.prototype.showResult = function(result) {
