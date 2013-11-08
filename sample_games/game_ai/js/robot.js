@@ -221,7 +221,10 @@ Robot = (function(_super) {
   };
 
   Robot.prototype.damege = function() {
-    return this.hp -= 1;
+    this.hp -= 1;
+    if (this.hp <= 0) {
+      return this.dispatchEvent(new RobotEvent("die", {}));
+    }
   };
 
   Robot.prototype.update = function() {

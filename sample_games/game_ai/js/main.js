@@ -75,8 +75,8 @@ RobotWorld = (function(_super) {
     this.addChild(this._player);
     this.addChild(this._enemy);
     this.diePlayer = false;
-    this.player.addObserver("hp", function(hp) {
-      if (hp <= 0 && _this.diePlayer === false) {
+    this.player.addEventListener("die", function(evt) {
+      if (_this.diePlayer === false) {
         _this.diePlayer = _this.player;
         return _this.dispatchEvent(new RobotEvent('gameEnd', {
           lose: _this.player,
@@ -84,8 +84,8 @@ RobotWorld = (function(_super) {
         }));
       }
     });
-    this.enemy.addObserver("hp", function(hp) {
-      if (hp <= 0 && _this.diePlayer === false) {
+    this.enemy.addEventListener("die", function(evt) {
+      if (_this.diePlayer === false) {
         _this.diePlayer = _this.enemy;
         return _this.dispatchEvent(new RobotEvent('gameEnd', {
           win: _this.player,

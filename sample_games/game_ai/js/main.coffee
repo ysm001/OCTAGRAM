@@ -60,13 +60,13 @@ class RobotWorld extends GroupModel
 
     @diePlayer = false
 
-    @player.addObserver "hp", (hp) =>
-      if hp <= 0 and @diePlayer == false
+    @player.addEventListener "die", (evt) =>
+      if @diePlayer == false
         @diePlayer = @player
         @dispatchEvent(new RobotEvent('gameEnd', {lose:@player, win:@enemy}))
 
-    @enemy.addObserver "hp", (hp) =>
-      if hp <= 0 and @diePlayer == false
+    @enemy.addEventListener "die", (evt) =>
+      if @diePlayer == false
         @diePlayer = @enemy
         @dispatchEvent(new RobotEvent('gameEnd', {win:@player, lose:@enemy}))
 

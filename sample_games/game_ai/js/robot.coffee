@@ -132,6 +132,9 @@ class Robot extends SpriteModel
 
   damege: () ->
     @hp -= 1
+    if @hp <= 0
+      @dispatchEvent(new RobotEvent("die",{}))
+
 
   update: ->
     # Why the @x @y does it become a floating-point number?
