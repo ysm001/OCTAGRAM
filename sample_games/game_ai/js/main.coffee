@@ -11,7 +11,7 @@ class ViewWorld extends Group
     @y = y
 
     @background = new Background 0, 0
-    @header = new Header 16, 16
+    @header = new Header 0, 0
     @map = new Map 16, 68
     @footer = new Footer(25, @map.y + @map.height)
 
@@ -32,6 +32,8 @@ class ViewWorld extends Group
     @map.reset()
 
 class RobotWorld extends GroupModel
+  @TIME_LIMIT : 13 * 8
+
   constructor: (x, y, scene) ->
     if RobotWorld.instance?
       return RobotWorld.instance
@@ -59,16 +61,21 @@ class RobotWorld extends GroupModel
     @addChild @_enemy
 
     @diePlayer = false
+    @_start = false
 
     @player.addEventListener "die", (evt) =>
       if @diePlayer == false
+        @_start = false
         @diePlayer = @player
-        @dispatchEvent(new RobotEvent('gameEnd', {lose:@player, win:@enemy}))
+        @dispatchEvent(new RobotEvent('gameend', {lose:@player, win:@enemy, type:RobotAIGame.END.KILL}))
 
     @enemy.addEventListener "die", (evt) =>
       if @diePlayer == false
+        @_start = false
         @diePlayer = @enemy
-        @dispatchEvent(new RobotEvent('gameEnd', {win:@player, lose:@enemy}))
+        @dispatchEvent(new RobotEvent('gameend', {win:@player, lose:@enemy, type:RobotAIGame.END.KILL}))
+
+    @_timer = 0
 
   properties:
     player:
@@ -77,6 +84,8 @@ class RobotWorld extends GroupModel
       get:() -> @_enemy
     robots:
       get:() -> @_robots
+    timer:
+      get: () -> @_timer
 
   initInstructions: (@octagram) ->
     playerProgram = @octagram.createProgramInstance()
@@ -84,6 +93,9 @@ class RobotWorld extends GroupModel
     @playerProgramId = playerProgram.id
     @enemyProgramId  = enemyProgram.id
 
+    playerProgram.addEventListener 'onstart', () =>
+      @_start = true
+      @_timer = 0
     playerProgram.addInstruction(new MoveInstruction(@_player))
     playerProgram.addInstruction(new RandomMoveInstruction(@_player))
     playerProgram.addInstruction(new ApproachInstruction(@_player, @_enemy))
@@ -156,6 +168,32 @@ class RobotWorld extends GroupModel
       break if animated == true
     return animated
 
+  _lose: () ->
+    if @player.hp > @enemy.hp
+      return @enemy
+    else if @player.hp < @enemy.hp
+      return @player
+    else
+      if @player.consumptionEnergy > @enemy.consumptionEnergy
+        return @player
+      else if @player.consumptionEnergy < @enemy.consumptionEnergy
+        return @enemy
+      else
+        return @enemy
+
+  _win: () ->
+    if @player.hp > @enemy.hp
+      return @player
+    else if @player.hp < @enemy.hp
+      return @enemy
+    else
+      if @player.consumptionEnergy > @enemy.consumptionEnergy
+        return @enemy
+      else if @player.consumptionEnergy < @enemy.consumptionEnergy
+        return @player
+      else
+        return @player
+
   reset: () ->
     @enemy.reset(7, 5)
     @player.reset(1, 1)
@@ -164,7 +202,16 @@ class RobotWorld extends GroupModel
   updateRobots: () ->
     i.update() for i in @_robots
 
-  update: (views)->
+  update: (views) ->
+    if @_start and @age % Config.Frame.GAME_TIMER_CLOCK == 0
+      @_timer += 1
+      @dispatchEvent(new RobotEvent('ontimer'), {timer:@timer})
+      if @timer >= RobotWorld.TIME_LIMIT and @diePlayer == false
+        @diePlayer = @_lose()
+        @_start = false
+        @dispatchEvent(new RobotEvent('gameend', {win:@_win(), lose:@diePlayer, type:RobotAIGame.END.TIME_LIMIT}))
+        console.log "end"
+
     @updateItems()
     @updateRobots()
     @updateBullets()
@@ -175,13 +222,13 @@ class RobotScene extends Scene
     @views = new ViewWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
     @world = new RobotWorld Config.GAME_OFFSET_X, Config.GAME_OFFSET_Y, @
     __this = @
-    @world.addEventListener 'gameEnd', (evt) ->
-      #console.log "scene gameEnd"
+    @world.addEventListener 'gameend', (evt) ->
+      #console.log "scene gameend"
       params = evt.params
       for id in [@enemyProgramId, @playerProgramId]
         prg = @octagram.getInstance(id)
         prg.stop()
-      __this.dispatchEvent(new RobotEvent("gameEnd", params))
+      __this.dispatchEvent(new RobotEvent("gameend", params))
 
     @views.initEvent @world
     @world.initialize()
@@ -241,7 +288,7 @@ class RobotGame extends Core
     @octagram.onload = () =>
       @scene.world.initInstructions(@octagram)
       if @options and @options.onload then @options.onload()
-      @scene.addEventListener "gameEnd", (evt) =>
+      @scene.addEventListener "gameend", (evt) =>
         if @options and @options.onend then @options.onend(evt.params)
 
     @assets["font0.png"] = @assets['resources/ui/font0.png']

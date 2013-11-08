@@ -1,5 +1,10 @@
 if !IS_MOBILE? then IS_MOBILE = false else Environment.Mobile = true
 
+class RobotAIGame
+  @END :
+    KILL   : 1
+    TIMERT : 2
+
 class Config
   @GAME_WIDTH = 640
   @GAME_HEIGHT = 640
@@ -24,13 +29,14 @@ class Config.R
     HEADER : "#{R.RESOURCE_DIR}/background/header.png"
     HP_RED : "#{R.RESOURCE_DIR}/background/hp_red.png"
     HP_GREEN : "#{R.RESOURCE_DIR}/background/hp_green.png"
+    TIMER : "#{R.RESOURCE_DIR}/background/timer.png"
     HP_ENCLOSE : "#{R.RESOURCE_DIR}/background/hpenclose.png"
     ENERGY : "#{R.RESOURCE_DIR}/background/energy.png"
     PLATE : "#{R.RESOURCE_DIR}/background/plate.png"
     PLATE_OVERLAY : "#{R.RESOURCE_DIR}/background/plate_overlay.png"
     PLATE_ENERGY : "#{R.RESOURCE_DIR}/background/plate_energy.png"
     MSGBOX : "#{R.RESOURCE_DIR}/background/msgbox.png"
-    STATUS_BOX : "#{R.RESOURCE_DIR}/background/statusbox.png"
+    #STATUS_BOX : "#{R.RESOURCE_DIR}/background/statusbox.png"
   @UI :
     FONT0 : "#{R.RESOURCE_DIR}/ui/font0.png"
     ICON0 : "#{R.RESOURCE_DIR}/ui/icon0.png"
@@ -77,6 +83,7 @@ class Config.Frame
     Frame.BULLET                        =  20 / Frame.DIAMETER
     Frame.NATURAL_MAP_ENERGY_RECAVERY   = 100 / Frame.DIAMETER
     Frame.NATURAL_ROBOT_ENERGY_RECAVERY = 192 / Frame.DIAMETER
+    Frame.GAME_TIMER_CLOCK              = 4 / Frame.DIAMETER
   setAllFrame()
 
   @setGameSpeed: (diameter = 1) ->
@@ -109,4 +116,5 @@ class Config.R.String
   @supply: (s, e) -> "#{s}は#{e}エネルギー補給しました。"
   @state: (h, e) -> "(HP: #{h}, エネルギー: #{e})"
   @die: (s) -> "#{s}はHPが0になりました。"
+  @timelimit: (s) -> "タイムアップで#{s}は判定負けとなります。"
   @win: (s) -> "#{s}の勝利になります。"

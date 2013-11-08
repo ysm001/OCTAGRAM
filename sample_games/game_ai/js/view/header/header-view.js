@@ -11,13 +11,16 @@ Header = (function(_super) {
   Header.WIDTH = 600;
 
   function Header(x, y) {
+    var offset;
     Header.__super__.constructor.apply(this, arguments);
     this.x = x;
     this.y = y;
-    this.addView(new PlayerHp(8, 0));
-    this.addView(new EnemyHp(Header.WIDTH / 2 + 8, 0));
-    this.addView(new PlayerEnergy(8, 26));
-    this.addView(new EnemyEnergy(Header.WIDTH / 2 + 8, 26));
+    offset = 16;
+    this.addView(new PlayerHp(offset + 8, offset));
+    this.addView(new EnemyHp(Header.WIDTH / 2 + 8 + offset, offset));
+    this.addView(new PlayerEnergy(8 + offset, 26 + offset));
+    this.addView(new EnemyEnergy(Header.WIDTH / 2 + 8 + offset, 26 + offset));
+    this.addView(new TimerView(8, 0));
   }
 
   return Header;

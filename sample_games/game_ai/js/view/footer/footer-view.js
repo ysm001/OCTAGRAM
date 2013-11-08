@@ -129,12 +129,16 @@ MsgBox = (function(_super) {
         return _this.print(R.String.turn(player.name) + R.String.state(player.hp, player.energy));
       }
     });
-    return world.addEventListener("gameEnd", function(evt) {
+    return world.addEventListener("gameend", function(evt) {
       var loseRobotName, params, winRobotName;
       params = evt.params;
       loseRobotName = params.lose.name;
       winRobotName = params.win.name;
-      return _this.print(R.String.die(loseRobotName) + R.String.win(winRobotName));
+      if (params.type === RobotAIGame.END.KILL) {
+        return _this.print(R.String.die(loseRobotName) + R.String.win(winRobotName));
+      } else if (params.type === RobotAIGame.END.TIME_LIMIT) {
+        return _this.print(R.String.timelimit(loseRobotName) + R.String.win(winRobotName));
+      }
     });
   };
 

@@ -19,7 +19,6 @@ class PlayerHp extends MeterView
       if hp < world.player.hp
         @decreaseForce(PART_WIDTH * (world.player.hp - hp))
       else
-        #console.log "hp gameEnd", hp, world.player.hp
         @increaseForce(PART_WIDTH * (hp - world.player.hp))
 
 class EnemyHp extends MeterView
@@ -42,5 +41,4 @@ class EnemyHp extends MeterView
       if hp < world.enemy.hp
         @decreaseForce(PART_WIDTH * (world.enemy.hp - hp))
       else
-        #console.log "hp gameEnd", hp, world.enemy.hp
         @increaseForce(PART_WIDTH * (hp - world.enemy.hp))

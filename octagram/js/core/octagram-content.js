@@ -196,10 +196,12 @@ OctagramContent = (function(_super) {
   };
 
   OctagramContent.prototype.execute = function(options) {
+    this.dispatchEvent(new enchant.Event("onstart"));
     return this.executer.execute(options);
   };
 
   OctagramContent.prototype.stop = function() {
+    this.dispatchEvent(new enchant.Event("onstop"));
     return this.executer.stop();
   };
 

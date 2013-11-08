@@ -110,8 +110,13 @@ class OctagramContent extends Group
   serialize : () -> JSON.stringify(@cpu.serialize())
   deserialize : (serializedVal) -> @cpu.deserialize(JSON.parse(serializedVal))
 
-  execute : (options) -> @executer.execute(options)
-  stop : () -> @executer.stop()
+  execute : (options) ->
+    @dispatchEvent(new enchant.Event("onstart"))
+    @executer.execute(options)
+
+  stop : () ->
+    @dispatchEvent(new enchant.Event("onstop"))
+    @executer.stop()
 
   setTipToBar : () ->
     @clearInstructions()

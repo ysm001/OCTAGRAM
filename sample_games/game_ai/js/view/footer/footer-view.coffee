@@ -82,12 +82,15 @@ class MsgBox extends ViewGroup
         @print R.String.turn(player.name) + R.String.state(player.hp, player.energy)
 
     # callback on the HP of enemy changed
-    world.addEventListener "gameEnd", (evt) =>
-      #console.log "footer gameEnd"
+    world.addEventListener "gameend", (evt) =>
+      #console.log "footer gameend"
       params = evt.params
       loseRobotName = params.lose.name
       winRobotName = params.win.name
-      @print R.String.die(loseRobotName) + R.String.win(winRobotName)
+      if params.type is RobotAIGame.END.KILL
+        @print R.String.die(loseRobotName) + R.String.win(winRobotName)
+      else if params.type is RobotAIGame.END.TIME_LIMIT
+        @print R.String.timelimit(loseRobotName) + R.String.win(winRobotName)
 
   print: (msg) ->
     @msg.add(msg)
