@@ -1,5 +1,5 @@
 <?php
-class RankingController extends AppController {
+class RankingsController extends AppController {
     public $uses = array("User", "Program", "Statistic");
     
     public $components = array('Paginator');

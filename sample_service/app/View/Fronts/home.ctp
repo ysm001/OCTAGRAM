@@ -22,7 +22,7 @@
       <p>他のユーザのAIと対戦を行います。</p>
     </div><!-- /.col-lg-4 -->
     <div class="menu-item col-sm-4">
-   <?php echo $this->Html->image('top_icon_ranking.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'fronts', 'action' => 'home')));?>
+   <?php echo $this->Html->image('top_icon_ranking.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'rankings', 'action' => 'index')));?>
       <h2>ランキング</h2>
       <p>ランキングを表示します。</p>
     </div><!-- /.col-lg-4 -->
