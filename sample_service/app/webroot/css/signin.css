@@ -11,6 +11,8 @@ body {
     width: 100%;
     padding-top: 0;
     padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .featurette {
@@ -20,7 +22,8 @@ body {
 }
 
 #feature1 {
-    background: #ecf0f1;
+    background: #9b59b6;
+    color: #fff;
 }
 
 #feature2 {
@@ -41,6 +44,10 @@ body {
 .container {
     width: 100%;
     max-width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .octagram-logo-img-container, .octagram-logo-text-container {
@@ -66,7 +73,8 @@ body {
 
 
 .bs-header {
-    background: #211D2E;
+    /*background: #211D2E;*/
+    background: #34495e;
     width: 100%;
     height: 100%;
 }

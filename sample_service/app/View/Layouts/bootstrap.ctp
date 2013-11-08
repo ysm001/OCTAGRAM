@@ -16,6 +16,7 @@
   function getRoot() { return $('#webroot').text(); }
   function getRequestURL(controller, action) {return getRoot() + controller + '/' + action}
 </script>
+<?php echo $this->Html->css('docs'); ?>
 <?php $this->start('header'); ?>
         <div class="navbar navbar-default">
           <div class="navbar-header">
