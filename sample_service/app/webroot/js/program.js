@@ -5,77 +5,82 @@ ProgramSelector = (function() {
   function ProgramSelector() {}
 
   ProgramSelector.prototype.modal = function(options) {
-    var $body, $head, $modal, $modalBody, $modalHeader, $table, title;
-    $table = $('<table></table>').attr('class', 'table table-striped table-hover');
-    $body = $('<tbody></tbody>');
-    $head = $('<thead></thead>').append($('<tr></tr>').append($('<th></th>').text("")).append($('<th></th>').text("")));
-    $.get(getRequestURL('programs', 'owned_list'), {
-      user_id: getUserId()
-    }, function(data) {
-      var $btns, $label, $title, $tr, button, callback, idx, program, programs, _i, _j, _len, _len1, _ref, _results;
-      programs = JSON.parse(data);
-      _results = [];
-      for (_i = 0, _len = programs.length; _i < _len; _i++) {
-        program = programs[_i];
-        $tr = $('<tr></tr>');
-        $title = $('<td></td>').attr({
-          "class": 'selector-title'
-        }).text(program.name);
-        if (parseInt(program.is_preset)) {
-          $label = $('<span style="margin-left: 10px"></span>').attr({
-            "class": 'label label-info'
-          }).text("preset");
-          $title.append($label);
-        }
-        $btns = $('<td></td>').attr({
-          "class": 'selector-btn'
-        });
-        callback = (function() {
-          var _j, _len1, _ref, _results1;
-          _ref = options.buttons;
-          _results1 = [];
-          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-            button = _ref[_j];
-            _results1.push(button.handler);
+    var _this = this;
+    ScreenLoader.show();
+    return setTimeout((function() {
+      var $body, $head, $modal, $modalBody, $modalHeader, $table, title;
+      $table = $('<table></table>').attr('class', 'table table-striped table-hover');
+      $body = $('<tbody></tbody>');
+      $head = $('<thead></thead>').append($('<tr></tr>').append($('<th></th>').text("")).append($('<th></th>').text("")));
+      $.get(getRequestURL('programs', 'owned_list'), {
+        user_id: getUserId()
+      }, function(data) {
+        var $btns, $label, $title, $tr, button, callback, idx, program, programs, _i, _j, _len, _len1, _ref, _results;
+        ScreenLoader.cancel();
+        programs = JSON.parse(data);
+        _results = [];
+        for (_i = 0, _len = programs.length; _i < _len; _i++) {
+          program = programs[_i];
+          $tr = $('<tr></tr>');
+          $title = $('<td></td>').attr({
+            "class": 'selector-title'
+          }).text(program.name);
+          if (parseInt(program.is_preset)) {
+            $label = $('<span style="margin-left: 10px"></span>').attr({
+              "class": 'label label-info'
+            }).text("preset");
+            $title.append($label);
           }
-          return _results1;
-        })();
-        _ref = options.buttons;
-        for (idx = _j = 0, _len1 = _ref.length; _j < _len1; idx = ++_j) {
-          button = _ref[idx];
-          $btns.append($('<button style="margin-left:10px"></button>').attr({
-            "class": "btn btn-" + button.type,
-            'program-id': program.id,
-            'btn-id': idx
-          }).text(button.text).click(function() {
-            callback[$(this).attr('btn-id')]($(this).attr('program-id'));
-            return $modal.modal('hide');
-          }));
+          $btns = $('<td></td>').attr({
+            "class": 'selector-btn'
+          });
+          callback = (function() {
+            var _j, _len1, _ref, _results1;
+            _ref = options.buttons;
+            _results1 = [];
+            for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+              button = _ref[_j];
+              _results1.push(button.handler);
+            }
+            return _results1;
+          })();
+          _ref = options.buttons;
+          for (idx = _j = 0, _len1 = _ref.length; _j < _len1; idx = ++_j) {
+            button = _ref[idx];
+            $btns.append($('<button style="margin-left:10px"></button>').attr({
+              "class": "btn btn-" + button.type,
+              'program-id': program.id,
+              'btn-id': idx
+            }).text(button.text).click(function() {
+              callback[$(this).attr('btn-id')]($(this).attr('program-id'));
+              return $modal.modal('hide');
+            }));
+          }
+          $tr.append($title);
+          $tr.append($btns);
+          _results.push($body.append($tr));
         }
-        $tr.append($title);
-        $tr.append($btns);
-        _results.push($body.append($tr));
-      }
-      return _results;
-    });
-    $table.append($head);
-    $table.append($body);
-    $modalBody = $('<div></div>').attr('class', 'modal-body').append($table);
-    title = options.title ? options.title : "Select Program";
-    $modalHeader = $('<div></div>').attr('class', 'modal-header').append($('<button></button>').attr({
-      type: 'button',
-      "class": 'close',
-      'data-dismiss': 'modal'
-    }).text('×')).append($('<h4></h4>').attr('class', 'modal-title').text(title));
-    $modal = $('<div></div>').attr({
-      "class": 'modal fade',
-      tabIndex: '-1',
-      role: 'dialog'
-    }).append($('<div></div>').attr('class', 'modal-dialog').append($('<div></div>').attr('class', 'modal-content').append($modalHeader).append($modalBody)));
-    return $modal.modal({
-      keyboard: true,
-      show: true
-    });
+        return _results;
+      });
+      $table.append($head);
+      $table.append($body);
+      $modalBody = $('<div></div>').attr('class', 'modal-body').append($table);
+      title = options.title ? options.title : "Select Program";
+      $modalHeader = $('<div></div>').attr('class', 'modal-header').append($('<button></button>').attr({
+        type: 'button',
+        "class": 'close',
+        'data-dismiss': 'modal'
+      }).text('×')).append($('<h4></h4>').attr('class', 'modal-title').text(title));
+      $modal = $('<div></div>').attr({
+        "class": 'modal fade',
+        tabIndex: '-1',
+        role: 'dialog'
+      }).append($('<div></div>').attr('class', 'modal-dialog').append($('<div></div>').attr('class', 'modal-content').append($modalHeader).append($modalBody)));
+      return $modal.modal({
+        keyboard: true,
+        show: true
+      });
+    }), 500);
   };
 
   return ProgramSelector;
