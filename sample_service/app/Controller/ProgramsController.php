@@ -31,7 +31,6 @@ class ProgramsController extends AppController {
     }
 
     public function owned_list() {
-	//$presets = $this->getPresetPrograms($this->request->query['user_id']);
         if ($this->request->is('get')) {
             $id = $this->request->query['user_id'];
 
