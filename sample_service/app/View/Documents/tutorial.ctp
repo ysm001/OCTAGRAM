@@ -13,6 +13,29 @@
         <ul class="nav nav-list bs-sidenav bs-docs-sidenav">
 	  <li>
 	    <a href="#tutorial"><i class="icon-chevron-right"></i> チュートリアル</a>
+            <ul class="nav">
+              <li>
+                <a href="#set-tip"><i class="icon-chevron-right"></i> 命令チップを置いてみよう</a>
+              </li>
+              <li>
+                <a href="#set-tip"><i class="icon-chevron-right"></i> プログラムを実行してみよう</a>
+              </li>
+              <li>
+                <a href="#set-tip"><i class="icon-chevron-right"></i> 条件分岐を使ってみよう</a>
+              </li>
+              <li>
+                <a href="#set-tip"><i class="icon-chevron-right"></i> ループを使ってみよう</a>
+              </li>
+              <li>
+                <a href="#set-tip"><i class="icon-chevron-right"></i> 条件付きループを使ってみよう</a>
+              </li>
+              <li>
+                <a href="#set-tip"><i class="icon-chevron-right"></i> 変数を使ってみよう</a>
+              </li>
+              <li>
+                <a href="#set-tip"><i class="icon-chevron-right"></i> サブルーチンを使ってみよう</a>
+              </li>
+            </ul>
           </li>
         </ul>
         </div>
