@@ -259,11 +259,15 @@ class Robot extends SpriteModel
       @consumeEnergy(Config.Energy.TURN)
       @dispatchEvent(new RobotEvent('turn', {}))
 
-  supply: (onComplete = () ->) ->
-    @parentNode.addChild new NormalEnpowerEffect(@x, @y)
-    ret = @supplyEnergy(@currentPlate.stealEnergy(Robot.STEAL_ENERGY_UNIT))
-    @dispatchEvent(new RobotEvent('supply', energy:ret))
-    @tl.delay(Config.Frame.ROBOT_SUPPLY).then(() => onComplete(@))
+  supply: (energy, onComplete = () ->) ->
+    if 0 < energy <= Robot.MAX_STEAL_ENERGY
+      @parentNode.addChild new NormalEnpowerEffect(@x, @y)
+      ret = @supplyEnergy(@currentPlate.stealEnergy(energy))
+      @dispatchEvent(new RobotEvent('supply', energy:ret))
+      @tl.delay(Robot.supplyFrame(energy)).then(() => onComplete(@))
+
+  @supplyFrame: (energy) ->
+    energy - parseInt((energy - 1)/ 10)
 
 class PlayerRobot extends Robot
   @WIDTH = 64

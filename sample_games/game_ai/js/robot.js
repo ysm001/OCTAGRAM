@@ -393,20 +393,26 @@ Robot = (function(_super) {
     });
   };
 
-  Robot.prototype.supply = function(onComplete) {
+  Robot.prototype.supply = function(energy, onComplete) {
     var ret,
       _this = this;
     if (onComplete == null) {
       onComplete = function() {};
     }
-    this.parentNode.addChild(new NormalEnpowerEffect(this.x, this.y));
-    ret = this.supplyEnergy(this.currentPlate.stealEnergy(Robot.STEAL_ENERGY_UNIT));
-    this.dispatchEvent(new RobotEvent('supply', {
-      energy: ret
-    }));
-    return this.tl.delay(Config.Frame.ROBOT_SUPPLY).then(function() {
-      return onComplete(_this);
-    });
+    if ((0 < energy && energy <= Robot.MAX_STEAL_ENERGY)) {
+      this.parentNode.addChild(new NormalEnpowerEffect(this.x, this.y));
+      ret = this.supplyEnergy(this.currentPlate.stealEnergy(energy));
+      this.dispatchEvent(new RobotEvent('supply', {
+        energy: ret
+      }));
+      return this.tl.delay(Robot.supplyFrame(energy)).then(function() {
+        return onComplete(_this);
+      });
+    }
+  };
+
+  Robot.supplyFrame = function(energy) {
+    return energy - parseInt((energy - 1) / 10);
   };
 
   return Robot;

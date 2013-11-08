@@ -167,7 +167,7 @@ Config.Energy = (function() {
 
   Energy.LEAVE = 10;
 
-  Energy.SHOT = 45;
+  Energy.SHOT = 50;
 
   Energy.TURN = 8;
 

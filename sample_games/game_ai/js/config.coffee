@@ -99,7 +99,7 @@ class Config.Energy
   @HIGH_SEEPD_MOVE     = 14
   @APPROACH            = 10
   @LEAVE               = 10
-  @SHOT                = 45
+  @SHOT                = 50
   @TURN                =  8
 
 class Config.R.String

@@ -16,15 +16,15 @@ SupplyInstruction = (function(_super) {
     this.robot = robot;
     SupplyInstruction.__super__.constructor.apply(this, arguments);
     this.tipInfo = new TipInfo(function(labels) {
-      return "現在いるマスからエネルギーを最大" + labels[0] + "補給します。<br>" + labels[0] + "未満しか残っていない場合はその分補給します。<br>(消費エネルギー 0 消費フレーム " + labels[0] + "フレーム)";
+      return "現在いるマスからエネルギーを最大" + labels[0] + "補給します。<br>" + labels[0] + "未満しか残っていない場合はその分補給します。<br>(消費エネルギー 0 消費フレーム " + (Robot.supplyFrame(toi(labels[0]))) + "フレーム)";
     });
     column = "エネルギー量";
-    this.energyParam = new TipParameter(column, 1, 1, Robot.MAX_STEAL_ENERGY, 1);
+    this.energyParam = new TipParameter(column, 1, 1, Robot.MAX_STEAL_ENERGY / 10, 1);
     this.energyParam.id = "energy";
     this.energyParam.value = 1;
     labels = [];
-    for (i = _i = 1, _ref = Robot.MAX_STEAL_ENERGY; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
-      labels[String(i)] = i;
+    for (i = _i = 1, _ref = Robot.MAX_STEAL_ENERGY / 10; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
+      labels[String(i)] = i * 10;
     }
     this.addParameter(this.energyParam);
     this.tipInfo.addParameter(this.energyParam.id, column, labels, 1);
@@ -33,9 +33,10 @@ SupplyInstruction = (function(_super) {
   }
 
   SupplyInstruction.prototype.action = function() {
-    var ret,
+    var energy, ret, _ref,
       _this = this;
-    ret = this.robot.supply(function() {
+    energy = (0 < (_ref = this.energyParam.value * 10) && _ref <= Robot.MAX_STEAL_ENERGY) ? this.energyParam.value * 10 : Robot.MAX_STEAL_ENERGY;
+    ret = this.robot.supply(energy, function() {
       return _this.onComplete();
     });
     return this.setAsynchronous(ret !== false);
