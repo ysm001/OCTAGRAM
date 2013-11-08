@@ -6,14 +6,14 @@ class CombatsController extends AppController {
     
     public $components = array('Paginator');
 
-    public $paginate = array(
-        'Program' => array(
-            'limit' => 20,
-            'order' => array('Program.modified' => 'desc'),
-        ));
-
     public function index() {
-        $this->set('programs',$this->paginate('Program'));
+	$this->Paginator->settings = array(
+	    'limit' => 20,
+            'order' => array('Program.modified' => 'desc'),
+	    'conditions' => array('Program.is_preset' => '0')
+	);
+
+        $this->set('programs',$this->Paginator->paginate('Program'));
     }
     
     public function matching($playerId, $enemyId) {
