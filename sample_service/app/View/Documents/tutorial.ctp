@@ -111,7 +111,6 @@
 	    <p>これが出来たら、もっと色々な命令を組み合わせて遊んでみましょう。</p>
 	    <br><br><br>
 	  </section>
-	  <section id="howto-branch">
 
 	 <section id="howto-loop">
 	   <h2>ループを使ってみよう</h2>
@@ -131,6 +130,7 @@
 	 <br><br><br>
 	</section>
 
+	  <section id="howto-branch">
 	    <h2>条件分岐を使ってみよう</h2>
 	    <blockquote>
 	      <p>プログラミングの基本的な制御構造である条件分岐について学びます。</p>
@@ -148,7 +148,7 @@
 	  <br><br><br>
 	</section>
 
-	 <section id="howto-loop">
+	 <section id="howto-jump">
 	   <h2>ジャンプを使ってみよう</h2>
 	   <blockquote>
 	     <p>プログラミングの基本的な命令であるジャンプについて学びます。</p>
@@ -175,8 +175,8 @@
 	   </blockquote>
 	   <h3 class="text-primary">ノップチップ</h3>
 	    <?php echo $this->Html->image('document/tutorial/howto_nop.png', array('class' => 'document-image'));?>
-           <p>何もせずに次へ進む命令です。</p>
-           <p>遠距離の命令を繋ぎたい場合などに使います。</p>
+	   <p>何もせずに次へ進む命令です。</p>
+	   <p>遠距離の命令を繋ぎたい場合などに使います。</p>
 	   <br><br><br>
 	 </section>
 	 <br><br><br>
