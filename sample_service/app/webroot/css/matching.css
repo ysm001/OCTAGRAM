@@ -3,10 +3,44 @@
 }
 
 #battle-result {
-    background: #000;
+    background: #1c1c1c;
     float: left;
     width: 640px;
     height: 640px;
+}
+
+#player-result, #enemy-result {
+    float: left;
+    width: 240px;
+    text-align: center;
+    margin-top: 160px;
+}
+
+.result-label {
+    float: left;
+    width: 120px;
+    text-align: center;
+    margin-top: 220px;
+    color: #ddd;
+    font-size: 20px;
+}
+
+.result-text {
+    font-size: 24px;
+    line-height: 36px;
+    font-weight: bold;
+}
+
+.result-label-hp, .result-label-energy, .result-label-score {
+    font-size: 15px;
+}
+
+.program-name {
+    font-size: 32px;
+    height: 60px;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 15px;
 }
 
 #filter {
