@@ -63,8 +63,8 @@ $ ->
 
   $('#edit-player-program').click(() => frontend.editPlayerProgram())
   $('#edit-enemy-program').click(() => frontend.editEnemyProgram())
-  $('#save').click(() =>frontend.saveProgram())
-  $('#load').click(() =>frontend.loadProgram())
+  $('#save').click(() => frontend.saveProgram())
+  $('#load').click(() => frontend.loadProgram())
   $('#run').click(() =>
     frontend.executeProgram()
     $('#run').attr('disabled', 'disabled')

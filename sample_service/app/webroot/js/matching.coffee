@@ -4,12 +4,14 @@ class Mathing
   start : () ->
     @disableInput()
 
-    editPlayerProgram()
-    loadProgramById(@playerId, () ->
-      editEnemyProgram()
-      loadProgramById(@enemyId, () ->
-        executeProgram()
-        editPlayerProgram()
+    @frontend = new Frontend()
+    
+    @frontend.editPlayerProgram()
+    @frontend.loadProgramById(@playerId, () =>
+      @frontend.editEnemyProgram()
+      @frontend.loadProgramById(@enemyId, () =>
+        @frontend.executeProgram()
+        @frontend.editPlayerProgram()
       )
     )
 
@@ -87,12 +89,11 @@ class Mathing
 
     $result
 
-  retry: () ->
+  retry: () =>
     $('#battle-result').fadeOut('fast', () =>
       $('#battle-result').remove()
       $('#enchant-stage').fadeIn('fast', () =>
-        Game.instance.currentScene.restart()
-        executeProgram()
+        @frontend.restartProgram()
       )
     )
 
