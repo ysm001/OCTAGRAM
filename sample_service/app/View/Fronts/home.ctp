@@ -17,7 +17,7 @@
           <p>OCTAGRAMを用いてAIプログラミングを行います。</p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-	   <?php echo $this->Html->image('top_icon_vs.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'combats', 'action' => 'index')));?>
+	   <?php echo $this->Html->image('top_icon_vs.png', array('class' => 'img-circle top-icon', 'url' => array('controller' => 'combats', 'action' => 'home')));?>
           <h2>対戦</h2>
           <p>他のユーザのAIと対戦を行います。</p>
         </div><!-- /.col-lg-4 -->
@@ -57,21 +57,21 @@
          <!-- pagenation -->
          <ul class='pagination'>
            <?php if($pageInfo['prevPage']) { ?>
-             <li><?php echo $this->Html->link('<<', '/fronts/index/page:'.($pageInfo['page']-1)); ?></li>
+             <li><?php echo $this->Html->link('<<', '/fronts/home/page:'.($pageInfo['page']-1)); ?></li>
            <?php } else { ?>
              <li class='disabled'><?php echo $this->Html->link('<<', '#'); ?></li>
            <?php } ?>
              
            <?php foreach(range(1, $pageInfo['pageCount']) as $num) { ?>
              <?php if ($num == $pageInfo['page']) { ?>
-               <li class='active'><?php echo $this->Html->link($num, '/fronts/index/page:'.$num); ?><li>
+               <li class='active'><?php echo $this->Html->link($num, '/fronts/home/page:'.$num); ?><li>
              <?php } else { ?>
-               <li><?php echo $this->Html->link($num, '/fronts/index/page:'.$num); ?><li>
+               <li><?php echo $this->Html->link($num, '/fronts/home/page:'.$num); ?><li>
              <?php } ?>
            <?php } ?>
         
            <?php if($pageInfo['nextPage']) { ?>
-             <li><?php echo $this->Html->link('>>', '/fronts/index/page:'.($pageInfo['page']+1)); ?></li>
+             <li><?php echo $this->Html->link('>>', '/fronts/home/page:'.($pageInfo['page']+1)); ?></li>
            <?php } else { ?>
              <li class='disabled'><?php echo $this->Html->link('>>', '#'); ?></li>
            <?php } ?>    
