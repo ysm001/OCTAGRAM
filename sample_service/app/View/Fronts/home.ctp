@@ -38,7 +38,6 @@
          <p>対戦履歴</p>
        </blockquote>
        <?php if ($pageInfo['count'] > 0) { ?>
-       
         
         <?php
         $email = "tamanyan.sss@gmail.com";
@@ -82,21 +81,21 @@
          <!-- pagenation -->
          <ul class='pagination'>
            <?php if($pageInfo['prevPage']) { ?>
-             <li><?php echo $this->Html->link('<<', '/fronts/index/page:'.($pageInfo['page']-1)); ?></li>
+             <li><?php echo $this->Html->link('<<', '/fronts/home/page:'.($pageInfo['page']-1)); ?></li>
            <?php } else { ?>
              <li class='disabled'><?php echo $this->Html->link('<<', '#'); ?></li>
            <?php } ?>
              
            <?php foreach(range(1, $pageInfo['pageCount']) as $num) { ?>
              <?php if ($num == $pageInfo['page']) { ?>
-               <li class='active'><?php echo $this->Html->link($num, '/fronts/index/page:'.$num); ?><li>
+               <li class='active'><?php echo $this->Html->link($num, '/fronts/home/page:'.$num); ?><li>
              <?php } else { ?>
-               <li><?php echo $this->Html->link($num, '/fronts/index/page:'.$num); ?><li>
+               <li><?php echo $this->Html->link($num, '/fronts/home/page:'.$num); ?><li>
              <?php } ?>
            <?php } ?>
         
            <?php if($pageInfo['nextPage']) { ?>
-             <li><?php echo $this->Html->link('>>', '/fronts/index/page:'.($pageInfo['page']+1)); ?></li>
+             <li><?php echo $this->Html->link('>>', '/fronts/home/page:'.($pageInfo['page']+1)); ?></li>
            <?php } else { ?>
              <li class='disabled'><?php echo $this->Html->link('>>', '#'); ?></li>
            <?php } ?>    
@@ -104,6 +103,6 @@
          <!-- pagenation end -->
        
        <?php } else { ?>
-         <h3 class="text-danger">対戦できる敵プログラムは存在しません</h3>
+         <h3 class="text-danger">対戦ログは存在しません</h3>
        <?php } ?>
        

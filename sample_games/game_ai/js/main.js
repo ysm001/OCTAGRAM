@@ -271,9 +271,6 @@ RobotScene = (function(_super) {
         prg = this.octagram.getInstance(id);
         prg.stop();
       }
-      setTimeout((function() {
-        return __this.restart();
-      }), 2000);
       return __this.dispatchEvent(new RobotEvent("gameEnd", params));
     });
     this.views.initEvent(this.world);

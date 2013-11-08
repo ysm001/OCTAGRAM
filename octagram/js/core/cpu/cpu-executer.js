@@ -16,6 +16,7 @@ Executer = (function(_super) {
     this.current = null;
     this.end = false;
     this.running = false;
+    this.options = null;
   }
 
   Executer.prototype.getNext = function() {
@@ -60,8 +61,9 @@ Executer = (function(_super) {
     }
   };
 
-  Executer.prototype.execute = function() {
+  Executer.prototype.execute = function(options) {
     var _this = this;
+    this.options = options;
     return this.waitWhileRunning(function() {
       var tip;
       _this.onStart();
@@ -108,7 +110,10 @@ Executer = (function(_super) {
 
   Executer.prototype.onStop = function() {
     this.running = false;
-    return this.end = false;
+    this.end = false;
+    if (this.options && this.options.onStop) {
+      return this.options.onStop();
+    }
   };
 
   Executer.prototype.isRunning = function() {

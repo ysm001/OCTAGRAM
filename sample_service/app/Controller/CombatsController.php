@@ -19,14 +19,26 @@ class CombatsController extends AppController {
             'conditions' => array('Program.user_id !=' => $user['id']),
         );
     }
-
     public function index() {
-        $this->set('programs',$this->paginate('Program'));
+        $this->Paginator->settings = array(
+            'limit' => 20,
+            'order' => array('Program.modified' => 'desc'),
+            'conditions' => array('Program.is_preset' => '0')
+        );
+        $this->set('programs',$this->Paginator->paginate('Program'));
     }
 
     public function matching($playerId, $enemyId) {
-        $this->set('playerId', $playerId);
-        $this->set('enemyId', $enemyId);
+        $playerProgram = $this->Program->findById($playerId);
+        $enemyProgram = $this->Program->findById($enemyId);
+
+        $player = $this->User->findById($playerProgram['Program']['user_id']);
+        $enemy = $this->User->findById($enemyProgram['Program']['user_id']);
+
+        $this->set('player', $playerProgram);
+        $this->set('enemy', $enemyProgram);
+        $this->set('playerIconURL', $player['User']['icon_url']);
+        $this->set('enemyIconURL', $enemy['User']['icon_url']);
     }
 
 }

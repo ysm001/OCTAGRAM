@@ -15,7 +15,7 @@ class ProgramSelector
         $tr = $('<tr></tr>')
   
         $title = $('<td></td>').attr(class: 'selector-title').text(program.name)
-        if ( program.is_preset ) 
+        if ( parseInt(program.is_preset) ) 
           $label = $('<span style="margin-left: 10px"></span>').attr(class: 'label label-info').text("preset");
           $title.append($label)
   
@@ -112,9 +112,11 @@ class ProgramStorage
         response = JSON.parse(data)
   
         if response.success
-          Flash.showSuccess("program has been saved.")
+          Flash.showSuccess("保存しました。")
+        else if response.preset
+          bootbox.alert("サンプルプログラムを上書きすることはできません。<br>プログラム名を変更して下さい。")
         else if response.exists && !response.override
-          bootbox.confirm(name + " is already exists. Do you want to override it?", (result) => 
+          bootbox.confirm(name + " は既に存在します。上書きしますか?", (result) => 
             if result then @saveProgramByName(name, true)
           ) 
         else
@@ -124,12 +126,12 @@ class ProgramStorage
   loadProgramById : (id, callback) ->
     $.get(getRequestURL('programs', 'load_data'), {id: id},  (data) ->
       getCurrentProgram().deserialize(JSON.parse(data))
-      Flash.showSuccess("program has been loaded.")
+      Flash.showSuccess("読み込みました。")
       if callback then callback()
     )
 
   deleteProgramById : (id, callback) ->
     $.post(getRequestURL('programs', 'delete'), {id: id},  (data) -> 
-      Flash.showSuccess("program has been deleted.")
+      Flash.showSuccess("削除しました。")
       if callback then callback()
     )
