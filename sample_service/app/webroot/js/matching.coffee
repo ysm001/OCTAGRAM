@@ -89,6 +89,7 @@ class Mathing
 
   retry: () ->
     $('#battle-result').fadeOut('fast', () =>
+      $('#battle-result').remove()
       $('#enchant-stage').fadeIn('fast', () =>
         Game.instance.currentScene.restart()
         executeProgram()

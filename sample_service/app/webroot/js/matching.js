@@ -91,6 +91,7 @@ Mathing = (function() {
   Mathing.prototype.retry = function() {
     var _this = this;
     return $('#battle-result').fadeOut('fast', function() {
+      $('#battle-result').remove();
       return $('#enchant-stage').fadeIn('fast', function() {
         Game.instance.currentScene.restart();
         return executeProgram();
