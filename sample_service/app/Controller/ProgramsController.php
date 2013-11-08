@@ -31,13 +31,19 @@ class ProgramsController extends AppController {
     }
 
     public function owned_list() {
+	$response = "";
+
         if ($this->request->is('get')) {
             $id = $this->request->query['user_id'];
 
-            $user = $this->User->findById($id);
-            if ( $user ) {
-                $response = $user['Program'];
-            }
+	    $programs = $this->Program->find('all',
+		array(
+		    'conditions' => array('Program.user_id' => $id), 
+		    'order' => array('Program.modified DESC')
+		)
+	    );
+	    $fn = function($p) {return $p['Program']; };
+	    $response = array_map($fn, $programs);
         }
 
         $this->response->body(json_encode($response));
