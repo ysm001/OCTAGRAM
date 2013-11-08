@@ -11,7 +11,7 @@ class ProgramsController extends AppController {
             $program = $this->Program->find('first', array('conditions' => array('Program.name' => $data['name'], 'Program.user_id' => $data['user_id'])));
 
             $alreadyExists = $program != null;
-            $response = array('success' => false, 'exists' => $alreadyExists, 'override' => $override);
+            $response = array('success' => false, 'exists' => $alreadyExists, 'override' => $override, 'preset' => $alreadyExists && $program['Program']['is_preset']);
 
             if ( !$alreadyExists || $override ) {
                 $data_url = $this->saveProgram($data['user_id'], $data['name'], $data['serialized_data'], $override);
