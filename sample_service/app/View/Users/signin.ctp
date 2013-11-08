@@ -35,8 +35,8 @@ $('a[href^="#"]').click(function(event) {
       </div>
     </div>
     <div class="form-signin"> 
-        <p><?php echo $this->Html->link('Sign in with Google', '/auth/google', array('class' => 'btn btn-lg btn-primary btn-block')); ?></p>
-        <p><?php echo $this->Html->link('Features', '#feature1', array('class' => 'btn btn-lg btn-success btn-block')); ?></p>
+        <?php echo $this->Html->link('Sign in with Google', '/auth/google', array('class' => 'btn btn-lg btn-danger btn-block')); ?>
+        <?php echo $this->Html->link('Features', '#feature1', array('class' => 'btn btn-lg btn-success btn-block')); ?>
     </div>
   </div>
 </div>

@@ -46,11 +46,7 @@
         </div>
 <?php $this->end(); ?>
 
-	<div class="container">
-		<?php echo $this->Session->flash(); ?>
-
-		<?php echo $this->fetch('content'); ?>
-	</div> <!-- /container -->
+<?php echo $this->fetch('content'); ?>
 
 <?php $this->start('footer'); ?>
 	<?php if ( $authUser ) : ?>

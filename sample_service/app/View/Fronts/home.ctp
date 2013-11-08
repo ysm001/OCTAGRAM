@@ -1,15 +1,15 @@
 <?php
-  // pr($associations)
-  $pageInfo = $this->params['paging']['BattleLogAssociation'];
+// pr($associations)
+$pageInfo = $this->params['paging']['BattleLogAssociation'];
 ?>
 <?php echo $this->Html->css(array('home'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->css(array('program'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('program'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('home'), false, array('inline'=>false)); ?>
 
-<div class="container marketing">
-
+<?php $this->start('content-without-container'); ?>
   <!-- Three columns of text below the carousel -->
+<div class="container">
   <div class="row menu">
     <div class="menu-item col-sm-4">
    <?php echo $this->Html->image('top_icon_programming.png', array('class' => 'top-icon', 'url' => array('controller' => 'programs', 'action' => 'create')));?>
@@ -27,16 +27,20 @@
       <p>ランキングを表示します。</p>
     </div><!-- /.col-lg-4 -->
   </div><!-- /.row -->
+</div>
 
-   <hr></hr>
+<div class="battle-log-wrapper">
+<div class="battle-log-container">
+<div class="container">
+    <br>
    <blockquote>
-     <p>対戦履歴</p>
+     <p><b class="battle-log-header">対戦履歴</b></p>
    </blockquote>
-   
+
    <?php if ($pageInfo['count'] > 0) { ?>
-    
+
      <?php foreach($associations as $p) { ?>
- 
+
      <div class="row battle-log">
 	 <div class="battle-log-challenger col-sm-4" program-id="<?php echo $p['ChallengerBattleLog']['Program']['id']; ?>" user-id="<?php echo $p['ChallengerBattleLog']['Program']['User']['id']; ?>">
 	     <div class="row">
@@ -71,9 +75,9 @@
 	    </div>
 	 </div>
      </div>
- 
+
      <?php } ?>
-    
+
      <!-- pagenation -->
      <ul class='pagination'>
        <?php if($pageInfo['prevPage']) { ?>
@@ -81,7 +85,7 @@
        <?php } else { ?>
 	 <li class='disabled'><?php echo $this->Html->link('<<', '#'); ?></li>
        <?php } ?>
-	 
+
        <?php foreach(range(1, $pageInfo['pageCount']) as $num) { ?>
 	 <?php if ($num == $pageInfo['page']) { ?>
 	   <li class='active'><?php echo $this->Html->link($num, '/fronts/home/page:'.$num); ?><li>
@@ -89,7 +93,7 @@
 	   <li><?php echo $this->Html->link($num, '/fronts/home/page:'.$num); ?><li>
 	 <?php } ?>
        <?php } ?>
-    
+
        <?php if($pageInfo['nextPage']) { ?>
 	 <li><?php echo $this->Html->link('>>', '/fronts/home/page:'.($pageInfo['page']+1)); ?></li>
        <?php } else { ?>
@@ -97,8 +101,11 @@
        <?php } ?>    
      </ul>
      <!-- pagenation end -->
-   
+
    <?php } else { ?>
      <h3 class="text-danger">対戦ログは存在しません</h3>
    <?php } ?>
-       
+   </div>
+</div> 
+</div> 
+<?php $this->end(); ?>

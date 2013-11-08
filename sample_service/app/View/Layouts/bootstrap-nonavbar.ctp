@@ -14,6 +14,7 @@
 	<!-- Le styles -->
 	<?php echo $this->Html->css('bootstrap.min'); ?>
 	<?php echo $this->Html->css('bootstrap-responsive.min'); ?>
+	<?php echo $this->Html->css('bootstrap-theme'); ?>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 	<?php echo $this->Html->script('bootstrap'); ?>
@@ -39,6 +40,7 @@
 
 <body>
         <?php echo $this->fetch('header'); ?>
+        <?php echo $this->fetch('content-without-container'); ?>
 	<div class="container">
 		<?php echo $this->Session->flash(); ?>
 		<?php echo $this->fetch('content'); ?>

@@ -65,3 +65,28 @@
   font-weight: bold;
   font-size: 24px;
 }
+
+.battle-log-wrapper {
+    background: #111;
+}
+
+.menu, .battle-log-container {
+    margin: 0 auto;
+}
+
+body {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.battle-log {
+    background: #fff;
+    border-radius: 20px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.battle-log-header {
+    color: #fff;
+}
+
