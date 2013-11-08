@@ -39,8 +39,10 @@
     </style>
 
     <script type="text/javascript">
-      playerId = <?php echo $playerId ?>;
-      enemyId = <?php echo $enemyId ?>;
+      playerProgram = <?php echo json_encode($player['Program']) ?>;
+      enemyProgram = <?php echo json_encode($enemy['Program']) ?>;
+      playerId = playerProgram.id;
+      enemyId = enemyProgram.id;
     </script>
 
   </head>

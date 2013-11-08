@@ -24,7 +24,8 @@ Mathing = (function() {
   };
 
   Mathing.prototype.end = function(result) {
-    var data, enemy, enemyResult, isPlayerWin, player, playerResult, target;
+    var data, enemy, enemyResult, isPlayerWin, player, playerResult, target,
+      _this = this;
     target = getRequestURL('battle_logs', 'save');
     isPlayerWin = result.win instanceof PlayerRobot;
     player = isPlayerWin ? result.win : result.lose;
@@ -47,13 +48,15 @@ Mathing = (function() {
       challenger: playerResult,
       defender: enemyResult
     };
-    this.showResult();
+    playerResult.programName = playerProgram['name'];
+    enemyResult.programName = enemyProgram['name'];
     return $.post(target, data, function(response) {
-      if (response === "true") {
-        return Flash.showSuccess("result has been saved.");
-      } else {
-        return Flash.showError("error");
-      }
+      var scores;
+      Flash.showSuccess("result has been saved.");
+      scores = $.parseJSON(response);
+      playerResult.score = scores.playerScore;
+      enemyResult.score = scores.enemyScore;
+      return _this.showResult(playerResult, enemyResult);
     });
   };
 
@@ -64,10 +67,10 @@ Mathing = (function() {
     $enemyResult = $('<div></div>').attr('id', 'enemy-result');
     _createResultView = function($parent, data) {
       var $energy, $hp, $programName, $score, textClass;
-      textClass = data.win ? 'text-success' : 'text-danger';
+      textClass = data.is_winner ? 'text-success' : 'text-danger';
       $programName = $('<div></div>').attr('class', 'program-name ' + textClass).text(data.programName);
-      $hp = $('<div></div>').attr('class', 'result-text remaining-hp ' + textClass).text(data.remainingHp);
-      $energy = $('<div></div>').attr('class', 'result-text comsumed-energy ' + textClass).text(data.consumedEnergy);
+      $hp = $('<div></div>').attr('class', 'result-text remaining-hp ' + textClass).text(data.remaining_hp);
+      $energy = $('<div></div>').attr('class', 'result-text comsumed-energy ' + textClass).text(data.consumed_energy);
       $score = $('<div></div>').attr('class', 'result-text score ' + textClass).text(data.score);
       $parent.append($programName);
       $parent.append($hp);
@@ -118,26 +121,10 @@ Mathing = (function() {
     return $buttons;
   };
 
-  Mathing.prototype.showResult = function(result) {
-    var $result, enemyData, playerData,
+  Mathing.prototype.showResult = function(playerResult, enemyResult) {
+    var $result,
       _this = this;
-    playerData = {
-      userName: "user name",
-      programName: "program name",
-      remainingHp: 10,
-      consumedEnergy: 100,
-      score: 1234,
-      win: true
-    };
-    enemyData = {
-      userName: "user name",
-      programName: "program name",
-      remainingHp: 10,
-      consumedEnergy: 100,
-      score: 1234,
-      win: false
-    };
-    $result = this.createResultView(playerData, enemyData);
+    $result = this.createResultView(playerResult, enemyResult);
     return $('#enchant-stage').fadeOut('fast', function() {
       $(_this).remove();
       return $('#program-container').append($result);
@@ -149,6 +136,17 @@ Mathing = (function() {
     $filter = $('<div></div>').attr('id', 'filter');
     return $('#program-container').append($filter);
   };
+
+  /*
+  calcScore : (data) ->
+    hpScore = data.remaining_hp * 1000
+    energyScore = (6000 - data.consumed_energy)
+    energyScore = 0 if energyScore < 0
+    rate = if data.is_winner then 1.3 else 1
+  
+    (hpScore + energyScore) * rate
+  */
+
 
   return Mathing;
 

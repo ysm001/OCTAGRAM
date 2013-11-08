@@ -8,6 +8,9 @@ class BattleLogsController extends AppController {
 	    $challengerData = $this->request->data['challenger'];
 	    $defenderData = $this->request->data['defender'];
 
+	    $challengerData['score'] = $this->BattleLog->calcScore($challengerData);
+	    $defenderData['score'] = $this->BattleLog->calcScore($defenderData);
+	    
 	    $data = array($challengerData,$defenderData);
 
 	    if ( $this->BattleLog->saveAll($data) ) {
@@ -18,7 +21,7 @@ class BattleLogsController extends AppController {
 		);
 
 		if ( $this->BattleLogAssociations->save($association) ) {
-		    $response = true;
+		    $response = array('playerScore' => $challengerData['score'], 'enemyScore' => $defenderData['score']);
 		}
 	    }
 	}

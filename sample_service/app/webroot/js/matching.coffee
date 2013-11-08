@@ -42,13 +42,14 @@ class Mathing
       defender: enemyResult
     }
 
-    @showResult()
-    $.post(
-      target, data, (response) -> 
-        if ( response == "true" ) 
-          Flash.showSuccess("result has been saved.") 
-        else 
-          Flash.showError("error")
+    playerResult.programName = playerProgram['name']
+    enemyResult.programName = enemyProgram['name']
+    $.post(target, data, (response) => 
+      Flash.showSuccess("result has been saved.") 
+      scores = $.parseJSON(response)
+      playerResult.score = scores.playerScore
+      enemyResult.score = scores.enemyScore
+      @showResult(playerResult, enemyResult)
     )
 
   createResultView : (playerData, enemyData) ->
@@ -57,10 +58,10 @@ class Mathing
     $enemyResult = $('<div></div>').attr('id', 'enemy-result')
 
     _createResultView = ($parent, data) ->
-      textClass = if data.win then 'text-success' else 'text-danger'
+      textClass = if data.is_winner then 'text-success' else 'text-danger'
       $programName = $('<div></div>').attr('class', 'program-name ' + textClass).text(data.programName)
-      $hp = $('<div></div>').attr('class', 'result-text remaining-hp ' + textClass).text(data.remainingHp)
-      $energy = $('<div></div>').attr('class', 'result-text comsumed-energy ' + textClass).text(data.consumedEnergy)
+      $hp = $('<div></div>').attr('class', 'result-text remaining-hp ' + textClass).text(data.remaining_hp)
+      $energy = $('<div></div>').attr('class', 'result-text comsumed-energy ' + textClass).text(data.consumed_energy)
       $score = $('<div></div>').attr('class', 'result-text score ' + textClass).text(data.score)
 
       $parent.append($programName)
@@ -108,26 +109,8 @@ class Mathing
 
     $buttons
 
-  showResult : (result) ->
-    playerData = {
-      userName: "user name",
-      programName: "program name",
-      remainingHp: 10,
-      consumedEnergy: 100,
-      score: 1234,
-      win: true
-    }
-
-    enemyData = {
-      userName: "user name",
-      programName: "program name",
-      remainingHp: 10,
-      consumedEnergy: 100,
-      score: 1234,
-      win:false 
-    }
-
-    $result = @createResultView(playerData, enemyData)
+  showResult : (playerResult, enemyResult) ->
+    $result = @createResultView(playerResult, enemyResult)
     $('#enchant-stage').fadeOut('fast', () => 
       $(@).remove()
       $('#program-container').append($result)
@@ -136,6 +119,16 @@ class Mathing
   disableInput : () ->
     $filter = $('<div></div>').attr('id', 'filter')
     $('#program-container').append($filter)
+
+  ###
+  calcScore : (data) ->
+    hpScore = data.remaining_hp * 1000
+    energyScore = (6000 - data.consumed_energy)
+    energyScore = 0 if energyScore < 0
+    rate = if data.is_winner then 1.3 else 1
+
+    (hpScore + energyScore) * rate
+  ###
 
 $ ->
   mathing = new Mathing(playerId, enemyId)

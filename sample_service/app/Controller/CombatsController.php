@@ -17,8 +17,8 @@ class CombatsController extends AppController {
     }
     
     public function matching($playerId, $enemyId) {
-	$this->set('playerId', $playerId);
-	$this->set('enemyId', $enemyId);
+	$this->set('player', $this->Program->findById($playerId));
+	$this->set('enemy', $this->Program->findById($enemyId));
     }
     
 }
