@@ -83,7 +83,7 @@ class Config.Frame
     Frame.BULLET                        =  20 / Frame.DIAMETER
     Frame.NATURAL_MAP_ENERGY_RECAVERY   = 100 / Frame.DIAMETER
     Frame.NATURAL_ROBOT_ENERGY_RECAVERY = 192 / Frame.DIAMETER
-    Frame.GAME_TIMER_CLOCK              = 4 / Frame.DIAMETER
+    Frame.GAME_TIMER_CLOCK              =  28 / Frame.DIAMETER
   setAllFrame()
 
   @setGameSpeed: (diameter = 1) ->

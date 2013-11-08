@@ -133,7 +133,7 @@ Config.Frame = (function() {
     Frame.BULLET = 20 / Frame.DIAMETER;
     Frame.NATURAL_MAP_ENERGY_RECAVERY = 100 / Frame.DIAMETER;
     Frame.NATURAL_ROBOT_ENERGY_RECAVERY = 192 / Frame.DIAMETER;
-    return Frame.GAME_TIMER_CLOCK = 4 / Frame.DIAMETER;
+    return Frame.GAME_TIMER_CLOCK = 28 / Frame.DIAMETER;
   };
 
   setAllFrame();

@@ -368,7 +368,7 @@ Robot = (function(_super) {
     if (this.enoughEnergy(Config.Energy.SHOT)) {
       blt = BulletFactory.create(BulletType.NORMAL, this);
       blt.shot(this.x, this.y, this.direct);
-      setTimeout(onComplete, Util.toMillisec(blt.maxFrame));
+      this.tl.delay(blt.maxFrame).then(onComplete);
       ret = {
         type: BulletType.NORMAL
       };
@@ -383,12 +383,12 @@ Robot = (function(_super) {
     if (onComplete == null) {
       onComplete = function() {};
     }
-    return setTimeout((function() {
+    return this.tl.delay(Config.Frame.ROBOT_TURN).then(function() {
       _this.direct = Direct.next(_this.direct);
       onComplete(_this);
       _this.consumeEnergy(Config.Energy.TURN);
       return _this.dispatchEvent(new RobotEvent('turn', {}));
-    }), Util.toMillisec(Config.Frame.ROBOT_TURN));
+    });
   };
 
   Robot.prototype.supply = function(onComplete) {
@@ -402,9 +402,9 @@ Robot = (function(_super) {
     this.dispatchEvent(new RobotEvent('supply', {
       energy: ret
     }));
-    return setTimeout((function() {
+    return this.tl.delay(Config.Frame.ROBOT_SUPPLY).then(function() {
       return onComplete(_this);
-    }), Util.toMillisec(Config.Frame.ROBOT_SUPPLY));
+    });
   };
 
   return Robot;

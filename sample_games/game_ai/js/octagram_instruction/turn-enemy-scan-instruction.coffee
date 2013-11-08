@@ -45,10 +45,8 @@ class TurnEnemyScanInstruction extends BranchInstruction
         @robot.turn(turnOnComplete)
       else
         @onComplete(false)
-    setTimeout((() =>
-      turnOnComplete(@robot)),
-      Util.toMillisec(Config.Frame.ROBOT_TURN)
-    )
+    @robot.tl.delay(Config.Frame.ROBOT_TURN).then () =>
+      turnOnComplete(@robot)
 
   clone : () ->
     obj = @copy(new TurnEnemyScanInstruction(@robot, @opponent))

@@ -245,29 +245,24 @@ class Robot extends SpriteModel
     if @enoughEnergy(Config.Energy.SHOT)
       blt = BulletFactory.create(BulletType.NORMAL, @)
       blt.shot(@x, @y, @direct)
-      setTimeout(onComplete, Util.toMillisec(blt.maxFrame))
+      @tl.delay(blt.maxFrame).then(onComplete)
       ret = type:BulletType.NORMAL
       @dispatchEvent(new RobotEvent('shot', ret))
       @consumeEnergy(Config.Energy.SHOT)
     ret
 
   turn: (onComplete = () ->) ->
-    setTimeout((() =>
+    @tl.delay(Config.Frame.ROBOT_TURN).then () =>
       @direct = Direct.next(@direct)
       onComplete(@)
       @consumeEnergy(Config.Energy.TURN)
-      @dispatchEvent(new RobotEvent('turn', {}))),
-      Util.toMillisec(Config.Frame.ROBOT_TURN)
-    )
+      @dispatchEvent(new RobotEvent('turn', {}))
 
   supply: (onComplete = () ->) ->
     @parentNode.addChild new NormalEnpowerEffect(@x, @y)
     ret = @supplyEnergy(@currentPlate.stealEnergy(Robot.STEAL_ENERGY_UNIT))
     @dispatchEvent(new RobotEvent('supply', energy:ret))
-    setTimeout((() =>
-      onComplete(@)),
-      Util.toMillisec(Config.Frame.ROBOT_SUPPLY)
-    )
+    @tl.delay(Config.Frame.ROBOT_SUPPLY).then(() => onComplete(@))
 
 class PlayerRobot extends Robot
   @WIDTH = 64

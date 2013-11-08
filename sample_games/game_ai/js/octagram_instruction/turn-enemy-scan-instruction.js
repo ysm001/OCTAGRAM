@@ -54,9 +54,9 @@ TurnEnemyScanInstruction = (function(_super) {
         return _this.onComplete(false);
       }
     };
-    return setTimeout((function() {
+    return this.robot.tl.delay(Config.Frame.ROBOT_TURN).then(function() {
       return turnOnComplete(_this.robot);
-    }), Util.toMillisec(Config.Frame.ROBOT_TURN));
+    });
   };
 
   TurnEnemyScanInstruction.prototype.clone = function() {
