@@ -21,7 +21,7 @@
                  <ul class="dropdown-menu">
 	           <li><?php echo $this->Html->link('OCTAGRAM', '/documents/index'); ?></li>
 	           <li><?php echo $this->Html->link('Game', '/documents/game'); ?></li>
-	           <li><?php echo $this->Html->link('Tutorial', '/fronts/home'); ?></li>
+	           <li><?php echo $this->Html->link('Tutorial', '/documents/tutorial'); ?></li>
                  </ul>
               </li>
 
