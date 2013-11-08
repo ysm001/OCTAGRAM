@@ -12,8 +12,22 @@ SupplyInstruction = (function(_super) {
 
 
   function SupplyInstruction(robot) {
+    var column, i, labels, _i, _ref;
     this.robot = robot;
     SupplyInstruction.__super__.constructor.apply(this, arguments);
+    this.tipInfo = new TipInfo(function(labels) {
+      return "現在いるマスからエネルギーを最大" + labels[0] + "補給します。<br>" + labels[0] + "未満しか残っていない場合はその分補給します。<br>(消費エネルギー 0 消費フレーム " + labels[0] + "フレーム)";
+    });
+    column = "エネルギー量";
+    this.energyParam = new TipParameter(column, 1, 1, Robot.MAX_STEAL_ENERGY, 1);
+    this.energyParam.id = "energy";
+    this.energyParam.value = 1;
+    labels = [];
+    for (i = _i = 1, _ref = Robot.MAX_STEAL_ENERGY; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
+      labels[String(i)] = i;
+    }
+    this.addParameter(this.energyParam);
+    this.tipInfo.addParameter(this.energyParam.id, column, labels, 1);
     this.icon = new Icon(Game.instance.assets[R.TIP.LIFE], 32, 32);
     this.setAsynchronous(true);
   }
@@ -30,11 +44,19 @@ SupplyInstruction = (function(_super) {
   SupplyInstruction.prototype.clone = function() {
     var obj;
     obj = this.copy(new SupplyInstruction(this.robot));
+    obj.energyParam.value = this.energyParam.value;
     return obj;
   };
 
+  SupplyInstruction.prototype.onParameterChanged = function(parameter) {
+    if (parameter.id === this.energyParam.id) {
+      this.energyParam = parameter;
+    }
+    return this.tipInfo.changeLabel(parameter.id, parameter.value);
+  };
+
   SupplyInstruction.prototype.mkDescription = function() {
-    return "現在いるマスからエネルギーを最大" + Robot.STEAL_ENERGY_UNIT + "補給します。<br>" + Robot.STEAL_ENERGY_UNIT + "未満しか残っていない場合はその分補給します。<br>(消費エネルギー 0 消費フレーム " + Config.Frame.ROBOT_SUPPLY + "フレーム)";
+    return this.tipInfo.getDescription();
   };
 
   SupplyInstruction.prototype.mkLabel = function(parameter) {
