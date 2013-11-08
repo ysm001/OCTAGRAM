@@ -41,7 +41,7 @@
        
          <!-- table -->  
          <table class='table table table-striped table-hover'>
-           <tr><th>プレイヤー名</th><th>プログラム名</th><th></th><th style="text-align:right">プログラム名</th><th style="text-align:right">プレイヤー名</th></tr>
+           <tr><th>プレイヤー名</th><th>プログラム名</th><th></th><th style="text-align:right">プログラム名</th><th style="text-align:right">プレイヤー名</th><th style="text-align:center">対戦日時</th></tr>
            <?php foreach($associations as $p) { ?> 
            <tr>
              <td><p class="text"><?php echo $p['ChallengerBattleLog']['Program']['User']['nickname']; ?></p></td>
@@ -49,6 +49,7 @@
              <td><p class="text-danger">V.S.</p></td>
              <td><p class="text-primary" style="text-align:right"><?php echo $p['DefenderBattleLog']['Program']['name']; ?></p></td>
              <td><p class="text" style="text-align:right"><?php echo $p['DefenderBattleLog']['Program']['User']['nickname']; ?></p></td>
+             <td><p class="text" style="text-align:center"><?php echo $p['BattleLogAssociation']['created']; ?></p></td>
            </tr>
            <?php } ?>
          </table>
@@ -79,7 +80,7 @@
          <!-- pagenation end -->
        
        <?php } else { ?>
-         <h3 class="text-danger">対戦できる敵プログラムは存在しません</h3>
+         <h3 class="text-danger">対戦ログは存在しません</h3>
        <?php } ?>
        
      <div>
