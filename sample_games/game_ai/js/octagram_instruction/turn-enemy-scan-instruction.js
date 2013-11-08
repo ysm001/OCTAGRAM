@@ -25,7 +25,7 @@ TurnEnemyScanInstruction = (function(_super) {
     this.rotateParam = new TipParameter(column, 0, 0, 1, 1);
     this.rotateParam.id = "rotate";
     this.addParameter(this.rotateParam);
-    this.tipInfo.addParameter(this.rotateParam.id, column, labels, 0);
+    this.tipInfo.addParameter(this.rotateParam.id, column, labels, 1);
     column = "回転回数";
     labels = [0, 1, 2, 3, 4, 5];
     this.lengthParam = new TipParameter(column, 0, 0, 5, 1);
@@ -49,7 +49,7 @@ TurnEnemyScanInstruction = (function(_super) {
           return;
         }
         i += 1;
-        return _this.robot.turn(turnOnComplete);
+        return _this.robot.turn(_this.rotateParam.value + 1, turnOnComplete);
       } else {
         return _this.onComplete(false);
       }

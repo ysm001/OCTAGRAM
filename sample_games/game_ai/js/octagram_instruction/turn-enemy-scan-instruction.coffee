@@ -19,7 +19,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
     @rotateParam = new TipParameter(column, 0, 0, 1, 1)
     @rotateParam.id = "rotate"
     @addParameter(@rotateParam)
-    @tipInfo.addParameter(@rotateParam.id, column, labels, 0)
+    @tipInfo.addParameter(@rotateParam.id, column, labels, 1)
 
     # parameter 2
     column = "回転回数"
@@ -42,7 +42,7 @@ class TurnEnemyScanInstruction extends BranchInstruction
           @onComplete(true)
           return
         i+=1
-        @robot.turn(turnOnComplete)
+        @robot.turn((@rotateParam.value+1), turnOnComplete)
       else
         @onComplete(false)
     @robot.tl.delay(Config.Frame.ROBOT_TURN).then () =>

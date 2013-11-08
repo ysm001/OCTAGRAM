@@ -29,10 +29,12 @@ class ItemQueue
     @collection.length
 
 class Robot extends SpriteModel
-  @MAX_HP            : 6
-  @MAX_ENERGY        : 240
-  @STEAL_ENERGY_UNIT : 80
-  @MAX_STEAL_ENERGY  : 80
+  @MAX_HP                : 6
+  @MAX_ENERGY            : 240
+  @STEAL_ENERGY_UNIT     : 80
+  @MAX_STEAL_ENERGY      : 80
+  @TURN_CLOCKWISE        : 1
+  @TURN_COUNTERCLOCKWISE : 2
 
   DIRECT_FRAME                             = {}
   DIRECT_FRAME[Direct.NONE]                = 0
@@ -252,9 +254,12 @@ class Robot extends SpriteModel
       @consumeEnergy(Config.Energy.SHOT)
     ret
 
-  turn: (onComplete = () ->) ->
+  turn: (rotation, onComplete = () ->) ->
     @tl.delay(Config.Frame.ROBOT_TURN).then () =>
-      @direct = Direct.next(@direct)
+      if rotation == Robot.TURN_CLOCKWISE
+        @direct = Direct.next(@direct)
+      else
+        @direct = Direct.prev(@direct)
       onComplete(@)
       @consumeEnergy(Config.Energy.TURN)
       @dispatchEvent(new RobotEvent('turn', {}))

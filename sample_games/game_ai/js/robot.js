@@ -67,6 +67,10 @@ Robot = (function(_super) {
 
   Robot.MAX_STEAL_ENERGY = 80;
 
+  Robot.TURN_CLOCKWISE = 1;
+
+  Robot.TURN_COUNTERCLOCKWISE = 2;
+
   DIRECT_FRAME = {};
 
   DIRECT_FRAME[Direct.NONE] = 0;
@@ -380,13 +384,17 @@ Robot = (function(_super) {
     return ret;
   };
 
-  Robot.prototype.turn = function(onComplete) {
+  Robot.prototype.turn = function(rotation, onComplete) {
     var _this = this;
     if (onComplete == null) {
       onComplete = function() {};
     }
     return this.tl.delay(Config.Frame.ROBOT_TURN).then(function() {
-      _this.direct = Direct.next(_this.direct);
+      if (rotation === Robot.TURN_CLOCKWISE) {
+        _this.direct = Direct.next(_this.direct);
+      } else {
+        _this.direct = Direct.prev(_this.direct);
+      }
       onComplete(_this);
       _this.consumeEnergy(Config.Energy.TURN);
       return _this.dispatchEvent(new RobotEvent('turn', {}));
