@@ -4,6 +4,18 @@
 <?php echo $this->Html->script('flash'); ?>
 <?php echo $this->Html->css('flash'); ?>
 <?php echo $this->Html->css('style'); ?>
+<?php echo $this->Html->script('utility'); ?>
+<?php echo $this->Html->script('lib/underscore'); ?>
+<?php echo $this->Html->script('lib/backbone'); ?>
+<?php if ( $authUser ) { ?>
+<div id="uid" style="display:none"><?php echo $authUser['id'] ?></div>
+<?php } ?>
+<div id="webroot" style="display:none"><?= ROOT_URL?></div>
+<script type="text/javascript">
+  function getUserId() { return parseInt($('#uid').text()); }
+  function getRoot() { return $('#webroot').text(); }
+  function getRequestURL(controller, action) {return getRoot() + controller + '/' + action}
+</script>
 <?php $this->start('header'); ?>
         <div class="navbar navbar-default">
           <div class="navbar-header">
@@ -53,14 +65,4 @@
 	</div> <!-- /container -->
 
 <?php $this->start('footer'); ?>
-  <?php if ( $authUser ) { ?>
-  <div id="uid" style="display:none"><?php echo $authUser['id'] ?></div>
-  <?php } ?>
-	<div id="webroot" style="display:none"><?= ROOT_URL?></div>
-	<script type="text/javascript">
-	    function getUserId() { return parseInt($('#uid').text()); }
-	    function getRoot() { return $('#webroot').text(); }
-	    function getRequestURL(controller, action) {return getRoot() + controller + '/' + action}
-	</script>
 <?php $this->end(); ?>
-<?php echo $this->Html->script('utility'); ?>

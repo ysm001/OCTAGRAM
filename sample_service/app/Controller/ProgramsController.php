@@ -85,6 +85,14 @@ class ProgramsController extends AppController {
         return $this->response;
     }
 
+    public function api($id = 0) {
+        header("Content-Type; application/json: charset=utf-8");
+        if ($this->request->is('get')) {
+            echo json_encode($this->Program->findById($id));
+        }
+        exit();
+    } 
+
     private function saveProgram($userId, $name, $data, $override = false) {
         $reldir = $this->Program->getUserProgramDir($this->webroot, $userId);
         $absdir = $this->Program->getAbsoluteUserProgramDir($this->webroot, $userId);

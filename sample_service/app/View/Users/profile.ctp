@@ -1,4 +1,21 @@
 <?php //pr($user); ?>
+<script type="text/template" id="program-tpl">
+  <div class="panel panel-primary">
+    <div class="panel-heading"><%- name %></div>
+    <div class="panel-body">
+      <ul class="list-group">
+      <% battle_log.forEach(function(i){ %>
+        <li class="list-group-item">
+          <p class="list-group-item-text">消費エネルギー: <%- i.consumed_energy %></p>
+          <p class="list-group-item-text">残りHP: <%- i.remaining_hp %></p>
+        </li>
+      <% }) %>
+      </ul>
+    </div>
+  </div> 
+</script>
+<?php echo $this->Html->script('model/program'); ?>
+<?php echo $this->Html->script('users/profile/view'); ?>
 <div class="container">
   <div class="row">
     <div class="col-sm-6">
@@ -35,17 +52,16 @@
           </fieldset>
         <?php echo $this->Form->end(); ?>
       </div>
-      <div class="panel panel-primary">
-        <div class="panel-heading">プログラムリスト</div>
-        <div class="panel-body">
-          <ul class="list-group">
-            <?php foreach ($user['Program'] as $p) { ?>
-            <?php if ($p['is_preset']) continue; ?>
-            <li class="list-group-item"><?php echo $p['name']; ?></li>
-            <?php } ?>
-          </ul>
-        </div>
-      </div> 
+      <blockquote> プログラムリスト </blockquote>
+      <div class="list-group">
+        <?php foreach ($user['Program'] as $p) { ?>
+        <?php if ($p['is_preset']) continue; ?>
+        <a href="#program/<?php echo $p['id']; ?>" class="list-group-item"><?php echo $p['name']; ?></a>
+        <?php } ?>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div id="program"></div>
     </div>
   </div>
 </div>
