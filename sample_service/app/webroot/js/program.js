@@ -21,7 +21,7 @@ ProgramSelector = (function() {
         $title = $('<td></td>').attr({
           "class": 'selector-title'
         }).text(program.name);
-        if (program.is_preset) {
+        if (parseInt(program.is_preset)) {
           $label = $('<span style="margin-left: 10px"></span>').attr({
             "class": 'label label-info'
           }).text("preset");
