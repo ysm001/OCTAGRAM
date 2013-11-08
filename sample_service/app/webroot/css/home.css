@@ -40,32 +40,28 @@
 .inline {
   display: inline;
 }
-
 .battle-log {
+  padding: 5px;
 }
 
-.battle-log-last {
+.battle-log :hover {
+  cursor: pointer;
 }
 
 .battle-log > div {
   text-align: center;
 }
 
-.battle-log .battle-log-challenger > div {
-  vertical-align: middle;
-  height: 80px;
-}
-
 .battle-log > div .img {
-  height: 80px;
 }
 
 .battle-log > div .name {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .battle-log .battle-log-vs p {
   vertical-align: middle;
   line-height: 80px;
   font-weight: bold;
+  font-size: 24px;
 }

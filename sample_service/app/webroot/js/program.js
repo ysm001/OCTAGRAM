@@ -61,7 +61,7 @@ ProgramSelector = (function() {
     $table.append($head);
     $table.append($body);
     $modalBody = $('<div></div>').attr('class', 'modal-body').append($table);
-    title = "Select Program";
+    title = options.title ? options.title : "Select Program";
     $modalHeader = $('<div></div>').attr('class', 'modal-header').append($('<button></button>').attr({
       type: 'button',
       "class": 'close',

@@ -1,5 +1,6 @@
 <?php $this->extend('bootstrap-nonavbar'); ?>
 
+<?php echo $this->Html->script(array('bootbox'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script('flash'); ?>
 <?php echo $this->Html->css('flash'); ?>
 <?php $this->start('header'); ?>

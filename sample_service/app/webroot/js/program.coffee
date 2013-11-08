@@ -39,12 +39,12 @@ class ProgramSelector
     $table.append($head)
     $table.append($body)
   
-    $modalBody = 
+    $modalBody =
       $('<div></div>').attr('class', 'modal-body').append(
         $table
       )
   
-    title = "Select Program"
+    title = if options.title then options.title else "Select Program"
     $modalHeader =
       $('<div></div>').attr('class', 'modal-header').append(
         $('<button></button>').attr({type: 'button', class: 'close', 'data-dismiss': 'modal'}).text('×')

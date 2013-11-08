@@ -16,7 +16,7 @@ class CombatsController extends AppController {
         parent::beforeFilter();
         $user = $this->Auth->user();
         $this->Paginator->settings = array(
-            'conditions' => array('Program.user_id' => "<> {$user['id']}"),
+            'conditions' => array('Program.user_id !=' => $user['id']),
         );
     }
 

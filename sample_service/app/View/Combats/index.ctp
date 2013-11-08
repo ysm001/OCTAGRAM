@@ -44,7 +44,7 @@
       <?php foreach($programs as $p) { ?> 
       <tr>
         <td>
-	<div class='btn btn-default btn-battle' program-id='<?php echo $p["Program"]["id"]?>'>Battle »</div>
+            <div class='btn btn-default btn-battle' program-id='<?php echo $p["Program"]["id"]?>'>Battle »</div>
         </td>
         <td><p class="text-primary"><?php echo $p['Program']['name']; ?></p></td>
         <td><?php echo $p['User']['nickname']; ?></td>

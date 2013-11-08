@@ -4,7 +4,8 @@
 
     <?php echo $this->Html->css(array('home'), false, array('inline'=>false)); ?>
     <?php echo $this->Html->css(array('program'), false, array('inline'=>false)); ?>
-    <?php echo $this->Html->script(array('combat'), false, array('inline'=>false)); ?>
+    <?php echo $this->Html->script(array('program'), false, array('inline'=>false)); ?>
+    <?php echo $this->Html->script(array('home'), false, array('inline'=>false)); ?>
 
 
     <div class="container marketing">
@@ -46,25 +47,27 @@
         ?>
          <?php foreach($associations as $p) { ?> 
          <div class="row battle-log">
-             <div class="battle-log-challenger col-sm-4">
+             <div class="battle-log-challenger col-sm-4" program-id="<?php echo $p['ChallengerBattleLog']['Program']['id']; ?>" user-id="<?php echo $p['ChallengerBattleLog']['Program']['User']['id']; ?>">
                  <div class="row">
                      <div class="col-sm-6">
                          <div class="img">
-                             <img class="img-rounded" src="<?php echo $grav_url; ?>" alt="" />
+                             <img class="img-rounded" src="<?php echo $grav_url; ?>" height="80" alt="" />
                          </div>
                      </div>
                      <div class="col-sm-6">
-                         <div class="name"><?php echo $p['ChallengerBattleLog']['Program']['User']['nickname']; ?> <br> <?php echo $p['ChallengerBattleLog']['Program']['name']; ?></div>
+                         <div class="name"><?php echo $p['ChallengerBattleLog']['Program']['User']['nickname']; ?></div>
+                         <div class="program-name"><?php echo $p['ChallengerBattleLog']['Program']['name']; ?></div>
                      </div>
                 </div>
              </div>
              <div class="battle-log-vs col-sm-4">
                  <p class="text-danger">V.S.</p>
              </div>
-             <div class="battle-log-defender col-sm-4">
+             <div class="battle-log-defender col-sm-4" program-id="<?php echo $p['DefenderBattleLog']['Program']['id']; ?>" user-id="<?php echo $p['DefenderBattleLog']['Program']['User']['id']; ?>">
                  <div class="row">
                      <div class="col-sm-6">
-                         <div class="name"><?php echo $p['DefenderBattleLog']['Program']['User']['nickname']; ?>  <br> <?php echo $p['DefenderBattleLog']['Program']['name']; ?></div>
+                         <div class="name"><?php echo $p['DefenderBattleLog']['Program']['User']['nickname']; ?></div>
+                         <div class="program-name"><?php echo $p['DefenderBattleLog']['Program']['name']; ?></div>
                      </div>
                      <div class="col-sm-6">
                          <div class="img">
@@ -75,7 +78,6 @@
              </div>
          </div>
          <?php } ?>
-         <div class="row battle-log-last"></div>
         
          <!-- pagenation -->
          <ul class='pagination'>
