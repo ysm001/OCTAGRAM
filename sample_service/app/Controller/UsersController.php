@@ -93,7 +93,7 @@ class UsersController extends AppController {
     }
 
     private function getUserIcon($email) {
-	$default = "http://www.gravatar.com/avatar/00000000000000000000000000000000"; //ROOT_URL.APP_DIR.'webroot/img/default_icon.png';
+	$default = "http://www.gravatar.com/avatar/00000000000000000000000000000000";
 	$size = 200;
 	$grav_url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?d=" . urlencode( $default ). "&s=" . $size; 
 

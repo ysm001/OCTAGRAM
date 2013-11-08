@@ -31,8 +31,7 @@ class ProgramsController extends AppController {
     }
 
     public function owned_list() {
-        $response = "";
-
+	//$presets = $this->getPresetPrograms($this->request->query['user_id']);
         if ($this->request->is('get')) {
             $id = $this->request->query['user_id'];
 
@@ -82,8 +81,8 @@ class ProgramsController extends AppController {
     }
 
     private function saveProgram($userId, $name, $data, $override = false) {
-        $reldir = $this->getUserProgramDir($userId);
-        $absdir = $_SERVER['DOCUMENT_ROOT'].$reldir;
+        $reldir = $this->Program->getUserProgramDir($this->webroot, $userId);
+        $absdir = $this->Program->getAbsoluteUserProgramDir($this->webroot, $userId);
 
         if ( file_exists($absdir) || mkdir($absdir, 0777, true) ) {
             $relpath = $reldir.$name;
@@ -94,48 +93,6 @@ class ProgramsController extends AppController {
         }
 
         return false;
-    }
-
-    private function registerPresetPrograms($user_id) {
-    }
-
-    private function getPresetPrograms($user_id) {
-        $dir = $this->getPresetProgramDir();
-        $programs = array();
-
-	debug(file_exists($dir));
-        if ( file_exists($dir) ) {
-            $handle = opendir($dir);
-            if ( $handle ) {
-                while ( false !== ( $file = readdir($handle) ) ) {
-                    $path = $dir.$file;
-
-                    if ( !is_dir($path)  ) {
-                        $program = array(
-                            'name' => $file,
-                            'data_url' => $path,
-                            'user_id' => $user_id,
-                            'is_preset' => true,
-                            'modified' => date("Y-m-d H:i:s", filemtime($path))
-                        );
-
-                        $programs []= $program;
-                    }
-                }
-
-                closedir($handle);
-            }
-        }
-
-        return $programs;
-    }
-
-    private function getUserProgramDir($userId) { 
-        return $this->webroot.APP_DIR.'/'.WEBROOT_DIR.'/files/programs/'.$userId.'/'; 
-    }
-
-    private function getPresetProgramDir() { 
-        return $this->webroot.APP_DIR.'/'.WEBROOT_DIR.'/files/programs/presets'; 
     }
 }
 ?>
