@@ -55,6 +55,7 @@
 	  <div class="page-header">
 	    <h2>チュートリアル</h2>
 	    <p>本章では、<?php echo $serviceName ?>を実際に使いながら、プログラムの組み方を学んで行きます。</p>
+	    <p><b class="text-danger">このチュートリアルに使われている画像は、開発中のものです。リリース時には変更される可能性があります。</b></p>
 	  </div>
 	  <section id="howto-set-tip">
 	    <h2>命令チップを置いてみよう</h2>
