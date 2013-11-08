@@ -110,7 +110,7 @@ class OctagramContent extends Group
   serialize : () -> JSON.stringify(@cpu.serialize())
   deserialize : (serializedVal) -> @cpu.deserialize(JSON.parse(serializedVal))
 
-  execute : () -> @executer.execute()
+  execute : (options) -> @executer.execute(options)
   stop : () -> @executer.stop()
 
   setTipToBar : () ->

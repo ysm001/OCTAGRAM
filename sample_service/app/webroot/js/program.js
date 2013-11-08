@@ -21,7 +21,7 @@ ProgramSelector = (function() {
         $title = $('<td></td>').attr({
           "class": 'selector-title'
         }).text(program.name);
-        if (program.is_preset) {
+        if (parseInt(program.is_preset)) {
           $label = $('<span style="margin-left: 10px"></span>').attr({
             "class": 'label label-info'
           }).text("preset");
@@ -138,9 +138,11 @@ ProgramStorage = (function() {
         var response;
         response = JSON.parse(data);
         if (response.success) {
-          return Flash.showSuccess("program has been saved.");
+          return Flash.showSuccess("保存しました。");
+        } else if (response.preset) {
+          return bootbox.alert("サンプルプログラムを上書きすることはできません。<br>プログラム名を変更して下さい。");
         } else if (response.exists && !response.override) {
-          return bootbox.confirm(name + " is already exists. Do you want to override it?", function(result) {
+          return bootbox.confirm(name + " は既に存在します。上書きしますか?", function(result) {
             if (result) {
               return _this.saveProgramByName(name, true);
             }
@@ -157,7 +159,7 @@ ProgramStorage = (function() {
       id: id
     }, function(data) {
       getCurrentProgram().deserialize(JSON.parse(data));
-      Flash.showSuccess("program has been loaded.");
+      Flash.showSuccess("読み込みました。");
       if (callback) {
         return callback();
       }
@@ -168,7 +170,7 @@ ProgramStorage = (function() {
     return $.post(getRequestURL('programs', 'delete'), {
       id: id
     }, function(data) {
-      Flash.showSuccess("program has been deleted.");
+      Flash.showSuccess("削除しました。");
       if (callback) {
         return callback();
       }

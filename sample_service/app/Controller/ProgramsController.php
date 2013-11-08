@@ -8,10 +8,10 @@ class ProgramsController extends AppController {
             $data = $this->request->data['program'];
             $override = $this->request->data['override'] == "true";
 
-            $program = $this->Program->find('first', array('conditions' => array('Program.name' => $data['name'])));
+            $program = $this->Program->find('first', array('conditions' => array('Program.name' => $data['name'], 'Program.user_id' => $data['user_id'])));
 
             $alreadyExists = $program != null;
-            $response = array('success' => false, 'exists' => $alreadyExists, 'override' => $override);
+            $response = array('success' => false, 'exists' => $alreadyExists, 'override' => $override, 'preset' => $alreadyExists && $program['Program']['is_preset']);
 
             if ( !$alreadyExists || $override ) {
                 $data_url = $this->saveProgram($data['user_id'], $data['name'], $data['serialized_data'], $override);
@@ -31,15 +31,19 @@ class ProgramsController extends AppController {
     }
 
     public function owned_list() {
-        $response = "";
+	$response = "";
 
         if ($this->request->is('get')) {
             $id = $this->request->query['user_id'];
 
-            $user = $this->User->findById($id);
-            if ( $user ) {
-                $response = $user['Program'];
-            }
+	    $programs = $this->Program->find('all',
+		array(
+		    'conditions' => array('Program.user_id' => $id), 
+		    'order' => array('Program.modified DESC')
+		)
+	    );
+	    $fn = function($p) {return $p['Program']; };
+	    $response = array_map($fn, $programs);
         }
 
         $this->response->body(json_encode($response));
@@ -82,8 +86,8 @@ class ProgramsController extends AppController {
     }
 
     private function saveProgram($userId, $name, $data, $override = false) {
-        $reldir = $this->getUserProgramDir($userId);
-        $absdir = $_SERVER['DOCUMENT_ROOT'].$reldir;
+        $reldir = $this->Program->getUserProgramDir($this->webroot, $userId);
+        $absdir = $this->Program->getAbsoluteUserProgramDir($this->webroot, $userId);
 
         if ( file_exists($absdir) || mkdir($absdir, 0777, true) ) {
             $relpath = $reldir.$name;
@@ -94,47 +98,6 @@ class ProgramsController extends AppController {
         }
 
         return false;
-    }
-
-    private function registerPresetPrograms($user_id) {
-    }
-
-    private function getPresetPrograms($user_id) {
-        $dir = $this->getPresetProgramDir();
-        $programs = array();
-
-        if ( file_exists($dir) ) {
-            $handle = opendir($dir);
-            if ( $handle ) {
-                while ( false !== ( $file = readdir($handle) ) ) {
-                    $path = $dir.$file;
-
-                    if ( !is_dir($path)  ) {
-                        $program = array(
-                            'name' => $file,
-                            'data_url' => $path,
-                            'user_id' => $user_id,
-                            'is_preset' => true,
-                            'modified' => date("Y-m-d H:i:s", filemtime($path))
-                        );
-
-                        $programs []= $program;
-                    }
-                }
-
-                closedir($handle);
-            }
-        }
-
-        return $programs;
-    }
-
-    private function getUserProgramDir($userId) { 
-        return $this->webroot.APP_DIR.'/'.WEBROOT_DIR.'/files/programs/'.$userId.'/'; 
-    }
-
-    private function getPresetProgramDir() { 
-        return $this->webroot.APP_DIR.'/'.WEBROOT_DIR.'/files/programs/presets'.'/'; 
     }
 }
 ?>

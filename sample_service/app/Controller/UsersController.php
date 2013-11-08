@@ -1,5 +1,7 @@
 <?php
 class UsersController extends AppController {
+    public $uses = array('User', 'Program');
+
     public function beforeFilter() {
 	parent::beforeFilter();
 
@@ -31,22 +33,25 @@ class UsersController extends AppController {
     private function update($data) {
 	$user = $this->User->find('first', array('conditions' => array('username' => $data['username'])));
 
+	$new = false;
 	if ( !$user ) {
 	    $this->User->create();
-
-	    $statistic = array(
-		'score' => 0,
-		'winning_percentage' => 0.0,
-		'combat_num' => 0
-	    );
-
-	    $data['Statistic'] = $statistic;
+	    $new = true;
 	}
 	else {
 	    $data['id'] = $user['User']['id'];
 	    $data['Account']['id'] = $user['Account']['id'];
 	}
-	return $this->User->saveAll($data);
+	$response =  $this->User->saveAll($data);
+	
+	if ( $new ) {
+	    $presets = $this->Program->getPresetPrograms($this->webroot, $this->User->getLastInsertID());
+	    if ( !empty($presets) ) {
+		$this->Program->saveAll($presets);
+	    }
+	}
+
+        return $response;
     }
 
     private function login($data) {
@@ -81,6 +86,8 @@ class UsersController extends AppController {
 	    'username' =>  $uid,
 	    'password' => $token,
 	    'nickname' => $info['name'],
+	    'email' => $info['email'],
+	    'icon_url' => $this->getUserIcon($info['email']),
 	    'Account' => $account
 	);
 
@@ -89,5 +96,12 @@ class UsersController extends AppController {
 
     private function loginWithFacebook($data) {
     }
+
+    private function getUserIcon($email) {
+	$default = "http://www.gravatar.com/avatar/00000000000000000000000000000000";
+	$size = 200;
+	$grav_url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?d=" . urlencode( $default ). "&s=" . $size; 
+
+	return $grav_url;
+    }
 }
-?>

@@ -2,12 +2,16 @@ class Mathing
   constructor: (@playerId, @enemyId) ->
 
   start : () ->
-    editPlayerProgram()
-    loadProgramById(@playerId, () ->
-      editEnemyProgram()
-      loadProgramById(@enemyId, () ->
-        executeProgram()
-        editPlayerProgram()
+    @disableInput()
+
+    @frontend = new Frontend()
+    
+    @frontend.editPlayerProgram()
+    @frontend.loadProgramById(@playerId, () =>
+      @frontend.editEnemyProgram()
+      @frontend.loadProgramById(@enemyId, () =>
+        @frontend.executeProgram()
+        @frontend.editPlayerProgram()
       )
     )
 
@@ -38,7 +42,97 @@ class Mathing
       defender: enemyResult
     }
 
-    $.post(target, data, (response) -> console.log(response))
+    playerResult.programName = playerProgram['name']
+    enemyResult.programName = enemyProgram['name']
+    $.post(target, data, (response) => 
+      Flash.showSuccess("result has been saved.") 
+      scores = $.parseJSON(response)
+      playerResult.score = scores.playerScore
+      enemyResult.score = scores.enemyScore
+      @showResult(playerResult, enemyResult)
+    )
+
+  createResultView : (playerData, enemyData) ->
+    $result = $('<div></div>').attr('id', 'battle-result')
+    $playerResult = $('<div></div>').attr('id', 'player-result')
+    $enemyResult = $('<div></div>').attr('id', 'enemy-result')
+
+    _createResultView = ($parent, data) ->
+      textClass = if data.is_winner then 'text-success' else 'text-danger'
+      $icon = $('<img></img>').attr({class: 'user-icon', src: data.iconURL})
+      $programName = $('<div></div>').attr('class', 'program-name ' + textClass).text(data.programName)
+      $hp = $('<div></div>').attr('class', 'result-text remaining-hp ' + textClass).text(data.remaining_hp)
+      $energy = $('<div></div>').attr('class', 'result-text comsumed-energy ' + textClass).text(data.consumed_energy)
+      $score = $('<div></div>').attr('class', 'result-text score ' + textClass).text(data.score)
+
+      $parent.append($icon)
+      $parent.append($programName)
+      $parent.append($hp)
+      $parent.append($energy)
+      $parent.append($score)
+
+    $label = $('<div></div>').attr('class', 'result-label')
+    $labelProgramName = $('<div></div>').attr('class', 'result-text result-label-pname').text('')
+    $labelHp = $('<div></div>').attr('class', 'result-text result-label-hp').text('残りHP')
+    $labelEnergy = $('<div></div>').attr('class', 'result-text result-label-energy').text('消費エネルギー')
+    $labelScore = $('<div></div>').attr('class', 'result-text result-label-score').text('スコア')
+    $label.append($labelProgramName)
+    $label.append($labelHp)
+    $label.append($labelEnergy)
+    $label.append($labelScore)
+
+    playerData.iconURL = playerIconURL
+    enemyData.iconURL = enemyIconURL
+    _createResultView($playerResult, playerData)
+    _createResultView($enemyResult, enemyData)
+
+    $result.append($playerResult);
+    $result.append($label);
+    $result.append($enemyResult);
+
+    $result.append(@createResultButton())
+
+    $result
+
+  retry: () =>
+    $('#battle-result').fadeOut('fast', () =>
+      $('#battle-result').remove()
+      $('#enchant-stage').fadeIn('fast', () =>
+        @frontend.restartProgram()
+      )
+    )
+
+  createResultButton : () ->
+    $retryButton = $('<div></div>').attr({id: 'retry-btn', class: 'btn btn-lg btn-success result-btn'}).text('Retry').click(@retry)
+    $backButton = $('<a></a>').attr({id: 'back-btn', class: 'btn btn-lg btn-danger result-btn'}).attr('href', getRequestURL('fronts', 'home')).text('Back')
+
+    $buttons = $('<div></div>').attr('class', 'result-btns')
+
+    $buttons.append($retryButton)
+    $buttons.append($backButton)
+
+    $buttons
+
+  showResult : (playerResult, enemyResult) ->
+    $result = @createResultView(playerResult, enemyResult)
+    $('#enchant-stage').fadeOut('fast', () => 
+      $(@).remove()
+      $('#program-container').append($result)
+    )
+
+  disableInput : () ->
+    $filter = $('<div></div>').attr('id', 'filter')
+    $('#program-container').append($filter)
+
+  ###
+  calcScore : (data) ->
+    hpScore = data.remaining_hp * 1000
+    energyScore = (6000 - data.consumed_energy)
+    energyScore = 0 if energyScore < 0
+    rate = if data.is_winner then 1.3 else 1
+
+    (hpScore + energyScore) * rate
+  ###
 
 $ ->
   mathing = new Mathing(playerId, enemyId)
