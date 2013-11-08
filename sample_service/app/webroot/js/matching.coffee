@@ -59,11 +59,13 @@ class Mathing
 
     _createResultView = ($parent, data) ->
       textClass = if data.is_winner then 'text-success' else 'text-danger'
+      $icon = $('<img></img>').attr({class: 'user-icon', src: data.iconURL})
       $programName = $('<div></div>').attr('class', 'program-name ' + textClass).text(data.programName)
       $hp = $('<div></div>').attr('class', 'result-text remaining-hp ' + textClass).text(data.remaining_hp)
       $energy = $('<div></div>').attr('class', 'result-text comsumed-energy ' + textClass).text(data.consumed_energy)
       $score = $('<div></div>').attr('class', 'result-text score ' + textClass).text(data.score)
 
+      $parent.append($icon)
       $parent.append($programName)
       $parent.append($hp)
       $parent.append($energy)
@@ -79,6 +81,8 @@ class Mathing
     $label.append($labelEnergy)
     $label.append($labelScore)
 
+    playerData.iconURL = playerIconURL
+    enemyData.iconURL = enemyIconURL
     _createResultView($playerResult, playerData)
     _createResultView($enemyResult, enemyData)
 

@@ -81,6 +81,8 @@ class UsersController extends AppController {
 	    'username' =>  $uid,
 	    'password' => $token,
 	    'nickname' => $info['name'],
+	    'email' => $info['email'],
+	    'icon_url' => $this->getUserIcon($info['email']),
 	    'Account' => $account
 	);
 
@@ -89,5 +91,12 @@ class UsersController extends AppController {
 
     private function loginWithFacebook($data) {
     }
+
+    private function getUserIcon($email) {
+	$default = "http://www.somewhere.com/homestar.jpg";
+	$size = 200;
+	$grav_url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?d=" . urlencode( $default ). "&s=" . $size; 
+
+	return $grav_url;
+    }
 }
-?>

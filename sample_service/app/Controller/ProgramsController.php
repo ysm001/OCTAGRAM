@@ -8,7 +8,7 @@ class ProgramsController extends AppController {
             $data = $this->request->data['program'];
             $override = $this->request->data['override'] == "true";
 
-            $program = $this->Program->find('first', array('conditions' => array('Program.name' => $data['name'])));
+            $program = $this->Program->find('first', array('conditions' => array('Program.name' => $data['name'], 'Program.user_id' => $data['user_id'])));
 
             $alreadyExists = $program != null;
             $response = array('success' => false, 'exists' => $alreadyExists, 'override' => $override);
@@ -103,6 +103,7 @@ class ProgramsController extends AppController {
         $dir = $this->getPresetProgramDir();
         $programs = array();
 
+	debug(file_exists($dir));
         if ( file_exists($dir) ) {
             $handle = opendir($dir);
             if ( $handle ) {
@@ -134,7 +135,7 @@ class ProgramsController extends AppController {
     }
 
     private function getPresetProgramDir() { 
-        return $this->webroot.APP_DIR.'/'.WEBROOT_DIR.'/files/programs/presets'.'/'; 
+        return $this->webroot.APP_DIR.'/'.WEBROOT_DIR.'/files/programs/presets'; 
     }
 }
 ?>

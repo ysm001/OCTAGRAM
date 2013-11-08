@@ -66,12 +66,17 @@ Mathing = (function() {
     $playerResult = $('<div></div>').attr('id', 'player-result');
     $enemyResult = $('<div></div>').attr('id', 'enemy-result');
     _createResultView = function($parent, data) {
-      var $energy, $hp, $programName, $score, textClass;
+      var $energy, $hp, $icon, $programName, $score, textClass;
       textClass = data.is_winner ? 'text-success' : 'text-danger';
+      $icon = $('<img></img>').attr({
+        "class": 'user-icon',
+        src: data.iconURL
+      });
       $programName = $('<div></div>').attr('class', 'program-name ' + textClass).text(data.programName);
       $hp = $('<div></div>').attr('class', 'result-text remaining-hp ' + textClass).text(data.remaining_hp);
       $energy = $('<div></div>').attr('class', 'result-text comsumed-energy ' + textClass).text(data.consumed_energy);
       $score = $('<div></div>').attr('class', 'result-text score ' + textClass).text(data.score);
+      $parent.append($icon);
       $parent.append($programName);
       $parent.append($hp);
       $parent.append($energy);
@@ -86,6 +91,8 @@ Mathing = (function() {
     $label.append($labelHp);
     $label.append($labelEnergy);
     $label.append($labelScore);
+    playerData.iconURL = playerIconURL;
+    enemyData.iconURL = enemyIconURL;
     _createResultView($playerResult, playerData);
     _createResultView($enemyResult, enemyData);
     $result.append($playerResult);

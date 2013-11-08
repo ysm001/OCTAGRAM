@@ -20,7 +20,7 @@
     float: left;
     width: 120px;
     text-align: center;
-    margin-top: 220px;
+    margin-top: 340px;
     color: #ddd;
     font-size: 20px;
 }
@@ -58,4 +58,10 @@
     width: 640px;
     height: 640px;
     position: 0 0 0 0;
+}
+
+.user-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
 }

@@ -41,6 +41,8 @@
     <script type="text/javascript">
       playerProgram = <?php echo json_encode($player['Program']) ?>;
       enemyProgram = <?php echo json_encode($enemy['Program']) ?>;
+      playerIconURL = "<?php echo $playerIconURL ?>";
+      enemyIconURL = "<?php echo $enemyIconURL ?>";
       playerId = playerProgram.id;
       enemyId = enemyProgram.id;
     </script>
