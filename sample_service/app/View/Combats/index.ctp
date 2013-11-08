@@ -5,7 +5,17 @@
 
 <?php
    $pageInfo = $this->params['paging']['Program'];
+   extract($this->passedArgs);
+
+   $tmp = array();
+   foreach($this->passedArgs as $k => $v) {
+     if ($k != "page") {
+       array_push($tmp, $k.":".$v);
+     }
+   }
+   $query = (count($tmp) > 0) ? "/".implode("/", $tmp) : "";
 ?>
+
 <div>
 
   <hr></hr>
@@ -14,8 +24,6 @@
     <small>fight the AI of other users!</small>
   </blockquote>
 
-
-  
   <?php if ($pageInfo['count'] > 0) { ?>
   
     <!-- pagenation -->
@@ -28,9 +36,9 @@
    
       <?php foreach(range(1, $pageInfo['pageCount']) as $num) { ?>
         <?php if ($num == $pageInfo['page']) { ?>
-          <li class='active'><?php echo $this->Html->link($num, '/combats/index/page:'.$num); ?><li>
+          <li class='active'><?php echo $this->Html->link($num, '/combats/index/page:'.$num.$query); ?><li>
         <?php } else { ?>
-          <li><?php echo $this->Html->link($num, '/combats/index/page:'.$num); ?><li>
+          <li><?php echo $this->Html->link($num, '/combats/index/page:'.$num.$query); ?><li>
         <?php } ?>
       <?php } ?>
    
@@ -46,10 +54,22 @@
 
     <div class="panel panel-info" style="border-color: transparent;">
       
-      <div class="row panel-heading" style="margin-left: 0px; margin-right: 0px; border: 1px solid transparent;"><div class="col-sm-4">敵プログラム名</div><div class="col-sm-4">対戦相手</div><div class="col-sm-4">対戦日時</div></div>
+      <div class="row panel-heading" style="margin-left: 0px; margin-right: 0px; border: 1px solid transparent;">
+	<div class="col-sm-4">
+	  <?php if(isset($sort) && $sort == "name") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
+	  <?php echo $this->Paginator->sort('name','敵プログラム名');?>
+	</div>
+	<div class="col-sm-4">
+	  <?php if(isset($sort) && $sort == "user_id") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
+	  <?php echo $this->Paginator->sort('user_id','対戦相手');?>
+	</div>
+	<div class="col-sm-4">
+	  <?php if(isset($sort) && $sort == "modified") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
+	  <?php echo $this->Paginator->sort('modified','対戦日時');?>
+	</div>
+      </div>
       
       <?php foreach($programs as $p) { ?>
-      <?php foreach(Range(1,10) as $i ) { ?>
       <div class="panel-body bs-callout bs-callout-info program-row" style="border-left: 6px solid #bce8f1;" program-id='<?php echo $p["Program"]["id"]?>'>
 	<div class="col-sm-4">
     	  <p class="text-primary" style="font-size: large;">
@@ -66,7 +86,6 @@
 	<div class="col-sm-4" style="padding-top: 10px;"><p style="font-size: large;"><?php echo (new DateTime($p['Program']['modified']))->format('Y-m-d H:i'); ?></p></div>
       </div>
       <?php } ?>
-      <?php } ?>
       
     </div>
     <!-- table end -->  
@@ -82,12 +101,12 @@
       <?php } else { ?>
         <li class='disabled'><?php echo $this->Html->link('<<', '#'); ?></li>
       <?php } ?>
-        
+   
       <?php foreach(range(1, $pageInfo['pageCount']) as $num) { ?>
         <?php if ($num == $pageInfo['page']) { ?>
-          <li class='active'><?php echo $this->Html->link($num, '/combats/index/page:'.$num); ?><li>
+          <li class='active'><?php echo $this->Html->link($num, '/combats/index/page:'.$num.$query); ?><li>
         <?php } else { ?>
-          <li><?php echo $this->Html->link($num, '/combats/index/page:'.$num); ?><li>
+          <li><?php echo $this->Html->link($num, '/combats/index/page:'.$num.$query); ?><li>
         <?php } ?>
       <?php } ?>
    
