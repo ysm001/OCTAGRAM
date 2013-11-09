@@ -1,6 +1,6 @@
 <?php
 class BattleLogsController extends AppController {
-    public $uses = array('BattleLog', 'BattleLogAssociations');
+    public $uses = array('BattleLog', 'BattleLogAssociations', 'Program');
     public function save() {
 	$response = false;
 
@@ -10,9 +10,19 @@ class BattleLogsController extends AppController {
 
 	    $challengerData['score'] = $this->BattleLog->calcScore($challengerData);
 	    $defenderData['score'] = $this->BattleLog->calcScore($defenderData);
-	    
-	    $data = array($challengerData,$defenderData);
 
+        $challengerProgram = $this->Program->findById($challengerData['program_id']);
+        $defenderProgram = $this->Program->findById($defenderData['program_id']);        
+        $challengerData['rate'] = $challengerProgram['Program']['rate'];
+		$defenderData['rate'] = $defenderProgram['Program']['rate'];
+
+        // update program rate
+        $winProgramId = (!empty($challengerData['is_winner'])) ? $challengerData['program_id'] : $defenderData['program_id'];
+        $loseProgramId = (!empty($challengerData['is_winner'])) ? $defenderData['program_id'] : $challengerData['program_id'];
+        $this->BattleLog->updateProgramRate($winProgramId, $loseProgramId);
+
+	    $data = array($challengerData, $defenderData);
+        
 	    if ( $this->BattleLog->saveAll($data) ) {
 		$ids  = $this->BattleLog->id_list;
 		$association = array(

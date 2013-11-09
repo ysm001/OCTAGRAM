@@ -1,6 +1,11 @@
 <?php
+
 class BattleLog extends AppModel {
     public $id_list = array();
+
+    private $defaultRate = 1500;
+    private $ratio = 0.04;
+    private $baseDelta = 16;
 
     function afterSave($created, $options = array())
     {
@@ -28,5 +33,40 @@ class BattleLog extends AppModel {
         return $score;
     }
 
+    function getDefaultRate()
+    {
+        return $this->defaultRate;
+    }
+
+    function getDelta($winProgramRate, $loseProgramRate)
+    {
+        return (int) ($this->baseDelta + ($loseProgramRate - $winProgramRate) * $this->ratio);
+    }
+
+    public function updateProgramRate($winProgramId, $loseProgramId)
+    {
+        $winProgram = $this->Program->findById($winProgramId);
+        $loseProgram = $this->Program->findById($loseProgramId);
+        $delta = $this->getDelta($winProgram['Program']['rate'], $loseProgram['Program']['rate']);
+        $winProgram['Program']['rate'] = $winProgram['Program']['rate'] + $delta;
+        $loseProgram['Program']['rate'] = $loseProgram['Program']['rate'] - $delta;
+        $this->Program->saveAll(array($winProgram, $loseProgram));
+    }
+    
+    function getUserRate($userId)
+    {
+        $this->Program->unbindModel(array('hasMany' => array('BattleLog')));
+        $programs = $this->Program->find('all', array(
+                'fields' => array('Program.id', 'Program.rate'),
+                'order' => array('Program.created' => 'asc'), 
+                'conditions' => array('Program.user_id' => $userId), 
+            ));
+        $programs = Set::combine($programs, '{n}.Program.id','{n}.Program.rate');
+        
+        $totalProgramNum = count($programs);
+        $totalProgramRate = ($totalProgramNum > 0) ? array_sum($programs) : $this->getDefaultRate();
+        return (int) ($totalProgramRate / $totalProgramNum);
+    }
+
 }
-?>
+
