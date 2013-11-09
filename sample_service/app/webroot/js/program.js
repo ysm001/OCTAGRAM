@@ -23,7 +23,8 @@ ProgramSelector = (function() {
           program = programs[_i];
           $tr = $('<tr></tr>');
           $title = $('<td></td>').attr({
-            "class": 'selector-title'
+            "class": 'selector-title',
+            'program-id': program.id
           }).text(program.name);
           if (parseInt(program.is_preset)) {
             $label = $('<span style="margin-left: 10px"></span>').attr({
@@ -52,7 +53,13 @@ ProgramSelector = (function() {
               'program-id': program.id,
               'btn-id': idx
             }).text(button.text).click(function() {
-              callback[$(this).attr('btn-id')]($(this).attr('program-id'));
+              var programId, programName;
+              programId = $(this).attr('program-id');
+              programName = $('.selector-title[program-id = ' + programId + ']').text();
+              callback[$(this).attr('btn-id')]({
+                id: programId,
+                name: programName
+              });
               return $modal.modal('hide');
             }));
           }
@@ -65,7 +72,7 @@ ProgramSelector = (function() {
       $table.append($head);
       $table.append($body);
       $modalBody = $('<div></div>').attr('class', 'modal-body').append($table);
-      title = options.title ? options.title : "Select Program";
+      title = options.title ? options.title : "プログラムを選択して下さい。";
       $modalHeader = $('<div></div>').attr('class', 'modal-header').append($('<button></button>').attr({
         type: 'button',
         "class": 'close',
@@ -76,6 +83,9 @@ ProgramSelector = (function() {
         tabIndex: '-1',
         role: 'dialog'
       }).append($('<div></div>').attr('class', 'modal-dialog').append($('<div></div>').attr('class', 'modal-content').append($modalHeader).append($modalBody)));
+      $modal.on('hidden.bs.modal', function() {
+        return $modal.remove();
+      });
       return $modal.modal({
         keyboard: true,
         show: true
@@ -92,35 +102,48 @@ ProgramStorage = (function() {
     this.selector = new ProgramSelector();
   }
 
-  ProgramStorage.prototype.loadProgram = function() {
+  ProgramStorage.prototype.loadProgram = function(callback) {
+    var _this = this;
     return this.selector.modal({
       buttons: [
         {
           type: 'success',
           text: 'Load',
-          handler: this.loadProgramById
+          handler: function(data) {
+            _this.loadProgramById(data.id);
+            return callback(data);
+          }
         }, {
           type: 'danger',
           text: 'Delete',
-          handler: this.deleteProgramById
+          handler: function() {
+            return _this.deleteProgramById(data.id);
+          }
         }
       ]
     });
   };
 
-  ProgramStorage.prototype.saveProgram = function(override) {
-    var _this = this;
+  ProgramStorage.prototype.saveProgram = function(override, defaultTitle, callback) {
+    var $input,
+      _this = this;
     if (override == null) {
       override = false;
     }
-    return bootbox.prompt("Enter Program Name.", function(name) {
+    if (defaultTitle == null) {
+      defaultTitle = "";
+    }
+    bootbox.prompt("プログラム名を入力して下さい。", function(name) {
       if (name) {
-        return _this.saveProgramByName(name, override);
+        return _this.saveProgramByName(name, override, callback);
       }
     });
+    $input = $('.bootbox-input-text');
+    $input.val(defaultTitle);
+    return $input.focus();
   };
 
-  ProgramStorage.prototype.saveProgramByName = function(name, override) {
+  ProgramStorage.prototype.saveProgramByName = function(name, override, callback) {
     var program, serializedVal,
       _this = this;
     if (override == null) {
@@ -143,13 +166,18 @@ ProgramStorage = (function() {
         var response;
         response = JSON.parse(data);
         if (response.success) {
-          return Flash.showSuccess("保存しました。");
+          Flash.showSuccess("保存しました。");
+          if (callback) {
+            return callback({
+              name: name
+            });
+          }
         } else if (response.preset) {
           return bootbox.alert("サンプルプログラムを上書きすることはできません。<br>プログラム名を変更して下さい。");
         } else if (response.exists && !response.override) {
-          return bootbox.confirm(name + " は既に存在します。上書きしますか?", function(result) {
+          return bootbox.confirm(name + " は既に存在します。上書きしますか?<br><b class='text-danger'>上書きすると、スコアとレート、対戦履歴は初期化されます。</b>", function(result) {
             if (result) {
-              return _this.saveProgramByName(name, true);
+              return _this.saveProgramByName(name, true, callback);
             }
           });
         } else {
@@ -166,7 +194,7 @@ ProgramStorage = (function() {
       getCurrentProgram().deserialize(JSON.parse(data));
       Flash.showSuccess("読み込みました。");
       if (callback) {
-        return callback();
+        return callback(id);
       }
     });
   };

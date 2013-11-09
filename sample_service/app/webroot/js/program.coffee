@@ -17,7 +17,7 @@ class ProgramSelector
         for program in programs
           $tr = $('<tr></tr>')
     
-          $title = $('<td></td>').attr(class: 'selector-title').text(program.name)
+          $title = $('<td></td>').attr({class: 'selector-title', 'program-id': program.id}).text(program.name)
           if ( parseInt(program.is_preset) )
             $label = $('<span style="margin-left: 10px"></span>').attr(class: 'label label-info').text("preset")
             $title.append($label)
@@ -29,7 +29,9 @@ class ProgramSelector
             $btns.append(
               $('<button style="margin-left:10px"></button>').attr(class: "btn btn-" + button.type, 'program-id': program.id, 'btn-id': idx).text(button.text)
                 .click(() ->
-                  callback[$(@).attr('btn-id')]($(@).attr('program-id'))
+                  programId = $(@).attr('program-id')
+                  programName = $('.selector-title[program-id = ' + programId + ']').text()
+                  callback[$(@).attr('btn-id')](id: programId, name: programName)
                   $modal.modal('hide')
                 )
             )
@@ -47,7 +49,7 @@ class ProgramSelector
           $table
         )
     
-      title = if options.title then options.title else "Select Program"
+      title = if options.title then options.title else "プログラムを選択して下さい。"
       $modalHeader =
         $('<div></div>').attr('class', 'modal-header').append(
           $('<button></button>').attr({type: 'button', class: 'close', 'data-dismiss': 'modal'}).text('×')
@@ -65,7 +67,11 @@ class ProgramSelector
             )
           )
         )
-    
+
+      $modal.on('hidden.bs.modal', () => 
+        $modal.remove()
+      )
+
       $modal.modal({
         keyboard: true,
         show: true
@@ -77,28 +83,33 @@ class ProgramStorage
   constructor: () ->
     @selector = new ProgramSelector()
 
-  loadProgram : () -> 
+  loadProgram : (callback) -> 
     @selector.modal(
       buttons: [
         {
           type: 'success'
           text: 'Load'
-          handler: @loadProgramById
+          handler: (data) => 
+            @loadProgramById(data.id)
+            callback(data)
         },
         {
           type: 'danger'
           text: 'Delete'
-          handler: @deleteProgramById
+          handler: () => @deleteProgramById(data.id)
         }
       ]
     )
 
-  saveProgram : (override = false) ->
-    bootbox.prompt("Enter Program Name.", (name)  => 
-      if name then @saveProgramByName(name, override)
+  saveProgram : (override = false, defaultTitle = "", callback) ->
+    bootbox.prompt("プログラム名を入力して下さい。", (name)  => 
+      if name then @saveProgramByName(name, override, callback)
     )
+    $input = $('.bootbox-input-text')
+    $input.val(defaultTitle)
+    $input.focus()
   
-  saveProgramByName : (name, override = false) ->
+  saveProgramByName : (name, override = false, callback) ->
     if (!name?) 
       console.log("error") 
     else 
@@ -118,11 +129,12 @@ class ProgramStorage
   
         if response.success
           Flash.showSuccess("保存しました。")
+          if callback then callback({name: name})
         else if response.preset
           bootbox.alert("サンプルプログラムを上書きすることはできません。<br>プログラム名を変更して下さい。")
         else if response.exists && !response.override
-          bootbox.confirm(name + " は既に存在します。上書きしますか?", (result) => 
-            if result then @saveProgramByName(name, true)
+          bootbox.confirm(name + " は既に存在します。上書きしますか?<br><b class='text-danger'>上書きすると、スコアとレート、対戦履歴は初期化されます。</b>", (result) => 
+            if result then @saveProgramByName(name, true, callback)
           ) 
         else
           bootbox.alert(data);
@@ -132,7 +144,7 @@ class ProgramStorage
     $.get(getRequestURL('programs', 'load_data'), {id: id},  (data) ->
       getCurrentProgram().deserialize(JSON.parse(data))
       Flash.showSuccess("読み込みました。")
-      if callback then callback()
+      if callback then callback(id)
     )
 
   deleteProgramById : (id, callback) ->

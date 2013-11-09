@@ -10,6 +10,7 @@ Frontend = (function() {
     this.programStorage = new ProgramStorage();
     this.playerRunning = false;
     this.enemyRunning = false;
+    this.currentProgramName = "";
   }
 
   Frontend.prototype.getPlayerProgram = function() {
@@ -66,14 +67,20 @@ Frontend = (function() {
   };
 
   Frontend.prototype.saveProgram = function(override) {
+    var _this = this;
     if (override == null) {
       override = false;
     }
-    return this.programStorage.saveProgram(override);
+    return this.programStorage.saveProgram(override, this.currentProgramName, function(data) {
+      return _this.currentProgramName = data.name;
+    });
   };
 
   Frontend.prototype.loadProgram = function() {
-    return this.programStorage.loadProgram();
+    var _this = this;
+    return this.programStorage.loadProgram(function(data) {
+      return _this.currentProgramName = data.name;
+    });
   };
 
   Frontend.prototype.loadProgramById = function(id, callback) {

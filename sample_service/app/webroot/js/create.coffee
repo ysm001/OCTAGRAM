@@ -5,6 +5,8 @@ class Frontend
     @programStorage = new ProgramStorage()
     @playerRunning = false
     @enemyRunning = false
+
+    @currentProgramName = "";
     
   getPlayerProgram : () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.playerProgramId)
   getEnemyProgram : () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.enemyProgramId)
@@ -41,8 +43,15 @@ class Frontend
   
     @showEnemyProgram()
   
-  saveProgram : (override = false) -> @programStorage.saveProgram(override)
-  loadProgram : () -> @programStorage.loadProgram()
+  saveProgram : (override = false) -> 
+    @programStorage.saveProgram(override, @currentProgramName, (data) => 
+      @currentProgramName = data.name
+    )
+
+  loadProgram : () -> 
+    @programStorage.loadProgram((data) => 
+      @currentProgramName = data.name
+    )
   loadProgramById : (id, callback) -> @programStorage.loadProgramById(id, callback)
   
   getContentWindow : () -> $('iframe')[0].contentWindow
