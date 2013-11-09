@@ -11,7 +11,13 @@ class RankingsController extends AppController {
         ));
 
     public function index() {
-        $this->set('programs',$this->paginate('Program'));
+        $this->Program->unbindModel(array('hasMany' => array('BattleLog')));        
+        $programs = $this->Program->find('all', array(
+                'limit' => 100,
+                /* 'fields' => array('Program.id', 'Program.rate'), */
+                'order' => array('Program.rate' => 'asc'), 
+            ));
+        $this->set('programs',$programs);
     }
     
     public function matching($playerId, $enemyId) {
