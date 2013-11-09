@@ -35,29 +35,31 @@ $query = (count($tmp) > 0) ? "/".implode("/", $tmp) : "";
       </div>
       <div class="col-sm-4">
         <?php if(isset($sort) && $sort == "user_id") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
-        <?php echo $this->Paginator->sort('user_id','対戦相手');?>
+        <?php echo $this->Paginator->sort('user_id','プログラム所有者');?>
       </div>
       <div class="col-sm-4">
         <?php if(isset($sort) && $sort == "modified") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
-        <?php echo $this->Paginator->sort('modified','対戦日時');?>
+        <?php echo $this->Paginator->sort('modified','登録日時');?>
       </div>
     </div>
 
     <?php foreach($programs as $p) { ?>
     <div class="row program-row" program-id='<?php echo $p["Program"]["id"]?>'>
       <div class="col-sm-4">
-        <div class="text-primary" style="font-size: large;">
+        <div class="text-primary program-name">
+          <!--
           <img class="img-rounded" src="<?php echo $p['User']['icon_url'] ?>" height="80" alt="" />&nbsp;&nbsp;
+          -->
           <?php echo $p['Program']['name']; ?>
         </div>
       </div>
       <div class="col-sm-4">
-        <div style="font-size: medium;">
+        <div class="user-col">
           <img class="img-rounded" src="<?php echo $p['User']['icon_url'] ?>" height="80" alt="" />&nbsp;&nbsp;
           <?php echo $p['User']['nickname']; ?>
         </div>
       </div>
-      <div class="col-sm-4" style="padding-top: 10px;"><p style="font-size: large;"><?php echo (new DateTime($p['Program']['modified']))->format('Y-m-d H:i'); ?></p></div>
+      <div class="col-sm-4"><p class="modified"><?php echo (new DateTime($p['Program']['modified']))->format('Y-m-d H:i'); ?></p></div>
     </div>
     <?php } ?>
 
