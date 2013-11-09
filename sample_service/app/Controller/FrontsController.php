@@ -4,6 +4,7 @@ class FrontsController extends AppController {
     public $components = array('Paginator');
 
     public function home() {
+	$this->layout = "bootstrap-with-header";
 	$this->Paginator->settings = array(
 	    'limit' => 20,
             'order' => array('BattleLogAssociation.modified' => 'desc')
