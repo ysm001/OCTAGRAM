@@ -41,7 +41,7 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
             <div class="score">score : <?php echo $p['DefenderBattleLog']['score']; ?></div>
           </div>
           <div class="col-sm-6">
-            <div class="img">
+            <div class="img" height=80>
               <img class="img-rounded" src="<?php echo $p['DefenderBattleLog']['Program']['User']['icon_url'] ?>" height="80" alt="" />
             </div>
           </div>

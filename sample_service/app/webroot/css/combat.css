@@ -1,4 +1,29 @@
-
 .program-row:hover{
     background-color: #e6e6e6;
+}
+
+.program-row {
+    background: #fff;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.program-cell {
+    padding: 10px;
+}
+
+.opponent-header {
+    background-color: #111;
+}
+
+.opponent-list-header {
+  color: #fff;
+}
+
+.opponent-list-heading {
+    background: #fff;
+    padding: 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
 }
