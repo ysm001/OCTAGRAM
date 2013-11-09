@@ -24,7 +24,46 @@ ProgramView = (function(_super) {
   };
 
   ProgramView.prototype.render = function() {
+    this.ids = this.model.attributes.battle_log.map(function(item) {
+      return item.id;
+    });
+    this.values = this.model.attributes.battle_log.map(function(item) {
+      return parseInt(item.rate);
+    });
     this.$el.html(this.template(this.model.attributes));
+    $('#graph-container').highcharts({
+      title: {
+        text: 'レートの変動値',
+        x: -20
+      },
+      xAxis: {
+        categories: this.ids
+      },
+      yAxis: {
+        title: {
+          text: 'レート'
+        },
+        plotLines: [
+          {
+            value: 0,
+            width: 1,
+            color: '#808080'
+          }
+        ]
+      },
+      legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle',
+        borderWidth: 0
+      },
+      series: [
+        {
+          name: 'レート',
+          data: this.values
+        }
+      ]
+    });
     return this;
   };
 
@@ -57,9 +96,7 @@ UserProfileRouter = (function(_super) {
     if (!Program.Cache[query]) {
       this.program.set("id", query);
       return this.program.fetch({
-        success: function(res) {
-          return console.log(res);
-        }
+        success: function(res) {}
       });
     }
   };

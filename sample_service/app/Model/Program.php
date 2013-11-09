@@ -9,7 +9,9 @@ class Program extends AppModel {
     public $hasMany = array(
         'BattleLog' => array(
             'className' => 'BattleLog',
-            'foreignKey' => 'program_id'
+            'foreignKey' => 'program_id',
+            'limit' => '10',
+            'order' => 'BattleLog.id desc'
         )
     );
 

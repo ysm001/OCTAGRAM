@@ -92,6 +92,9 @@ class ProgramsController extends AppController {
     public function api($id = 0) {
         header("Content-Type; application/json: charset=utf-8");
         if ($this->request->is('get')) {
+            $this->User->unbindModel(array('hasOne' => array('Accout')));
+            $this->User->unbindModel(array('hasMany' => array('Program')));
+            $this->Program->recursive = 2;
             echo json_encode($this->Program->findById($id));
         }
         exit();

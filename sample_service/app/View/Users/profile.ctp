@@ -1,19 +1,23 @@
 <?php //pr($user); ?>
 <script type="text/template" id="program-tpl">
   <div class="panel panel-primary">
-    <div class="panel-heading"><%- name %></div>
+  <div class="panel-heading"><%- name %> ~レート: <%- rate %>~</div>
     <div class="panel-body">
       <ul class="list-group">
       <% battle_log.forEach(function(i){ %>
         <li class="list-group-item">
+          <p class="list-group-item-text">レート: <%- i.rate %></p>
           <p class="list-group-item-text">消費エネルギー: <%- i.consumed_energy %></p>
           <p class="list-group-item-text">残りHP: <%- i.remaining_hp %></p>
         </li>
       <% }) %>
       </ul>
+      <div id="graph-container" style="min-width; 310px: height; 400px: margin; 0 auto"></div>
     </div>
   </div> 
 </script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
 <?php echo $this->Html->script('model/program'); ?>
 <?php echo $this->Html->script('users/profile/view'); ?>
 <div class="container">
