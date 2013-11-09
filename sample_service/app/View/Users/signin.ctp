@@ -28,10 +28,10 @@ $('a[href^="#"]').click(function(event) {
   <div class="container">
     <div class="octagram-logo-container">
       <div class="octagram-logo-img-container">
-        <?php echo $this->Html->image('octagram_logo.png', array('class' => 'octagram-logo-img'));?>
+        <?php echo $this->Html->image('octagram_logo.png', array('class' => 'octagram-logo-img', 'url' => array('controller' => 'auth', 'action' => 'google')));?>
       </div>
       <div class="octagram-logo-text-container">
-        <?php echo $this->Html->image('octagram_logo_text.png', array('class' => 'octagram-logo-text'));?>
+        <?php echo $this->Html->image('octagram_logo_text.png', array('class' => 'octagram-logo-text', 'url' => array('controller' => 'auth', 'action' => 'google')));?>
       </div>
     </div>
     <div class="form-signin"> 

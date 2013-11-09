@@ -18,6 +18,21 @@
     width: 1286px !important;
 }
 
+.programming-header {
+    color: #fff;
+}
+
+.programming-header p {
+    font-size: small;
+}
+
+#target-label-player, #target-label-enemy {
+    float: left;
+}
+
+#dbg-btns {
+    margin-bottom: 10px;
+}
 
 /*
 #dbg-btns {

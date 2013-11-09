@@ -1,5 +1,5 @@
 class GameLog
-  constructor: ()->
+  constructor: () ->
     selector = new ProgramSelector()
 
     moveToBattlePage = (playerId, enemyId) ->
@@ -21,6 +21,34 @@ class GameLog
     $('.battle-log-challenger').click(callback)
     $('.battle-log-defender').click(callback)
 
+class Tutorial
+  constructor: () ->
 
+  start: () ->
+    msg = 
+      "<p>CodeCombatでは、プログラミング言語OCTAGRAMを使って作成したAIをユーザ同士で戦わせます。</p>" + 
+      "<p>最強のAIを作って、ランキング上位を目指そう！</p>" +
+      "<p>まずは、チュートリアルを見てみましょう。</p>"
 
-$ -> new GameLog
+    bootbox.dialog(
+      message: msg,
+      title: "CodeCombatへようこそ！",
+      buttons: 
+        success: 
+          label: "チュートリアルを見る",
+          className: "btn-success",
+          callback:  () ->,
+        danger: 
+          label: "今後表示しない",
+          className: "btn-danger",
+          callback: () -> ,
+    )
+
+  disableTutorial: () ->
+
+$ -> 
+  new GameLog
+
+  if ( tutorialEnabled ) 
+    tutorial = new Tutorial()
+    tutorial.start()

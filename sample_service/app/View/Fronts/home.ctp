@@ -80,4 +80,11 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
             <?php } ?>
           </div>
         </div> 
+
+
+    <?php if ( $authUser ) : ?>
+      <?php $this->Html->scriptStart(array('inline'=>false)); ?>
+        var tutorialEnabled = <?php echo $authUser['tutorial_enabled'] ?>
+      <?php $this->Html->scriptEnd(); ?>
+    <?php endif ?>
 <?php $this->end(); ?>

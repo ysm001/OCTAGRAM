@@ -61,8 +61,18 @@ class Frontend
 $ ->
   frontend = new Frontend()
 
-  $('#edit-player-program').click(() => frontend.editPlayerProgram())
-  $('#edit-enemy-program').click(() => frontend.editEnemyProgram())
+  $('#edit-player-program').click(() =>
+    $('#target-label-enemy').hide()
+    $('#target-label-player').show()
+    $('#save').removeAttr('disabled')
+    frontend.editPlayerProgram()
+  )
+  $('#edit-enemy-program').click(() =>
+    $('#target-label-enemy').show()
+    $('#target-label-player').hide()
+    $('#save').attr('disabled', 'disabled')
+    frontend.editEnemyProgram()
+  )
   $('#save').click(() => frontend.saveProgram())
   $('#load').click(() => frontend.loadProgram())
   $('#run').click(() =>

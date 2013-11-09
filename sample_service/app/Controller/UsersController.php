@@ -33,9 +33,9 @@ class UsersController extends AppController {
     public function profile() {
         if (!empty($this->data)) {
             if ($this->User->save($this->data)) {
-                $this->Session->setFlash("保存しました", 'dissmiss', array('class' => 'alert alert-success alert-dismissable'));
+                $this->Session->setFlash("菫晏ｭ倥＠縺ｾ縺励◆", 'dissmiss', array('class' => 'alert alert-success alert-dismissable'));
             } else {
-                $this->Session->setFlash("保存に失敗しました", 'default', array('class' => 'alert alert-danger'));
+                $this->Session->setFlash("菫晏ｭ倥↓螟ｱ謨励＠縺ｾ縺励◆", 'default', array('class' => 'alert alert-danger'));
             }
             $this->redirect('/users/profile');
         } else {
@@ -43,6 +43,19 @@ class UsersController extends AppController {
             $user = $this->User->find('first', array('conditions' => array('User.id' => $user['id'])));
             $this->set('user', $user);
         }
+    }
+
+    public function disable_tutorial() {
+	if (!empty($this->data)) {
+	    $id = $this->data['id'];
+	    $user = $this->User->findById($id);
+
+	    if ( $user ) {
+		$user['tutorial_enabled'] = 0;
+		if ( $this->User->save( $user ) ) {
+		}
+	    }
+	}
     }
 
     private function update($data) {

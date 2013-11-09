@@ -113,9 +113,15 @@ $(function() {
     _this = this;
   frontend = new Frontend();
   $('#edit-player-program').click(function() {
+    $('#target-label-enemy').hide();
+    $('#target-label-player').show();
+    $('#save').removeAttr('disabled');
     return frontend.editPlayerProgram();
   });
   $('#edit-enemy-program').click(function() {
+    $('#target-label-enemy').show();
+    $('#target-label-player').hide();
+    $('#save').attr('disabled', 'disabled');
     return frontend.editEnemyProgram();
   });
   $('#save').click(function() {
