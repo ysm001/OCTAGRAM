@@ -31,7 +31,7 @@
     font-weight: bold;
 }
 
-.result-label-hp, .result-label-energy, .result-label-score {
+.result-label-hp, .result-label-energy, .result-label-score, .result-label-rate {
     font-size: 15px;
 }
 
