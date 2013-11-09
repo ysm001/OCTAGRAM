@@ -90,5 +90,10 @@ class Program extends AppModel {
         }
         return $results;
     }
+
+    public function getRateByProgramId($programId) {
+        $d = $this->findById($programId);
+        return (!empty($d)) ? $d['Program']['rate'] : null;
+    }
 }
 ?>
