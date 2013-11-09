@@ -91,6 +91,11 @@ body {
     text-align: center;
     font-size: 22px;
     margin-bottom: 10px;
+    text-decoration: underline;
+}
+
+.signin-btn:hover {
+    color: #333;
 }
 
 .form-signin .form-signin-heading,
