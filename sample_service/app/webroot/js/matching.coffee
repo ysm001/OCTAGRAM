@@ -47,8 +47,14 @@ class Mathing
     $.post(target, data, (response) => 
       Flash.showSuccess("result has been saved.") 
       scores = $.parseJSON(response)
+      rate = scores.rate
       playerResult.score = scores.playerScore
       enemyResult.score = scores.enemyScore
+      playerResult.beforeRate = rate.before.challengerRate
+      playerResult.afterRate = rate.after.challengerRate
+
+      enemyResult.beforeRate = rate.before.defenderRate
+      enemyResult.afterRate = rate.after.defenderRate
       @showResult(playerResult, enemyResult)
     )
 
@@ -57,34 +63,39 @@ class Mathing
     $playerResult = $('<div></div>').attr('id', 'player-result')
     $enemyResult = $('<div></div>').attr('id', 'enemy-result')
 
-    _createResultView = ($parent, data) ->
+    _createResultView = ($parent, data, left) ->
+      arrow = if left then '  →  ' else '  ←  '
       textClass = if data.is_winner then 'text-success' else 'text-danger'
       $icon = $('<img></img>').attr({class: 'user-icon', src: data.iconURL})
       $programName = $('<div></div>').attr('class', 'program-name ' + textClass).text(data.programName)
       $hp = $('<div></div>').attr('class', 'result-text remaining-hp ' + textClass).text(data.remaining_hp)
       $energy = $('<div></div>').attr('class', 'result-text comsumed-energy ' + textClass).text(data.consumed_energy)
       $score = $('<div></div>').attr('class', 'result-text score ' + textClass).text(data.score)
+      $rate = $('<div></div>').attr('class', 'result-text rate ' + textClass).text(data.beforeRate + arrow + data.afterRate)
 
       $parent.append($icon)
       $parent.append($programName)
       $parent.append($hp)
       $parent.append($energy)
       $parent.append($score)
+      $parent.append($rate)
 
     $label = $('<div></div>').attr('class', 'result-label')
     $labelProgramName = $('<div></div>').attr('class', 'result-text result-label-pname').text('')
     $labelHp = $('<div></div>').attr('class', 'result-text result-label-hp').text('残りHP')
     $labelEnergy = $('<div></div>').attr('class', 'result-text result-label-energy').text('消費エネルギー')
     $labelScore = $('<div></div>').attr('class', 'result-text result-label-score').text('スコア')
+    $labelRate = $('<div></div>').attr('class', 'result-text result-label-rate').text('レート')
     $label.append($labelProgramName)
     $label.append($labelHp)
     $label.append($labelEnergy)
     $label.append($labelScore)
+    $label.append($labelRate)
 
     playerData.iconURL = playerIconURL
     enemyData.iconURL = enemyIconURL
-    _createResultView($playerResult, playerData)
-    _createResultView($enemyResult, enemyData)
+    _createResultView($playerResult, playerData, true)
+    _createResultView($enemyResult, enemyData, false)
 
     $result.append($playerResult);
     $result.append($label);
