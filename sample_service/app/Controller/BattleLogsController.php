@@ -29,9 +29,12 @@ class BattleLogsController extends AppController {
 		    'challenger_log_id' => $ids[0],
 		    'defender_log_id' => $ids[1]
 		);
-
+        $rateArray = array(
+            'before' => array('challengerRate' => $challengerData['rate'], 'defenderRate' => $defenderData['rate']),
+            'after' => array('challengerRate' => $this->Program->getRateByProgramId($challengerData['program_id']), 'defenderRate' => $this->Program->getRateByProgramId($defenderData['program_id'])),
+        );
 		if ( $this->BattleLogAssociations->save($association) ) {
-		    $response = array('playerScore' => $challengerData['score'], 'enemyScore' => $defenderData['score']);
+		    $response = array('playerScore' => $challengerData['score'], 'enemyScore' => $defenderData['score'], 'rate' => $rateArray);
 		}
 	    }
 	}
