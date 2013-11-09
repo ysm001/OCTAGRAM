@@ -24,12 +24,12 @@ ProgramView = (function(_super) {
   };
 
   ProgramView.prototype.render = function() {
-    this.ids = this.model.attributes.battle_log.map(function(item) {
+    this.ids = (this.model.attributes.battle_log.map(function(item) {
       return item.id;
-    });
-    this.values = this.model.attributes.battle_log.map(function(item) {
+    })).reverse();
+    this.values = (this.model.attributes.battle_log.map(function(item) {
       return parseInt(item.rate);
-    });
+    })).reverse();
     this.$el.html(this.template(this.model.attributes));
     $('#graph-container').highcharts({
       title: {

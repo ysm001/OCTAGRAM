@@ -12,8 +12,8 @@ class ProgramView extends Backbone.View
     @model.on 'change:name', @render
 
   render: () =>
-    @ids = @model.attributes.battle_log.map (item) -> item.id
-    @values = @model.attributes.battle_log.map (item) -> parseInt(item.rate)
+    @ids = (@model.attributes.battle_log.map (item) -> item.id).reverse()
+    @values = (@model.attributes.battle_log.map (item) -> parseInt(item.rate)).reverse()
     @$el.html(@template(@model.attributes))
     $('#graph-container').highcharts({
             title: {
