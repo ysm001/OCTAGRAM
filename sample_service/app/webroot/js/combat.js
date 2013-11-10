@@ -5,7 +5,7 @@ window.onload = function() {
   moveToBattlePage = function(playerId, enemyId) {
     return location.href = getRoot() + "combats/matching/" + playerId + "/" + enemyId;
   };
-  return $('.program-row').click(function() {
+  $('.program-row').click(function() {
     var _this = this;
     return selector.modal({
       buttons: [
@@ -18,5 +18,8 @@ window.onload = function() {
         }
       ]
     });
+  });
+  return $.each($('.rate'), function() {
+    return $(this).css('color', rateToColor($(this).text()));
   });
 };

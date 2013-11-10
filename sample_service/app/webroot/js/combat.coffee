@@ -11,3 +11,7 @@ window.onload = () ->
       handler: (data) => moveToBattlePage(data.id, $(@).attr('program-id'))
     }]
   ))
+
+  $.each($('.rate'), () ->
+    $(@).css('color', rateToColor($(@).text()))
+  )

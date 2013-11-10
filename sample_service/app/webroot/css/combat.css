@@ -28,7 +28,7 @@
     margin-bottom: 10px;
 }
 
-.program-name {
+.program-name, .rate {
     font-size: 30px;
     margin-top: 18px;
 }
