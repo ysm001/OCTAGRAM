@@ -34,7 +34,7 @@
                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Document<b class="caret"></b></a>
                    <ul class="dropdown-menu">
                    <li><?php echo $this->Html->link('ゲームルール', '/documents/game', array('id' => 'gamerule-link')); ?></li>
-                   <li><?php echo $this->Html->link('プログラムの組み方', '/documents/tutorial', array('id' => 'tutorial-link')); ?></li>
+                   <li><?php echo $this->Html->link('プログラムの作り方', '/documents/tutorial', array('id' => 'tutorial-link')); ?></li>
                    </ul>
                  </li>
                  <li><?php echo $this->Html->link('Profile', '/users/profile'); ?></li>

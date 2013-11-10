@@ -78,12 +78,14 @@ class OctagramContent extends Group
     returnTip = TipFactory.createReturnTip(Environment.startX, Environment.startY)
     stopTip   = TipFactory.createStopTip() 
     nopTip  = TipFactory.createNopTip()
+    emptyTip = TipFactory.createEmptyTip()
     inst = new RandomBranchInstruction()
 
     @tipSet.addInstruction(inst, Resources.get("iconRandom"))
     @tipSet.addTip(returnTip)
     @tipSet.addTip(stopTip)
     @tipSet.addTip(nopTip, Resources.get("iconNop"))
+    @tipSet.addTip(emptyTip)
     ###
     @tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
     @tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))

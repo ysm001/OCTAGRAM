@@ -66,6 +66,10 @@
 	    <?php echo $this->Html->image('document/tutorial/howto-set-tip_drag.png', array('class' => 'document-image'));?>
 	    <p>プログラムの命令は、図のように、選択領域からプログラム編集領域へドラッグ&ドロップすることによって配置します。</p>
 
+	    <h3 class="text-primary">命令を削除する</h3>
+	    <?php echo $this->Html->image('document/tutorial/howto_remove_tip.png', array('class' => 'document-image'));?>
+	    <p>配置した命令は、何も置かれていないマスをドラッグして上に乗せることで削除できます。</p>
+
 	    <h3 class="text-primary">命令の進行方向を選択する</h3>
 	    <?php echo $this->Html->image('document/tutorial/howto-rotate_arrow.png', array('class' => 'document-image'));?>
 	    <p>プログラムは、チップから出ている矢印の方向へ進み、順番にプログラムを実行します。</p>

@@ -142,7 +142,7 @@ OctagramContent = (function(_super) {
   };
 
   OctagramContent.prototype.addPresetInstructions = function() {
-    var counters, i, inst, nopTip, returnTip, stack, stopTip, _i;
+    var counters, emptyTip, i, inst, nopTip, returnTip, stack, stopTip, _i;
     stack = new StackMachine();
     counters = [];
     for (i = _i = 0; _i < 100; i = ++_i) {
@@ -151,11 +151,13 @@ OctagramContent = (function(_super) {
     returnTip = TipFactory.createReturnTip(Environment.startX, Environment.startY);
     stopTip = TipFactory.createStopTip();
     nopTip = TipFactory.createNopTip();
+    emptyTip = TipFactory.createEmptyTip();
     inst = new RandomBranchInstruction();
     this.tipSet.addInstruction(inst, Resources.get("iconRandom"));
     this.tipSet.addTip(returnTip);
     this.tipSet.addTip(stopTip);
-    return this.tipSet.addTip(nopTip, Resources.get("iconNop"));
+    this.tipSet.addTip(nopTip, Resources.get("iconNop"));
+    return this.tipSet.addTip(emptyTip);
     /*
     @tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
     @tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))
