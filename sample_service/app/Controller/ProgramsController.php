@@ -26,6 +26,8 @@ class ProgramsController extends AppController {
                     if ( $alreadyExists && $override ){
 			$data['id'] = $program['Program']['id'];
 			$this->deleteProgramBattleLogs($program);
+		    } else {
+			$data['color'] = $this->Program->getDefaultColor();
 		    }
 
 		    $data['rate'] = $this->BattleLog->getDefaultRate();
