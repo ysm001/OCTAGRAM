@@ -86,8 +86,11 @@ window.onload = function() {
     return location.href = getRoot() + "combats/matching/" + playerId + "/" + enemyId;
   };
   $('.program-row').click(function() {
-    var _this = this;
+    var name,
+      _this = this;
+    name = $(this).find('.program-name').text().replace(/^\s+|\s+$/g, "");
     return selector.modal({
+      title: name + "と対戦するプログラムを選んで下さい。",
       buttons: [
         {
           type: "success",

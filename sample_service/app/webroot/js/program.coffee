@@ -41,7 +41,6 @@ class ProgramSelector
           $tr.append($btns)
           $body.append($tr)
 
-        console.log($body.children().length)
         if ( $body.children().length == 0 ) 
           $modalBody.children().remove()
           $modalBody.append($('<b class="text-danger">選択できるプログラムがありません。</b>'))

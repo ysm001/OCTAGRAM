@@ -45,13 +45,18 @@ window.onload = () ->
   moveToBattlePage = (playerId, enemyId) ->
     location.href = getRoot() + "combats/matching/" + playerId + "/" + enemyId
 
-  $('.program-row').click(() -> selector.modal(
-    buttons: [{
-      type: "success",
-      text: "Select",
-      handler: (data) => moveToBattlePage(data.id, $(@).attr('program-id'))
-    }]
-  ))
+  $('.program-row').click(() -> 
+    name = $(@).find('.program-name').text().replace(/^\s+|\s+$/g, "")
+
+    selector.modal(
+      title: name + "と対戦するプログラムを選んで下さい。", 
+      buttons: [{
+        type: "success",
+        text: "Select",
+        handler: (data) => moveToBattlePage(data.id, $(@).attr('program-id'))
+      }]
+    )
+  )
 
   ###
   colors = [
