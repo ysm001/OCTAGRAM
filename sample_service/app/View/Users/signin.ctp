@@ -46,8 +46,8 @@ $('a[href^="#"]').click(function(event) {
 
       <div id="feature1" class="row featurette">
         <div class="col-md-7">
-          <h2 class="featurette-heading">First. </h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+          <h2 class="featurette-heading">Everyone is Programmer.</h2>
+          <p class="lead">誰もがプログラミングを行うことができるようになることを目指したサービスです。</p>
         </div>
         <div class="col-md-5">
            <!--
@@ -63,15 +63,15 @@ $('a[href^="#"]').click(function(event) {
            -->
         </div>
         <div class="col-md-7">
-          <h2 class="featurette-heading">Second. </h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+          <h2 class="featurette-heading">Fun Programming. </h2>
+          <p class="lead">ゲームAIのプログラミングを通して、プログラミングの楽しさを知ることができます。</p>
         </div>
       </div>
 
       <div id="feature3" class="row featurette">
         <div class="col-md-7">
-          <h2 class="featurette-heading">Third. </h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+          <h2 class="featurette-heading">Easy Programming. </h2>
+          <p class="lead">視覚的かつ直感的なプログラミング言語OCTAGRAMを使う事によって、web上で簡単にプログラムを書くことができます。</p>
         </div>
         <div class="col-md-5">
            <!--
