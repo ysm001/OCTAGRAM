@@ -93,11 +93,11 @@ class ProgramStorage
             @loadProgramById(data.id)
             callback(data)
         },
-        {
-          type: 'danger'
-          text: 'Delete'
-          handler: () => @deleteProgramById(data.id)
-        }
+          #{
+          #  type: 'danger'
+          #  text: 'Delete'
+          #  handler: (data) => @deleteProgramById(data.id)
+          #}
       ]
     )
 

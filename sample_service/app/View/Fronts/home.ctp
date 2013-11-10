@@ -8,7 +8,7 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
 <!-- Three columns of text below the carousel -->
 <br>
 <blockquote>
-  <p><b class="battle-log-header">対戦ログ</b></p>
+  <p><b class="battle-log-header">最近行われた対戦</b></p>
 </blockquote>
 
 <?php if ($pageInfo['count'] > 0) { ?>
@@ -76,7 +76,7 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
             <!-- pagenation end -->
 
             <?php } else { ?>
-            <h3 class="text-danger">対戦ログはありません。</h3>
+            <h3 class="text-danger">最近行われた対戦はありません。</h3>
             <?php } ?>
           </div>
         </div> 

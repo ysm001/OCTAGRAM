@@ -113,12 +113,6 @@ ProgramStorage = (function() {
             _this.loadProgramById(data.id);
             return callback(data);
           }
-        }, {
-          type: 'danger',
-          text: 'Delete',
-          handler: function() {
-            return _this.deleteProgramById(data.id);
-          }
         }
       ]
     });
