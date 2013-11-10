@@ -45,7 +45,7 @@ class Mathing
     playerResult.programName = playerProgram['name']
     enemyResult.programName = enemyProgram['name']
     $.post(target, data, (response) => 
-      Flash.showSuccess("result has been saved.") 
+      Flash.showSuccess("結果を送信しました。") 
       scores = $.parseJSON(response)
       rate = scores.rate
       playerResult.score = scores.playerScore
@@ -134,16 +134,6 @@ class Mathing
   disableInput : () ->
     $filter = $('<div></div>').attr('id', 'filter')
     $('#program-container').append($filter)
-
-  ###
-  calcScore : (data) ->
-    hpScore = data.remaining_hp * 1000
-    energyScore = (6000 - data.consumed_energy)
-    energyScore = 0 if energyScore < 0
-    rate = if data.is_winner then 1.3 else 1
-
-    (hpScore + energyScore) * rate
-  ###
 
 $ ->
   mathing = new Mathing(playerId, enemyId)

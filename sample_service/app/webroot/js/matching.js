@@ -52,7 +52,7 @@ Mathing = (function() {
     enemyResult.programName = enemyProgram['name'];
     return $.post(target, data, function(response) {
       var rate, scores;
-      Flash.showSuccess("result has been saved.");
+      Flash.showSuccess("結果を送信しました。");
       scores = $.parseJSON(response);
       rate = scores.rate;
       playerResult.score = scores.playerScore;
@@ -153,17 +153,6 @@ Mathing = (function() {
     $filter = $('<div></div>').attr('id', 'filter');
     return $('#program-container').append($filter);
   };
-
-  /*
-  calcScore : (data) ->
-    hpScore = data.remaining_hp * 1000
-    energyScore = (6000 - data.consumed_energy)
-    energyScore = 0 if energyScore < 0
-    rate = if data.is_winner then 1.3 else 1
-  
-    (hpScore + energyScore) * rate
-  */
-
 
   return Mathing;
 

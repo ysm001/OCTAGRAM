@@ -12,9 +12,13 @@ class CombatsController extends AppController {
         )
     );
 
+    public function beforeFilter() {
+	parent::beforeFilter();
+	$this->layout = 'bootstrap-with-header';
+    }
+
     public function index() {
         $user = $this->Auth->user();
-	$this->layout = 'bootstrap-with-header';
         $this->Paginator->settings = array(
             'limit' => 20,
             'order' => array('Program.modified' => 'desc'),
