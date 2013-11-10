@@ -71,7 +71,10 @@ class Mathing
       $hp = $('<div></div>').attr('class', 'result-text remaining-hp ' + textClass).text(data.remaining_hp)
       $energy = $('<div></div>').attr('class', 'result-text comsumed-energy ' + textClass).text(data.consumed_energy)
       $score = $('<div></div>').attr('class', 'result-text score ' + textClass).text(data.score)
-      $rate = $('<div></div>').attr('class', 'result-text rate ' + textClass).text(data.beforeRate + arrow + data.afterRate)
+      $rate = $('<div></div>').attr('class', 'result-text rate ' + textClass).text(
+        if left then data.beforeRate + ' → ' + data.afterRate
+        else data.afterRate + ' ← ' + data.beforeRate
+      )
 
       $parent.append($icon)
       $parent.append($programName)
