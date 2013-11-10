@@ -27,6 +27,9 @@ ProgramSelector = (function() {
             'program-id': program.id
           }).text(program.name);
           if (parseInt(program.is_preset)) {
+            if (options.showPresets == null) {
+              continue;
+            }
             $label = $('<span style="margin-left: 10px"></span>').attr({
               "class": 'label label-info'
             }).text("preset");
@@ -65,7 +68,12 @@ ProgramSelector = (function() {
           }
           $tr.append($title);
           $tr.append($btns);
-          _results.push($body.append($tr));
+          $body.append($tr);
+          if ($body.children().length === 0) {
+            _results.push($body.append($('<b class="text-danger">選択できるプログラムがありません。</b>')));
+          } else {
+            _results.push(void 0);
+          }
         }
         return _results;
       });
@@ -105,6 +113,7 @@ ProgramStorage = (function() {
   ProgramStorage.prototype.loadProgram = function(callback) {
     var _this = this;
     return this.selector.modal({
+      showPresets: true,
       buttons: [
         {
           type: 'success',

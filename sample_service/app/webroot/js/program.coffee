@@ -19,6 +19,7 @@ class ProgramSelector
     
           $title = $('<td></td>').attr({class: 'selector-title', 'program-id': program.id}).text(program.name)
           if ( parseInt(program.is_preset) )
+            if ( !options.showPresets? ) then continue;
             $label = $('<span style="margin-left: 10px"></span>').attr(class: 'label label-info').text("preset")
             $title.append($label)
     
@@ -39,6 +40,9 @@ class ProgramSelector
           $tr.append($title)
           $tr.append($btns)
           $body.append($tr)
+
+          if ( $body.children().length == 0 ) 
+            $body.append($('<b class="text-danger">選択できるプログラムがありません。</b>'))
       )
     
       $table.append($head)
@@ -85,6 +89,7 @@ class ProgramStorage
 
   loadProgram : (callback) -> 
     @selector.modal(
+      showPresets: true,
       buttons: [
         {
           type: 'success'
