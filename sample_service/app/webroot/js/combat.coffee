@@ -14,9 +14,9 @@ class ColorConverter
 
     @colors[result.index]
 
-  _getIndex : (val, min, max) ->
+  _getIndex : (val, min, max, grad=false) ->
     dist = max - min
-    step = dist / (@colors.length)
+    step = dist / (@colors.length + (if grad then 1 else 0))
 
     if (val < min) then val = min;
     if (val > max) then val = max;

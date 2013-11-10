@@ -26,22 +26,6 @@ Array.prototype.map=function(f){
   return ret;
 }
 
-function rateToColor(rate) {
-  var min = 1200;
-  var max = 1800;
-
-  var from = "#428bca";
-  var to = "#b94a48"
-
-  graF = gra_hexcolor(from, to);
-
-  if (rate < min) rate = min;
-  if (rate > max) rate = max;
-
-  normalized = (rate - min) / (max - min );
-
-  return graF(normalized);
-}
 </script>
 
 <?php

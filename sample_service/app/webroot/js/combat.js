@@ -20,10 +20,13 @@ ColorConverter = (function() {
     return this.colors[result.index];
   };
 
-  ColorConverter.prototype._getIndex = function(val, min, max) {
+  ColorConverter.prototype._getIndex = function(val, min, max, grad) {
     var dist, index, s, step;
+    if (grad == null) {
+      grad = false;
+    }
     dist = max - min;
-    step = dist / this.colors.length;
+    step = dist / (this.colors.length + (grad ? 1 : 0));
     if (val < min) {
       val = min;
     }
