@@ -25,12 +25,16 @@ class CombatsController extends AppController {
             'conditions' => array('Program.is_preset' => '0', 'Program.user_id !=' => $user['id'])
         );
 
-	$pages = $this->Paginator->paginate('Program');
+        $data = $this->Paginator->paginate('Program');
 
-	foreach ($pages as &$page) {
-	    $page['Statistics'] = $this->Program->getStatistics($page['Program']['id']);
+	if ( isset($this->request->named['sort']) ) {
+	    $sort = $this->request->named['sort'];
+	    if ( $sort === 'Statistics.score_average' || $sort === 'Statistics.battle_num' ) {
+		$data = Set::sort($data, '{n}.'.$sort, $this->request->named['direction']);
+	    }
 	}
-        $this->set('programs',$pages);
+
+        $this->set('programs', $data);
     }
 
     public function matching($playerId, $enemyId) {

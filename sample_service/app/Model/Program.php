@@ -87,7 +87,15 @@ class Program extends AppModel {
             if (isset($val['cc_name']) && !empty($val['cc_name'])) {
                 $results[$key]['nickname'] = $val['cc_name'];
             }
+
+	    if ( isset($val['Program']) ) {
+		$results[$key]['Statistics'] = $this->getStatistics( $val );
+	    }
+	    else if ( isset($val['id']) ) {
+		$results[$key]['Statistics'] = $this->getStatistics( array('Program' => $val) );
+	    }
         }
+
         return $results;
     }
 
@@ -117,24 +125,26 @@ class Program extends AppModel {
 	App::import('Model','BattleLogAssociation');
 	$association = new BattleLogAssociation();
 
-	$this->User->unbindModel(array('hasMany' => array('Program')));
+	$this->unbindModel(array('hasMany' => array('BattleLog')));
+	$this->BattleLog->unbindModel(array('belongsTo' => array('Program')));
 	$challenger = $association->find('all', array('conditions' =>
 	    array(
 		'ChallengerBattleLog.program_id' => $program['Program']['id']
-	    )
+	    ),
+	    'recursive' => 0
 	));
 
 	$defender = $association->find('all', array('conditions' =>
 	    array(
 		'DefenderBattleLog.program_id' => $program['Program']['id']
-	    )
+	    ),
+	    'recursive' => 0
 	));
 
 	return array_merge($challenger, $defender);
     }
 
-    public function getStatistics($programId) {
-        $program = $this->findById($programId);
+    public function getStatistics($program) {
 	$result = array(
 	    'battle_num' => 0,
 	    'score_average' => 0,
