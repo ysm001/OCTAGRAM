@@ -110,20 +110,7 @@ class ProgramsController extends AppController {
     } 
 
     private function deleteProgramBattleLogs($program) {
-        $this->User->unbindModel(array('hasMany' => array('Program')));
-	$challenger = $this->BattleLogAssociation->find('all', array('conditions' =>
-	    array(
-		'ChallengerBattleLog.program_id' => $program['Program']['id']
-	    )
-	));
-
-	$defender = $this->BattleLogAssociation->find('all', array('conditions' =>
-	    array(
-		'DefenderBattleLog.program_id' => $program['Program']['id']
-	    )
-	));
-
-	$logs = array_merge($challenger, $defender);
+	$logs = $this->Program->getRelatedLogAssociations($program);
 
 	foreach ( $logs as $log ) {
 	    $id = $log['BattleLogAssociation']['id'];

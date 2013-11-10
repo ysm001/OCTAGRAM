@@ -113,24 +113,60 @@ class Program extends AppModel {
 	));
     }
 
+    public function getRelatedLogAssociations($program) {
+	App::import('Model','BattleLogAssociation');
+	$association = new BattleLogAssociation();
+
+	$this->User->unbindModel(array('hasMany' => array('Program')));
+	$challenger = $association->find('all', array('conditions' =>
+	    array(
+		'ChallengerBattleLog.program_id' => $program['Program']['id']
+	    )
+	));
+
+	$defender = $association->find('all', array('conditions' =>
+	    array(
+		'DefenderBattleLog.program_id' => $program['Program']['id']
+	    )
+	));
+
+	return array_merge($challenger, $defender);
+    }
+
     public function getStatistics($programId) {
         $program = $this->findById($programId);
 	$result = array(
 	    'battle_num' => 0,
-	    'score_average' => 0
+	    'score_average' => 0,
+	    'challenge_num' => 0,
+	    'defence_num' => 0
 	);
 
 	if ( $program ) {
-            $logs = $program['BattleLog'];
+            $logs = $this->getRelatedLogAssociations($program);
 	    $result['battle_num'] = count($logs);
 
 	    if ( $result['battle_num'] != 0 ) {
 		$scoreSum = 0;
+
 		foreach ($logs as $log) {
-		    $scoreSum += $log['score'];
+	            $challengerLog = $log['ChallengerBattleLog'];
+	            $defenderLog = $log['DefenderBattleLog'];
+
+		    $myLog = null;
+		    if ( $challengerLog['program_id'] == $program['Program']['id']) {
+			$myLog = $challengerLog;
+			$result['challenge_num']++;
+		    }
+		    else {
+			$myLog = $defenderLog;
+			$result['defence_num']++;
+		    }
+
+		    $scoreSum += $myLog['score'];
 		}
 
-		$result['score_average'] = $scoreSum / $result['battle_num'];
+		$result['score_average'] = (int)($scoreSum / $result['battle_num']);
 	    }
 	}
 
