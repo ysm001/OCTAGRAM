@@ -78,11 +78,11 @@ $query = (count($tmp) > 0) ? "/".implode("/", $tmp) : "";
       </div>
       <div class="col-sm-1 center">
         <?php if(isset($sort) && $sort == "battle_num") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
-        <?php echo $this->Paginator->sort('battle_num','戦闘回数');?>
+        戦闘回数
       </div>
       <div class="col-sm-2 center">
         <?php if(isset($sort) && $sort == "score_average") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
-        <?php echo $this->Paginator->sort('score_average','平均スコア');?>
+        平均スコア
       </div>
       <div class="col-sm-2 center">
         <?php if(isset($sort) && $sort == "user_id") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>

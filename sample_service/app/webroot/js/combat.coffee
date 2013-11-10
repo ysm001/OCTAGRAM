@@ -1,11 +1,23 @@
 class ColorConverter 
-  constructor : (@from = "#428bca", @to = "#b94a48") ->
+  constructor : (@colors) ->
 
   toColor : (val, min, max) ->
-    graF = gra_hexcolor(@from, @to);
+    dist = max - min
+    step = dist / (@colors.length - 1)
+
+    if (val < min) then val = min;
+    if (val > max) then val = max;
+    val -= min
+
+    index = (s for s in [0...@colors.length] when step * s <= val && val <= step * (s+1))[0]
+
+    @_toColor(val, step * index, step * (index+1), @colors[index], @colors[index + 1])
+
+  _toColor : (val, min, max, from, to) ->
+    graF = gra_hexcolor(from, to);
   
-    if (val < min) then rate = min;
-    if (val > max) then rate = max;
+    if (val < min) then val = min;
+    if (val > max) then val = max;
   
     normalized = (val - min) / (max - min );
   
@@ -29,7 +41,22 @@ window.onload = () ->
     }]
   ))
 
-  converter = new ColorConverter("#428bca", "#b94a48")
+  colors = [
+    '#5bc0de',
+    '#428bca',
+    '#5cb85c',
+    '#f0ad4e',
+    '#d9534f'
+  ]
+  converter = new ColorConverter(colors)
+
+  ###
+  # for debug
+  for i in [0..1800]
+    $d = $('<div></div>').css('background', converter.toColor(i, 1200, 1800)).css('width', '10px').css('height', '10px')
+    $('body').append($d)
+  ###
+
   $.each($('.rate'), () ->
     $(@).css('color', converter.rateToColor($(@).text()))
   )

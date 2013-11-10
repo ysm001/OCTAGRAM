@@ -2,19 +2,42 @@
 var ColorConverter;
 
 ColorConverter = (function() {
-  function ColorConverter(from, to) {
-    this.from = from != null ? from : "#428bca";
-    this.to = to != null ? to : "#b94a48";
+  function ColorConverter(colors) {
+    this.colors = colors;
   }
 
   ColorConverter.prototype.toColor = function(val, min, max) {
-    var graF, normalized, rate;
-    graF = gra_hexcolor(this.from, this.to);
+    var dist, index, s, step;
+    dist = max - min;
+    step = dist / (this.colors.length - 1);
     if (val < min) {
-      rate = min;
+      val = min;
     }
     if (val > max) {
-      rate = max;
+      val = max;
+    }
+    val -= min;
+    index = ((function() {
+      var _i, _ref, _results;
+      _results = [];
+      for (s = _i = 0, _ref = this.colors.length; 0 <= _ref ? _i < _ref : _i > _ref; s = 0 <= _ref ? ++_i : --_i) {
+        if (step * s <= val && val <= step * (s + 1)) {
+          _results.push(s);
+        }
+      }
+      return _results;
+    }).call(this))[0];
+    return this._toColor(val, step * index, step * (index + 1), this.colors[index], this.colors[index + 1]);
+  };
+
+  ColorConverter.prototype._toColor = function(val, min, max, from, to) {
+    var graF, normalized;
+    graF = gra_hexcolor(from, to);
+    if (val < min) {
+      val = min;
+    }
+    if (val > max) {
+      val = max;
     }
     normalized = (val - min) / (max - min);
     return graF(normalized);
@@ -37,7 +60,7 @@ ColorConverter = (function() {
 })();
 
 window.onload = function() {
-  var converter, moveToBattlePage, selector;
+  var colors, converter, moveToBattlePage, selector;
   selector = new ProgramSelector();
   moveToBattlePage = function(playerId, enemyId) {
     return location.href = getRoot() + "combats/matching/" + playerId + "/" + enemyId;
@@ -56,7 +79,15 @@ window.onload = function() {
       ]
     });
   });
-  converter = new ColorConverter("#428bca", "#b94a48");
+  colors = ['#5bc0de', '#428bca', '#5cb85c', '#f0ad4e', '#d9534f'];
+  converter = new ColorConverter(colors);
+  /*
+  # for debug
+  for i in [0..1800]
+    $d = $('<div></div>').css('background', converter.toColor(i, 1200, 1800)).css('width', '10px').css('height', '10px')
+    $('body').append($d)
+  */
+
   $.each($('.rate'), function() {
     return $(this).css('color', converter.rateToColor($(this).text()));
   });
