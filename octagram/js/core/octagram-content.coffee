@@ -84,6 +84,7 @@ class OctagramContent extends Group
     @tipSet.addTip(returnTip)
     @tipSet.addTip(stopTip)
     @tipSet.addTip(nopTip, Resources.get("iconNop"))
+    ###
     @tipSet.addInstruction(new CounterIncrementInstruction(counters), Resources.get("iconRandom"))
     @tipSet.addInstruction(new CounterDecrementInstruction(counters), Resources.get("iconRandom"))
     @tipSet.addInstruction(new CounterBranchInstruction(counters), Resources.get("iconRandom"))
@@ -101,6 +102,7 @@ class OctagramContent extends Group
     @tipSet.addInstruction(new StackDupInstruction(stack), Resources.get("iconRandom"))
     @tipSet.addInstruction(new StackRotInstruction(stack), Resources.get("iconRandom"))
     @tipSet.addInstruction(new StackBnzInstruction(stack), Resources.get("iconRandom"))
+    ###
 
   clearInstructions : () -> @tipSet.clear()
 
