@@ -11,6 +11,7 @@
 }
 
 .battle-log > div .img {
+    margin-top: 10px;
 }
 
 .battle-log > div .name {
@@ -44,4 +45,3 @@
   padding: 10px;
   border-radius: 20px;
 }
-
