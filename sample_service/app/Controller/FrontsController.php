@@ -11,7 +11,8 @@ class FrontsController extends AppController {
 	);
 
 	$this->Program->unbindModel(array('hasMany' => array('BattleLog')));
-        $this->set('associations',$this->Paginator->paginate('BattleLogAssociation'));
+        $this->set('associations', $this->Paginator->paginate('BattleLogAssociation'));
+        $this->set('tutorialEnabled', (int)$this->User->findById($this->getAuthUser()['id'])['User']['tutorial_enabled']);
     }
 }
 ?>

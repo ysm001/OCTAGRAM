@@ -12,8 +12,8 @@ window.onload = function() {
         {
           type: "success",
           text: "Select",
-          handler: function(id) {
-            return moveToBattlePage(id, $(_this).attr('program-id'));
+          handler: function(data) {
+            return moveToBattlePage(data.id, $(_this).attr('program-id'));
           }
         }
       ]

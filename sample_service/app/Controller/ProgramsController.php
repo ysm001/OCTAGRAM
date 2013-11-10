@@ -2,7 +2,10 @@
 class ProgramsController extends AppController {
     public $uses = array("User", "Program", "Statistic", "BattleLog");
 
-    public function create() {}
+    public function create() {
+	$this->layout = "bootstrap-with-header";
+    }
+
     public function add() {
         if ($this->request->is('post')) {
             $data = $this->request->data['program'];

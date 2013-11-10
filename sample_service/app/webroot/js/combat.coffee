@@ -8,6 +8,6 @@ window.onload = () ->
     buttons: [{
       type: "success",
       text: "Select",
-      handler: (id) => moveToBattlePage(id, $(@).attr('program-id'))
+      handler: (data) => moveToBattlePage(data.id, $(@).attr('program-id'))
     }]
   ))

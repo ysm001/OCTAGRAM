@@ -33,9 +33,9 @@ class UsersController extends AppController {
     public function profile() {
         if (!empty($this->data)) {
             if ($this->User->save($this->data)) {
-                $this->Session->setFlash("保存しました", 'dissmiss', array('class' => 'alert alert-success alert-dismissable'));
+                $this->Session->setFlash("菫晏ｭ倥＠縺ｾ縺励◆", 'dissmiss', array('class' => 'alert alert-success alert-dismissable'));
             } else {
-                $this->Session->setFlash("保存に失敗しました", 'default', array('class' => 'alert alert-danger'));
+                $this->Session->setFlash("菫晏ｭ倥↓螟ｱ謨励＠縺ｾ縺励◆", 'default', array('class' => 'alert alert-danger'));
             }
             $this->redirect('/users/profile');
         } else {
@@ -43,6 +43,16 @@ class UsersController extends AppController {
             $user = $this->User->find('first', array('conditions' => array('User.id' => $user['id'])));
             $this->set('user', $user);
         }
+    }
+
+    public function disable_tutorial() {
+	if ($this->request->is('post')) {
+	    if (!empty($this->request->data)) {
+		$this->User->id = $this->request->data['id'];
+		if ( $this->User->saveField('tutorial_enabled', 0) ) {
+		}
+	    }
+	}
     }
 
     private function update($data) {
@@ -56,6 +66,7 @@ class UsersController extends AppController {
         else {
             $data['id'] = $user['User']['id'];
             $data['Account']['id'] = $user['Account']['id'];
+	    $data['tutorial_enabled'] = $user['User']['tutorial_enabled'];
         }
         $response =  $this->User->saveAll($data);
 
@@ -103,6 +114,7 @@ class UsersController extends AppController {
             'nickname' => $info['name'],
             'email' => $info['email'],
             'icon_url' => $this->getUserIcon($info['email']),
+	    'tutorial_enabled' => 1,
             'Account' => $account
         );
 

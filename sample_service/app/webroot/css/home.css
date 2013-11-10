@@ -44,3 +44,13 @@
   padding: 10px;
   border-radius: 20px;
 }
+
+.tutorial-btns {
+    text-align: center;
+}
+
+.tutorial-btns div {
+    margin-left: 3px;
+    margin-right: 3px;
+    float: left;
+}
