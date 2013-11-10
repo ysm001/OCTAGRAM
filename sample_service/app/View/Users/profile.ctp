@@ -3,6 +3,7 @@
   <div class="panel panel-primary">
   <div class="panel-heading"><%- name %> ~レート: <%- rate %>~</div>
     <div class="panel-body">
+      <div id="graph-container" style="min-width; 310px: height; 400px: margin; 0 auto"></div>
       <ul class="list-group">
       <% battle_log.forEach(function(i){ %>
         <li class="list-group-item">
@@ -12,7 +13,6 @@
         </li>
       <% }) %>
       </ul>
-      <div id="graph-container" style="min-width; 310px: height; 400px: margin; 0 auto"></div>
     </div>
   </div> 
 </script>
