@@ -25,7 +25,7 @@ class ProgramsController extends AppController {
                     $data['Statistic'] = $this->Statistic->create();
                     if ( $alreadyExists && $override ){
 			$data['id'] = $program['Program']['id'];
-			deleteProgramBattleLogs($program);
+			$this->deleteProgramBattleLogs($program);
 		    }
 
 		    $data['rate'] = $this->BattleLog->getDefaultRate();
