@@ -35,7 +35,7 @@ class CombatsController extends AppController {
 	$error = false;
 
 	if ( $playerProgram && $enemyProgram ) {
-	    if ( $playerProgram['Program']['user_id'] == $enemyProgram['Program']['user_id'] ) {
+	    if ( $playerProgram['Program']['user_id'] != $enemyProgram['Program']['user_id'] ) {
 		$player = $this->User->findById($playerProgram['Program']['user_id']);
 		$enemy = $this->User->findById($enemyProgram['Program']['user_id']);
 
