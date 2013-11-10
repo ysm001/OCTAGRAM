@@ -25,7 +25,12 @@ class CombatsController extends AppController {
             'conditions' => array('Program.is_preset' => '0', 'Program.user_id !=' => $user['id'])
         );
 
-        $this->set('programs',$this->Paginator->paginate('Program'));
+	$pages = $this->Paginator->paginate('Program');
+
+	foreach ($pages as &$page) {
+	    $page['Statistics'] = $this->Program->getStatistics($page['Program']['id']);
+	}
+        $this->set('programs',$pages);
     }
 
     public function matching($playerId, $enemyId) {

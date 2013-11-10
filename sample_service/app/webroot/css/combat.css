@@ -28,7 +28,7 @@
     margin-bottom: 10px;
 }
 
-.program-name, .rate {
+.program-name, .rate, .battle_num, .score_average {
     font-size: 30px;
     margin-top: 28px;
 }
@@ -38,5 +38,9 @@
 }
 
 .user-col {
+    text-align: center;
+}
+
+.center {
     text-align: center;
 }

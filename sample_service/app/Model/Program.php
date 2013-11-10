@@ -112,5 +112,29 @@ class Program extends AppModel {
 	    mt_rand(0, 255)
 	));
     }
+
+    public function getStatistics($programId) {
+        $program = $this->findById($programId);
+	$result = array(
+	    'battle_num' => 0,
+	    'score_average' => 0
+	);
+
+	if ( $program ) {
+            $logs = $program['BattleLog'];
+	    $result['battle_num'] = count($logs);
+
+	    if ( $result['battle_num'] != 0 ) {
+		$scoreSum = 0;
+		foreach ($logs as $log) {
+		    $scoreSum += $log['score'];
+		}
+
+		$result['score_average'] = $scoreSum / $result['battle_num'];
+	    }
+	}
+
+	return $result;
+    }
 }
 ?>

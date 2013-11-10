@@ -68,19 +68,27 @@ $query = (count($tmp) > 0) ? "/".implode("/", $tmp) : "";
 
   <div class="opponent-list">
     <div class="row opponent-list-heading">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <?php if(isset($sort) && $sort == "name") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
         <?php echo $this->Paginator->sort('name','敵プログラム名');?>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-2 center">
         <?php if(isset($sort) && $sort == "rate") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
         <?php echo $this->Paginator->sort('rate','レーティング');?>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-1 center">
+        <?php if(isset($sort) && $sort == "battle_num") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
+        <?php echo $this->Paginator->sort('battle_num','戦闘回数');?>
+      </div>
+      <div class="col-sm-2 center">
+        <?php if(isset($sort) && $sort == "score_average") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
+        <?php echo $this->Paginator->sort('score_average','平均スコア');?>
+      </div>
+      <div class="col-sm-2 center">
         <?php if(isset($sort) && $sort == "user_id") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
         <?php echo $this->Paginator->sort('user_id','プログラム所有者');?>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-2 center">
         <?php if(isset($sort) && $sort == "modified") { ?><i class="glyphicon <?php echo ($direction == "asc") ? "glyphicon-chevron-up" : "glyphicon-chevron-down"?>"></i><?php } ?>
         <?php echo $this->Paginator->sort('modified','登録日時');?>
       </div>
@@ -88,7 +96,7 @@ $query = (count($tmp) > 0) ? "/".implode("/", $tmp) : "";
 
     <?php foreach($programs as $p) { ?>
     <div class="row program-row" program-id='<?php echo $p["Program"]["id"]?>'>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="text-primary program-name">
           <!--
           <img class="img-rounded" src="<?php echo $p['User']['icon_url'] ?>" height="80" alt="" />&nbsp;&nbsp;
@@ -96,18 +104,28 @@ $query = (count($tmp) > 0) ? "/".implode("/", $tmp) : "";
           <?php echo $p['Program']['name']; ?>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-2 center">
         <div class="text-primary rate">
           <?php echo $p['Program']['rate']; ?>
         </div>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-1 center">
+        <div class="text-primary battle_num">
+          <?php echo $p['Statistics']['battle_num']; ?>
+        </div>
+      </div>
+      <div class="col-sm-2 center">
+        <div class="text-primary score_average">
+          <?php echo $p['Statistics']['score_average']; ?>
+        </div>
+      </div>
+      <div class="col-sm-2 center">
         <div class="user-col">
-          <img class="img-rounded" src="<?php echo $p['User']['icon_url'] ?>" height="80" alt="" /><br>&nbsp;&nbsp;
+          <img class="img-rounded" src="<?php echo $p['User']['icon_url'] ?>" height="80" alt="" /><br>
           <?php echo $p['User']['nickname']; ?>
         </div>
       </div>
-      <div class="col-sm-2"><p class="modified"><?php echo (new DateTime($p['Program']['modified']))->format('Y-m-d H:i'); ?></p></div>
+      <div class="col-sm-2 center"><p class="modified"><?php echo (new DateTime($p['Program']['modified']))->format('Y-m-d H:i'); ?></p></div>
     </div>
     <?php } ?>
 
