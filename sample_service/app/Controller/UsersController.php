@@ -33,9 +33,9 @@ class UsersController extends AppController {
     public function profile() {
         if (!empty($this->data)) {
             if ($this->User->save($this->data)) {
-                $this->Session->setFlash("菫晏ｭ倥＠縺ｾ縺励◆", 'dissmiss', array('class' => 'alert alert-success alert-dismissable'));
+		$this->setSuccessFlash('変更しました。');
             } else {
-                $this->Session->setFlash("菫晏ｭ倥↓螟ｱ謨励＠縺ｾ縺励◆", 'default', array('class' => 'alert alert-danger'));
+		$this->setErrorFlash('変更に失敗しました。');
             }
             $this->redirect('/users/profile');
         } else {

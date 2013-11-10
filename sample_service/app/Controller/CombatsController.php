@@ -32,14 +32,27 @@ class CombatsController extends AppController {
         $playerProgram = $this->Program->findById($playerId);
         $enemyProgram = $this->Program->findById($enemyId);
 
-        $player = $this->User->findById($playerProgram['Program']['user_id']);
-        $enemy = $this->User->findById($enemyProgram['Program']['user_id']);
+	$error = false;
 
-        $this->set('player', $playerProgram);
-        $this->set('enemy', $enemyProgram);
-        $this->set('playerIconURL', $player['User']['icon_url']);
-        $this->set('enemyIconURL', $enemy['User']['icon_url']);
+	if ( $playerProgram && $enemyProgram ) {
+	    if ( $playerProgram['Program']['user_id'] == $enemyProgram['Program']['user_id'] ) {
+		$player = $this->User->findById($playerProgram['Program']['user_id']);
+		$enemy = $this->User->findById($enemyProgram['Program']['user_id']);
+
+		$this->set('player', $playerProgram);
+		$this->set('enemy', $enemyProgram);
+		$this->set('playerIconURL', $player['User']['icon_url']);
+		$this->set('enemyIconURL', $enemy['User']['icon_url']);
+	    } else {
+		$this->setErrorFlash('自分のプログラムとは対戦できません。');
+		$error = true;
+	    }
+	} else {
+	    $this->setErrorFlash('IDが不正です。');
+	    $error = true;
+	}
+
+	if ( $error ) $this->redirect(array('controller' => 'fronts', 'action' => 'home'));
     }
-
 }
 ?>
