@@ -143,7 +143,7 @@ class ProgramStorage
         else if response.preset
           bootbox.alert("サンプルプログラムを上書きすることはできません。<br>プログラム名を変更して下さい。")
         else if response.exists && !response.override
-          bootbox.confirm(name + " は既に存在します。上書きしますか?<br><b class='text-danger'>上書きすると、スコアとレート、対戦履歴は初期化されます。</b>", (result) => 
+          bootbox.confirm(name + " は既に存在します。上書きしますか?<br><b class='text-danger'>上書きすると、レートや対戦履歴は初期化されます。</b>", (result) => 
             if result then @saveProgramByName(name, true, callback)
           ) 
         else

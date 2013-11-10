@@ -24,10 +24,12 @@ class ProgramsController extends AppController {
                     $data['data_url'] = $data_url;
                     $data['Statistic'] = $this->Statistic->create();
                     if ( $alreadyExists && $override ){
-                        $data['id'] = $program['Program']['id'];
-                    } else {
-                        $data['rate'] = $this->BattleLog->getDefaultRate();
-                    }
+			$data['id'] = $program['Program']['id'];
+			deleteProgramBattleLogs($program);
+		    }
+
+		    $data['rate'] = $this->BattleLog->getDefaultRate();
+
                     $response['success'] = $this->Program->saveAll($data);
                 }
             }
