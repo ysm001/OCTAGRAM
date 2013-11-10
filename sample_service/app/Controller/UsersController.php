@@ -46,13 +46,10 @@ class UsersController extends AppController {
     }
 
     public function disable_tutorial() {
-	if (!empty($this->data)) {
-	    $id = $this->data['id'];
-	    $user = $this->User->findById($id);
-
-	    if ( $user ) {
-		$user['tutorial_enabled'] = 0;
-		if ( $this->User->save( $user ) ) {
+	if ($this->request->is('post')) {
+	    if (!empty($this->request->data)) {
+		$this->User->id = $this->request->data['id'];
+		if ( $this->User->saveField('tutorial_enabled', 0) ) {
 		}
 	    }
 	}
@@ -69,6 +66,7 @@ class UsersController extends AppController {
         else {
             $data['id'] = $user['User']['id'];
             $data['Account']['id'] = $user['Account']['id'];
+	    $data['tutorial_enabled'] = $user['User']['tutorial_enabled'];
         }
         $response =  $this->User->saveAll($data);
 
@@ -116,6 +114,7 @@ class UsersController extends AppController {
             'nickname' => $info['name'],
             'email' => $info['email'],
             'icon_url' => $this->getUserIcon($info['email']),
+	    'tutorial_enabled' => 1,
             'Account' => $account
         );
 
