@@ -6,10 +6,24 @@ ColorConverter = (function() {
     this.colors = colors;
   }
 
+  ColorConverter.prototype.toGradation = function(val, min, max) {
+    var index, result, step;
+    result = this._getIndex(val, min, max);
+    index = result.index;
+    step = result.step;
+    return this._toColor(val, min + step * index, min + step * (index + 1), this.colors[index], this.colors[index + 1]);
+  };
+
   ColorConverter.prototype.toColor = function(val, min, max) {
+    var result;
+    result = this._getIndex(val, min, max);
+    return this.colors[result.index];
+  };
+
+  ColorConverter.prototype._getIndex = function(val, min, max) {
     var dist, index, s, step;
     dist = max - min;
-    step = dist / (this.colors.length - 1);
+    step = dist / this.colors.length;
     if (val < min) {
       val = min;
     }
@@ -27,7 +41,10 @@ ColorConverter = (function() {
       }
       return _results;
     }).call(this))[0];
-    return this._toColor(val, step * index, step * (index + 1), this.colors[index], this.colors[index + 1]);
+    return {
+      index: index,
+      step: step
+    };
   };
 
   ColorConverter.prototype._toColor = function(val, min, max, from, to) {
@@ -44,7 +61,7 @@ ColorConverter = (function() {
   };
 
   ColorConverter.prototype.rateToColor = function(val) {
-    return this.toColor(val, 1400, 1700);
+    return this.toColor(val, 1300, 1800);
   };
 
   ColorConverter.prototype.battleNumToColor = function(val) {
@@ -79,11 +96,20 @@ window.onload = function() {
       ]
     });
   });
-  colors = ['#5bc0de', '#428bca', '#5cb85c', '#f0ad4e', '#d9534f'];
+  /*
+  colors = [
+    '#5bc0de',
+    '#428bca',
+    '#5cb85c',
+    '#f0ad4e',
+    '#d9534f'
+  ]
+  */
+
+  colors = ['#aaaaaa', '#5cb85c', '#428bca', '#f0ad4e', '#d9534f'];
   converter = new ColorConverter(colors);
   /*
-  # for debug
-  for i in [0..1800]
+  for i in [1200..1800]
     $d = $('<div></div>').css('background', converter.toColor(i, 1200, 1800)).css('width', '10px').css('height', '10px')
     $('body').append($d)
   */

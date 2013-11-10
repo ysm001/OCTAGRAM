@@ -1,17 +1,29 @@
 class ColorConverter 
   constructor : (@colors) ->
 
+  toGradation : (val, min, max) ->
+    result = @_getIndex(val, min, max)
+
+    index = result.index
+    step = result.step
+
+    @_toColor(val, min + step * index, min + step * (index+1), @colors[index], @colors[index + 1])
+
   toColor : (val, min, max) ->
+    result = @_getIndex(val, min, max)
+
+    @colors[result.index]
+
+  _getIndex : (val, min, max) ->
     dist = max - min
-    step = dist / (@colors.length - 1)
+    step = dist / (@colors.length)
 
     if (val < min) then val = min;
     if (val > max) then val = max;
     val -= min
 
     index = (s for s in [0...@colors.length] when step * s <= val && val <= step * (s+1))[0]
-
-    @_toColor(val, step * index, step * (index+1), @colors[index], @colors[index + 1])
+    {index: index, step: step}
 
   _toColor : (val, min, max, from, to) ->
     graF = gra_hexcolor(from, to);
@@ -23,7 +35,7 @@ class ColorConverter
   
     graF(normalized);
 
-  rateToColor : (val) -> @toColor(val, 1400, 1700)
+  rateToColor : (val) -> @toColor(val, 1300, 1800)
   battleNumToColor : (val) -> @toColor(val, 0, 180)
   scoreToColor : (val) -> @toColor(val, 0, 50000)
 
@@ -41,6 +53,7 @@ window.onload = () ->
     }]
   ))
 
+  ###
   colors = [
     '#5bc0de',
     '#428bca',
@@ -48,11 +61,21 @@ window.onload = () ->
     '#f0ad4e',
     '#d9534f'
   ]
+  ###
+
+  colors = [
+    '#aaaaaa',
+    '#5cb85c',
+    '#428bca',
+    '#f0ad4e',
+    '#d9534f'
+  ]
+
   converter = new ColorConverter(colors)
 
-  ###
   # for debug
-  for i in [0..1800]
+  ###
+  for i in [1200..1800]
     $d = $('<div></div>').css('background', converter.toColor(i, 1200, 1800)).css('width', '10px').css('height', '10px')
     $('body').append($d)
   ###
