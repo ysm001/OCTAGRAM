@@ -38,16 +38,16 @@ TurnEnemyScanInstruction = (function(_super) {
   TurnEnemyScanInstruction.prototype.action = function() {
     var count, i, turnOnComplete,
       _this = this;
-    count = this.lengthParam.value + 1;
+    count = this.lengthParam.value;
     i = 0;
     turnOnComplete = function(robot) {
       var bullet;
+      bullet = BulletFactory.create(BulletType.NORMAL, _this.robot);
+      if (bullet.withinRange(_this.robot, _this.opponent, _this.robot.direct)) {
+        _this.onComplete(true);
+        return;
+      }
       if (i < count) {
-        bullet = BulletFactory.create(BulletType.NORMAL, _this.robot);
-        if (bullet.withinRange(_this.robot, _this.opponent, _this.robot.direct)) {
-          _this.onComplete(true);
-          return;
-        }
         i += 1;
         return _this.robot.turn(_this.rotateParam.value + 1, turnOnComplete);
       } else {
