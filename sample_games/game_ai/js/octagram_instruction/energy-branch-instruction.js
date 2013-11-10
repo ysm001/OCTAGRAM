@@ -11,7 +11,7 @@ EnergyBranchInstruction = (function(_super) {
     this.robot = robot;
     EnergyBranchInstruction.__super__.constructor.apply(this, arguments);
     this.tipInfo = new TipInfo(function(labels) {
-      return "エネルギー残量が" + labels[0] + "以上の時青矢印に進みます。<br>" + labels[0] + "未満の時は赤矢印に進みます。";
+      return "プレイヤーのエネルギー残量が" + labels[0] + "以上の時青矢印に進みます。<br>" + labels[0] + "未満の時は赤矢印に進みます。";
     });
     column = "エネルギー";
     labels = {};
@@ -22,7 +22,7 @@ EnergyBranchInstruction = (function(_super) {
     this.energyParam.id = "size";
     this.addParameter(this.energyParam);
     this.tipInfo.addParameter(this.energyParam.id, column, labels, 1);
-    this.icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.REST_ENERGY_PLAYER], 32, 32);
   }
 
   EnergyBranchInstruction.prototype.action = function() {

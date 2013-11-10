@@ -22,7 +22,7 @@ EnemyEnergyBranchInstruction = (function(_super) {
     this.energyParam.id = "size";
     this.addParameter(this.energyParam);
     this.tipInfo.addParameter(this.energyParam.id, column, labels, 1);
-    this.icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.REST_ENERGY_ENEMY], 32, 32);
   }
 
   EnemyEnergyBranchInstruction.prototype.action = function() {

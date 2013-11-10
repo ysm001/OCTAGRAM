@@ -16,7 +16,7 @@ LeaveInstruction = (function(_super) {
     this.enemy = enemy;
     LeaveInstruction.__super__.constructor.apply(this, arguments);
     this.setAsynchronous(true);
-    this.icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.MOVE_FROM_ENEMY], 32, 32);
   }
 
   LeaveInstruction.prototype.action = function() {

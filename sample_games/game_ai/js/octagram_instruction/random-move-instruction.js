@@ -15,7 +15,7 @@ RandomMoveInstruction = (function(_super) {
     this.robot = robot;
     RandomMoveInstruction.__super__.constructor.apply(this, arguments);
     this.setAsynchronous(true);
-    this.icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.RANDOM_MOVE], 32, 32);
   }
 
   RandomMoveInstruction.prototype.action = function() {

@@ -28,7 +28,7 @@ SupplyInstruction = (function(_super) {
     }
     this.addParameter(this.energyParam);
     this.tipInfo.addParameter(this.energyParam.id, column, labels, 1);
-    this.icon = new Icon(Game.instance.assets[R.TIP.LIFE], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.ENERGY], 32, 32);
     this.setAsynchronous(true);
   }
 

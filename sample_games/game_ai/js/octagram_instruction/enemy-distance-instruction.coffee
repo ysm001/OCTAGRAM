@@ -20,7 +20,7 @@ class EnemyDistanceInstruction extends BranchInstruction
     @addParameter(@distanceParam)
     @tipInfo.addParameter(@distanceParam.id, column, labels, 0)
 
-    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
+    @icon = new Icon(Game.instance.assets[R.TIP.DISTANCE], 32, 32)
 
     @conditions = [
       () => 0 < @_distance() <= 3,
@@ -53,4 +53,5 @@ class EnemyDistanceInstruction extends BranchInstruction
     @tipInfo.getLabel(parameter.id)
 
   getIcon: () ->
+    @icon.frame = @distanceParam.value
     return @icon

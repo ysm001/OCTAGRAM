@@ -16,7 +16,7 @@ class EnemyEnergyBranchInstruction extends BranchInstruction
     @addParameter(@energyParam)
     @tipInfo.addParameter(@energyParam.id, column, labels, 1)
 
-    @icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32)
+    @icon = new Icon(Game.instance.assets[R.TIP.REST_ENERGY_ENEMY], 32, 32)
 
   action : () ->
     @energyParam.value <= @enemy.energy

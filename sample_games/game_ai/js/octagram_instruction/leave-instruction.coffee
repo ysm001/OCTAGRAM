@@ -7,7 +7,7 @@ class LeaveInstruction extends ActionInstruction
   constructor : (@robot, @enemy) ->
     super
     @setAsynchronous(true)
-    @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
+    @icon = new Icon(Game.instance.assets[R.TIP.MOVE_FROM_ENEMY], 32, 32)
 
   action : () ->
     ret = @robot.leave(@enemy, () => @onComplete())

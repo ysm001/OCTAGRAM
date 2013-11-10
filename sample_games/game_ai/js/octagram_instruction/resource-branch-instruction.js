@@ -22,7 +22,7 @@ ResourceBranchInstruction = (function(_super) {
     this.energyParam.id = "size";
     this.addParameter(this.energyParam);
     this.tipInfo.addParameter(this.energyParam.id, column, labels, 1);
-    this.icon = new Icon(Game.instance.assets[R.TIP.LIFE], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.ENERGY], 32, 32);
   }
 
   ResourceBranchInstruction.prototype.action = function() {

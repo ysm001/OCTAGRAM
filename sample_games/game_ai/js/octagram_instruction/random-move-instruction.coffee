@@ -7,7 +7,7 @@ class RandomMoveInstruction extends ActionInstruction
   constructor : (@robot) ->
     super
     @setAsynchronous(true)
-    @icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32)
+    @icon = new Icon(Game.instance.assets[R.TIP.RANDOM_MOVE], 32, 32)
 
   action : () ->
     ret = false

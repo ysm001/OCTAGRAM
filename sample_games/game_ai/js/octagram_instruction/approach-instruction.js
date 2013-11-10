@@ -16,7 +16,7 @@ ApproachInstruction = (function(_super) {
     this.enemy = enemy;
     ApproachInstruction.__super__.constructor.apply(this, arguments);
     this.setAsynchronous(true);
-    this.icon = new Icon(Game.instance.assets[R.TIP.ARROW], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.MOVE_TO_ENEMY], 32, 32);
   }
 
   ApproachInstruction.prototype.action = function() {

@@ -3,7 +3,7 @@ class EnergyBranchInstruction extends BranchInstruction
   constructor : (@robot) ->
     super
     @tipInfo = new TipInfo((labels) ->
-      "エネルギー残量が#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
+      "プレイヤーのエネルギー残量が#{labels[0]}以上の時青矢印に進みます。<br>#{labels[0]}未満の時は赤矢印に進みます。"
     )
      # parameter 2
     column = "エネルギー"
@@ -16,7 +16,7 @@ class EnergyBranchInstruction extends BranchInstruction
     @addParameter(@energyParam)
     @tipInfo.addParameter(@energyParam.id, column, labels, 1)
 
-    @icon = new Icon(Game.instance.assets[R.TIP.REST_BULLET], 32, 32)
+    @icon = new Icon(Game.instance.assets[R.TIP.REST_ENERGY_PLAYER], 32, 32)
 
   action : () ->
     @energyParam.value <= @robot.energy

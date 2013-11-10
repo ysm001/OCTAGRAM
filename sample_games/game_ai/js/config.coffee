@@ -70,6 +70,13 @@ class Config.R
     SEARCH_ENEMY : "#{R.RESOURCE_DIR}/tip/search_enemy.png"
     CURRENT_DIRECT : "#{R.RESOURCE_DIR}/tip/arrow.png"
     REST_BULLET : "#{R.RESOURCE_DIR}/tip/rest_bullet.png"
+    RANDOM_MOVE : "#{R.RESOURCE_DIR}/tip/random_move.png"
+    MOVE_TO_ENEMY : "#{R.RESOURCE_DIR}/tip/move_to_enemy.png"
+    MOVE_FROM_ENEMY : "#{R.RESOURCE_DIR}/tip/move_from_enemy.png"
+    ENERGY : "#{R.RESOURCE_DIR}/tip/energy.png"
+    REST_ENERGY_PLAYER : "#{R.RESOURCE_DIR}/tip/rest_energy_player.png"
+    REST_ENERGY_ENEMY : "#{R.RESOURCE_DIR}/tip/rest_energy_enemy.png"
+    DISTANCE : "#{R.RESOURCE_DIR}/tip/distance.png"
 
 class Config.Frame
   @DIAMETER = 1

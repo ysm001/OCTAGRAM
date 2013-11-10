@@ -16,7 +16,7 @@ class ResourceBranchInstruction extends BranchInstruction
     @addParameter(@energyParam)
     @tipInfo.addParameter(@energyParam.id, column, labels, 1)
 
-    @icon = new Icon(Game.instance.assets[R.TIP.LIFE], 32, 32)
+    @icon = new Icon(Game.instance.assets[R.TIP.ENERGY], 32, 32)
 
   action : () ->
     @energyParam.value <= @robot.currentPlateEnergy

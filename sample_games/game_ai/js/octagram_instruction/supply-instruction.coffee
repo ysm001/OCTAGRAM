@@ -17,7 +17,7 @@ class SupplyInstruction extends ActionInstruction
       labels[String(i)] = i * 10
     @addParameter(@energyParam)
     @tipInfo.addParameter(@energyParam.id, column, labels, 1)
-    @icon = new Icon(Game.instance.assets[R.TIP.LIFE], 32, 32)
+    @icon = new Icon(Game.instance.assets[R.TIP.ENERGY], 32, 32)
     @setAsynchronous(true)
 
   action : () ->

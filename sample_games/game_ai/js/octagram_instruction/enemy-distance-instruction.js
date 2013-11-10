@@ -26,7 +26,7 @@ EnemyDistanceInstruction = (function(_super) {
     this.distanceParam.id = "distance";
     this.addParameter(this.distanceParam);
     this.tipInfo.addParameter(this.distanceParam.id, column, labels, 0);
-    this.icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.DISTANCE], 32, 32);
     this.conditions = [
       function() {
         var _ref;
@@ -73,6 +73,7 @@ EnemyDistanceInstruction = (function(_super) {
   };
 
   EnemyDistanceInstruction.prototype.getIcon = function() {
+    this.icon.frame = this.distanceParam.value;
     return this.icon;
   };
 
