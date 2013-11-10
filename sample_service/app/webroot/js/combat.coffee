@@ -23,7 +23,7 @@ class ColorConverter
   
     graF(normalized);
 
-  rateToColor : (val) -> @toColor(val, 1200, 1800)
+  rateToColor : (val) -> @toColor(val, 1400, 1700)
   battleNumToColor : (val) -> @toColor(val, 0, 180)
   scoreToColor : (val) -> @toColor(val, 0, 50000)
 

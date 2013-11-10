@@ -44,7 +44,7 @@ ColorConverter = (function() {
   };
 
   ColorConverter.prototype.rateToColor = function(val) {
-    return this.toColor(val, 1200, 1800);
+    return this.toColor(val, 1400, 1700);
   };
 
   ColorConverter.prototype.battleNumToColor = function(val) {
