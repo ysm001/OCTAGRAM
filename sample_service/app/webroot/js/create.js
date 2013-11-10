@@ -76,6 +76,10 @@ Frontend = (function() {
     });
   };
 
+  Frontend.prototype.deleteProgram = function() {
+    return this.programStorage.deleteProgram();
+  };
+
   Frontend.prototype.loadProgram = function() {
     var _this = this;
     return this.programStorage.loadProgram(function(data) {
@@ -136,6 +140,9 @@ $(function() {
   });
   $('#load').click(function() {
     return frontend.loadProgram();
+  });
+  $('#delete').click(function() {
+    return frontend.deleteProgram();
   });
   $('#run').click(function() {
     frontend.executeProgram();

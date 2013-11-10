@@ -108,10 +108,29 @@ ProgramStorage = (function() {
       buttons: [
         {
           type: 'success',
-          text: 'Load',
+          text: '読み込み',
           handler: function(data) {
             _this.loadProgramById(data.id);
             return callback(data);
+          }
+        }
+      ]
+    });
+  };
+
+  ProgramStorage.prototype.deleteProgram = function() {
+    var _this = this;
+    return this.selector.modal({
+      buttons: [
+        {
+          type: 'danger',
+          text: '削除',
+          handler: function(data) {
+            return bootbox.confirm('<b class="text-danger">プログラムを削除すると、関連する対戦履歴やスコアなども消えてしまいます。</b><br><p>本当に削除しますか？</p>', function(result) {
+              if (result) {
+                return _this.deleteProgramById(data.id);
+              }
+            });
           }
         }
       ]

@@ -88,16 +88,26 @@ class ProgramStorage
       buttons: [
         {
           type: 'success'
-          text: 'Load'
+          text: '読み込み'
           handler: (data) => 
             @loadProgramById(data.id)
             callback(data)
-        },
-          #{
-          #  type: 'danger'
-          #  text: 'Delete'
-          #  handler: (data) => @deleteProgramById(data.id)
-          #}
+        }
+      ]
+    )
+
+  deleteProgram : () ->
+    @selector.modal(
+      buttons: [
+        {
+          type: 'danger'
+          text: '削除'
+          handler: (data) => 
+            bootbox.confirm('<b class="text-danger">プログラムを削除すると、関連する対戦履歴やスコアなども消えてしまいます。</b><br><p>本当に削除しますか？</p>',
+              (result) => 
+                if result then @deleteProgramById(data.id)
+            )
+        }
       ]
     )
 

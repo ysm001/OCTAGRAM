@@ -48,10 +48,14 @@ class Frontend
       @currentProgramName = data.name
     )
 
+  deleteProgram : () ->
+    @programStorage.deleteProgram()
+
   loadProgram : () -> 
     @programStorage.loadProgram((data) => 
       @currentProgramName = data.name
     )
+
   loadProgramById : (id, callback) -> @programStorage.loadProgramById(id, callback)
   
   getContentWindow : () -> $('iframe')[0].contentWindow
@@ -84,6 +88,7 @@ $ ->
   )
   $('#save').click(() => frontend.saveProgram())
   $('#load').click(() => frontend.loadProgram())
+  $('#delete').click(() => frontend.deleteProgram())
   $('#run').click(() =>
     frontend.executeProgram()
     $('#run').attr('disabled', 'disabled')

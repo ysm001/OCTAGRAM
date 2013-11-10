@@ -16,7 +16,7 @@ class GameLog
         buttons: [{
           type: "success",
           text: "選択",
-          handler: (id) => moveToBattlePage(id, $(@).attr('program-id'))
+          handler: (data) => moveToBattlePage(data.id, $(@).attr('program-id'))
         }]
     $('.battle-log-challenger').click(callback)
     $('.battle-log-defender').click(callback)

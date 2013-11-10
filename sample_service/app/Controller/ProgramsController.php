@@ -1,6 +1,6 @@
 <?php
 class ProgramsController extends AppController {
-    public $uses = array("User", "Program", "Statistic", "BattleLog");
+    public $uses = array("User", "Program", "Statistic", "BattleLog", "BattleLogAssociation");
 
     public function create() {
 	$this->layout = "bootstrap-with-header";
@@ -80,6 +80,8 @@ class ProgramsController extends AppController {
             $id = $this->request->data['id'];
 
             $program = $this->Program->findById($id);
+	    $this->deleteProgramBattleLogs($program);
+
             if ( $program ) {
                 unlink($program['Program']['data_url']);
                 $this->Program->delete($id);
@@ -102,6 +104,33 @@ class ProgramsController extends AppController {
         }
         exit();
     } 
+
+    private function deleteProgramBattleLogs($program) {
+        $this->User->unbindModel(array('hasMany' => array('Program')));
+	$challenger = $this->BattleLogAssociation->find('all', array('conditions' =>
+	    array(
+		'ChallengerBattleLog.program_id' => $program['Program']['id']
+	    )
+	));
+
+	$defender = $this->BattleLogAssociation->find('all', array('conditions' =>
+	    array(
+		'DefenderBattleLog.program_id' => $program['Program']['id']
+	    )
+	));
+
+	$logs = array_merge($challenger, $defender);
+
+	foreach ( $logs as $log ) {
+	    $id = $log['BattleLogAssociation']['id'];
+	    $clogId = $log['ChallengerBattleLog']['id'];
+	    $dlogId = $log['DefenderBattleLog']['id'];
+
+	    $this->BattleLog->delete($clogId);
+	    $this->BattleLog->delete($dlogId);
+	    $this->BattleLogAssociation->delete($id);
+	}
+    }
 
     private function saveProgram($userId, $name, $data, $override = false) {
         $reldir = $this->Program->getUserProgramDir($this->webroot, $userId);

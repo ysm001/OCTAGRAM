@@ -23,8 +23,8 @@ GameLog = (function() {
           {
             type: "success",
             text: "選択",
-            handler: function(id) {
-              return moveToBattlePage(id, $(_this).attr('program-id'));
+            handler: function(data) {
+              return moveToBattlePage(data.id, $(_this).attr('program-id'));
             }
           }
         ]
