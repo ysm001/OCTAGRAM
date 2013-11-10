@@ -11,6 +11,8 @@ class RankingsController extends AppController {
         ));
 
     public function index() {
+	$this->layout = 'bootstrap-with-header';
+
         $this->Program->unbindModel(array('hasMany' => array('BattleLog')));        
         $programs = $this->Program->find('all', array(
                 'limit' => 100,

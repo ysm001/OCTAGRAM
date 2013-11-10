@@ -34,6 +34,7 @@
       <div class="container">
         <?php echo $this->fetch('bottom-content'); ?>
       </div> 
+      <?php echo $this->fetch('bottom-content-after'); ?>
     </div>
   </div>
 </div>

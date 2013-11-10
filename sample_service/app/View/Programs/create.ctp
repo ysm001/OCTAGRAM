@@ -1,4 +1,4 @@
-<?php $this->start('bottom-content'); ?>
+<?php $this->start('bottom-content-after'); ?>
 <?php echo $this->Html->css(array('create'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->css(array('program'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('bootbox'), false, array('inline'=>false)); ?>
@@ -39,6 +39,7 @@
   }
 <?php $this->Html->scriptEnd(); ?>
 <br>
+<div class="program-editor-container">
 <blockquote class="programming-header">
   <b>プログラム作成</b>
   <p>- 最強のAIを作ろう！-</p>
@@ -59,5 +60,6 @@
   <button type="button" class="btn btn-lg btn-primary" id="run">実行</button>
   <button type="button" class="btn btn-lg btn-warning" id="stop" disabled=disabled>停止</button>
   <button type="button" class="btn btn-lg btn-warning" id="restart" disabled=disabled>最初から実行</button>
+</div>
 </div>
 <?php $this->end(); ?>

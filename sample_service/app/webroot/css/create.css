@@ -13,9 +13,9 @@
     height: 650px;
 }
 
-.container {
-    max-width: none !important;
-    width: 1286px !important;
+.program-editor-container {
+    margin: 0 auto;
+    width: 1290px;
 }
 
 .programming-header {
