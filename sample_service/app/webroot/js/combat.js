@@ -65,7 +65,7 @@ ColorConverter = (function() {
   };
 
   ColorConverter.prototype.battleNumToColor = function(val) {
-    return this.toColor(val, 0, 180);
+    return this.toColor(val, 0, 100);
   };
 
   ColorConverter.prototype.scoreToColor = function(val) {

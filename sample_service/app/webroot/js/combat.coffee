@@ -36,7 +36,7 @@ class ColorConverter
     graF(normalized);
 
   rateToColor : (val) -> @toColor(val, 1300, 1800)
-  battleNumToColor : (val) -> @toColor(val, 0, 180)
+  battleNumToColor : (val) -> @toColor(val, 0, 100)
   scoreToColor : (val) -> @toColor(val, 0, 50000)
 
 window.onload = () ->
