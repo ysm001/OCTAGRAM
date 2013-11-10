@@ -34,8 +34,8 @@
 <?php $this->Html->scriptStart(array('inline'=>false)); ?>
   window.onload = function() {
     runGame();
-    var p = $(".programming-header").offset().top;
-    $('html,body').animate({ scrollTop: p }, 'fast');
+    // var p = $(".programming-header").offset().top;
+    // $('html,body').animate({ scrollTop: p }, 'fast');
   }
 <?php $this->Html->scriptEnd(); ?>
 <br>
