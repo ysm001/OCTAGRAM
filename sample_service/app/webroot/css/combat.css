@@ -30,12 +30,13 @@
 
 .program-name, .rate {
     font-size: 30px;
-    margin-top: 18px;
-}
-
-.modified {
     margin-top: 28px;
 }
 
+.modified {
+    margin-top: 38px;
+}
+
 .user-col {
+    text-indent: center;
 }

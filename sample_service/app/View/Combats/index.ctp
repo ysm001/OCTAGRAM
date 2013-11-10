@@ -103,7 +103,7 @@ $query = (count($tmp) > 0) ? "/".implode("/", $tmp) : "";
       </div>
       <div class="col-sm-2">
         <div class="user-col">
-          <img class="img-rounded" src="<?php echo $p['User']['icon_url'] ?>" height="80" alt="" />&nbsp;&nbsp;
+          <img class="img-rounded" src="<?php echo $p['User']['icon_url'] ?>" height="80" alt="" /><br>&nbsp;&nbsp;
           <?php echo $p['User']['nickname']; ?>
         </div>
       </div>
