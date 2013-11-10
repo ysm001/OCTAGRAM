@@ -26,6 +26,7 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
           <div class="name" style="font-size:small;"><?php echo $p['ChallengerBattleLog']['Program']['User']['nickname']; ?></div>
           <div class="program-name" style="font-size:x-large;"><?php echo $p['ChallengerBattleLog']['Program']['name']; ?></div>
           <div class="score">score : <?php echo $p['ChallengerBattleLog']['score']; ?></div>
+          <div class="rate">rate : <?php echo $p['ChallengerBattleLog']['Program']['rate']; ?></div>
         </div>
       </div>
     </div>
@@ -39,6 +40,7 @@ $pageInfo = $this->params['paging']['BattleLogAssociation'];
             <div class="name" style="font-size:small;"><?php echo $p['DefenderBattleLog']['Program']['User']['nickname']; ?></div>
             <div class="program-name" style="font-size:x-large;"><?php echo $p['DefenderBattleLog']['Program']['name']; ?></div>
             <div class="score">score : <?php echo $p['DefenderBattleLog']['score']; ?></div>
+            <div class="rate">rate : <?php echo $p['DefenderBattleLog']['Program']['rate']; ?></div>
           </div>
           <div class="col-sm-6">
             <div class="img" height=80>
