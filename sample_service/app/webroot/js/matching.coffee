@@ -140,8 +140,13 @@ $ ->
 
   Config.Frame.setGameSpeed(4)
   options = { 
-    onload:  ()->mathing.start()
+    onload:  () -> 
+      mathing.start()
     onend: (result) -> mathing.end(result)
   }
 
   runGame(options);
+ 
+  p = $("#program-container").offset().top
+  $('html,body').animate({ scrollTop: p }, 0);
+

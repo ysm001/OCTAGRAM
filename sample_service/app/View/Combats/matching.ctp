@@ -15,10 +15,7 @@
   enemyIconURL = "<?php echo $enemyIconURL ?>";
   playerId = playerProgram.id;
   enemyId = enemyProgram.id;
-  
-  var p = $("#program-container").offset().top;
-  window.moveTo(0, p);
-
+ 
   var VPL_JS_BASE = "./";
   var base = getRoot() + "<?php echo APP_DIR.'/'.WEBROOT_DIR.'/'.JS_URL;  ?>";
   var octagramBase = base + "/octagram";

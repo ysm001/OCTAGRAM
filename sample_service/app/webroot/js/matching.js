@@ -159,7 +159,7 @@ Mathing = (function() {
 })();
 
 $(function() {
-  var mathing, options;
+  var mathing, options, p;
   mathing = new Mathing(playerId, enemyId);
   Config.Frame.setGameSpeed(4);
   options = {
@@ -170,5 +170,9 @@ $(function() {
       return mathing.end(result);
     }
   };
-  return runGame(options);
+  runGame(options);
+  p = $("#program-container").offset().top;
+  return $('html,body').animate({
+    scrollTop: p
+  }, 0);
 });
