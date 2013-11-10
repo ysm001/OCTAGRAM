@@ -66,7 +66,7 @@ class UsersController extends AppController {
         else {
             $data['id'] = $user['User']['id'];
             $data['Account']['id'] = $user['Account']['id'];
-	    $data['tutorial_enabled'] = $user['User']['tutorial_enabled'];
+            $data['tutorial_enabled'] = $user['User']['tutorial_enabled'];
         }
         $response =  $this->User->saveAll($data);
 

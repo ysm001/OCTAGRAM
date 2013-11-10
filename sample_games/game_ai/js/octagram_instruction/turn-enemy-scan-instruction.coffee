@@ -33,14 +33,14 @@ class TurnEnemyScanInstruction extends BranchInstruction
     @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_ENEMY], 32, 32)
 
   action : () ->
-    count = @lengthParam.value + 1
+    count = @lengthParam.value
     i = 0
     turnOnComplete = (robot) =>
-      if i < count
-        bullet = BulletFactory.create(BulletType.NORMAL, @robot)
-        if bullet.withinRange(@robot, @opponent, @robot.direct)
+      bullet = BulletFactory.create(BulletType.NORMAL, @robot)
+      if bullet.withinRange(@robot, @opponent, @robot.direct)
           @onComplete(true)
           return
+      if i < count
         i+=1
         @robot.turn((@rotateParam.value+1), turnOnComplete)
       else

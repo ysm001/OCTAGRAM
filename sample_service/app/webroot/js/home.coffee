@@ -20,6 +20,7 @@ class GameLog
         }]
     $('.battle-log-challenger').click(callback)
     $('.battle-log-defender').click(callback)
+
 $ -> 
   new GameLog
 
