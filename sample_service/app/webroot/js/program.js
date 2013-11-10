@@ -15,10 +15,9 @@ ProgramSelector = (function() {
       $.get(getRequestURL('programs', 'owned_list'), {
         user_id: getUserId()
       }, function(data) {
-        var $btns, $label, $title, $tr, button, callback, idx, program, programs, _i, _j, _len, _len1, _ref, _results;
+        var $btns, $label, $title, $tr, button, callback, idx, program, programs, _i, _j, _len, _len1, _ref;
         ScreenLoader.cancel();
         programs = JSON.parse(data);
-        _results = [];
         for (_i = 0, _len = programs.length; _i < _len; _i++) {
           program = programs[_i];
           $tr = $('<tr></tr>');
@@ -39,14 +38,14 @@ ProgramSelector = (function() {
             "class": 'selector-btn'
           });
           callback = (function() {
-            var _j, _len1, _ref, _results1;
+            var _j, _len1, _ref, _results;
             _ref = options.buttons;
-            _results1 = [];
+            _results = [];
             for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
               button = _ref[_j];
-              _results1.push(button.handler);
+              _results.push(button.handler);
             }
-            return _results1;
+            return _results;
           })();
           _ref = options.buttons;
           for (idx = _j = 0, _len1 = _ref.length; _j < _len1; idx = ++_j) {
@@ -69,13 +68,12 @@ ProgramSelector = (function() {
           $tr.append($title);
           $tr.append($btns);
           $body.append($tr);
-          if ($body.children().length === 0) {
-            _results.push($body.append($('<b class="text-danger">選択できるプログラムがありません。</b>')));
-          } else {
-            _results.push(void 0);
-          }
         }
-        return _results;
+        console.log($body.children().length);
+        if ($body.children().length === 0) {
+          $modalBody.children().remove();
+          return $modalBody.append($('<b class="text-danger">選択できるプログラムがありません。</b>'));
+        }
       });
       $table.append($head);
       $table.append($body);
