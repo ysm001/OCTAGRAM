@@ -305,7 +305,6 @@ RobotWorld = (function(_super) {
           lose: this.diePlayer,
           type: RobotAIGame.END.TIME_LIMIT
         }));
-        console.log("end");
       }
     }
     this.updateItems();

@@ -19,7 +19,11 @@
 <?php $this->Html->scriptEnd(); ?>
 
 <?php echo $this->Html->script(array('octagram/js/octagram-loader-client.js'), false, array('inline'=>false)); ?>
+<?php if (isset($_GET['dev'])) { ?>
 <?php echo $this->Html->script(array('robot_battle/js/ai-robot.js'), false, array('inline'=>false)); ?>
+<?php } else { ?>
+<?php echo $this->Html->script(array('robot_battle/code-combat.min.js'), false, array('inline'=>false)); ?>
+<?php } ?>
 
 <?php echo $this->Html->script(array('program'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('create'), false, array('inline'=>false)); ?>

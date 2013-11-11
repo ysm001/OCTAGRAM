@@ -5,7 +5,6 @@
   for arg in arguments
     document.write('<script type="text/javascript" src="'+d+arg+'"></script>')
 )(
-  "third_party/underscore-min.js",
   "third_party/mt.js",
   "config.js",
   "utility/util.js",
@@ -37,12 +36,3 @@
   "main.js"
 )
 
-(() ->
-  classes = [ enchant.model.SpriteModel, enchant.model.GroupModel ]
-  for cls in classes
-    cls.prototype.__constructor = cls.prototype.constructor
-    cls.prototype.constructor = () ->
-      @properties ?= {}
-      Object.defineProperties this, @properties
-      @__constructor.apply(this, arguments)
-)()

@@ -1,8 +1,11 @@
 class Octagram
+  @CONTENT_HTML : "content.html"
+  @CONTENT_DEBUG_HTML : "content-debug.html"
+
   constructor : (path) ->
     @core = null
 
-    $octagramContent = $('<iframe seamless></iframe>').attr({id: 'octagram-content',src: path + '/content.html'})
+    $octagramContent = $('<iframe seamless></iframe>').attr({id: 'octagram-content',src: path + "/#{Octagram.CONTENT_HTML}"})
                                                       .css({width: '640px', height: '640px'})
 
     $target = $('#octagram')

@@ -210,7 +210,6 @@ class RobotWorld extends GroupModel
         @diePlayer = @_lose()
         @_start = false
         @dispatchEvent(new RobotEvent('gameend', {win:@_win(), lose:@diePlayer, type:RobotAIGame.END.TIME_LIMIT}))
-        console.log "end"
 
     @updateItems()
     @updateRobots()

@@ -1,5 +1,15 @@
 if !IS_MOBILE? then IS_MOBILE = false else Environment.Mobile = true
 
+(() ->
+  classes = [ enchant.model.SpriteModel, enchant.model.GroupModel ]
+  for cls in classes
+    cls.prototype.__constructor = cls.prototype.constructor
+    cls.prototype.constructor = () ->
+      @properties ?= {}
+      Object.defineProperties this, @properties
+      @__constructor.apply(this, arguments)
+)()
+
 class RobotAIGame
   @END :
     KILL   : 1

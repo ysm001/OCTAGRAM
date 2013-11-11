@@ -14,7 +14,7 @@ module.exports = (grunt)->
         interrupt: yes
     watch:
       scripts:
-        files: ["js/vpl/*.coffee"]
+        files: ["js/*.coffee"]
         tasks: ['coffee', 'concat', 'uglify']
         options:
           interrupt: yes
@@ -34,32 +34,33 @@ module.exports = (grunt)->
     concat:
         dist:
           src: [
-            "js/vpl/storage.js",
-            "js/vpl/event.js",
-            "js/vpl/sprite-group.js",
-            "js/vpl/tip-model.js",
-            "js/vpl/tip-instruction.js",
-            "js/vpl/test.js",
-            "js/vpl/util.js",
-            "js/vpl/resource.js",
-            "js/vpl/tip-effect.js",
-            "js/vpl/transition.js",
-            "js/vpl/tip-view.js",
-            "js/vpl/tip-icon.js",
-            "js/vpl/tip-parameter.js",
-            "js/vpl/tip-factory.js",
-            "js/vpl/instruction-preset.js",
-            "js/vpl/tip-instruction-stack.js",
-            "js/vpl/tip-instruction-counter.js",
-            "js/vpl/ui.js",
-            "js/vpl/background.js",
-            "js/vpl/cpu.js",
-            "js/vpl/cpu-executer.js",
-            "js/vpl/error-checker.js",
-            "js/vpl/ui-slider.js",
-            "js/vpl/ui-sidebar.js",
-            "js/vpl/ui-config.js",
-            "js/vpl/main.js"
+            "js/octagram-init.js",
+            "js/core/util/storage.js",
+            "js/core/event/event.js",
+            "js/core/ui/sprite-group.js",
+            "js/core/effect.js",
+            "js/core/tip/tip-model.js",
+            "js/core/util/util.js",
+            "js/core/resource.js",
+            "js/core/tip/tip-effect.js",
+            "js/core/tip/transition.js",
+            "js/core/tip/tip-view.js",
+            "js/core/tip/tip-factory.js",
+            "js/core/tip/instruction/instruction-preset.js",
+            "js/core/tip/instruction/tip-instruction-stack.js",
+            "js/core/tip/instruction/tip-instruction-counter.js",
+            "js/core/tip/instruction/custom-instruction-tip.js",
+            "js/core/ui/background.js",
+            "js/core/cpu/cpu.js",
+            "js/core/cpu/cpu-executer.js",
+            "js/core/ui/slider.js",
+            "js/core/ui/sidebar.js",
+            "js/core/ui/config-panel.js",
+            "js/core/ui/ui.js",
+            "js/core/ui/direction-selector.js",
+            "js/core/environment.js",
+            "js/core/octagram-content.js",
+            "js/core/octagram-core.js",
           ]
           dest: "js/octagram.js"
     uglify:

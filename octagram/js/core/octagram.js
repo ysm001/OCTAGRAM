@@ -2,13 +2,17 @@
 var Octagram;
 
 Octagram = (function() {
+  Octagram.CONTENT_HTML = "content.html";
+
+  Octagram.CONTENT_DEBUG_HTML = "content-debug.html";
+
   function Octagram(path) {
     var $octagramContent, $target, contentWindow,
       _this = this;
     this.core = null;
     $octagramContent = $('<iframe seamless></iframe>').attr({
       id: 'octagram-content',
-      src: path + '/content.html'
+      src: path + ("/" + Octagram.CONTENT_HTML)
     }).css({
       width: '640px',
       height: '640px'
