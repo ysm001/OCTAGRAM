@@ -5,7 +5,7 @@ window.onload = function() {
     var minHeight = 650;
     var height = document.documentElement.clientHeight > minHeight ? document.documentElement.clientHeight : minHeight;
     $('.bs-header').css('height', height);
-    $(window).resize(function() {
+    var fixWindow = function() {
       height = document.documentElement.clientHeight > height ? document.documentElement.clientHeight : height;
       width = document.documentElement.clientWidth;
 
@@ -26,7 +26,10 @@ window.onload = function() {
         $('.octagram-logo-text').css('width', '60%');
         $('.octagram-logo-text').css('height', 'auto');
       }
-    });
+    };
+
+    fixWindow();
+    $(window).resize(fixWindow);
 }
 
 $('a[href^="#"]').click(function(event) {
