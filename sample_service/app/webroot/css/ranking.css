@@ -1,0 +1,18 @@
+.rank-list-heading {
+  color: #FFF;
+}
+
+.program-row {
+  font-size: 22px;
+  color: white;
+}
+
+.rank-header {
+  color: #FFF;
+}
+
+.rank, .program-name, .rate, .battle_num, .score_average {
+  color: #FFF;
+  font-size: 30px;
+  margin-top: 28px;
+}
