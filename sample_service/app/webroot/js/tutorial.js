@@ -146,7 +146,7 @@ Tutorial = (function() {
     gameRuleLink = $('#gamerule-link').attr('href');
     page6 = {
       title: 'ドキュメント',
-      content: '<p>ナビゲーションバーの「Document」から、プログラムの組み方のチュートリアルやゲームルールをなどを確認することができます。</p>' + '<p>Code Combatのチュートリアルは以上です。頑張って最強のAIを作りましょう！</p>' + '<p>このチュートリアルは、ナビゲーションバーの「Tutorial」をクリックすることで、いつでも確認できます。</p>' + '<div class="tutorial-btns">' + '<div class="tutorial-btns-container">' + '<div class="learn-program-btn"> <a href="' + tutorialLink + '" class="btn btn-success btn-lg">' + 'プログラムの組み方を学ぶ' + '</a></div>' + '<div class="learn-game-btn"> <a href="' + gameRuleLink + '" class="btn btn-primary btn-lg">' + 'ゲームのルールを学ぶ' + '</a></div>' + '</div>' + '</div>'
+      content: '<p>ナビゲーションバーの「Document」から、プログラムの組み方のチュートリアルやゲームルールをなどを確認することができます。</p>' + '<p>Code Combatのチュートリアルは以上です。頑張って最強のAIを作りましょう！</p>' + '<p>このチュートリアルは、ナビゲーションバーの「Tutorial」をクリックすることで、いつでも確認できます。</p>' + '<div class="tutorial-btns">' + '<div class="tutorial-btns-container">' + '<div class="learn-program-btn"> <a target="_brank" href="' + tutorialLink + '" class="btn btn-success btn-lg">' + 'プログラムの組み方を学ぶ' + '</a></div>' + '<div class="learn-game-btn"> <a target="_brank" href="' + gameRuleLink + '" class="btn btn-primary btn-lg">' + 'ゲームのルールを学ぶ' + '</a></div>' + '</div>' + '</div>'
     };
     return [page1, page2, page3, page4, page5, page6];
   };
