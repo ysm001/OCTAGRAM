@@ -46,13 +46,14 @@ class UsersController extends AppController {
     }
 
     public function disable_tutorial() {
-	if ($this->request->is('post')) {
-	    if (!empty($this->request->data)) {
-		$this->User->id = $this->request->data['id'];
-		if ( $this->User->saveField('tutorial_enabled', 0) ) {
-		}
-	    }
-	}
+        if ($this->request->is('post')) {
+            if (!empty($this->request->data)) {
+                $this->User->id = $this->request->data['id'];
+                if ( $this->User->saveField('tutorial_enabled', 0) ) {
+                }
+            }
+        }
+        exit();
     }
 
     private function update($data) {
