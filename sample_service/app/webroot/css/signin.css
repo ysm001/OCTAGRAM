@@ -130,6 +130,7 @@ body {
 
 .featurette-heading {
     font-size: 6em;
+    word-break: break-all;
 }
 
 .lead {

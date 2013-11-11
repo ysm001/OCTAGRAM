@@ -7,7 +7,25 @@ window.onload = function() {
     $('.bs-header').css('height', height);
     $(window).resize(function() {
       height = document.documentElement.clientHeight > height ? document.documentElement.clientHeight : height;
-      $('.bs-header').css('height', height);
+      width = document.documentElement.clientWidth;
+
+      if (width > height) {
+        $('.bs-header').css('height', height);
+        $('.bs-header').css('width', "");
+        $('.octagram-logo-img').css('width', 'auto');
+        $('.octagram-logo-img').css('height', '100%');
+        $('.octagram-logo-text').css('width', 'auto');
+        $('.octagram-logo-text').css('height', '100%');
+      }
+      else {
+        console.log("aaaaaaaaaaa");
+        $('.bs-header').css('height', "");
+        $('.bs-header').css('width', width);
+        $('.octagram-logo-img').css('width', '60%');
+        $('.octagram-logo-img').css('height', 'auto');
+        $('.octagram-logo-text').css('width', '60%');
+        $('.octagram-logo-text').css('height', 'auto');
+      }
     });
 }
 
@@ -46,7 +64,7 @@ $('a[href^="#"]').click(function(event) {
 
       <div id="feature1" class="row featurette">
         <div class="col-md-7">
-          <h2 class="featurette-heading">Everyone is Programmer.</h2>
+          <h2 class="featurette-heading">Everyone is <br>Programmer.</h2>
           <p class="lead">誰もがプログラミングを行うことができるようになることを目指したサービスです。</p>
         </div>
         <div class="col-md-5">
@@ -63,14 +81,14 @@ $('a[href^="#"]').click(function(event) {
            -->
         </div>
         <div class="col-md-7">
-          <h2 class="featurette-heading">Fun Programming. </h2>
+          <h2 class="featurette-heading">Fun <br>Programming. </h2>
           <p class="lead">ゲームAIのプログラミングを通して、プログラミングの楽しさを知ることができます。</p>
         </div>
       </div>
 
       <div id="feature3" class="row featurette">
         <div class="col-md-7">
-          <h2 class="featurette-heading">Easy Programming. </h2>
+          <h2 class="featurette-heading">Easy <br>Programming. </h2>
           <p class="lead">視覚的かつ直感的なプログラミング言語OCTAGRAMを使う事によって、web上で簡単にプログラムを書くことができます。</p>
         </div>
         <div class="col-md-5">
