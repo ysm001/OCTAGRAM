@@ -10,7 +10,7 @@ class Program extends AppModel {
         'BattleLog' => array(
             'className' => 'BattleLog',
             'foreignKey' => 'program_id',
-            'limit' => '10',
+	    /*'limit' => '10',*/
             'order' => 'BattleLog.id desc'
         )
     );
