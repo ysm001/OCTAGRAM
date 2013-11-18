@@ -21,7 +21,9 @@ class ProgramView extends Backbone.View
                 x: -20
             },
             xAxis: {
-                categories: @ids
+              labels: {
+                enabled: false
+              }
             },
             yAxis: {
                 title: {

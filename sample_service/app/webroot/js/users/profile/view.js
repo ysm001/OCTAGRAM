@@ -37,7 +37,9 @@ ProgramView = (function(_super) {
         x: -20
       },
       xAxis: {
-        categories: this.ids
+        labels: {
+          enabled: false
+        }
       },
       yAxis: {
         title: {
