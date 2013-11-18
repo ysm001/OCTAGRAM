@@ -3,8 +3,9 @@
 <?php echo $this->Html->css(array('program'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->css(array('combat'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('program'), false, array('inline'=>false)); ?>
-<?php echo $this->Html->script(array('combat'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('color'), false, array('inline'=>false)); ?>
+<?php echo $this->Html->script(array('color-converter'), false, array('inline'=>false)); ?>
+<?php echo $this->Html->script(array('combat'), false, array('inline'=>false)); ?>
 
 <?php
 $pageInfo = $this->params['paging']['Program'];
