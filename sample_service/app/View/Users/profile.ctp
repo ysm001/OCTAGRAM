@@ -40,7 +40,7 @@
           );
           ?>
           <fieldset>
-            <legend>プロファイル</legend>
+            <legend>プロフィール</legend>
             <div class="form-group">
               <label for="cc_name" class="col-sm-3 control-label">ユーザー名</label>
               <div class="col-sm-9">
@@ -50,7 +50,7 @@
             <?php echo $this->Form->hidden('id', array('value' => $user['User']['id'])); ?>
             <div class="form-group">
               <div class="col-lg-9 col-lg-offset-3">
-                <button type="submit" class="btn btn-primary">Submit</button> 
+                <button type="submit" class="btn btn-primary">変更</button> 
               </div>
             </div>
           </fieldset>
