@@ -11,33 +11,13 @@ class RankingsController extends AppController {
         ));
 
     public function index() {
-        $user = $this->Auth->user();
         $this->layout = 'bootstrap-with-header';
 
-        $this->Program->unbindModel(array('hasMany' => array('BattleLog')));        
-        $programs = $this->Program->find('all', array(
-            'limit' => 100,
-            'order' => array('Program.rate' => 'desc'), 
-            'conditions' => array('Program.is_preset' => '0')
-        ));
-
-        $rank = 1;
-        foreach ($programs as $k => $v) {
-            $programs[$k]['Program']['rank'] = $rank;
-            if (isset($programs[$k + 1]) && $v['Program']['rate'] != $programs[$k + 1]['Program']['rate']) {
-                $rank += 1;
-            }
-        }
-        $this->set('programs',$programs);
-    }
-
-    /*
-    public function index() {
         $user = $this->Auth->user();
         $this->Paginator->settings = array(
             'limit' => 20,
-            'order' => array('Program.modified' => 'desc'),
-            'conditions' => array('Program.is_preset' => '0', 'Program.user_id !=' => $user['id'])
+            'order' => array('Program.rate' => 'desc'),
+            'conditions' => array('Program.is_preset' => '0')
         );
 
         $data = $this->Paginator->paginate('Program');
@@ -49,8 +29,7 @@ class RankingsController extends AppController {
 	    }
 	}
 
-        $this->set('programs', $data);
+        $this->set('programs', array_filter($data, function($d) { return $d['Statistics']['battle_num'] != 0; }));
     }
-     */
 }
 ?>
