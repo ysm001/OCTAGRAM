@@ -1,7 +1,7 @@
 getCurrentProgram = () -> Game.instance.octagram.getCurrentInstance()
 
 class Frontend 
-  constructor: () ->
+  constructor: (@options) ->
     @programStorage = new ProgramStorage()
     @playerRunning = false
     @enemyRunning = false
@@ -64,15 +64,30 @@ class Frontend
     @playerRunning = true
     @enemyRunning = true
   
-    @getPlayerProgram().execute({onStop: () -> @playerRunning = false})
-    @getEnemyProgram().execute({onStop: () -> @enemyRunning = false})
+    onStop = () => @options.onStop() if !@playerRunning && !@enemyRunning && @options? && @options.onStop?
+
+    @getPlayerProgram().execute({
+      onStop: () => 
+        @playerRunning = false
+        onStop()
+    })
+    @getEnemyProgram().execute({
+      onStop: () => 
+        @enemyRunning = false
+        onStop()
+    })
   
   stopProgram : () ->
     @getPlayerProgram().stop()
     @getEnemyProgram().stop()
 
 $ ->
-  frontend = new Frontend()
+  frontend = new Frontend({
+    onStop: () ->
+      # $('#run').removeAttr('disabled')
+      # $('#stop').attr('disabled', 'disabled')
+      # $('#restart').attr('disabled', 'disabled')
+  })
 
   $('#edit-player-program').click(() =>
     $('#target-label-enemy').hide()
@@ -80,25 +95,30 @@ $ ->
     $('#save').removeAttr('disabled')
     frontend.editPlayerProgram()
   )
+
   $('#edit-enemy-program').click(() =>
     $('#target-label-enemy').show()
     $('#target-label-player').hide()
     $('#save').attr('disabled', 'disabled')
     frontend.editEnemyProgram()
   )
+
   $('#save').click(() => frontend.saveProgram())
   $('#load').click(() => frontend.loadProgram())
   $('#delete').click(() => frontend.deleteProgram())
+
   $('#run').click(() =>
     frontend.executeProgram()
     $('#run').attr('disabled', 'disabled')
     $('#stop').removeAttr('disabled')
     $('#restart').removeAttr('disabled')
   )
+
   $('#stop').click(() =>
     frontend.resetProgram()
     $('#run').removeAttr('disabled')
     $('#stop').attr('disabled', 'disabled')
     $('#restart').attr('disabled', 'disabled')
   )
+
   $('#restart').click(() => frontend.restartProgram())

@@ -6,7 +6,8 @@ getCurrentProgram = function() {
 };
 
 Frontend = (function() {
-  function Frontend() {
+  function Frontend(options) {
+    this.options = options;
     this.programStorage = new ProgramStorage();
     this.playerRunning = false;
     this.enemyRunning = false;
@@ -96,16 +97,25 @@ Frontend = (function() {
   };
 
   Frontend.prototype.executeProgram = function() {
+    var onStop,
+      _this = this;
     this.playerRunning = true;
     this.enemyRunning = true;
+    onStop = function() {
+      if (!_this.playerRunning && !_this.enemyRunning && (_this.options != null) && (_this.options.onStop != null)) {
+        return _this.options.onStop();
+      }
+    };
     this.getPlayerProgram().execute({
       onStop: function() {
-        return this.playerRunning = false;
+        _this.playerRunning = false;
+        return onStop();
       }
     });
     return this.getEnemyProgram().execute({
       onStop: function() {
-        return this.enemyRunning = false;
+        _this.enemyRunning = false;
+        return onStop();
       }
     });
   };
@@ -122,7 +132,9 @@ Frontend = (function() {
 $(function() {
   var frontend,
     _this = this;
-  frontend = new Frontend();
+  frontend = new Frontend({
+    onStop: function() {}
+  });
   $('#edit-player-program').click(function() {
     $('#target-label-enemy').hide();
     $('#target-label-player').show();

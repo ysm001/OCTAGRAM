@@ -54,14 +54,20 @@
 <div id="target-label-enemy" class="label label-danger" style="display:none">敵プログラムを編集中 (保存はできません)</div>
 <br>
 <div id="dbg-btns" style="float:left; margin-top: 10px">
-  <button type="button" class="btn btn-lg btn-success" id='edit-player-program' style="display: none">プレイヤープログラムを編集</button>
-  <button type="button" class="btn btn-lg btn-danger"  id='edit-enemy-program'>敵プログラムを編集</button>
-  <button type="button" class="btn btn-lg btn-success" id="save">保存</button>
-  <button type="button" class="btn btn-lg btn-success" id="load">読み込み</button>
-  <button type="button" class="btn btn-lg btn-danger" id="delete">削除</button>
-  <button type="button" class="btn btn-lg btn-primary" id="run">実行</button>
-  <button type="button" class="btn btn-lg btn-warning" id="stop" disabled=disabled>停止</button>
-  <button type="button" class="btn btn-lg btn-warning" id="restart" disabled=disabled>最初から実行</button>
+  <div class='button-container'>
+    <button type="button" class="btn btn-lg btn-success" id="save">保存</button>
+    <button type="button" class="btn btn-lg btn-success" id="load">読み込み</button>
+    <button type="button" class="btn btn-lg btn-danger" id="delete">削除</button>
+  </div>
+  <div class='button-container'>
+    <button type="button" class="btn btn-lg btn-primary" id="run">実行</button>
+    <button type="button" class="btn btn-lg btn-warning" id="stop" disabled=disabled>初期状態に戻す</button>
+    <button type="button" class="btn btn-lg btn-warning" id="restart" disabled=disabled>最初から実行</button>
+  </div>
+  <div class='button-container'>
+    <button type="button" class="btn btn-lg btn-success" id='edit-player-program' style="display: none">プレイヤープログラムを編集</button>
+    <button type="button" class="btn btn-lg btn-danger"  id='edit-enemy-program'>敵プログラムを編集</button>
+  </div>
 </div>
 </div>
 <?php $this->end(); ?>
