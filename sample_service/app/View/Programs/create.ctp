@@ -54,7 +54,7 @@
 <div id="target-label-enemy" class="label label-danger" style="display:none">敵プログラムを編集中 (保存はできません)</div>
 <br>
 <div id="dbg-btns" style="float:left; margin-top: 10px">
-  <div class='button-container'>
+  <div class='button-container-left'>
     <button type="button" class="btn btn-lg btn-success" id="save">保存</button>
     <button type="button" class="btn btn-lg btn-success" id="load">読み込み</button>
     <button type="button" class="btn btn-lg btn-danger" id="delete">削除</button>

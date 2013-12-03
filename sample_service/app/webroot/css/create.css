@@ -34,6 +34,10 @@
     margin-bottom: 10px;
 }
 
+.button-container-left {
+    float: left;
+}
+
 .button-container {
     float: left;
     margin-left: 20px;
