@@ -34,5 +34,3 @@
 	"core/octagram-content.js"
 	"core/octagram-core.js"
 )
-
-
