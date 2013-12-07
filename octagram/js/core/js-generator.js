@@ -345,8 +345,31 @@ JsGenerator = (function() {
     return this.currentBlock.insertLine(this.getOperationName(node) + '();');
   };
 
-  JsGenerator.prototype.isInsideNewLoop = function() {
-    return false;
+  JsGenerator.prototype.findLoop = function(root, context) {
+    var graph, loops;
+    graph = new GraphSearcher();
+    loops = [];
+    graph.dfs(root, context.cpu, function(obj) {
+      var lp;
+      lp = graph.findLoop(obj.node, context.cpu, obj.stack);
+      if (lp != null) {
+        loops.push(lp);
+      }
+      return true;
+    });
+    return loops;
+  };
+
+  JsGenerator.prototype.findLoopByEnterNode = function(node) {
+    var lp, _i, _len, _ref1;
+    _ref1 = this.loops;
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      lp = _ref1[_i];
+      if (node === lp[0]) {
+        return lp;
+      }
+    }
+    return null;
   };
 
   JsGenerator.prototype.getBranchNodes = function(node, context) {
@@ -377,7 +400,20 @@ JsGenerator = (function() {
     return null;
   };
 
-  JsGenerator.prototype.generateWhileCode = function(root, context) {};
+  JsGenerator.prototype.generateWhileCode = function(root, context) {
+    var block, node, _i, _len, _ref1;
+    block = new JsWhileBlock('true');
+    _ref1 = context.loop;
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      node = _ref1[_i];
+      if (this.isBranchTransitionTip(node)) {
+        block.insertBlock(this.generateBranchCode(node, context));
+      } else if (this.isSingleTransitionTip(node)) {
+        block.insertLine(this.getOperationName(node) + '();');
+      }
+    }
+    return block;
+  };
 
   JsGenerator.prototype.generateBranchCode = function(root, context) {
     var block, nodes;
@@ -394,25 +430,43 @@ JsGenerator = (function() {
     graph = new GraphSearcher();
     block = new JsPlainBlock();
     graph.dfs(root, context.cpu, function(obj) {
-      var node;
+      var lp, node;
       node = obj.node;
-      if (_this.isInsideNewLoop(node)) {
-        return block.insertBlock(_this.generateWhileCode(node, context));
+      lp = _this.findLoopByEnterNode(node);
+      if (lp != null) {
+        context.loop = lp;
+        block.insertBlock(_this.generateWhileCode(node, context));
+        return false;
       } else if (_this.isBranchTransitionTip(node)) {
         block.insertBlock(_this.generateBranchCode(node, context));
         return false;
       } else if (_this.isSingleTransitionTip(node)) {
-        return block.insertLine(_this.getOperationName(node) + '();');
+        block.insertLine(_this.getOperationName(node) + '();');
+        return true;
       }
     });
     return block;
   };
 
-  JsGenerator.prototype.generate = function(cpu) {
-    var block, code;
-    block = this.generateCode(cpu.getStartTip(), {
-      cpu: cpu
+  JsGenerator.prototype.assignOrder = function(root, context) {
+    var graph, order,
+      _this = this;
+    graph = new GraphSearcher();
+    order = 0;
+    return graph.dfs(root, context.cpu, function(obj) {
+      obj.node.order = order++;
+      return true;
     });
+  };
+
+  JsGenerator.prototype.generate = function(cpu) {
+    var block, code, context, root;
+    root = cpu.getStartTip();
+    context = {
+      cpu: cpu
+    };
+    this.loops = this.findLoop(root, context);
+    block = this.generateCode(root, context);
     code = block.generateCode();
     return console.log(code.join('\n'));
   };

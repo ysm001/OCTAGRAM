@@ -168,7 +168,23 @@ class JsGenerator
   insertToCurrentBlock: (node) ->
     @currentBlock.insertLine(@getOperationName(node) + '();')
 
-  isInsideNewLoop: () -> false
+  findLoop: (root, context) ->
+    graph = new GraphSearcher()
+    loops = []
+
+    graph.dfs(root, context.cpu, (obj) ->
+      lp = graph.findLoop(obj.node, context.cpu, obj.stack)
+      if lp? then loops.push(lp)
+      true
+    )
+
+    loops
+
+  findLoopByEnterNode: (node) ->
+    for lp in @loops
+      if node == lp[0] then return lp
+
+    null
 
   getBranchNodes: (node, context) ->
     ifDir = node.getConseqDir()
@@ -194,7 +210,17 @@ class JsGenerator
     null
 
   generateWhileCode: (root, context) ->
+    block = new JsWhileBlock('true')
 
+    for node in context.loop
+      if @isBranchTransitionTip(node)
+        block.insertBlock(@generateBranchCode(node, context))
+        # generate break statement
+      else if @isSingleTransitionTip(node)
+        block.insertLine(@getOperationName(node) + '();')
+
+    block
+    
   generateBranchCode: (root, context) ->
     block = new JsBranchBlock(@getOperationName(root))
 
@@ -210,18 +236,35 @@ class JsGenerator
 
     graph.dfs(root, context.cpu, (obj) => 
       node = obj.node
-      if @isInsideNewLoop(node)
+      lp = @findLoopByEnterNode(node)
+      if lp?
+        context.loop = lp
         block.insertBlock(@generateWhileCode(node, context))
+        false
       else if @isBranchTransitionTip(node)
         block.insertBlock(@generateBranchCode(node, context))
         false
       else if @isSingleTransitionTip(node)
         block.insertLine(@getOperationName(node) + '();')
+        true
     )
 
     block
 
+  assignOrder: (root, context) ->
+    graph = new GraphSearcher()
+    order = 0
+
+    graph.dfs(root, context.cpu, (obj) => 
+      obj.node.order = order++;
+      true
+    )
+
   generate: (cpu) ->
-    block = @generateCode(cpu.getStartTip(), {cpu: cpu})
+    root = cpu.getStartTip()
+    context = {cpu: cpu}
+
+    @loops = @findLoop(root, context)
+    block = @generateCode(root, context)
     code = block.generateCode()
     console.log code.join('\n')
