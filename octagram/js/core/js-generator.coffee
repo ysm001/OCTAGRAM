@@ -39,23 +39,47 @@ class GraphSearcher
       idx = stack.indexOf(child)
       (stack[i] for i in [idx...stack.length])
 
-  dfs: (cpu, callback) ->
+  findSuccessors: (node, cpu) ->
+    successors = []
+    graph = new GraphSearcher()
+    graph.dfs(node, cpu, (obj) -> 
+      successors.push(obj.node)
+      true
+    )
+
+    successors
+
+  findRoute: (start, end, cpu) ->
+    route = []
+    graph = new GraphSearcher()
+
+    graph.dfs(start, cpu, (obj) -> 
+      if obj.node == end 
+        route = obj.stack
+        false
+      else true
+    )
+
+    route
+
+  dfs: (root, cpu, callback) ->
     @init()
+
+    end = false
 
     stack = []
     _visit = (node) =>
       stack.push(node)
       @visit(node)
-      callback({stack: stack, node: node})
+      callback({stack: stack, node: node, backtrack: false})
 
-    root = cpu.getStartTip()
-    _visit(root)
+    end = !_visit(root)
 
-    while stack.length > 0
+    while stack.length > 0 && !end
       node = stack[stack.length - 1]
       child = @findUnvisitedChild(node, cpu)
 
-      if child? then _visit(child)
+      if child? then end = !_visit(child)
       else stack.pop()
 
 class JsConstant
@@ -66,13 +90,23 @@ class JsText
     @lines = []
 
   insertLine: (line) -> @lines.push(line)
-  insertBlock: (block) -> @lines.concat(block)
+  insertBlock: (block) -> @insertArray(block.generateCode())
+  insertArray: (array) -> @lines = @lines.concat(array)
 
   clean: () -> @lines = []
 
   generateCode: () -> @lines
 
-class JsBlock extends JsText
+class JsPlainBlock extends JsText
+  constructor: () ->
+    super()
+    @childs = []
+
+  addChild: (child) ->
+    @childs.push(child)
+    child.parent = @
+
+class JsBlock extends JsPlainBlock
   generateCode: () ->
     code = (JsConstant.indent + line for line in @lines)
     code.unshift('{')
@@ -81,55 +115,113 @@ class JsBlock extends JsText
 
 class JsWhileBlock extends JsBlock
   constructor: (@condition) ->
-
+    super()
   createCondition: () -> @condition
 
   generateCode: () ->
     code = super()
     code[0] = 'while( ' + @createCondition() + ' ) ' + code[0]
+    code
 
 class JsForBlock extends JsBlock
   constructor: (@condition) ->
+    super()
 
   createCondition: () -> @condition
 
   generateCode: () ->
     code = super()
     code[0] = 'for( ' + @createCondition() + ' ) ' + code[0]
+    code
 
-class JsIfBlock extends JsBlock
+class JsBranchBlock
   constructor: (@condition) ->
+    @ifBlock = new JsBlock()
+    @elseBlock = new JsBlock()
+
+  getIfBlock: () -> @ifBlock
+  getElseBlock: () -> @elseBlock
 
   createCondition: () -> @condition
 
   generateCode: () ->
-    code = super()
-    code[0] = 'if( ' + @createCondition() + ' ) ' + code[0]
+    ifCode = @ifBlock.generateCode()
+    elseCode = @elseBlock.generateCode()
 
-class JsModule
+    ifCode[0] = 'if( ' + @createCondition() + ' ) ' + ifCode[0]
+    elseCode[0] = 'else ' + elseCode[0]
 
-class JsBuilder
+    ifCode.concat(elseCode)
+
+class JsGenerator
   constructor: () ->
-    @graph = new GraphSearcher()
-    @mainBlock = new JsText()
+    @currentBlock = new JsPlainBlock()
+    @blockStack = []
+    @loops = []
 
-  verify: () ->
+  isBranchTransitionTip: (node) -> node.getConseqDir? && node.getAlterDir?
+  isSingleTransitionTip: (node) -> node.getNextDir?
 
   getOperationName: (node) ->
     if node.code.instruction? then node.code.instruction.constructor.name else node.code.constructor.name
 
-  insertSingleOperation: (node) ->
-    code = @getOperationName(node) + '();'
-    @mainBlock.insertLine(code)
+  insertToCurrentBlock: (node) ->
+    @currentBlock.insertLine(@getOperationName(node) + '();')
 
-  insertCode: (obj, cpu) ->
-    loopNodes = @graph.findLoop(obj.node, cpu, obj.stack)
-    @insertSingleOperation(obj.node)
-    if loopNodes? then console.log loopNodes
+  isInsideNewLoop: () -> false
+
+  getBranchNodes: (node, context) ->
+    ifDir = node.getConseqDir()
+    elseDir = node.getAlterDir()
+    cur = node.getIndex()
+
+    ifNext = context.cpu.getTip(cur.x + ifDir.x, cur.y + ifDir.y)
+    elseNext = context.cpu.getTip(cur.x + elseDir.x, cur.y + elseDir.y)
+
+    {ifNext: ifNext, elseNext: elseNext}
+
+  getMergeNode: (node, context) ->
+    graph = new GraphSearcher()
+
+    nodes = @getBranchNodes(node, context)
+
+    ifSuccessors = graph.getSuccessors(nodes.ifNext)
+    elseSuccessors = graph.getSuccessors(nodes.elseNext)
+
+    for s in ifSuccessors
+      if s in elseSuccessors then return s
+
+    null
+
+  generateWhileCode: (root, context) ->
+
+  generateBranchCode: (root, context) ->
+    block = new JsBranchBlock(@getOperationName(root))
+
+    nodes = @getBranchNodes(root, context)
+    block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
+    block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
+
+    block
+
+  generateCode: (root, context) ->
+    graph = new GraphSearcher()
+    block = new JsPlainBlock()
+
+    graph.dfs(root, context.cpu, (obj) => 
+      node = obj.node
+      if @isInsideNewLoop(node)
+        block.insertBlock(@generateWhileCode(node, context))
+      else if @isBranchTransitionTip(node)
+        block.insertBlock(@generateBranchCode(node, context))
+        false
+      else if @isSingleTransitionTip(node)
+        block.insertLine(@getOperationName(node) + '();')
+    )
+
+    block
 
   generate: (cpu) ->
-    @mainBlock.clean()
-
-    @graph.dfs(cpu, (obj) => @insertCode(obj, cpu))
-    code = @mainBlock.generateCode()
+    block = @generateCode(cpu.getStartTip(), {cpu: cpu})
+    code = block.generateCode()
     console.log code.join('\n')
