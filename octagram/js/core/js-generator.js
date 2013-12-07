@@ -463,15 +463,14 @@ JsGenerator = (function() {
   };
 
   JsGenerator.prototype.generate = function(cpu) {
-    var block, code, context, root;
+    var block, context, root;
     root = cpu.getStartTip();
     context = {
       cpu: cpu
     };
     this.loops = this.findLoop(root, context);
     block = this.generateCode(root, context);
-    code = block.generateCode();
-    return console.log(code.join('\n'));
+    return block.generateCode();
   };
 
   return JsGenerator;

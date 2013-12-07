@@ -268,5 +268,4 @@ class JsGenerator
 
     @loops = @findLoop(root, context)
     block = @generateCode(root, context)
-    code = block.generateCode()
-    console.log code.join('\n')
+    block.generateCode()
