@@ -408,6 +408,7 @@ JsGenerator = (function() {
       node = _ref1[_i];
       if (this.isBranchTransitionTip(node)) {
         block.insertBlock(this.generateBranchCode(node, context));
+        break;
       } else if (this.isSingleTransitionTip(node)) {
         block.insertLine(this.getOperationName(node) + '();');
       }
@@ -434,8 +435,10 @@ JsGenerator = (function() {
       node = obj.node;
       lp = _this.findLoopByEnterNode(node);
       if (lp != null) {
-        context.loop = lp;
-        block.insertBlock(_this.generateWhileCode(node, context));
+        if ((context.loop == null) || context.loop[0] !== node) {
+          context.loop = lp;
+          block.insertBlock(_this.generateWhileCode(node, context));
+        }
         return false;
       } else if (_this.isBranchTransitionTip(node)) {
         block.insertBlock(_this.generateBranchCode(node, context));

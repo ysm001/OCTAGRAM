@@ -215,7 +215,8 @@ class JsGenerator
     for node in context.loop
       if @isBranchTransitionTip(node)
         block.insertBlock(@generateBranchCode(node, context))
-        # generate break statement
+        # incompatible for break statement
+        break
       else if @isSingleTransitionTip(node)
         block.insertLine(@getOperationName(node) + '();')
 
@@ -238,8 +239,9 @@ class JsGenerator
       node = obj.node
       lp = @findLoopByEnterNode(node)
       if lp?
-        context.loop = lp
-        block.insertBlock(@generateWhileCode(node, context))
+        if !context.loop? || context.loop[0] != node
+          context.loop = lp
+          block.insertBlock(@generateWhileCode(node, context))
         false
       else if @isBranchTransitionTip(node)
         block.insertBlock(@generateBranchCode(node, context))
