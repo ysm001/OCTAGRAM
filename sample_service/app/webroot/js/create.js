@@ -24,19 +24,23 @@ JsCodeViewer = (function() {
       return _results;
     })();
     code = text.join('\n');
-    this.editor = ace.edit('editor-div');
+    this.editor = ace.edit('js-viewer');
     this.editor.getSession().setMode("ace/mode/javascript");
     this.editor.getSession().setValue(code);
     selection = this.editor.getSelection();
-    return selection.on('changeCursor', function() {
+    selection.on('changeCursor', function() {
       return _this.changeHighlite(_this.editor.getCursorPosition(), lines);
     });
+    return this.editor.setReadOnly(true);
   };
 
   JsCodeViewer.prototype.hide = function(lines) {
-    if (this.preCursor != null) {
-      return this.unHighliteLine(lines[this.preCursor.row]);
+    var line, _i, _len;
+    for (_i = 0, _len = lines.length; _i < _len; _i++) {
+      line = lines[_i];
+      this.unHighliteLine(line);
     }
+    return this.editor.destroy();
   };
 
   JsCodeViewer.prototype.changeHighlite = function(pos, lines) {
@@ -84,6 +88,7 @@ Frontend = (function() {
     this.playerRunning = false;
     this.enemyRunning = false;
     this.currentProgramName = "";
+    this.viewer = null;
   }
 
   Frontend.prototype.getPlayerProgram = function() {
@@ -197,17 +202,40 @@ Frontend = (function() {
     return this.getEnemyProgram().stop();
   };
 
-  Frontend.prototype.showJs = function() {
-    var generator, instance, lines, template, viewer;
+  Frontend.prototype.getPlayerCode = function() {
+    var generator, instance;
     instance = this.getPlayerProgram();
     generator = new JsGenerator();
-    lines = generator.generate(instance.cpu);
+    return generator.generate(instance.cpu);
+  };
+
+  Frontend.prototype.showJsWithDialog = function() {
+    var lines, template, viewer;
+    lines = this.getPLayerCode();
     template = '<html>' + '<head>' + '</head>' + '<body>' + '<div id="editor-div" style="height: 500px; width: 500px"></div>' + '</body>' + '</html>';
     viewer = new JsCodeViewer();
     bootbox.alert(template, function() {
       return viewer.hide(lines);
     });
     return viewer.show(lines);
+  };
+
+  Frontend.prototype.showJs = function() {
+    var lines;
+    lines = this.getPlayerCode();
+    $('#enchant-stage').hide();
+    $('#js-viewer').show();
+    this.viewer = new JsCodeViewer();
+    return this.viewer.show(lines);
+  };
+
+  Frontend.prototype.hideJs = function() {
+    var lines;
+    lines = this.getPlayerCode();
+    this.viewer.hide(lines);
+    $('#enchant-stage').show();
+    $('#js-viewer').remove();
+    return $('#program-container').append($('<div id="js-viewer"></div>'));
   };
 
   return Frontend;
@@ -256,7 +284,14 @@ $(function() {
   $('#restart').click(function() {
     return frontend.restartProgram();
   });
-  return $('#show-js').click(function() {
+  $('#show-js').click(function() {
+    $('#show-js').attr('disabled', 'disabled');
+    $('#hide-js').removeAttr('disabled');
     return frontend.showJs();
+  });
+  return $('#hide-js').click(function() {
+    $('#hide-js').attr('disabled', 'disabled');
+    $('#show-js').removeAttr('disabled');
+    return frontend.hideJs();
   });
 });

@@ -9,7 +9,7 @@ class JsCodeViewer
     text = (line.text for line in lines)
     code = text.join('\n')
 
-    @editor = ace.edit('editor-div')
+    @editor = ace.edit('js-viewer')
     @editor.getSession().setMode("ace/mode/javascript");
     @editor.getSession().setValue(code)
 
@@ -18,8 +18,13 @@ class JsCodeViewer
       @changeHighlite(@editor.getCursorPosition(), lines)
     ) 
 
+    @editor.setReadOnly(true)
+
   hide: (lines) ->
-    if @preCursor? then @unHighliteLine(lines[@preCursor.row])
+    for line in lines
+      @unHighliteLine(line)
+
+    @editor.destroy()
 
   changeHighlite: (pos, lines) ->
     if @preCursor? then @unHighliteLine(lines[@preCursor.row])
@@ -42,6 +47,8 @@ class Frontend
     @enemyRunning = false
 
     @currentProgramName = "";
+
+    @viewer = null
     
   getPlayerProgram : () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.playerProgramId)
   getEnemyProgram : () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.enemyProgramId)
@@ -116,10 +123,13 @@ class Frontend
     @getPlayerProgram().stop()
     @getEnemyProgram().stop()
 
-  showJs: () ->
+  getPlayerCode: () ->
     instance = @getPlayerProgram()
     generator = new JsGenerator()
-    lines = generator.generate(instance.cpu)
+    generator.generate(instance.cpu)
+
+  showJsWithDialog: () ->
+    lines = @getPLayerCode()
 
     template = 
       '<html>' +
@@ -134,6 +144,25 @@ class Frontend
     bootbox.alert(template, () -> viewer.hide(lines))
 
     viewer.show(lines)
+
+  showJs: () ->
+    lines = @getPlayerCode()
+
+    $('#enchant-stage').hide()
+    $('#js-viewer').show()
+
+    @viewer = new JsCodeViewer()
+    @viewer.show(lines)
+
+  hideJs: () ->
+    lines = @getPlayerCode()
+    
+    @viewer.hide(lines)
+
+    $('#enchant-stage').show()
+    $('#js-viewer').remove()
+
+    $('#program-container').append($('<div id="js-viewer"></div>'))
 
 $ ->
   frontend = new Frontend({
@@ -177,4 +206,13 @@ $ ->
 
   $('#restart').click(() => frontend.restartProgram())
 
-  $('#show-js').click(() => frontend.showJs())
+  $('#show-js').click(() => 
+    $('#show-js').attr('disabled', 'disabled')
+    $('#hide-js').removeAttr('disabled')
+    frontend.showJs()
+  )
+  $('#hide-js').click(() => 
+    $('#hide-js').attr('disabled', 'disabled')
+    $('#show-js').removeAttr('disabled')
+    frontend.hideJs()
+  )

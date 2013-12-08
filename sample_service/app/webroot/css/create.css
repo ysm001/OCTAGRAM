@@ -47,6 +47,16 @@
     margin-top: 60px;
 }
 
+#enchant-stage, #octagram, #js-viewer{
+    float: left;
+}
+
+#js-viewer {
+    width: 640px;
+    height: 640px;
+    display: none;
+}
+
 /*
 #dbg-btns {
     text-align: center;
