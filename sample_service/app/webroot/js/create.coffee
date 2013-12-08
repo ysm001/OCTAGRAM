@@ -10,6 +10,7 @@ class JsCodeViewer
     code = text.join('\n')
 
     @editor = ace.edit('js-viewer')
+    @editor.setTheme('ace/theme/monokai')
     @editor.getSession().setMode("ace/mode/javascript");
     @editor.getSession().setValue(code)
 

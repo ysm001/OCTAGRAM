@@ -25,6 +25,7 @@ JsCodeViewer = (function() {
     })();
     code = text.join('\n');
     this.editor = ace.edit('js-viewer');
+    this.editor.setTheme('ace/theme/monokai');
     this.editor.getSession().setMode("ace/mode/javascript");
     this.editor.getSession().setValue(code);
     selection = this.editor.getSelection();
