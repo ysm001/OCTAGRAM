@@ -220,7 +220,9 @@ class JsText
   constructor: () ->
     @lines = []
 
-  insertLine: (node, text) -> @lines.push({node: [node], text: text})
+  insertLine: (node, text) -> 
+    @lines.push({node: (if node instanceof Array then node else [node]), text: text})
+
   insertBlock: (block) -> @insertArray(block.generateCode())
   insertArray: (array) -> @lines = @lines.concat(array)
 
@@ -296,8 +298,7 @@ class JsBranchBlock
           line = long.pop()
           short.pop()
 
-          if line.node.length != 1 then console.log 'err'
-          common.insertLine(line.node[0], line.text)
+          common.insertLine(line.node, line.text)
         else break
 
     common.lines.reverse()
@@ -418,9 +419,8 @@ class JsGenerator
       node = obj.node
       lp = @findLoopByEnterNode(node)
       if lp?
-        if !context.loop? || context.loop[0] != node
-          context.loop = lp
-          block.insertBlock(@generateWhileCode(node, context))
+        context.loop = lp
+        block.insertBlock(@generateWhileCode(node, context))
         false
       else if @isBranchTransitionTip(node)
         block.insertBlock(@generateBranchCode(node, context))

@@ -384,7 +384,7 @@ JsText = (function() {
 
   JsText.prototype.insertLine = function(node, text) {
     return this.lines.push({
-      node: [node],
+      node: (node instanceof Array ? node : [node]),
       text: text
     });
   };
@@ -559,10 +559,7 @@ JsBranchBlock = (function() {
         if (arrayEqual(ln, sn)) {
           line = long.pop();
           short.pop();
-          if (line.node.length !== 1) {
-            console.log('err');
-          }
-          common.insertLine(line.node[0], line.text);
+          common.insertLine(line.node, line.text);
         } else {
           break;
         }
@@ -748,10 +745,8 @@ JsGenerator = (function() {
       node = obj.node;
       lp = _this.findLoopByEnterNode(node);
       if (lp != null) {
-        if ((context.loop == null) || context.loop[0] !== node) {
-          context.loop = lp;
-          block.insertBlock(_this.generateWhileCode(node, context));
-        }
+        context.loop = lp;
+        block.insertBlock(_this.generateWhileCode(node, context));
         return false;
       } else if (_this.isBranchTransitionTip(node)) {
         block.insertBlock(_this.generateBranchCode(node, context));
