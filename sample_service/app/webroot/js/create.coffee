@@ -61,8 +61,13 @@ class Frontend
   getPlayerProgram : () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.playerProgramId)
   getEnemyProgram : () -> Game.instance.octagram.getInstance(Game.instance.currentScene.world.enemyProgramId)
 
-  showPlayerProgram : () -> Game.instance.octagram.showProgram(Game.instance.currentScene.world.playerProgramId)
-  showEnemyProgram : () -> Game.instance.octagram.showProgram(Game.instance.currentScene.world.enemyProgramId)
+  showPlayerProgram : () -> 
+    Game.instance.octagram.showProgram(Game.instance.currentScene.world.playerProgramId)
+    @updateJs()
+    
+  showEnemyProgram : () -> 
+    Game.instance.octagram.showProgram(Game.instance.currentScene.world.enemyProgramId)
+    @updateJs()
   
   resetProgram : (onReset) ->
     @stopProgram()
@@ -102,8 +107,11 @@ class Frontend
     @programStorage.deleteProgram()
 
   loadProgram : () -> 
+    @stopJsAutoUpdate()
     @programStorage.loadProgram((data) => 
       @currentProgramName = data.name
+      @startJsAutoUpdate()
+      @updateJs()
     )
 
   loadProgramById : (id, callback) -> @programStorage.loadProgramById(id, callback)
@@ -153,6 +161,14 @@ class Frontend
 
     viewer.show(lines)
 
+  updateJs: () => if @viewer? then @viewer.update(@getCurrentCode())
+
+  stopJsAutoUpdate: () ->
+    getCurrentProgram().removeEventListener('changeOctagram', @updateJs)
+
+  startJsAutoUpdate: () ->
+    getCurrentProgram().addEventListener('changeOctagram', @updateJs)
+
   showJs: () ->
     $('#enchant-stage').hide()
     $('#js-viewer').show()
@@ -160,9 +176,8 @@ class Frontend
     @viewer = new JsCodeViewer()
     @viewer.show(@getCurrentCode())
 
-    program = getCurrentProgram()
-    program.clearEventListener()
-    program.addEventListener('changeOctagram', () => @viewer.update(@getCurrentCode()))
+    @stopJsAutoUpdate()
+    @startJsAutoUpdate()
 
   hideJs: () ->
     lines = @getCurrentCode()
@@ -174,8 +189,7 @@ class Frontend
 
     $('#program-container').append($('<div id="js-viewer"></div>'))
 
-    program = getCurrentProgram()
-    program.clearEventListener()
+    @stopJsAutoUpdate()
     @viewer = null
 
 $ ->
