@@ -23,25 +23,27 @@ class GraphSearcher
   init: () -> 
     @visited = []
 
-  getChilds: (node, cpu) ->
-    dirs = 
-      if node.getNextDir? then [node.getNextDir()]
-      else if node.getConseqDir? then [node.getConseqDir(), node.getAlterDir()]
-      else null
+  getChilds: (node, cpu, expand) ->
+    if expand? then expand(node)
+    else
+      dirs = 
+        if node.getNextDir? then [node.getNextDir()]
+        else if node.getConseqDir? then [node.getConseqDir(), node.getAlterDir()]
+        else null
 
-    if dirs?
-      idx = node.getIndex()
-      childs = (cpu.getTip(d.x + idx.x, d.y + idx.y) for d in dirs)
+      if dirs?
+        idx = node.getIndex()
+        childs = (cpu.getTip(d.x + idx.x, d.y + idx.y) for d in dirs)
 
-  findUnvisitedChild: (node, cpu) ->
-    childs = @getChilds(node, cpu)
+  findUnvisitedChild: (node, cpu, expand) ->
+    childs = @getChilds(node, cpu, expand)
 
     if childs?
       unvisited = (child for child in childs when !@isVisited(child))
       if unvisited? then unvisited[0] else null
 
-  findVisitedChild: (node, cpu) ->
-    childs = @getChilds(node, cpu)
+  findVisitedChild: (node, cpu, expand) ->
+    childs = @getChilds(node, cpu, expand)
 
     if childs?
       visited = (child for child in childs when @isVisited(child))
@@ -64,25 +66,28 @@ class GraphSearcher
 
     successors
 
+  getImmediatePredecessors: (node, context) ->
+    if !@predecessors[node.order]?
+      @predecessors[node.order] = []
+      for dx in [-1..1]
+        for dy in [-1..1] 
+          cur = node.getIndex()
+          nx = cur.x + dx
+          ny = cur.y + dy
+          inRange = (v) -> -1 <= v && v < 8
+
+          if inRange(nx) && inRange(ny)
+            cand = context.cpu.getTip(nx, ny)
+            candSucc = @getChilds(cand, context.cpu)
+            if candSucc? && node in candSucc 
+              @predecessors[node.order].push(cand)
+
+    @predecessors[node.order]
+
   calcPredecessors: (root, context) ->
     _calcPredecessors = (node) =>
-      if !@predecessors[node.order]?
-        @predecessors[node.order] = []
-        for dx in [-1..1]
-          for dy in [-1..1] 
-            cur = node.getIndex()
-            nx = cur.x + dx
-            ny = cur.y + dy
-            inRange = (v) -> -1 <= v && v < 8
-
-            if inRange(nx) && inRange(ny)
-              cand = context.cpu.getTip(nx, ny)
-              candSucc = @getChilds(cand, context.cpu)
-              if candSucc? && node in candSucc 
-                @predecessors[node.order].push(cand)
-
-        for pre in @predecessors[node.order]
-          _calcPredecessors(pre, context)
+      for pre in @predecessors[node.order]
+        _calcPredecessors(pre, context)
 
     _calcPredecessors(root)
 
@@ -128,7 +133,7 @@ class GraphSearcher
       true
     )
 
-  dfs: (root, cpu, callback) ->
+  dfs: (root, cpu, callback, expand) ->
     @init()
 
     end = false
@@ -143,7 +148,7 @@ class GraphSearcher
 
     while stack.length > 0 && !end
       node = stack[stack.length - 1]
-      child = @findUnvisitedChild(node, cpu)
+      child = @findUnvisitedChild(node, cpu, expand)
 
       if child? then end = !_visit(child)
       else stack.pop()
@@ -159,7 +164,27 @@ class LoopFinder
         if u == root then [u]
         else universal.slice(0)
 
+  createDominatorTree: (root, universal, graph, context) ->
+    dominators = @calcDominators(root, universal, graph, context)
+    nodes = universal.slice(0)
+
+    for node in nodes then node.childs = []
+
+    for node in nodes when node != root
+      dom = dominators[node.order]
+      idom = dom[dom.length - 2]
+
+      idom.childs.push(node)
+
+    nodes
+
   calcDominators: (root, universal, graph, context) ->
+    intersection = (arrA, arrB) ->
+      exist = {}
+      for a in arrA then exist[a.order] = true
+      (b for b in arrB when exist[b.order])
+
+
     dominators = @initDominators(root, universal)
 
     preDominators = []
@@ -174,22 +199,32 @@ class LoopFinder
     while isChangeOccurred(preDominators, dominators)
       preDominators = dominators.slice(0)
       for u in universal when u != root
-        dominators[u.order] = [u]
-        for p in graph.getPredecessors(u, context) when dominators[p.order]?
-          dominators[u.order] = dominators[u.order].concat(dominators[p.order])
-          dominators[u.order] = getUniqueArray(dominators[u.order])
+        dominators[u.order] = universal.slice(0)
+        for p in graph.getImmediatePredecessors(u, context) when dominators[p.order]?
+          dominators[u.order] = intersection(dominators[u.order], dominators[p.order])
+        dominators[u.order] = dominators[u.order].concat([u])
+
+     #console.log ((n.order for n in d) for d in dominators)
+     #domTree = @createDominatorTree(root, dominators, universal)
+     #console.log domTree
+     #console.log (n.childs for n in domTree)
 
      dominators
+
+  findLoopHeaders: (root, dominators, graph, context) ->
+    headers = []
+    grpah.dfs(root, context.cpu, (obj) ->
+    )
 
   findBackEdges: (root, dominators, graph, context) ->
     backedges = []
     graph.dfs(root, context.cpu, (obj) ->
       succ = graph.getChilds(obj.node, context.cpu)
-      #dom = dominators[obj.node.order]
+      dom = dominators[obj.node.order]
 
       if succ?
-        backedge = ({src: obj.node, dst: s} for s in succ when s.order < obj.node.order)
-        #backedge = ({src: obj.node, dst: s} for s in succ when s in dom)
+        #backedge = ({src: obj.node, dst: s} for s in succ when s.order < obj.node.order)
+        backedge = ({src: obj.node, dst: s} for s in succ when s in dom)
         if backedge.length > 0 then backedges = backedges.concat(backedge)
 
       true
@@ -211,7 +246,14 @@ class LoopFinder
 
     backedges = @findBackEdges(root, dominators, graph, context)
 
-    console.log ({src: e.src.order, dst: e.dst.order} for e in backedges)
+    loops = []
+    for edge in backedges
+      lp = graph.findRoute(edge.dst, edge.src, cpu)
+      loops.push(lp)
+
+      console.log (n.order for n in lp)
+
+    loops
 
 class JsConstant
   @indent = '  '
@@ -277,6 +319,7 @@ class JsBranchBlock
   constructor: (@condition, @root) ->
     @ifBlock = new JsBlock()
     @elseBlock = new JsBlock()
+    @breakBlock = new JsPlainBlock()
 
   getIfBlock: () -> @ifBlock
   getElseBlock: () -> @elseBlock
@@ -349,17 +392,18 @@ class JsGenerator
     @loops.push(newLp.slice(0))
 
   findAllLoop: (root, context) ->
-    findLoop: (root, context) ->
-    graph = new GraphSearcher()
-    loops = []
+    finder = new LoopFinder()
+    finder.find(context.cpu)
+    #graph = new GraphSearcher()
+    #loops = []
 
-    graph.dfs(root, context.cpu, (obj) ->
-      lp = graph.findLoop(obj.node, context.cpu, obj.stack)
-      if lp? then loops.push(lp)
-      true
-    )
-    
-    loops
+    #graph.dfs(root, context.cpu, (obj) ->
+    #  lp = graph.findLoop(obj.node, context.cpu, obj.stack)
+    #  if lp? then loops.push(lp)
+    #  true
+    #)
+    #
+    #loops
 
   findLoopByEnterNode: (node) ->
     for lp in @loops
@@ -404,16 +448,23 @@ class JsGenerator
    
   generateBranchCode: (root, context) ->
     block = new JsBranchBlock(@getOperationName(root), root)
+    nodes = @getBranchNodes(root, context)
 
     if context.loop? && context.loop.length > 0
-      block = new JsPlainBlock()
-      block.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。')
-    else
-      nodes = @getBranchNodes(root, context)
+      block.ifBlock.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。')
+      block.ifBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
+    else 
       block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
       block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
 
     block
+
+  isTraversedLoopHeader: (node, context) ->
+    if context.loop?
+      for lp in context.loop
+        if lp[0] == node then return true
+
+    false
 
   generateCode: (root, context) ->
     graph = new GraphSearcher()
@@ -423,10 +474,11 @@ class JsGenerator
       node = obj.node
       lp = @findLoopByEnterNode(node)
       if lp?
-        if !context.loop? then context.loop = []
-        context.loop.push(lp)
-        block.insertBlock(@generateWhileCode(node, context))
-        context.loop.pop()
+        if !@isTraversedLoopHeader(node, context)
+          if !context.loop? then context.loop = []
+          context.loop.push(lp)
+          block.insertBlock(@generateWhileCode(node, context))
+          context.loop.pop()
         false
       else if @isBranchTransitionTip(node)
         block.insertBlock(@generateBranchCode(node, context))

@@ -43,26 +43,30 @@ GraphSearcher = (function() {
     return this.visited = [];
   };
 
-  GraphSearcher.prototype.getChilds = function(node, cpu) {
+  GraphSearcher.prototype.getChilds = function(node, cpu, expand) {
     var childs, d, dirs, idx;
-    dirs = node.getNextDir != null ? [node.getNextDir()] : node.getConseqDir != null ? [node.getConseqDir(), node.getAlterDir()] : null;
-    if (dirs != null) {
-      idx = node.getIndex();
-      return childs = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = dirs.length; _i < _len; _i++) {
-          d = dirs[_i];
-          _results.push(cpu.getTip(d.x + idx.x, d.y + idx.y));
-        }
-        return _results;
-      })();
+    if (expand != null) {
+      return expand(node);
+    } else {
+      dirs = node.getNextDir != null ? [node.getNextDir()] : node.getConseqDir != null ? [node.getConseqDir(), node.getAlterDir()] : null;
+      if (dirs != null) {
+        idx = node.getIndex();
+        return childs = (function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = dirs.length; _i < _len; _i++) {
+            d = dirs[_i];
+            _results.push(cpu.getTip(d.x + idx.x, d.y + idx.y));
+          }
+          return _results;
+        })();
+      }
     }
   };
 
-  GraphSearcher.prototype.findUnvisitedChild = function(node, cpu) {
+  GraphSearcher.prototype.findUnvisitedChild = function(node, cpu, expand) {
     var child, childs, unvisited;
-    childs = this.getChilds(node, cpu);
+    childs = this.getChilds(node, cpu, expand);
     if (childs != null) {
       unvisited = (function() {
         var _i, _len, _results;
@@ -83,9 +87,9 @@ GraphSearcher = (function() {
     }
   };
 
-  GraphSearcher.prototype.findVisitedChild = function(node, cpu) {
+  GraphSearcher.prototype.findVisitedChild = function(node, cpu, expand) {
     var child, childs, visited;
-    childs = this.getChilds(node, cpu);
+    childs = this.getChilds(node, cpu, expand);
     if (childs != null) {
       visited = (function() {
         var _i, _len, _results;
@@ -130,38 +134,43 @@ GraphSearcher = (function() {
     return successors;
   };
 
+  GraphSearcher.prototype.getImmediatePredecessors = function(node, context) {
+    var cand, candSucc, cur, dx, dy, inRange, nx, ny, _i, _j;
+    if (this.predecessors[node.order] == null) {
+      this.predecessors[node.order] = [];
+      for (dx = _i = -1; _i <= 1; dx = ++_i) {
+        for (dy = _j = -1; _j <= 1; dy = ++_j) {
+          cur = node.getIndex();
+          nx = cur.x + dx;
+          ny = cur.y + dy;
+          inRange = function(v) {
+            return -1 <= v && v < 8;
+          };
+          if (inRange(nx) && inRange(ny)) {
+            cand = context.cpu.getTip(nx, ny);
+            candSucc = this.getChilds(cand, context.cpu);
+            if ((candSucc != null) && __indexOf.call(candSucc, node) >= 0) {
+              this.predecessors[node.order].push(cand);
+            }
+          }
+        }
+      }
+    }
+    return this.predecessors[node.order];
+  };
+
   GraphSearcher.prototype.calcPredecessors = function(root, context) {
     var _calcPredecessors,
       _this = this;
     _calcPredecessors = function(node) {
-      var cand, candSucc, cur, dx, dy, inRange, nx, ny, pre, _i, _j, _k, _len, _ref, _results;
-      if (_this.predecessors[node.order] == null) {
-        _this.predecessors[node.order] = [];
-        for (dx = _i = -1; _i <= 1; dx = ++_i) {
-          for (dy = _j = -1; _j <= 1; dy = ++_j) {
-            cur = node.getIndex();
-            nx = cur.x + dx;
-            ny = cur.y + dy;
-            inRange = function(v) {
-              return -1 <= v && v < 8;
-            };
-            if (inRange(nx) && inRange(ny)) {
-              cand = context.cpu.getTip(nx, ny);
-              candSucc = _this.getChilds(cand, context.cpu);
-              if ((candSucc != null) && __indexOf.call(candSucc, node) >= 0) {
-                _this.predecessors[node.order].push(cand);
-              }
-            }
-          }
-        }
-        _ref = _this.predecessors[node.order];
-        _results = [];
-        for (_k = 0, _len = _ref.length; _k < _len; _k++) {
-          pre = _ref[_k];
-          _results.push(_calcPredecessors(pre, context));
-        }
-        return _results;
+      var pre, _i, _len, _ref, _results;
+      _ref = _this.predecessors[node.order];
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pre = _ref[_i];
+        _results.push(_calcPredecessors(pre, context));
       }
+      return _results;
     };
     return _calcPredecessors(root);
   };
@@ -220,7 +229,7 @@ GraphSearcher = (function() {
     });
   };
 
-  GraphSearcher.prototype.dfs = function(root, cpu, callback) {
+  GraphSearcher.prototype.dfs = function(root, cpu, callback, expand) {
     var child, end, node, stack, _results, _visit,
       _this = this;
     this.init();
@@ -239,7 +248,7 @@ GraphSearcher = (function() {
     _results = [];
     while (stack.length > 0 && !end) {
       node = stack[stack.length - 1];
-      child = this.findUnvisitedChild(node, cpu);
+      child = this.findUnvisitedChild(node, cpu, expand);
       if (child != null) {
         _results.push(end = !_visit(child));
       } else {
@@ -267,8 +276,44 @@ LoopFinder = (function() {
     return _results;
   };
 
+  LoopFinder.prototype.createDominatorTree = function(root, universal, graph, context) {
+    var dom, dominators, idom, node, nodes, _i, _j, _len, _len1;
+    dominators = this.calcDominators(root, universal, graph, context);
+    nodes = universal.slice(0);
+    for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+      node = nodes[_i];
+      node.childs = [];
+    }
+    for (_j = 0, _len1 = nodes.length; _j < _len1; _j++) {
+      node = nodes[_j];
+      if (!(node !== root)) {
+        continue;
+      }
+      dom = dominators[node.order];
+      idom = dom[dom.length - 2];
+      idom.childs.push(node);
+    }
+    return nodes;
+  };
+
   LoopFinder.prototype.calcDominators = function(root, universal, graph, context) {
-    var dominators, isChangeOccurred, p, preDominators, u, _i, _j, _len, _len1, _ref;
+    var dominators, intersection, isChangeOccurred, p, preDominators, u, _i, _j, _len, _len1, _ref;
+    intersection = function(arrA, arrB) {
+      var a, b, exist, _i, _j, _len, _len1, _results;
+      exist = {};
+      for (_i = 0, _len = arrA.length; _i < _len; _i++) {
+        a = arrA[_i];
+        exist[a.order] = true;
+      }
+      _results = [];
+      for (_j = 0, _len1 = arrB.length; _j < _len1; _j++) {
+        b = arrB[_j];
+        if (exist[b.order]) {
+          _results.push(b);
+        }
+      }
+      return _results;
+    };
     dominators = this.initDominators(root, universal);
     preDominators = [];
     isChangeOccurred = function(pre, cur) {
@@ -290,34 +335,40 @@ LoopFinder = (function() {
         if (!(u !== root)) {
           continue;
         }
-        dominators[u.order] = [u];
-        _ref = graph.getPredecessors(u, context);
+        dominators[u.order] = universal.slice(0);
+        _ref = graph.getImmediatePredecessors(u, context);
         for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
           p = _ref[_j];
-          if (!(dominators[p.order] != null)) {
-            continue;
+          if (dominators[p.order] != null) {
+            dominators[u.order] = intersection(dominators[u.order], dominators[p.order]);
           }
-          dominators[u.order] = dominators[u.order].concat(dominators[p.order]);
-          dominators[u.order] = getUniqueArray(dominators[u.order]);
         }
+        dominators[u.order] = dominators[u.order].concat([u]);
       }
     }
     return dominators;
+  };
+
+  LoopFinder.prototype.findLoopHeaders = function(root, dominators, graph, context) {
+    var headers;
+    headers = [];
+    return grpah.dfs(root, context.cpu, function(obj) {});
   };
 
   LoopFinder.prototype.findBackEdges = function(root, dominators, graph, context) {
     var backedges;
     backedges = [];
     graph.dfs(root, context.cpu, function(obj) {
-      var backedge, s, succ;
+      var backedge, dom, s, succ;
       succ = graph.getChilds(obj.node, context.cpu);
+      dom = dominators[obj.node.order];
       if (succ != null) {
         backedge = (function() {
           var _i, _len, _results;
           _results = [];
           for (_i = 0, _len = succ.length; _i < _len; _i++) {
             s = succ[_i];
-            if (s.order < obj.node.order) {
+            if (__indexOf.call(dom, s) >= 0) {
               _results.push({
                 src: obj.node,
                 dst: s
@@ -336,7 +387,7 @@ LoopFinder = (function() {
   };
 
   LoopFinder.prototype.find = function(cpu) {
-    var backedges, context, dominators, e, graph, root, universal,
+    var backedges, context, dominators, edge, graph, loops, lp, n, root, universal, _i, _len,
       _this = this;
     root = cpu.getStartTip();
     context = {
@@ -350,18 +401,22 @@ LoopFinder = (function() {
     });
     dominators = this.calcDominators(root, universal, graph, context);
     backedges = this.findBackEdges(root, dominators, graph, context);
-    return console.log((function() {
-      var _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = backedges.length; _i < _len; _i++) {
-        e = backedges[_i];
-        _results.push({
-          src: e.src.order,
-          dst: e.dst.order
-        });
-      }
-      return _results;
-    })());
+    loops = [];
+    for (_i = 0, _len = backedges.length; _i < _len; _i++) {
+      edge = backedges[_i];
+      lp = graph.findRoute(edge.dst, edge.src, cpu);
+      loops.push(lp);
+      console.log((function() {
+        var _j, _len1, _results;
+        _results = [];
+        for (_j = 0, _len1 = lp.length; _j < _len1; _j++) {
+          n = lp[_j];
+          _results.push(n.order);
+        }
+        return _results;
+      })());
+    }
+    return loops;
   };
 
   return LoopFinder;
@@ -533,6 +588,7 @@ JsBranchBlock = (function() {
     this.root = root;
     this.ifBlock = new JsBlock();
     this.elseBlock = new JsBlock();
+    this.breakBlock = new JsPlainBlock();
   }
 
   JsBranchBlock.prototype.getIfBlock = function() {
@@ -653,21 +709,9 @@ JsGenerator = (function() {
   };
 
   JsGenerator.prototype.findAllLoop = function(root, context) {
-    var graph, loops;
-    ({
-      findLoop: function(root, context) {}
-    });
-    graph = new GraphSearcher();
-    loops = [];
-    graph.dfs(root, context.cpu, function(obj) {
-      var lp;
-      lp = graph.findLoop(obj.node, context.cpu, obj.stack);
-      if (lp != null) {
-        loops.push(lp);
-      }
-      return true;
-    });
-    return loops;
+    var finder;
+    finder = new LoopFinder();
+    return finder.find(context.cpu);
   };
 
   JsGenerator.prototype.findLoopByEnterNode = function(node) {
@@ -729,15 +773,29 @@ JsGenerator = (function() {
   JsGenerator.prototype.generateBranchCode = function(root, context) {
     var block, nodes;
     block = new JsBranchBlock(this.getOperationName(root), root);
+    nodes = this.getBranchNodes(root, context);
     if ((context.loop != null) && context.loop.length > 0) {
-      block = new JsPlainBlock();
-      block.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。');
+      block.ifBlock.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。');
+      block.ifBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。');
     } else {
-      nodes = this.getBranchNodes(root, context);
       block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
       block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));
     }
     return block;
+  };
+
+  JsGenerator.prototype.isTraversedLoopHeader = function(node, context) {
+    var lp, _i, _len, _ref1;
+    if (context.loop != null) {
+      _ref1 = context.loop;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        lp = _ref1[_i];
+        if (lp[0] === node) {
+          return true;
+        }
+      }
+    }
+    return false;
   };
 
   JsGenerator.prototype.generateCode = function(root, context) {
@@ -750,12 +808,14 @@ JsGenerator = (function() {
       node = obj.node;
       lp = _this.findLoopByEnterNode(node);
       if (lp != null) {
-        if (context.loop == null) {
-          context.loop = [];
+        if (!_this.isTraversedLoopHeader(node, context)) {
+          if (context.loop == null) {
+            context.loop = [];
+          }
+          context.loop.push(lp);
+          block.insertBlock(_this.generateWhileCode(node, context));
+          context.loop.pop();
         }
-        context.loop.push(lp);
-        block.insertBlock(_this.generateWhileCode(node, context));
-        context.loop.pop();
         return false;
       } else if (_this.isBranchTransitionTip(node)) {
         block.insertBlock(_this.generateBranchCode(node, context));
