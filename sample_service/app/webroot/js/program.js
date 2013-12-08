@@ -116,7 +116,11 @@ ProgramStorage = (function() {
           type: 'success',
           text: '読み込み',
           handler: function(data) {
-            _this.loadProgramById(data.id);
+            _this.loadProgramById(data.id, function() {
+              data.status = 'complete';
+              return callback(data);
+            });
+            data.status = 'ready';
             return callback(data);
           }
         }

@@ -180,8 +180,10 @@ Frontend = (function() {
     this.stopJsAutoUpdate();
     return this.programStorage.loadProgram(function(data) {
       _this.currentProgramName = data.name;
-      _this.startJsAutoUpdate();
-      return _this.updateJs();
+      if (data.status === 'complete') {
+        _this.startJsAutoUpdate();
+        return _this.updateJs();
+      }
     });
   };
 

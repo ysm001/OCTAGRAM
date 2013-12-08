@@ -12,6 +12,11 @@ getUniqueArray = (ary) ->
 arrayEqual = (a, b) ->
     a.length is b.length and a.every (elem, i) -> elem is b[i]
 
+intersection = (arrA, arrB) ->
+  exist = {}
+  for a in arrA then exist[a.order] = true
+  (b for b in arrB when exist[b.order])
+
 class GraphSearcher
   constructor: () ->
     @visited = []
@@ -178,15 +183,9 @@ class LoopFinder
 
       idom.childs.push(node)
 
-    nodes
+    {tree: nodes, dominators: dominators}
 
   calcDominators: (root, universal, graph, context) ->
-    intersection = (arrA, arrB) ->
-      exist = {}
-      for a in arrA then exist[a.order] = true
-      (b for b in arrB when exist[b.order])
-
-
     dominators = @initDominators(root, universal)
 
     preDominators = []
@@ -244,7 +243,9 @@ class LoopFinder
     universal = []
     graph.dfs(root, cpu, (obj) => universal.push(obj.node))
 
-    dominators = @calcDominators(root, universal, graph, context)
+    dom = @createDominatorTree(root, universal, graph, context)
+    domTree = dom.tree
+    dominators = dom.dominators
 
     backedges = @findBackEdges(root, dominators, graph, context)
 
@@ -256,6 +257,17 @@ class LoopFinder
       console.log (n.order for n in lp)
 
     loops
+
+  verify: (loops, context) ->
+    graph = new GraphSearcher()
+
+    for lp in loops
+      header = lp[0]
+      for n in lp when n != header
+        p = graph.getImmediatePredecessors(n, context)
+        if p? && p.length > 1 then return lp
+
+    null
 
 class JsConstant
   @indent = '  '
@@ -451,6 +463,7 @@ class JsGenerator
 
   generateWhileCode: (root, context) ->
     block = new JsWhileBlock('true')
+    breakBlock = new JsPlainBlock()
     childLoop = []
 
     for node in context.loop[context.loop.length - 1]
@@ -467,15 +480,20 @@ class JsGenerator
           context.loop.pop()
 
       if @isBranchTransitionTip(node)
-        block.insertBlock(@generateBranchCode(node, context))
+        branch = @generateBranchCode(node, context)
+        block.insertBlock(branch)
+        breakBlock.insertBlock(branch.breakBlock)
         break
       else if @isSingleTransitionTip(node)
         block.insertLine(node, @getOperationName(node) + '();')
 
-    block
+    ret = new JsPlainBlock()
+    ret.insertBlock(block)
+    ret.insertBlock(breakBlock)
+    ret
    
   findBreakNode: (root, branchNodes, context) ->
-    result = {if: false, true: false, err: false}
+    result = {if: false, else: false, err: false}
 
     mergeNode = @getMergeNode(root, context)
     result.err = !mergeNode?
@@ -497,14 +515,16 @@ class JsGenerator
     nodes = @getBranchNodes(root, context)
 
     printBreakError = (b) ->
+      b.insertLine(root, '//// Warning ////')
       b.insertLine(root, '// 現在、ループ外に出る条件分岐を含むコードのJavascript生成には対応していません。')
       b.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
 
-
     # ループ中の分岐の場合
     if context.loop? && context.loop.length > 0 && @isOnLoop(root, context.loop[context.loop.length - 1])
-      block.headerBlock.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。')
-      block.headerBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
+      if context.loop.length > 1
+        block.headerBlock.insertLine(root, '//// Warning ////')
+        block.headerBlock.insertLine(root, '// 現在、多重ループを含むコードのJavascript生成には対応していません。')
+        block.headerBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
 
       # ループ外に出る分岐を探索
       result = @findBreakNode(root, nodes, context)
@@ -513,10 +533,12 @@ class JsGenerator
       if result.if 
         if result.err then printBreakError(block.ifBlock)
         block.ifBlock.insertLine(root, 'break;')
+        block.breakBlock.insertBlock(@generateCode(nodes.ifNext, context))
       else block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
       if result.else 
         if result.err then printBreakError(block.elseBlock)
         block.elseBlock.insertLine(root, 'break;')
+        block.breakBlock.insertBlock(@generateCode(nodes.elseNext, context))
       else block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
     # 通常の分岐
     else 
@@ -569,10 +591,21 @@ class JsGenerator
 
     block
 
+  generateNonNaturalLoopErrorCode: (errorLoop) ->
+    block = new JsPlainBlock()
+    block.insertLine(errorLoop, '//// Error ////')
+    block.insertLine(errorLoop, '// ループに2つ以上の入り口が存在します。')
+    block.insertLine(errorLoop, '// Javascriptでは表現できない形式です。')
+
+    block
+
   generate: (cpu) ->
+    finder = new LoopFinder()
     root = cpu.getStartTip()
     context = {cpu: cpu}
 
     @loops = @findAllLoop(root, context)
+    error = finder.verify(@loops, context)
+
     block = @generateCode(root, context)
     block.generateCode()

@@ -110,8 +110,9 @@ class Frontend
     @stopJsAutoUpdate()
     @programStorage.loadProgram((data) => 
       @currentProgramName = data.name
-      @startJsAutoUpdate()
-      @updateJs()
+      if data.status == 'complete'
+        @startJsAutoUpdate()
+        @updateJs()
     )
 
   loadProgramById : (id, callback) -> @programStorage.loadProgramById(id, callback)
