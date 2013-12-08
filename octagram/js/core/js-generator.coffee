@@ -405,9 +405,13 @@ class JsGenerator
   generateBranchCode: (root, context) ->
     block = new JsBranchBlock(@getOperationName(root), root)
 
-    nodes = @getBranchNodes(root, context)
-    block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
-    block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
+    if context.loop? && context.loop.length > 0
+      block = new JsPlainBlock()
+      block.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。')
+    else
+      nodes = @getBranchNodes(root, context)
+      block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
+      block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
 
     block
 

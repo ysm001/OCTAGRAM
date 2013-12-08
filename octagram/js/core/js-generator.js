@@ -729,9 +729,14 @@ JsGenerator = (function() {
   JsGenerator.prototype.generateBranchCode = function(root, context) {
     var block, nodes;
     block = new JsBranchBlock(this.getOperationName(root), root);
-    nodes = this.getBranchNodes(root, context);
-    block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
-    block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));
+    if ((context.loop != null) && context.loop.length > 0) {
+      block = new JsPlainBlock();
+      block.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。');
+    } else {
+      nodes = this.getBranchNodes(root, context);
+      block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
+      block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));
+    }
     return block;
   };
 
