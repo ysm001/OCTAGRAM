@@ -174,7 +174,7 @@ JsText = (function() {
 
   JsText.prototype.insertLine = function(node, text) {
     return this.lines.push({
-      node: node,
+      node: [node],
       text: text
     });
   };
@@ -225,7 +225,7 @@ JsBlock = (function(_super) {
   }
 
   JsBlock.prototype.generateCode = function() {
-    var code, line;
+    var code, line, nodes;
     code = (function() {
       var _i, _len, _ref1, _results;
       _ref1 = this.lines;
@@ -239,10 +239,22 @@ JsBlock = (function(_super) {
       }
       return _results;
     }).call(this);
+    nodes = (function() {
+      var _i, _len, _ref1, _results;
+      _ref1 = this.lines;
+      _results = [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        line = _ref1[_i];
+        _results.push(line.node[0]);
+      }
+      return _results;
+    }).call(this);
     code.unshift({
+      node: nodes,
       text: '{'
     });
     code.push({
+      node: nodes,
       text: '}'
     });
     return code;
@@ -299,8 +311,9 @@ JsForBlock = (function(_super) {
 })(JsBlock);
 
 JsBranchBlock = (function() {
-  function JsBranchBlock(condition) {
+  function JsBranchBlock(condition, root) {
     this.condition = condition;
+    this.root = root;
     this.ifBlock = new JsBlock();
     this.elseBlock = new JsBlock();
   }
@@ -323,7 +336,10 @@ JsBranchBlock = (function() {
     elseCode = this.elseBlock.generateCode();
     ifCode[0].text = 'if( ' + this.createCondition() + ' ) ' + ifCode[0].text;
     elseCode[0].text = 'else ' + elseCode[0].text;
-    ifCode[0].node = this.condition;
+    ifCode[0].node.unshift(this.root);
+    ifCode[ifCode.length - 1].node.unshift(this.root);
+    elseCode[0].node.unshift(this.root);
+    elseCode[elseCode.length - 1].node.unshift(this.root);
     return ifCode.concat(elseCode);
   };
 
@@ -474,7 +490,7 @@ JsGenerator = (function() {
 
   JsGenerator.prototype.generateBranchCode = function(root, context) {
     var block, nodes;
-    block = new JsBranchBlock(this.getOperationName(root));
+    block = new JsBranchBlock(this.getOperationName(root), root);
     nodes = this.getBranchNodes(root, context);
     block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
     block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));

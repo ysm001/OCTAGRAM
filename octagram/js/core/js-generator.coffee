@@ -91,7 +91,7 @@ class JsText
   constructor: () ->
     @lines = []
 
-  insertLine: (node, text) -> @lines.push({node: node, text: text})
+  insertLine: (node, text) -> @lines.push({node: [node], text: text})
   insertBlock: (block) -> @insertArray(block.generateCode())
   insertArray: (array) -> @lines = @lines.concat(array)
 
@@ -111,8 +111,9 @@ class JsPlainBlock extends JsText
 class JsBlock extends JsPlainBlock
   generateCode: () ->
     code = ({node: line.node, text: JsConstant.indent + line.text} for line in @lines)
-    code.unshift({text: '{'})
-    code.push({text: '}'})
+    nodes = (line.node[0] for line in @lines)
+    code.unshift({node: nodes, text: '{'})
+    code.push({node: nodes, text: '}'})
     code
 
 class JsWhileBlock extends JsBlock
@@ -137,7 +138,7 @@ class JsForBlock extends JsBlock
     code
 
 class JsBranchBlock
-  constructor: (@condition) ->
+  constructor: (@condition, @root) ->
     @ifBlock = new JsBlock()
     @elseBlock = new JsBlock()
 
@@ -152,7 +153,11 @@ class JsBranchBlock
 
     ifCode[0].text = 'if( ' + @createCondition() + ' ) ' + ifCode[0].text
     elseCode[0].text = 'else ' + elseCode[0].text
-    ifCode[0].node = @condition
+
+    ifCode[0].node.unshift(@root)
+    ifCode[ifCode.length - 1].node.unshift(@root)
+    elseCode[0].node.unshift(@root)
+    elseCode[elseCode.length - 1].node.unshift(@root)
 
     ifCode.concat(elseCode)
 
@@ -239,7 +244,7 @@ class JsGenerator
     block
     
   generateBranchCode: (root, context) ->
-    block = new JsBranchBlock(@getOperationName(root))
+    block = new JsBranchBlock(@getOperationName(root), root)
 
     nodes = @getBranchNodes(root, context)
     block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))

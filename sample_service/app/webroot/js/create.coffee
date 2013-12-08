@@ -1,5 +1,40 @@
 getCurrentProgram = () -> Game.instance.octagram.getCurrentInstance()
 
+class JsCodeViewer
+  constructor: () ->
+    @editor = null
+    @preCursor = null
+
+  show: (lines) ->
+    text = (line.text for line in lines)
+    code = text.join('\n')
+
+    @editor = ace.edit('editor-div')
+    @editor.getSession().setMode("ace/mode/javascript");
+    @editor.getSession().setValue(code)
+
+    selection = @editor.getSelection()
+    selection.on('changeCursor', () => 
+      @changeHighlite(@editor.getCursorPosition(), lines)
+    ) 
+
+  hide: (lines) ->
+    if @preCursor? then @unHighliteLine(lines[@preCursor.row])
+
+  changeHighlite: (pos, lines) ->
+    if @preCursor? then @unHighliteLine(lines[@preCursor.row])
+    @highliteLine(lines[pos.row])
+
+    @preCursor = pos
+
+  highliteLine: (line) ->
+    if line.node?
+      for n in line.node then n.showExecutionEffect()
+
+  unHighliteLine: (line) ->
+    if line.node? 
+      for n in line.node then n.hideExecutionEffect()
+
 class Frontend 
   constructor: (@options) ->
     @programStorage = new ProgramStorage()
@@ -85,8 +120,6 @@ class Frontend
     instance = @getPlayerProgram()
     generator = new JsGenerator()
     lines = generator.generate(instance.cpu)
-    text = (line.text for line in lines)
-    code = text.join('\n')
 
     template = 
       '<html>' +
@@ -97,11 +130,10 @@ class Frontend
       '</body>' + 
       '</html>'
 
-    bootbox.alert(template, () -> )
+    viewer = new JsCodeViewer()
+    bootbox.alert(template, () -> viewer.hide(lines))
 
-    editor = ace.edit('editor-div')
-    editor.getSession().setMode("ace/mode/javascript");
-    editor.getSession().setValue(code)
+    viewer.show(lines)
 
 $ ->
   frontend = new Frontend({
