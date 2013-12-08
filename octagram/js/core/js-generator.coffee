@@ -56,12 +56,14 @@ class GraphSearcher
       idx = stack.indexOf(child)
       (stack[i] for i in [idx...stack.length])
 
-  getSuccessors: (node, cpu) ->
+  getSuccessors: (node, context) ->
     successors = []
     graph = new GraphSearcher()
-    graph.dfs(node, cpu, (obj) -> 
-      successors.push(obj.node)
-      true
+    graph.dfs(node, context.cpu, (obj) -> 
+      if context.end? && obj.node == context.end then false
+      else
+        successors.push(obj.node)
+        true
     )
 
     successors
@@ -320,6 +322,7 @@ class JsBranchBlock
     @ifBlock = new JsBlock()
     @elseBlock = new JsBlock()
     @breakBlock = new JsPlainBlock()
+    @headerBlock = new JsPlainBlock()
 
   getIfBlock: () -> @ifBlock
   getElseBlock: () -> @elseBlock
@@ -364,8 +367,9 @@ class JsBranchBlock
     elseCode[elseCode.length - 1].node.unshift(@root)
 
     commonCode = commonBlock.generateCode()
+    headerCode = @headerBlock.generateCode()
 
-    ifCode.concat(elseCode).concat(commonCode)
+    headerCode.concat(ifCode.concat(elseCode).concat(commonCode))
 
 class JsGenerator
   constructor: () ->
@@ -429,8 +433,9 @@ class JsGenerator
 
     nodes = @getBranchNodes(node, context)
 
-    ifSuccessors = graph.getSuccessors(nodes.ifNext, context.cpu)
-    elseSuccessors = graph.getSuccessors(nodes.elseNext, context.cpu)
+    context.end = node
+    ifSuccessors = graph.getSuccessors(nodes.ifNext, context)
+    elseSuccessors = graph.getSuccessors(nodes.elseNext, context)
 
     for s in ifSuccessors
       if s in elseSuccessors then return s
@@ -470,9 +475,11 @@ class JsGenerator
     block
    
   findBreakNode: (root, branchNodes, context) ->
-    result = {if: false, true: false}
+    result = {if: false, true: false, err: false}
 
     mergeNode = @getMergeNode(root, context)
+    result.err = !mergeNode?
+
     if !mergeNode? || !@isOnLoop(mergeNode, context.loop[context.loop.length - 1])
       lp = context.loop[context.loop.length - 1]
 
@@ -489,18 +496,27 @@ class JsGenerator
     block = new JsBranchBlock(@getOperationName(root), root)
     nodes = @getBranchNodes(root, context)
 
+    printBreakError = (b) ->
+      b.insertLine(root, '// 現在、ループ外に出る条件分岐を含むコードのJavascript生成には対応していません。')
+      b.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
+
+
     # ループ中の分岐の場合
     if context.loop? && context.loop.length > 0 && @isOnLoop(root, context.loop[context.loop.length - 1])
-      block.ifBlock.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。')
-      block.ifBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
+      block.headerBlock.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。')
+      block.headerBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
 
       # ループ外に出る分岐を探索
       result = @findBreakNode(root, nodes, context)
 
       # ループ外に出る場合はbreakを出力
-      if result.if then block.ifBlock.insertLine(root, 'break;')
+      if result.if 
+        if result.err then printBreakError(block.ifBlock)
+        block.ifBlock.insertLine(root, 'break;')
       else block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
-      if result.else then block.elseBlock.insertLine(root, 'break;')
+      if result.else 
+        if result.err then printBreakError(block.elseBlock)
+        block.elseBlock.insertLine(root, 'break;')
       else block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
     # 通常の分岐
     else 

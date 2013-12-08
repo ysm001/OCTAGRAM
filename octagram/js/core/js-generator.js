@@ -123,13 +123,17 @@ GraphSearcher = (function() {
     }
   };
 
-  GraphSearcher.prototype.getSuccessors = function(node, cpu) {
+  GraphSearcher.prototype.getSuccessors = function(node, context) {
     var graph, successors;
     successors = [];
     graph = new GraphSearcher();
-    graph.dfs(node, cpu, function(obj) {
-      successors.push(obj.node);
-      return true;
+    graph.dfs(node, context.cpu, function(obj) {
+      if ((context.end != null) && obj.node === context.end) {
+        return false;
+      } else {
+        successors.push(obj.node);
+        return true;
+      }
     });
     return successors;
   };
@@ -589,6 +593,7 @@ JsBranchBlock = (function() {
     this.ifBlock = new JsBlock();
     this.elseBlock = new JsBlock();
     this.breakBlock = new JsPlainBlock();
+    this.headerBlock = new JsPlainBlock();
   }
 
   JsBranchBlock.prototype.getIfBlock = function() {
@@ -626,7 +631,7 @@ JsBranchBlock = (function() {
   };
 
   JsBranchBlock.prototype.generateCode = function() {
-    var commonBlock, commonCode, elseBlock, elseCode, ifBlock, ifCode;
+    var commonBlock, commonCode, elseBlock, elseCode, headerCode, ifBlock, ifCode;
     ifBlock = this.ifBlock.clone();
     elseBlock = this.elseBlock.clone();
     commonBlock = this.removeCommonProcess(ifBlock.lines, elseBlock.lines);
@@ -639,7 +644,8 @@ JsBranchBlock = (function() {
     elseCode[0].node.unshift(this.root);
     elseCode[elseCode.length - 1].node.unshift(this.root);
     commonCode = commonBlock.generateCode();
-    return ifCode.concat(elseCode).concat(commonCode);
+    headerCode = this.headerBlock.generateCode();
+    return headerCode.concat(ifCode.concat(elseCode).concat(commonCode));
   };
 
   return JsBranchBlock;
@@ -743,8 +749,9 @@ JsGenerator = (function() {
     var elseSuccessors, graph, ifSuccessors, nodes, s, _i, _len;
     graph = new GraphSearcher();
     nodes = this.getBranchNodes(node, context);
-    ifSuccessors = graph.getSuccessors(nodes.ifNext, context.cpu);
-    elseSuccessors = graph.getSuccessors(nodes.elseNext, context.cpu);
+    context.end = node;
+    ifSuccessors = graph.getSuccessors(nodes.ifNext, context);
+    elseSuccessors = graph.getSuccessors(nodes.elseNext, context);
     for (_i = 0, _len = ifSuccessors.length; _i < _len; _i++) {
       s = ifSuccessors[_i];
       if (__indexOf.call(elseSuccessors, s) >= 0) {
@@ -804,9 +811,11 @@ JsGenerator = (function() {
     var lp, mergeNode, result, _ref1, _ref2;
     result = {
       "if": false,
-      "true": false
+      "true": false,
+      err: false
     };
     mergeNode = this.getMergeNode(root, context);
+    result.err = mergeNode == null;
     if ((mergeNode == null) || !this.isOnLoop(mergeNode, context.loop[context.loop.length - 1])) {
       lp = context.loop[context.loop.length - 1];
       if (!(_ref1 = branchNodes.ifNext, __indexOf.call(lp, _ref1) >= 0)) {
@@ -821,19 +830,29 @@ JsGenerator = (function() {
   };
 
   JsGenerator.prototype.generateBranchCode = function(root, context) {
-    var block, nodes, result;
+    var block, nodes, printBreakError, result;
     block = new JsBranchBlock(this.getOperationName(root), root);
     nodes = this.getBranchNodes(root, context);
+    printBreakError = function(b) {
+      b.insertLine(root, '// 現在、ループ外に出る条件分岐を含むコードのJavascript生成には対応していません。');
+      return b.insertLine(root, '// 誤ったコードが生成されている可能性があります。');
+    };
     if ((context.loop != null) && context.loop.length > 0 && this.isOnLoop(root, context.loop[context.loop.length - 1])) {
-      block.ifBlock.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。');
-      block.ifBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。');
+      block.headerBlock.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。');
+      block.headerBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。');
       result = this.findBreakNode(root, nodes, context);
       if (result["if"]) {
+        if (result.err) {
+          printBreakError(block.ifBlock);
+        }
         block.ifBlock.insertLine(root, 'break;');
       } else {
         block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
       }
       if (result["else"]) {
+        if (result.err) {
+          printBreakError(block.elseBlock);
+        }
         block.elseBlock.insertLine(root, 'break;');
       } else {
         block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));
