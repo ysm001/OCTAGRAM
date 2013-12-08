@@ -23,7 +23,6 @@ class JsCodeViewer
     @editor.getSession().setValue(code)
     
     selection.on('changeCursor', () => 
-      console.log @editor.getCursorPosition()
       @changeHighlite(@editor.getCursorPosition(), lines)
     ) 
 
@@ -132,13 +131,13 @@ class Frontend
     @getPlayerProgram().stop()
     @getEnemyProgram().stop()
 
-  getPlayerCode: () ->
-    instance = @getPlayerProgram()
+  getCurrentCode: () ->
+    instance = getCurrentProgram()
     generator = new JsGenerator()
     generator.generate(instance.cpu)
 
   showJsWithDialog: () ->
-    lines = @getPLayerCode()
+    lines = @getCurrentCode()
 
     template = 
       '<html>' +
@@ -159,14 +158,14 @@ class Frontend
     $('#js-viewer').show()
 
     @viewer = new JsCodeViewer()
-    @viewer.show(@getPlayerCode())
+    @viewer.show(@getCurrentCode())
 
-    program = @getPlayerProgram()
+    program = getCurrentProgram()
     program.clearEventListener()
-    program.addEventListener('changeOctagram', () => @viewer.update(@getPlayerCode()))
+    program.addEventListener('changeOctagram', () => @viewer.update(@getCurrentCode()))
 
   hideJs: () ->
-    lines = @getPlayerCode()
+    lines = @getCurrentCode()
     
     @viewer.hide(lines)
 
@@ -175,7 +174,7 @@ class Frontend
 
     $('#program-container').append($('<div id="js-viewer"></div>'))
 
-    program = @getPlayerProgram()
+    program = getCurrentProgram()
     program.clearEventListener()
     @viewer = null
 

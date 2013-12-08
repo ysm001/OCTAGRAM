@@ -37,7 +37,6 @@ JsCodeViewer = (function() {
     code = text.join('\n');
     this.editor.getSession().setValue(code);
     return selection.on('changeCursor', function() {
-      console.log(_this.editor.getCursorPosition());
       return _this.changeHighlite(_this.editor.getCursorPosition(), lines);
     });
   };
@@ -216,16 +215,16 @@ Frontend = (function() {
     return this.getEnemyProgram().stop();
   };
 
-  Frontend.prototype.getPlayerCode = function() {
+  Frontend.prototype.getCurrentCode = function() {
     var generator, instance;
-    instance = this.getPlayerProgram();
+    instance = getCurrentProgram();
     generator = new JsGenerator();
     return generator.generate(instance.cpu);
   };
 
   Frontend.prototype.showJsWithDialog = function() {
     var lines, template, viewer;
-    lines = this.getPLayerCode();
+    lines = this.getCurrentCode();
     template = '<html>' + '<head>' + '</head>' + '<body>' + '<div id="editor-div" style="height: 500px; width: 500px"></div>' + '</body>' + '</html>';
     viewer = new JsCodeViewer();
     bootbox.alert(template, function() {
@@ -240,22 +239,22 @@ Frontend = (function() {
     $('#enchant-stage').hide();
     $('#js-viewer').show();
     this.viewer = new JsCodeViewer();
-    this.viewer.show(this.getPlayerCode());
-    program = this.getPlayerProgram();
+    this.viewer.show(this.getCurrentCode());
+    program = getCurrentProgram();
     program.clearEventListener();
     return program.addEventListener('changeOctagram', function() {
-      return _this.viewer.update(_this.getPlayerCode());
+      return _this.viewer.update(_this.getCurrentCode());
     });
   };
 
   Frontend.prototype.hideJs = function() {
     var lines, program;
-    lines = this.getPlayerCode();
+    lines = this.getCurrentCode();
     this.viewer.hide(lines);
     $('#enchant-stage').show();
     $('#js-viewer').remove();
     $('#program-container').append($('<div id="js-viewer"></div>'));
-    program = this.getPlayerProgram();
+    program = getCurrentProgram();
     program.clearEventListener();
     return this.viewer = null;
   };
