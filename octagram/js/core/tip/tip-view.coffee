@@ -198,6 +198,8 @@ class SingleTransitionCodeTip extends CodeTip
     @trans.show(this)
     @code.setNext({x:x, y:y}) 
 
+    @trans.addEventListener('changeTransition', (e) => @dispatchEvent(e))
+
   getNextDir : () ->
     next = @code.getNext()
     if !next? then null
@@ -223,11 +225,15 @@ class BranchTransitionCodeTip extends CodeTip
     @conseqTrans.show(this) 
     @code.setConseq({x:x, y:y})
 
+    @conseqTrans.addEventListener('changeTransition', (e) => @dispatchEvent(e))
+
   setAlter : (x, y, dst) ->
     @alterTrans.hide() if @alterTrans?
     @alterTrans = new AlterTransition(this, dst)
     @alterTrans.show(this) 
     @code.setAlter({x:x, y:y})
+
+    @alterTrans.addEventListener('changeTransition', (e) => @dispatchEvent(e))
 
   getConseqDir : () ->
     next = @code.getConseq()

@@ -12,8 +12,19 @@ JsCodeViewer = (function() {
   }
 
   JsCodeViewer.prototype.show = function(lines) {
+    this.editor = ace.edit('js-viewer');
+    this.editor.setTheme('ace/theme/monokai');
+    this.editor.getSession().setMode("ace/mode/javascript");
+    this.update(lines);
+    return this.editor.setReadOnly(true);
+  };
+
+  JsCodeViewer.prototype.update = function(lines) {
     var code, line, selection, text,
       _this = this;
+    this.unHighlite(lines);
+    selection = this.editor.getSelection();
+    selection.removeAllListeners('changeCursor');
     text = (function() {
       var _i, _len, _results;
       _results = [];
@@ -24,23 +35,15 @@ JsCodeViewer = (function() {
       return _results;
     })();
     code = text.join('\n');
-    this.editor = ace.edit('js-viewer');
-    this.editor.setTheme('ace/theme/monokai');
-    this.editor.getSession().setMode("ace/mode/javascript");
     this.editor.getSession().setValue(code);
-    selection = this.editor.getSelection();
-    selection.on('changeCursor', function() {
+    return selection.on('changeCursor', function() {
+      console.log(_this.editor.getCursorPosition());
       return _this.changeHighlite(_this.editor.getCursorPosition(), lines);
     });
-    return this.editor.setReadOnly(true);
   };
 
   JsCodeViewer.prototype.hide = function(lines) {
-    var line, _i, _len;
-    for (_i = 0, _len = lines.length; _i < _len; _i++) {
-      line = lines[_i];
-      this.unHighliteLine(line);
-    }
+    this.unHighlite(lines);
     return this.editor.destroy();
   };
 
@@ -52,9 +55,19 @@ JsCodeViewer = (function() {
     return this.preCursor = pos;
   };
 
+  JsCodeViewer.prototype.unHighlite = function(lines) {
+    var line, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = lines.length; _i < _len; _i++) {
+      line = lines[_i];
+      _results.push(this.unHighliteLine(line));
+    }
+    return _results;
+  };
+
   JsCodeViewer.prototype.highliteLine = function(line) {
     var n, _i, _len, _ref, _results;
-    if (line.node != null) {
+    if ((line != null) && (line.node != null)) {
       _ref = line.node;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -67,7 +80,7 @@ JsCodeViewer = (function() {
 
   JsCodeViewer.prototype.unHighliteLine = function(line) {
     var n, _i, _len, _ref, _results;
-    if (line.node != null) {
+    if ((line != null) && (line.node != null)) {
       _ref = line.node;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -222,21 +235,29 @@ Frontend = (function() {
   };
 
   Frontend.prototype.showJs = function() {
-    var lines;
-    lines = this.getPlayerCode();
+    var program,
+      _this = this;
     $('#enchant-stage').hide();
     $('#js-viewer').show();
     this.viewer = new JsCodeViewer();
-    return this.viewer.show(lines);
+    this.viewer.show(this.getPlayerCode());
+    program = this.getPlayerProgram();
+    program.clearEventListener();
+    return program.addEventListener('changeOctagram', function() {
+      return _this.viewer.update(_this.getPlayerCode());
+    });
   };
 
   Frontend.prototype.hideJs = function() {
-    var lines;
+    var lines, program;
     lines = this.getPlayerCode();
     this.viewer.hide(lines);
     $('#enchant-stage').show();
     $('#js-viewer').remove();
-    return $('#program-container').append($('<div id="js-viewer"></div>'));
+    $('#program-container').append($('<div id="js-viewer"></div>'));
+    program = this.getPlayerProgram();
+    program.clearEventListener();
+    return this.viewer = null;
   };
 
   return Frontend;

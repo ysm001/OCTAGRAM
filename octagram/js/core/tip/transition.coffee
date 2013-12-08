@@ -67,6 +67,7 @@ class TipTransition extends GroupedSprite
         else 
           @src.setConseq(nx, ny, dst)
       else @src.setNext(nx, ny, dst)
+      @dispatchEvent(new Event('changeTransition'))
 
   hide : (parent) -> @parentNode.removeChild(this)
   show : (parent) -> parent.addChild(this)

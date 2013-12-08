@@ -6,25 +6,29 @@ class JsCodeViewer
     @preCursor = null
 
   show: (lines) ->
-    text = (line.text for line in lines)
-    code = text.join('\n')
-
     @editor = ace.edit('js-viewer')
     @editor.setTheme('ace/theme/monokai')
     @editor.getSession().setMode("ace/mode/javascript");
-    @editor.getSession().setValue(code)
-
-    selection = @editor.getSelection()
-    selection.on('changeCursor', () => 
-      @changeHighlite(@editor.getCursorPosition(), lines)
-    ) 
+    @update(lines)
 
     @editor.setReadOnly(true)
 
-  hide: (lines) ->
-    for line in lines
-      @unHighliteLine(line)
+  update: (lines) ->
+    @unHighlite(lines)
+    selection = @editor.getSelection()
+    selection.removeAllListeners('changeCursor')
 
+    text = (line.text for line in lines)
+    code = text.join('\n')
+    @editor.getSession().setValue(code)
+    
+    selection.on('changeCursor', () => 
+      console.log @editor.getCursorPosition()
+      @changeHighlite(@editor.getCursorPosition(), lines)
+    ) 
+
+  hide: (lines) ->
+    @unHighlite(lines)
     @editor.destroy()
 
   changeHighlite: (pos, lines) ->
@@ -33,12 +37,16 @@ class JsCodeViewer
 
     @preCursor = pos
 
+  unHighlite: (lines) ->
+    for line in lines
+      @unHighliteLine(line)
+
   highliteLine: (line) ->
-    if line.node?
+    if line? && line.node?
       for n in line.node then n.showExecutionEffect()
 
   unHighliteLine: (line) ->
-    if line.node? 
+    if line? && line.node? 
       for n in line.node then n.hideExecutionEffect()
 
 class Frontend 
@@ -147,13 +155,15 @@ class Frontend
     viewer.show(lines)
 
   showJs: () ->
-    lines = @getPlayerCode()
-
     $('#enchant-stage').hide()
     $('#js-viewer').show()
 
     @viewer = new JsCodeViewer()
-    @viewer.show(lines)
+    @viewer.show(@getPlayerCode())
+
+    program = @getPlayerProgram()
+    program.clearEventListener()
+    program.addEventListener('changeOctagram', () => @viewer.update(@getPlayerCode()))
 
   hideJs: () ->
     lines = @getPlayerCode()
@@ -164,6 +174,10 @@ class Frontend
     $('#js-viewer').remove()
 
     $('#program-container').append($('<div id="js-viewer"></div>'))
+
+    program = @getPlayerProgram()
+    program.clearEventListener()
+    @viewer = null
 
 $ ->
   frontend = new Frontend({
