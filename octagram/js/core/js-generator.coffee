@@ -233,6 +233,25 @@ class LoopFinder
 
     backedges
 
+  calcLoop: (edge, context) ->
+    graph = new GraphSearcher()
+    stack = []
+    lp = [edge.dst]
+
+    insert = (m) ->
+      if !(m in lp)
+        lp.push(m)
+        stack.push(m)
+
+    insert(edge.src)
+
+    while stack.length > 0
+      m = stack.pop()
+      for p in graph.getImmediatePredecessors(m, context)
+        insert(p)
+
+    lp
+
   find: (cpu) ->
     root = cpu.getStartTip()
     context = {cpu: cpu}
@@ -252,6 +271,7 @@ class LoopFinder
     loops = []
     for edge in backedges
       lp = graph.findRoute(edge.dst, edge.src, cpu)
+      # lp = @calcLoop(edge, context)
       loops.push(lp)
 
       console.log (n.order for n in lp)

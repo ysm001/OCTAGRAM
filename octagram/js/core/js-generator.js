@@ -394,6 +394,29 @@ LoopFinder = (function() {
     return backedges;
   };
 
+  LoopFinder.prototype.calcLoop = function(edge, context) {
+    var graph, insert, lp, m, p, stack, _i, _len, _ref;
+    graph = new GraphSearcher();
+    stack = [];
+    lp = [edge.dst];
+    insert = function(m) {
+      if (!(__indexOf.call(lp, m) >= 0)) {
+        lp.push(m);
+        return stack.push(m);
+      }
+    };
+    insert(edge.src);
+    while (stack.length > 0) {
+      m = stack.pop();
+      _ref = graph.getImmediatePredecessors(m, context);
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        p = _ref[_i];
+        insert(p);
+      }
+    }
+    return lp;
+  };
+
   LoopFinder.prototype.find = function(cpu) {
     var backedges, context, dom, domTree, dominators, edge, graph, loops, lp, n, root, universal, _i, _len,
       _this = this;
