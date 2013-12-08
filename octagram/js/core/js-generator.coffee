@@ -392,8 +392,11 @@ class JsGenerator
     @loops.push(newLp.slice(0))
 
   findAllLoop: (root, context) ->
+    # 重いが、コントロールフロー解析による確実な探索
     finder = new LoopFinder()
     finder.find(context.cpu)
+
+    # 軽いが、DFSによる不確実な探索(ループが重なると見逃す)
     #graph = new GraphSearcher()
     #loops = []
 
@@ -426,18 +429,38 @@ class JsGenerator
 
     nodes = @getBranchNodes(node, context)
 
-    ifSuccessors = graph.getSuccessors(nodes.ifNext)
-    elseSuccessors = graph.getSuccessors(nodes.elseNext)
+    ifSuccessors = graph.getSuccessors(nodes.ifNext, context.cpu)
+    elseSuccessors = graph.getSuccessors(nodes.elseNext, context.cpu)
 
     for s in ifSuccessors
       if s in elseSuccessors then return s
 
     null
 
+  isChildLoopNode: (node, childLoop) ->
+    for lp in childLoop
+      for n in lp 
+        if node == n then return true
+
+    false
+
   generateWhileCode: (root, context) ->
     block = new JsWhileBlock('true')
+    childLoop = []
 
     for node in context.loop[context.loop.length - 1]
+      # 子ループの要素はスキップ
+      if @isChildLoopNode(node, childLoop) then continue
+
+      lp = @findLoopByEnterNode(node)
+      if lp? 
+        if !@isTraversedLoopHeader(node, context)
+          childLoop.push(lp)
+          if !context.loop? then context.loop = []
+          context.loop.push(lp)
+          block.insertBlock(@generateWhileCode(node, context))
+          context.loop.pop()
+
       if @isBranchTransitionTip(node)
         block.insertBlock(@generateBranchCode(node, context))
         break
@@ -446,13 +469,40 @@ class JsGenerator
 
     block
    
+  findBreakNode: (root, branchNodes, context) ->
+    result = {if: false, true: false}
+
+    mergeNode = @getMergeNode(root, context)
+    if !mergeNode? || !@isOnLoop(mergeNode, context.loop[context.loop.length - 1])
+      lp = context.loop[context.loop.length - 1]
+
+      if !(branchNodes.ifNext in lp)
+        result.if = true
+        result.else = false
+      else if !(branchNodes.elseNext in lp)
+        result.if = false
+        result.else = true
+
+    result
+
   generateBranchCode: (root, context) ->
     block = new JsBranchBlock(@getOperationName(root), root)
     nodes = @getBranchNodes(root, context)
 
-    if context.loop? && context.loop.length > 0
+    # ループ中の分岐の場合
+    if context.loop? && context.loop.length > 0 && @isOnLoop(root, context.loop[context.loop.length - 1])
       block.ifBlock.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。')
       block.ifBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
+
+      # ループ外に出る分岐を探索
+      result = @findBreakNode(root, nodes, context)
+
+      # ループ外に出る場合はbreakを出力
+      if result.if then block.ifBlock.insertLine(root, 'break;')
+      else block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
+      if result.else then block.elseBlock.insertLine(root, 'break;')
+      else block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
+    # 通常の分岐
     else 
       block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
       block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
@@ -463,6 +513,19 @@ class JsGenerator
     if context.loop?
       for lp in context.loop
         if lp[0] == node then return true
+
+    false
+
+  isChildLoopHeader: (node, context) ->
+    if context.loop?
+      for n in @loops[@loops.length - 1]
+        if n == node then return true
+
+    false
+
+  isOnLoop: (node, lp) ->
+    for n in lp
+      if node == n then return true
 
     false
 

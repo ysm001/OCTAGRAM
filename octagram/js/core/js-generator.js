@@ -743,8 +743,8 @@ JsGenerator = (function() {
     var elseSuccessors, graph, ifSuccessors, nodes, s, _i, _len;
     graph = new GraphSearcher();
     nodes = this.getBranchNodes(node, context);
-    ifSuccessors = graph.getSuccessors(nodes.ifNext);
-    elseSuccessors = graph.getSuccessors(nodes.elseNext);
+    ifSuccessors = graph.getSuccessors(nodes.ifNext, context.cpu);
+    elseSuccessors = graph.getSuccessors(nodes.elseNext, context.cpu);
     for (_i = 0, _len = ifSuccessors.length; _i < _len; _i++) {
       s = ifSuccessors[_i];
       if (__indexOf.call(elseSuccessors, s) >= 0) {
@@ -754,12 +754,42 @@ JsGenerator = (function() {
     return null;
   };
 
+  JsGenerator.prototype.isChildLoopNode = function(node, childLoop) {
+    var lp, n, _i, _j, _len, _len1;
+    for (_i = 0, _len = childLoop.length; _i < _len; _i++) {
+      lp = childLoop[_i];
+      for (_j = 0, _len1 = lp.length; _j < _len1; _j++) {
+        n = lp[_j];
+        if (node === n) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   JsGenerator.prototype.generateWhileCode = function(root, context) {
-    var block, node, _i, _len, _ref1;
+    var block, childLoop, lp, node, _i, _len, _ref1;
     block = new JsWhileBlock('true');
+    childLoop = [];
     _ref1 = context.loop[context.loop.length - 1];
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
       node = _ref1[_i];
+      if (this.isChildLoopNode(node, childLoop)) {
+        continue;
+      }
+      lp = this.findLoopByEnterNode(node);
+      if (lp != null) {
+        if (!this.isTraversedLoopHeader(node, context)) {
+          childLoop.push(lp);
+          if (context.loop == null) {
+            context.loop = [];
+          }
+          context.loop.push(lp);
+          block.insertBlock(this.generateWhileCode(node, context));
+          context.loop.pop();
+        }
+      }
       if (this.isBranchTransitionTip(node)) {
         block.insertBlock(this.generateBranchCode(node, context));
         break;
@@ -770,13 +800,44 @@ JsGenerator = (function() {
     return block;
   };
 
+  JsGenerator.prototype.findBreakNode = function(root, branchNodes, context) {
+    var lp, mergeNode, result, _ref1, _ref2;
+    result = {
+      "if": false,
+      "true": false
+    };
+    mergeNode = this.getMergeNode(root, context);
+    if ((mergeNode == null) || !this.isOnLoop(mergeNode, context.loop[context.loop.length - 1])) {
+      lp = context.loop[context.loop.length - 1];
+      if (!(_ref1 = branchNodes.ifNext, __indexOf.call(lp, _ref1) >= 0)) {
+        result["if"] = true;
+        result["else"] = false;
+      } else if (!(_ref2 = branchNodes.elseNext, __indexOf.call(lp, _ref2) >= 0)) {
+        result["if"] = false;
+        result["else"] = true;
+      }
+    }
+    return result;
+  };
+
   JsGenerator.prototype.generateBranchCode = function(root, context) {
-    var block, nodes;
+    var block, nodes, result;
     block = new JsBranchBlock(this.getOperationName(root), root);
     nodes = this.getBranchNodes(root, context);
-    if ((context.loop != null) && context.loop.length > 0) {
+    if ((context.loop != null) && context.loop.length > 0 && this.isOnLoop(root, context.loop[context.loop.length - 1])) {
       block.ifBlock.insertLine(root, '// 現在、ループ中に条件分岐を含むコードのJavascript生成には対応していません。');
       block.ifBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。');
+      result = this.findBreakNode(root, nodes, context);
+      if (result["if"]) {
+        block.ifBlock.insertLine(root, 'break;');
+      } else {
+        block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
+      }
+      if (result["else"]) {
+        block.elseBlock.insertLine(root, 'break;');
+      } else {
+        block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));
+      }
     } else {
       block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
       block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));
@@ -793,6 +854,31 @@ JsGenerator = (function() {
         if (lp[0] === node) {
           return true;
         }
+      }
+    }
+    return false;
+  };
+
+  JsGenerator.prototype.isChildLoopHeader = function(node, context) {
+    var n, _i, _len, _ref1;
+    if (context.loop != null) {
+      _ref1 = this.loops[this.loops.length - 1];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        n = _ref1[_i];
+        if (n === node) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  JsGenerator.prototype.isOnLoop = function(node, lp) {
+    var n, _i, _len;
+    for (_i = 0, _len = lp.length; _i < _len; _i++) {
+      n = lp[_i];
+      if (node === n) {
+        return true;
       }
     }
     return false;
