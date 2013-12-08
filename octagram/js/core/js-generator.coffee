@@ -1,6 +1,21 @@
+getUniqueArray = (ary) ->
+   storage = []
+   uniqueArray = []
+   for value in ary
+     if !(value in storage)
+       storage.push(value)
+       uniqueArray.push(value)
+       uniqueArray
+
+    uniqueArray
+
+arrayEqual = (a, b) ->
+    a.length is b.length and a.every (elem, i) -> elem is b[i]
+
 class GraphSearcher
   constructor: () ->
     @visited = []
+    @predecessors = {}
 
   visit: (node) -> @visited.push(node)
   isVisited: (node) -> node in @visited
@@ -49,7 +64,47 @@ class GraphSearcher
 
     successors
 
+  calcPredecessors: (root, context) ->
+    _calcPredecessors = (node) =>
+      if !@predecessors[node.order]?
+        @predecessors[node.order] = []
+        for dx in [-1..1]
+          for dy in [-1..1] 
+            cur = node.getIndex()
+            nx = cur.x + dx
+            ny = cur.y + dy
+            inRange = (v) -> -1 <= v && v < 8
+
+            if inRange(nx) && inRange(ny)
+              cand = context.cpu.getTip(nx, ny)
+              candSucc = @getChilds(cand, context.cpu)
+              if candSucc? && node in candSucc 
+                @predecessors[node.order].push(cand)
+
+        for pre in @predecessors[node.order]
+          _calcPredecessors(pre, context)
+
+    _calcPredecessors(root)
+
   getPredecessors: (root, context) ->
+    calced = []
+
+    _getPredecessors = (node) =>
+      if !(node in calced)
+        calced.push(node)
+        predecessors = []
+        if !@predecessors[node.order]? then @calcPredecessors(node, context)
+        parents = @predecessors[node.order]
+
+        if parents.length > 0
+          for p in parents
+            predecessors.push(p)
+            predecessors = predecessors.concat(_getPredecessors(p))
+
+        getUniqueArray(predecessors)
+      else []
+
+    _getPredecessors(root)
 
   findRoute: (start, end, cpu) ->
     route = []
@@ -63,6 +118,15 @@ class GraphSearcher
     )
 
     route
+
+  assignOrder: (root, context) ->
+    graph = new GraphSearcher()
+    order = 0
+
+    graph.dfs(root, context.cpu, (obj) => 
+      obj.node.order = order++;
+      true
+    )
 
   dfs: (root, cpu, callback) ->
     @init()
@@ -83,6 +147,71 @@ class GraphSearcher
 
       if child? then end = !_visit(child)
       else stack.pop()
+
+class LoopFinder
+  constructor: () ->
+
+  initDominators: (root, universal) ->
+    dominators = {}
+
+    for u in universal
+      dominators[u.order] = 
+        if u == root then [u]
+        else universal.slice(0)
+
+  calcDominators: (root, universal, graph, context) ->
+    dominators = @initDominators(root, universal)
+
+    preDominators = []
+    isChangeOccurred = (pre, cur) ->
+      if pre.length != cur.length then return true
+
+      for i in [0...cur.length]
+        if !arrayEqual(pre[i], cur[i]) then return true
+
+      false
+
+    while isChangeOccurred(preDominators, dominators)
+      preDominators = dominators.slice(0)
+      for u in universal when u != root
+        dominators[u.order] = [u]
+        for p in graph.getPredecessors(u, context) when dominators[p.order]?
+          dominators[u.order] = dominators[u.order].concat(dominators[p.order])
+          dominators[u.order] = getUniqueArray(dominators[u.order])
+
+     dominators
+
+  findBackEdges: (root, dominators, graph, context) ->
+    backedges = []
+    graph.dfs(root, context.cpu, (obj) ->
+      succ = graph.getChilds(obj.node, context.cpu)
+      #dom = dominators[obj.node.order]
+
+      if succ?
+        backedge = ({src: obj.node, dst: s} for s in succ when s.order < obj.node.order)
+        #backedge = ({src: obj.node, dst: s} for s in succ when s in dom)
+        if backedge.length > 0 then backedges = backedges.concat(backedge)
+
+      true
+    )
+
+    backedges
+
+  find: (cpu) ->
+    root = cpu.getStartTip()
+    context = {cpu: cpu}
+
+    graph = new GraphSearcher()
+    graph.assignOrder(root, context)
+
+    universal = []
+    graph.dfs(root, cpu, (obj) => universal.push(obj.node))
+
+    dominators = @calcDominators(root, universal, graph, context)
+
+    backedges = @findBackEdges(root, dominators, graph, context)
+
+    console.log ({src: e.src.order, dst: e.dst.order} for e in backedges)
 
 class JsConstant
   @indent = '  '
@@ -116,6 +245,11 @@ class JsBlock extends JsPlainBlock
     code.push({node: nodes, text: '}'})
     code
 
+  clone: () ->
+    block = new JsBlock()
+    block.lines = @lines.slice(0)
+    block
+
 class JsWhileBlock extends JsBlock
   constructor: (@condition) ->
     super()
@@ -147,9 +281,35 @@ class JsBranchBlock
 
   createCondition: () -> @condition
 
+  removeCommonProcess: (ifLines, elseLines) ->
+    long = if ifLines.length > elseLines.length then ifLines else elseLines
+    short = if ifLines.length <= elseLines.length then ifLines else elseLines
+
+    common = new JsPlainBlock()
+
+    if long.length > 0 && short.length > 0
+      for i in [1..short.length]
+        ln = long[long.length - 1].node
+        sn = short[short.length - 1].node
+        
+        if arrayEqual(ln, sn)
+          line = long.pop()
+          short.pop()
+
+          if line.node.length != 1 then console.log 'err'
+          common.insertLine(line.node[0], line.text)
+        else break
+
+    common.lines.reverse()
+    common
+
   generateCode: () ->
-    ifCode = @ifBlock.generateCode()
-    elseCode = @elseBlock.generateCode()
+    ifBlock = @ifBlock.clone()
+    elseBlock = @elseBlock.clone()
+    commonBlock = @removeCommonProcess(ifBlock.lines, elseBlock.lines)
+
+    ifCode = ifBlock.generateCode()
+    elseCode = elseBlock.generateCode()
 
     ifCode[0].text = 'if( ' + @createCondition() + ' ) ' + ifCode[0].text
     elseCode[0].text = 'else ' + elseCode[0].text
@@ -159,7 +319,9 @@ class JsBranchBlock
     elseCode[0].node.unshift(@root)
     elseCode[elseCode.length - 1].node.unshift(@root)
 
-    ifCode.concat(elseCode)
+    commonCode = commonBlock.generateCode()
+
+    ifCode.concat(elseCode).concat(commonCode)
 
 class JsGenerator
   constructor: () ->
@@ -178,9 +340,6 @@ class JsGenerator
 
   registerLoop: (newLp) ->
     sort = (arr) -> arr.sort (a, b) -> a - b
-    arrayEqual = (a, b) ->
-        a.length is b.length and a.every (elem, i) -> elem is b[i]
-
     newOrder = sort((node.order for node in newLp))
     for lp in @loops
       order = sort((node.order for node in lp))
@@ -236,13 +395,12 @@ class JsGenerator
     for node in context.loop
       if @isBranchTransitionTip(node)
         block.insertBlock(@generateBranchCode(node, context))
-        # incompatible for break statement
         break
       else if @isSingleTransitionTip(node)
         block.insertLine(node, @getOperationName(node) + '();')
 
     block
-    
+   
   generateBranchCode: (root, context) ->
     block = new JsBranchBlock(@getOperationName(root), root)
 
@@ -273,15 +431,6 @@ class JsGenerator
     )
 
     block
-
-  assignOrder: (root, context) ->
-    graph = new GraphSearcher()
-    order = 0
-
-    graph.dfs(root, context.cpu, (obj) => 
-      obj.node.order = order++;
-      true
-    )
 
   generate: (cpu) ->
     root = cpu.getStartTip()
