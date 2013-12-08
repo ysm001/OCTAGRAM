@@ -393,7 +393,7 @@ class JsGenerator
   generateWhileCode: (root, context) ->
     block = new JsWhileBlock('true')
 
-    for node in context.loop
+    for node in context.loop[context.loop.length - 1]
       if @isBranchTransitionTip(node)
         block.insertBlock(@generateBranchCode(node, context))
         break
@@ -419,8 +419,10 @@ class JsGenerator
       node = obj.node
       lp = @findLoopByEnterNode(node)
       if lp?
-        context.loop = lp
+        if !context.loop? then context.loop = []
+        context.loop.push(lp)
         block.insertBlock(@generateWhileCode(node, context))
+        context.loop.pop()
         false
       else if @isBranchTransitionTip(node)
         block.insertBlock(@generateBranchCode(node, context))

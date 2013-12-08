@@ -713,7 +713,7 @@ JsGenerator = (function() {
   JsGenerator.prototype.generateWhileCode = function(root, context) {
     var block, node, _i, _len, _ref1;
     block = new JsWhileBlock('true');
-    _ref1 = context.loop;
+    _ref1 = context.loop[context.loop.length - 1];
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
       node = _ref1[_i];
       if (this.isBranchTransitionTip(node)) {
@@ -745,8 +745,12 @@ JsGenerator = (function() {
       node = obj.node;
       lp = _this.findLoopByEnterNode(node);
       if (lp != null) {
-        context.loop = lp;
+        if (context.loop == null) {
+          context.loop = [];
+        }
+        context.loop.push(lp);
         block.insertBlock(_this.generateWhileCode(node, context));
+        context.loop.pop();
         return false;
       } else if (_this.isBranchTransitionTip(node)) {
         block.insertBlock(_this.generateBranchCode(node, context));
