@@ -81,6 +81,28 @@ class Frontend
     @getPlayerProgram().stop()
     @getEnemyProgram().stop()
 
+  showJs: () ->
+    instance = @getPlayerProgram()
+    generator = new JsGenerator()
+    lines = generator.generate(instance.cpu)
+    text = (line.text for line in lines)
+    code = text.join('\n')
+
+    template = 
+      '<html>' +
+      '<head>' + 
+      '</head>' +
+      '<body>' +
+      '<div id="editor-div" style="height: 500px; width: 500px"></div>' +
+      '</body>' + 
+      '</html>'
+
+    bootbox.alert(template, () -> )
+
+    editor = ace.edit('editor-div')
+    editor.getSession().setMode("ace/mode/javascript");
+    editor.getSession().setValue(code)
+
 $ ->
   frontend = new Frontend({
     onStop: () ->
@@ -122,3 +144,5 @@ $ ->
   )
 
   $('#restart').click(() => frontend.restartProgram())
+
+  $('#show-js').click(() => frontend.showJs())

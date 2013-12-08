@@ -39,7 +39,7 @@ class GraphSearcher
       idx = stack.indexOf(child)
       (stack[i] for i in [idx...stack.length])
 
-  findSuccessors: (node, cpu) ->
+  getSuccessors: (node, cpu) ->
     successors = []
     graph = new GraphSearcher()
     graph.dfs(node, cpu, (obj) -> 
@@ -48,6 +48,8 @@ class GraphSearcher
     )
 
     successors
+
+  getPredecessors: (root, context) ->
 
   findRoute: (start, end, cpu) ->
     route = []
@@ -89,7 +91,7 @@ class JsText
   constructor: () ->
     @lines = []
 
-  insertLine: (line) -> @lines.push(line)
+  insertLine: (node, text) -> @lines.push({node: node, text: text})
   insertBlock: (block) -> @insertArray(block.generateCode())
   insertArray: (array) -> @lines = @lines.concat(array)
 
@@ -108,9 +110,9 @@ class JsPlainBlock extends JsText
 
 class JsBlock extends JsPlainBlock
   generateCode: () ->
-    code = (JsConstant.indent + line for line in @lines)
-    code.unshift('{')
-    code.push('}')
+    code = ({node: line.node, text: JsConstant.indent + line.text} for line in @lines)
+    code.unshift({text: '{'})
+    code.push({text: '}'})
     code
 
 class JsWhileBlock extends JsBlock
@@ -120,7 +122,7 @@ class JsWhileBlock extends JsBlock
 
   generateCode: () ->
     code = super()
-    code[0] = 'while( ' + @createCondition() + ' ) ' + code[0]
+    code[0].text = 'while( ' + @createCondition() + ' ) ' + code[0].text
     code
 
 class JsForBlock extends JsBlock
@@ -131,7 +133,7 @@ class JsForBlock extends JsBlock
 
   generateCode: () ->
     code = super()
-    code[0] = 'for( ' + @createCondition() + ' ) ' + code[0]
+    code[0].text = 'for( ' + @createCondition() + ' ) ' + code[0].text
     code
 
 class JsBranchBlock
@@ -148,8 +150,9 @@ class JsBranchBlock
     ifCode = @ifBlock.generateCode()
     elseCode = @elseBlock.generateCode()
 
-    ifCode[0] = 'if( ' + @createCondition() + ' ) ' + ifCode[0]
-    elseCode[0] = 'else ' + elseCode[0]
+    ifCode[0].text = 'if( ' + @createCondition() + ' ) ' + ifCode[0].text
+    elseCode[0].text = 'else ' + elseCode[0].text
+    ifCode[0].node = @condition
 
     ifCode.concat(elseCode)
 
@@ -166,9 +169,22 @@ class JsGenerator
     if node.code.instruction? then node.code.instruction.constructor.name else node.code.constructor.name
 
   insertToCurrentBlock: (node) ->
-    @currentBlock.insertLine(@getOperationName(node) + '();')
+    @currentBlock.insertLine(node, @getOperationName(node) + '();')
 
-  findLoop: (root, context) ->
+  registerLoop: (newLp) ->
+    sort = (arr) -> arr.sort (a, b) -> a - b
+    arrayEqual = (a, b) ->
+        a.length is b.length and a.every (elem, i) -> elem is b[i]
+
+    newOrder = sort((node.order for node in newLp))
+    for lp in @loops
+      order = sort((node.order for node in lp))
+      if arrayEqual(order, newOrder) then return false
+
+    @loops.push(newLp.slice(0))
+
+  findAllLoop: (root, context) ->
+    findLoop: (root, context) ->
     graph = new GraphSearcher()
     loops = []
 
@@ -177,7 +193,7 @@ class JsGenerator
       if lp? then loops.push(lp)
       true
     )
-
+    
     loops
 
   findLoopByEnterNode: (node) ->
@@ -218,7 +234,7 @@ class JsGenerator
         # incompatible for break statement
         break
       else if @isSingleTransitionTip(node)
-        block.insertLine(@getOperationName(node) + '();')
+        block.insertLine(node, @getOperationName(node) + '();')
 
     block
     
@@ -247,7 +263,7 @@ class JsGenerator
         block.insertBlock(@generateBranchCode(node, context))
         false
       else if @isSingleTransitionTip(node)
-        block.insertLine(@getOperationName(node) + '();')
+        block.insertLine(node, @getOperationName(node) + '();')
         true
     )
 
@@ -266,6 +282,6 @@ class JsGenerator
     root = cpu.getStartTip()
     context = {cpu: cpu}
 
-    @loops = @findLoop(root, context)
+    @loops = @findAllLoop(root, context)
     block = @generateCode(root, context)
     block.generateCode()

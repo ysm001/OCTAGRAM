@@ -125,6 +125,28 @@ Frontend = (function() {
     return this.getEnemyProgram().stop();
   };
 
+  Frontend.prototype.showJs = function() {
+    var code, editor, generator, instance, line, lines, template, text;
+    instance = this.getPlayerProgram();
+    generator = new JsGenerator();
+    lines = generator.generate(instance.cpu);
+    text = (function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = lines.length; _i < _len; _i++) {
+        line = lines[_i];
+        _results.push(line.text);
+      }
+      return _results;
+    })();
+    code = text.join('\n');
+    template = '<html>' + '<head>' + '</head>' + '<body>' + '<div id="editor-div" style="height: 500px; width: 500px"></div>' + '</body>' + '</html>';
+    bootbox.alert(template, function() {});
+    editor = ace.edit('editor-div');
+    editor.getSession().setMode("ace/mode/javascript");
+    return editor.getSession().setValue(code);
+  };
+
   return Frontend;
 
 })();
@@ -168,7 +190,10 @@ $(function() {
     $('#stop').attr('disabled', 'disabled');
     return $('#restart').attr('disabled', 'disabled');
   });
-  return $('#restart').click(function() {
+  $('#restart').click(function() {
     return frontend.restartProgram();
+  });
+  return $('#show-js').click(function() {
+    return frontend.showJs();
   });
 });

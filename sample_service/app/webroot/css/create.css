@@ -43,6 +43,10 @@
     margin-left: 20px;
 }
 
+.button-container-row {
+    margin-top: 60px;
+}
+
 /*
 #dbg-btns {
     text-align: center;

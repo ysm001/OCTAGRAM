@@ -97,7 +97,7 @@ GraphSearcher = (function() {
     }
   };
 
-  GraphSearcher.prototype.findSuccessors = function(node, cpu) {
+  GraphSearcher.prototype.getSuccessors = function(node, cpu) {
     var graph, successors;
     successors = [];
     graph = new GraphSearcher();
@@ -107,6 +107,8 @@ GraphSearcher = (function() {
     });
     return successors;
   };
+
+  GraphSearcher.prototype.getPredecessors = function(root, context) {};
 
   GraphSearcher.prototype.findRoute = function(start, end, cpu) {
     var graph, route;
@@ -170,8 +172,11 @@ JsText = (function() {
     this.lines = [];
   }
 
-  JsText.prototype.insertLine = function(line) {
-    return this.lines.push(line);
+  JsText.prototype.insertLine = function(node, text) {
+    return this.lines.push({
+      node: node,
+      text: text
+    });
   };
 
   JsText.prototype.insertBlock = function(block) {
@@ -227,12 +232,19 @@ JsBlock = (function(_super) {
       _results = [];
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         line = _ref1[_i];
-        _results.push(JsConstant.indent + line);
+        _results.push({
+          node: line.node,
+          text: JsConstant.indent + line.text
+        });
       }
       return _results;
     }).call(this);
-    code.unshift('{');
-    code.push('}');
+    code.unshift({
+      text: '{'
+    });
+    code.push({
+      text: '}'
+    });
     return code;
   };
 
@@ -255,7 +267,7 @@ JsWhileBlock = (function(_super) {
   JsWhileBlock.prototype.generateCode = function() {
     var code;
     code = JsWhileBlock.__super__.generateCode.call(this);
-    code[0] = 'while( ' + this.createCondition() + ' ) ' + code[0];
+    code[0].text = 'while( ' + this.createCondition() + ' ) ' + code[0].text;
     return code;
   };
 
@@ -278,7 +290,7 @@ JsForBlock = (function(_super) {
   JsForBlock.prototype.generateCode = function() {
     var code;
     code = JsForBlock.__super__.generateCode.call(this);
-    code[0] = 'for( ' + this.createCondition() + ' ) ' + code[0];
+    code[0].text = 'for( ' + this.createCondition() + ' ) ' + code[0].text;
     return code;
   };
 
@@ -309,8 +321,9 @@ JsBranchBlock = (function() {
     var elseCode, ifCode;
     ifCode = this.ifBlock.generateCode();
     elseCode = this.elseBlock.generateCode();
-    ifCode[0] = 'if( ' + this.createCondition() + ' ) ' + ifCode[0];
-    elseCode[0] = 'else ' + elseCode[0];
+    ifCode[0].text = 'if( ' + this.createCondition() + ' ) ' + ifCode[0].text;
+    elseCode[0].text = 'else ' + elseCode[0].text;
+    ifCode[0].node = this.condition;
     return ifCode.concat(elseCode);
   };
 
@@ -342,11 +355,54 @@ JsGenerator = (function() {
   };
 
   JsGenerator.prototype.insertToCurrentBlock = function(node) {
-    return this.currentBlock.insertLine(this.getOperationName(node) + '();');
+    return this.currentBlock.insertLine(node, this.getOperationName(node) + '();');
   };
 
-  JsGenerator.prototype.findLoop = function(root, context) {
+  JsGenerator.prototype.registerLoop = function(newLp) {
+    var arrayEqual, lp, newOrder, node, order, sort, _i, _len, _ref1;
+    sort = function(arr) {
+      return arr.sort(function(a, b) {
+        return a - b;
+      });
+    };
+    arrayEqual = function(a, b) {
+      return a.length === b.length && a.every(function(elem, i) {
+        return elem === b[i];
+      });
+    };
+    newOrder = sort((function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = newLp.length; _i < _len; _i++) {
+        node = newLp[_i];
+        _results.push(node.order);
+      }
+      return _results;
+    })());
+    _ref1 = this.loops;
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      lp = _ref1[_i];
+      order = sort((function() {
+        var _j, _len1, _results;
+        _results = [];
+        for (_j = 0, _len1 = lp.length; _j < _len1; _j++) {
+          node = lp[_j];
+          _results.push(node.order);
+        }
+        return _results;
+      })());
+      if (arrayEqual(order, newOrder)) {
+        return false;
+      }
+    }
+    return this.loops.push(newLp.slice(0));
+  };
+
+  JsGenerator.prototype.findAllLoop = function(root, context) {
     var graph, loops;
+    ({
+      findLoop: function(root, context) {}
+    });
     graph = new GraphSearcher();
     loops = [];
     graph.dfs(root, context.cpu, function(obj) {
@@ -410,7 +466,7 @@ JsGenerator = (function() {
         block.insertBlock(this.generateBranchCode(node, context));
         break;
       } else if (this.isSingleTransitionTip(node)) {
-        block.insertLine(this.getOperationName(node) + '();');
+        block.insertLine(node, this.getOperationName(node) + '();');
       }
     }
     return block;
@@ -444,7 +500,7 @@ JsGenerator = (function() {
         block.insertBlock(_this.generateBranchCode(node, context));
         return false;
       } else if (_this.isSingleTransitionTip(node)) {
-        block.insertLine(_this.getOperationName(node) + '();');
+        block.insertLine(node, _this.getOperationName(node) + '();');
         return true;
       }
     });
@@ -468,7 +524,7 @@ JsGenerator = (function() {
     context = {
       cpu: cpu
     };
-    this.loops = this.findLoop(root, context);
+    this.loops = this.findAllLoop(root, context);
     block = this.generateCode(root, context);
     return block.generateCode();
   };
