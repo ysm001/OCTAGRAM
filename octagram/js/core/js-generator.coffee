@@ -206,11 +206,6 @@ class LoopFinder
           dominators[u.order] = intersection(dominators[u.order], dominators[p.order])
         dominators[u.order] = dominators[u.order].concat([u])
 
-     #console.log ((n.order for n in d) for d in dominators)
-     #domTree = @createDominatorTree(root, dominators, universal)
-     #console.log domTree
-     #console.log (n.childs for n in domTree)
-
      dominators
 
   findLoopHeaders: (root, dominators, graph, context) ->
@@ -275,8 +270,6 @@ class LoopFinder
       lp = @calcLoop(edge, dominators, context)
       loops.push(lp)
 
-      console.log (n.order for n in lp)
-
     {loops: loops, backedges: backedges, dominators: dom.dominators}
 
   verify: (loopObj, context) ->
@@ -302,9 +295,6 @@ class LoopFinder
     graph = new GraphSearcher()
     loops = []
 
-    console.log('back edges')
-    console.log ([e.src.order, e.dst.order] for e in loopObj.backedges)
-
     error = null
     graph.dfs(context.cpu.getStartTip(), context.cpu, (obj) ->
       childs = graph.getChilds(obj.node, context.cpu)
@@ -318,8 +308,6 @@ class LoopFinder
         for bedge in loopObj.backedges
           if (edge.src == bedge.src) && (edge.dst == bedge.dst) then return true
 
-      console.log('error edge')
-      console.log ([e.src.order, e.dst.order] for e in edges)
       error = {loop: graph.findLoop(obj.node, context.cpu, obj.stack), reason: 'nonNaturalLoop'}
 
       return false

@@ -420,7 +420,7 @@ LoopFinder = (function() {
   };
 
   LoopFinder.prototype.find = function(cpu) {
-    var backedges, context, dom, domTree, dominators, edge, graph, loops, lp, n, root, universal, _i, _len,
+    var backedges, context, dom, domTree, dominators, edge, graph, loops, lp, root, universal, _i, _len,
       _this = this;
     root = cpu.getStartTip();
     context = {
@@ -441,15 +441,6 @@ LoopFinder = (function() {
       edge = backedges[_i];
       lp = this.calcLoop(edge, dominators, context);
       loops.push(lp);
-      console.log((function() {
-        var _j, _len1, _results;
-        _results = [];
-        for (_j = 0, _len1 = lp.length; _j < _len1; _j++) {
-          n = lp[_j];
-          _results.push(n.order);
-        }
-        return _results;
-      })());
     }
     return {
       loops: loops,
@@ -459,7 +450,7 @@ LoopFinder = (function() {
   };
 
   LoopFinder.prototype.verify = function(loopObj, context) {
-    var buf, e, error, graph, h, header, headers, loops, lp, n, p, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref;
+    var buf, error, graph, h, header, headers, loops, lp, n, p, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref;
     loops = loopObj.loops;
     graph = new GraphSearcher();
     headers = (function() {
@@ -514,17 +505,6 @@ LoopFinder = (function() {
     }
     graph = new GraphSearcher();
     loops = [];
-    console.log('back edges');
-    console.log((function() {
-      var _len4, _m, _ref1, _results;
-      _ref1 = loopObj.backedges;
-      _results = [];
-      for (_m = 0, _len4 = _ref1.length; _m < _len4; _m++) {
-        e = _ref1[_m];
-        _results.push([e.src.order, e.dst.order]);
-      }
-      return _results;
-    })());
     error = null;
     graph.dfs(context.cpu.getStartTip(), context.cpu, function(obj) {
       var bedge, childs, edge, edges, s, succ, _len4, _len5, _m, _n, _ref1;
@@ -568,16 +548,6 @@ LoopFinder = (function() {
           }
         }
       }
-      console.log('error edge');
-      console.log((function() {
-        var _len6, _o, _results;
-        _results = [];
-        for (_o = 0, _len6 = edges.length; _o < _len6; _o++) {
-          e = edges[_o];
-          _results.push([e.src.order, e.dst.order]);
-        }
-        return _results;
-      })());
       error = {
         loop: graph.findLoop(obj.node, context.cpu, obj.stack),
         reason: 'nonNaturalLoop'
