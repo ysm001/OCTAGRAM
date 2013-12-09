@@ -35,7 +35,7 @@ class Player extends Sprite
     ret = null
     if item in @_items
       pos = @_items.indexOf(item)
-        ret = @_items[pos]
+      ret = @_items[pos]
       @_items.splice(pos, 1)
     ret
   

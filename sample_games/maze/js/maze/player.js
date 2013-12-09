@@ -91,8 +91,6 @@ Player = (function(_super) {
     return this.dispatchEvent(new MazeEvent('turnRight'));
   };
 
-<<<<<<< HEAD
-=======
   Player.prototype.isThrough = function(direction) {
     var d, e, pos;
     switch (direction) {
@@ -110,15 +108,6 @@ Player = (function(_super) {
     return e !== false && e.isImpassable() === 0;
   };
 
-  Player.prototype._isStart = function(e) {
-    return (e != null) && e === this._map.startElement;
-  };
-
-  Player.prototype._isGoal = function(e) {
-    return (e != null) && e === this._map.goalElement;
-  };
-
->>>>>>> f920a0fbf76b3731c70e9fb9dcf314243de8c2de
   return Player;
 
 })(Sprite);
