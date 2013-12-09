@@ -48,8 +48,8 @@ class Player extends Sprite
     pos = @index.add(@direction)
     e = @_map.getElement(pos.x, pos.y)
     if e != false and !e.isImpassable()
-        @position = e
-        e.onride(@)
+      @position = e
+      e.onride(@)
     @dispatchEvent(new MazeEvent('move'))
 
   turnLeft: () ->

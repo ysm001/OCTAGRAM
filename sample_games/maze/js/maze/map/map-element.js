@@ -111,14 +111,18 @@ GoalElement = (function(_super) {
 TreasureElement = (function(_super) {
   __extends(TreasureElement, _super);
 
-  TreasureElement.ID = 13;
+  TreasureElement.ID = 25;
 
   function TreasureElement(x, y) {
-    TreasureElement.__super__.constructor.call(this, GoalElement.ID, x, y);
+    TreasureElement.__super__.constructor.call(this, TreasureElement.ID, x, y);
   }
 
   TreasureElement.prototype.isImpassable = function() {
     return 0;
+  };
+
+  TreasureElement.prototype.affect = function(player) {
+    return player.addItem(new Key);
   };
 
   return TreasureElement;
@@ -142,6 +146,9 @@ ElementFactory = (function() {
         break;
       case GoalElement.ID:
         ret = new GoalElement(x, y);
+        break;
+      case TreasureElement.ID:
+        ret = new TreasureElement(x, y);
     }
     return ret;
   };
