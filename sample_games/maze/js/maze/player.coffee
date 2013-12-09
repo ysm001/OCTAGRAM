@@ -5,18 +5,13 @@ class Player extends Sprite
     super width, height
     Object.defineProperties @, @properties
     @index = new Point()
-    @position = @_map.startElement
+    @_moveDirect(@_map.startElement)
     @direction = Direction.UP
 
   properties:
     position:
       get: () -> null
       set: (e) ->
-        point = @_map.toPoint(e)
-        @x = point.x
-        @y = point.y
-        @index.x = e.index.x
-        @index.y = e.index.y
     direction:
       get: () -> @_direction
       set: (direction) ->
@@ -30,6 +25,22 @@ class Player extends Sprite
             @frame = 0
           when Direction.LEFT
             @frame = 1
+
+  _moveDirect: (e) ->
+    point = @_map.toPoint(e)
+    @x = point.x
+    @y = point.y
+    @index.x = e.index.x
+    @index.y = e.index.y
+
+  _move: (e, onComplete) ->
+    point = @_map.toPoint(e)
+    @tl.moveTo(point.x, point.y, 5).then () =>
+      @index.x = e.index.x
+      @index.y = e.index.y
+      e.onride(@)
+      @dispatchEvent(new MazeEvent('move'))
+      onComplete()
       
   getItem: (item) ->
     ret = null
@@ -46,13 +57,14 @@ class Player extends Sprite
     @_items.push item
     console.log "addItem", item, @_items
 
-  move: () ->
+  move: (onComplete = () ->) ->
+    ret = false
     pos = @index.add(@direction)
     e = @_map.getElement(pos.x, pos.y)
     if e != false and !e.isImpassable()
-      @position = e
-      e.onride(@)
-    @dispatchEvent(new MazeEvent('move'))
+      @_move(e, onComplete)
+      ret = true
+    ret
 
   turnLeft: () ->
     @direction = Direction.prev(@direction)

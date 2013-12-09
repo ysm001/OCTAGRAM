@@ -11,7 +11,7 @@ class StraightMoveInstruction extends ActionInstruction
 
   action : () ->
     ret = false
-    @player.move()
+    ret = @player.move(() => @onComplete())
     @setAsynchronous(ret != false)
     # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 

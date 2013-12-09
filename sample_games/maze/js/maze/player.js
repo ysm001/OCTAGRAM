@@ -14,7 +14,7 @@ Player = (function(_super) {
     Player.__super__.constructor.call(this, width, height);
     Object.defineProperties(this, this.properties);
     this.index = new Point();
-    this.position = this._map.startElement;
+    this._moveDirect(this._map.startElement);
     this.direction = Direction.UP;
   }
 
@@ -23,14 +23,7 @@ Player = (function(_super) {
       get: function() {
         return null;
       },
-      set: function(e) {
-        var point;
-        point = this._map.toPoint(e);
-        this.x = point.x;
-        this.y = point.y;
-        this.index.x = e.index.x;
-        return this.index.y = e.index.y;
-      }
+      set: function(e) {}
     },
     direction: {
       get: function() {
@@ -50,6 +43,28 @@ Player = (function(_super) {
         }
       }
     }
+  };
+
+  Player.prototype._moveDirect = function(e) {
+    var point;
+    point = this._map.toPoint(e);
+    this.x = point.x;
+    this.y = point.y;
+    this.index.x = e.index.x;
+    return this.index.y = e.index.y;
+  };
+
+  Player.prototype._move = function(e, onComplete) {
+    var point,
+      _this = this;
+    point = this._map.toPoint(e);
+    return this.tl.moveTo(point.x, point.y, 5).then(function() {
+      _this.index.x = e.index.x;
+      _this.index.y = e.index.y;
+      e.onride(_this);
+      _this.dispatchEvent(new MazeEvent('move'));
+      return onComplete();
+    });
   };
 
   Player.prototype.getItem = function(item) {
@@ -72,15 +87,19 @@ Player = (function(_super) {
     return console.log("addItem", item, this._items);
   };
 
-  Player.prototype.move = function() {
-    var e, pos;
+  Player.prototype.move = function(onComplete) {
+    var e, pos, ret;
+    if (onComplete == null) {
+      onComplete = function() {};
+    }
+    ret = false;
     pos = this.index.add(this.direction);
     e = this._map.getElement(pos.x, pos.y);
     if (e !== false && !e.isImpassable()) {
-      this.position = e;
-      e.onride(this);
+      this._move(e, onComplete);
+      ret = true;
     }
-    return this.dispatchEvent(new MazeEvent('move'));
+    return ret;
   };
 
   Player.prototype.turnLeft = function() {

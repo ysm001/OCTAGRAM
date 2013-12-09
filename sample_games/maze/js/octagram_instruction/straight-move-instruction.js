@@ -19,9 +19,12 @@ StraightMoveInstruction = (function(_super) {
   }
 
   StraightMoveInstruction.prototype.action = function() {
-    var ret;
+    var ret,
+      _this = this;
     ret = false;
-    this.player.move();
+    ret = this.player.move(function() {
+      return _this.onComplete();
+    });
     return this.setAsynchronous(ret !== false);
   };
 
