@@ -4,7 +4,16 @@ class MazeWorld extends Group
 
   constructor: () ->
     super
-    @maze = new Maze 64, 128
+    map = [
+      [  4,  4,  4,  4,  4, 13,  4],
+      [  4,  0,  4,  0,  0,  0,  4],
+      [  4,  0,  4,  0,  4,  4,  4],
+      [  4,  0,  4,  0,  4,  0,  4],
+      [  4,  0,  0,  0,  4,  0,  4],
+      [  4,  0,  4,  0,  0,  0,  4],
+      [  4, 14,  4,  4,  4,  4,  4],
+    ]
+    @maze = new Maze {x:64, y:128, map:map}
     @addChild @maze
     
   initInstructions: (@octagram) ->

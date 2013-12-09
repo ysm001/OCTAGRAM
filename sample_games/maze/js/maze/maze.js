@@ -6,19 +6,14 @@ var Maze,
 Maze = (function(_super) {
   __extends(Maze, _super);
 
-  function Maze(x, y) {
-    var map;
-    if (x == null) {
-      x = 0;
-    }
-    if (y == null) {
-      y = 0;
-    }
+  function Maze(data) {
     Maze.__super__.constructor.apply(this, arguments);
-    this.x = x;
-    this.y = y;
-    map = [[4, 4, 4, 4, 4, 13, 4], [4, 0, 4, 0, 0, 0, 4], [4, 0, 4, 0, 4, 4, 4], [4, 0, 4, 0, 4, 0, 4], [4, 0, 0, 0, 4, 0, 4], [4, 0, 4, 0, 0, 0, 4], [4, 14, 4, 4, 4, 4, 4]];
-    this.mazeMap = new MazeMap(map);
+    this.x = data.x != null ? data.x : 0;
+    this.y = data.y != null ? data.y : 0;
+    if (data.map == null) {
+      data.map = map;
+    }
+    this.mazeMap = new MazeMap(data.map);
     this.addChild(this.mazeMap);
     this.player = new RobotPlayer(this.mazeMap);
     this.addChild(this.player);
