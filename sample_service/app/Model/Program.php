@@ -10,7 +10,7 @@ class Program extends AppModel {
         'BattleLog' => array(
             'className' => 'BattleLog',
             'foreignKey' => 'program_id',
-	    /*'limit' => '10',*/
+            /*'limit' => '10',*/
             'order' => 'BattleLog.id desc'
         )
     );
@@ -88,12 +88,12 @@ class Program extends AppModel {
                 $results[$key]['nickname'] = $val['cc_name'];
             }
 
-	    if ( isset($val['Program']) ) {
-		$results[$key]['Statistics'] = $this->getStatistics( $val );
-	    }
-	    else if ( isset($val['id']) ) {
-		$results[$key]['Statistics'] = $this->getStatistics( array('Program' => $val) );
-	    }
+            if ( isset($val['Program']) ) {
+                $results[$key]['Statistics'] = $this->getStatistics( $val );
+            }
+            else if ( isset($val['id']) ) {
+                $results[$key]['Statistics'] = $this->getStatistics( array('Program' => $val) );
+            }
         }
 
         return $results;
@@ -105,82 +105,82 @@ class Program extends AppModel {
     }
 
     public function getDefaultColor() {
-	$rgb2hex = function ($rgb) {
-	    $hex = "#";
-	    $hex .= str_pad(dechex($rgb[0]), 2, "0", STR_PAD_LEFT);
-	    $hex .= str_pad(dechex($rgb[1]), 2, "0", STR_PAD_LEFT);
-	    $hex .= str_pad(dechex($rgb[2]), 2, "0", STR_PAD_LEFT);
+        $rgb2hex = function ($rgb) {
+            $hex = "#";
+            $hex .= str_pad(dechex($rgb[0]), 2, "0", STR_PAD_LEFT);
+            $hex .= str_pad(dechex($rgb[1]), 2, "0", STR_PAD_LEFT);
+            $hex .= str_pad(dechex($rgb[2]), 2, "0", STR_PAD_LEFT);
 
-	    return $hex;
-	};
+            return $hex;
+        };
 
-	return $rgb2hex(array(
-	    mt_rand(0, 255),
-	    mt_rand(0, 255),
-	    mt_rand(0, 255)
-	));
+        return $rgb2hex(array(
+            mt_rand(0, 255),
+            mt_rand(0, 255),
+            mt_rand(0, 255)
+        ));
     }
 
     public function getRelatedLogAssociations($program) {
-	App::import('Model','BattleLogAssociation');
-	$association = new BattleLogAssociation();
+        App::import('Model','BattleLogAssociation');
+        $association = new BattleLogAssociation();
 
-	$this->unbindModel(array('hasMany' => array('BattleLog')));
-	$this->BattleLog->unbindModel(array('belongsTo' => array('Program')));
-	$challenger = $association->find('all', array('conditions' =>
-	    array(
-		'ChallengerBattleLog.program_id' => $program['Program']['id']
-	    ),
-	    'recursive' => 0
-	));
+        $this->unbindModel(array('hasMany' => array('BattleLog')));
+        $this->BattleLog->unbindModel(array('belongsTo' => array('Program')));
+        $challenger = $association->find('all', array('conditions' =>
+            array(
+                'ChallengerBattleLog.program_id' => $program['Program']['id']
+            ),
+            'recursive' => 0
+        ));
 
-	$defender = $association->find('all', array('conditions' =>
-	    array(
-		'DefenderBattleLog.program_id' => $program['Program']['id']
-	    ),
-	    'recursive' => 0
-	));
+        $defender = $association->find('all', array('conditions' =>
+            array(
+                'DefenderBattleLog.program_id' => $program['Program']['id']
+            ),
+            'recursive' => 0
+        ));
 
-	return array_merge($challenger, $defender);
+        return array_merge($challenger, $defender);
     }
 
     public function getStatistics($program) {
-	$result = array(
-	    'battle_num' => 0,
-	    'score_average' => 0,
-	    'challenge_num' => 0,
-	    'defence_num' => 0
-	);
+        $result = array(
+            'battle_num' => 0,
+            'score_average' => 0,
+            'challenge_num' => 0,
+            'defence_num' => 0
+        );
 
-	if ( $program ) {
+        if ( $program ) {
             $logs = $this->getRelatedLogAssociations($program);
-	    $result['battle_num'] = count($logs);
+            $result['battle_num'] = count($logs);
 
-	    if ( $result['battle_num'] != 0 ) {
-		$scoreSum = 0;
+            if ( $result['battle_num'] != 0 ) {
+                $scoreSum = 0;
 
-		foreach ($logs as $log) {
-	            $challengerLog = $log['ChallengerBattleLog'];
-	            $defenderLog = $log['DefenderBattleLog'];
+                foreach ($logs as $log) {
+                    $challengerLog = $log['ChallengerBattleLog'];
+                    $defenderLog = $log['DefenderBattleLog'];
 
-		    $myLog = null;
-		    if ( $challengerLog['program_id'] == $program['Program']['id']) {
-			$myLog = $challengerLog;
-			$result['challenge_num']++;
-		    }
-		    else {
-			$myLog = $defenderLog;
-			$result['defence_num']++;
-		    }
+                    $myLog = null;
+                    if ( $challengerLog['program_id'] == $program['Program']['id']) {
+                        $myLog = $challengerLog;
+                        $result['challenge_num']++;
+                    }
+                    else {
+                        $myLog = $defenderLog;
+                        $result['defence_num']++;
+                    }
 
-		    $scoreSum += $myLog['score'];
-		}
+                    $scoreSum += $myLog['score'];
+                }
 
-		$result['score_average'] = (int)($scoreSum / $result['battle_num']);
-	    }
-	}
+                $result['score_average'] = (int)($scoreSum / $result['battle_num']);
+            }
+        }
 
-	return $result;
+        return $result;
     }
 }
 ?>
