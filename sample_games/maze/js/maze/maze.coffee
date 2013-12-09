@@ -9,5 +9,5 @@ class Maze extends Group
     @addChild @mazeMap
     @player = new RobotPlayer(@mazeMap)
     @addChild @player
-    @player.addEventListener 'move', (evt) ->
-      console.log evt
+    @player.addEventListener 'goal', (evt) ->
+      console.log "goal"

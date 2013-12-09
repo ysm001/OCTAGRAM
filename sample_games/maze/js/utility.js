@@ -10,15 +10,17 @@ Point = (function() {
   }
 
   Point.prototype.sub = function(point) {
-    this.x -= point.x;
-    this.y -= point.y;
-    return this;
+    var x, y;
+    x = this.x - point.x;
+    y = this.y - point.y;
+    return new Point(x, y);
   };
 
   Point.prototype.add = function(point) {
-    this.x += point.x;
-    this.y += point.y;
-    return this;
+    var x, y;
+    x = this.x + point.x;
+    y = this.y + point.y;
+    return new Point(x, y);
   };
 
   return Point;

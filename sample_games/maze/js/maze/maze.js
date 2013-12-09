@@ -17,8 +17,8 @@ Maze = (function(_super) {
     this.addChild(this.mazeMap);
     this.player = new RobotPlayer(this.mazeMap);
     this.addChild(this.player);
-    this.player.addEventListener('move', function(evt) {
-      return console.log(evt);
+    this.player.addEventListener('goal', function(evt) {
+      return console.log("goal");
     });
   }
 

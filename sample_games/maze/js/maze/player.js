@@ -36,7 +36,17 @@ Player = (function(_super) {
         return this._direction;
       },
       set: function(direction) {
-        return this._direction = direction;
+        this._direction = direction;
+        switch (direction) {
+          case Direction.UP:
+            return this.frame = 3;
+          case Direction.RIGHT:
+            return this.frame = 2;
+          case Direction.DOWN:
+            return this.frame = 0;
+          case Direction.LEFT:
+            return this.frame = 1;
+        }
       }
     }
   };
@@ -47,16 +57,21 @@ Player = (function(_super) {
     e = this._map.getElement(pos.x, pos.y);
     if (e !== false && !e.isImpassable()) {
       this.position = e;
+      if (this._isGoal(e)) {
+        this.dispatchEvent(new MazeEvent('goal'));
+      }
     }
     return this.dispatchEvent(new MazeEvent('move'));
   };
 
   Player.prototype.turnLeft = function() {
-    return this.direction = Direction.prev(this.direction);
+    this.direction = Direction.prev(this.direction);
+    return this.dispatchEvent(new MazeEvent('turnLeft'));
   };
 
   Player.prototype.turnRight = function() {
-    return this.direction = Direction.next(this.direction);
+    this.direction = Direction.next(this.direction);
+    return this.dispatchEvent(new MazeEvent('turnRight'));
   };
 
   Player.prototype._isStart = function(e) {
@@ -74,9 +89,9 @@ Player = (function(_super) {
 RobotPlayer = (function(_super) {
   __extends(RobotPlayer, _super);
 
-  RobotPlayer.WIDTH = 16;
+  RobotPlayer.WIDTH = 48;
 
-  RobotPlayer.HEIGHT = 16;
+  RobotPlayer.HEIGHT = 48;
 
   function RobotPlayer(map) {
     RobotPlayer.__super__.constructor.call(this, RobotPlayer.WIDTH, RobotPlayer.HEIGHT, map);

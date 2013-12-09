@@ -2,14 +2,14 @@ class Point
   constructor: (@x = 0, @y = 0) ->
 
   sub: (point) ->
-    @x -= point.x
-    @y -= point.y
-    @
+    x = @x - point.x
+    y = @y - point.y
+    new Point(x, y)
 
   add: (point) ->
-    @x += point.x
-    @y += point.y
-    @
+    x = @x + point.x
+    y = @y + point.y
+    new Point(x, y)
 
 class Direction
   @LEFT      = new Point(-1, 0)

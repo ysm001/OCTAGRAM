@@ -19,21 +19,34 @@ class Player extends Sprite
         @index.y = e.index.y
     direction:
       get: () -> @_direction
-      set: (direction) -> @_direction = direction
+      set: (direction) ->
+        @_direction = direction
+        switch direction
+          when Direction.UP
+            @frame = 3
+          when Direction.RIGHT
+            @frame = 2
+          when Direction.DOWN
+            @frame = 0
+          when Direction.LEFT
+            @frame = 1
 
   move: () ->
     pos = @index.add(@direction)
     e = @_map.getElement(pos.x, pos.y)
     if e != false and !e.isImpassable()
         @position = e
-        # if @_isGoal(e)
+        if @_isGoal(e)
+          @dispatchEvent(new MazeEvent('goal'))
     @dispatchEvent(new MazeEvent('move'))
 
   turnLeft: () ->
     @direction = Direction.prev(@direction)
+    @dispatchEvent(new MazeEvent('turnLeft'))
 
   turnRight: () ->
     @direction = Direction.next(@direction)
+    @dispatchEvent(new MazeEvent('turnRight'))
 
   _isStart: (e) ->
     e? and e == @_map.startElement
@@ -43,8 +56,8 @@ class Player extends Sprite
     
 
 class RobotPlayer extends Player
-  @WIDTH  : 16
-  @HEIGHT : 16
+  @WIDTH  : 48
+  @HEIGHT : 48
 
   constructor: (map) ->
     super RobotPlayer.WIDTH, RobotPlayer.HEIGHT, map
