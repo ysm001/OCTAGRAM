@@ -1063,7 +1063,7 @@ JsGenerator = (function() {
     var block;
     block = new JsPlainBlock();
     block.insertLine(errorLoop, '//// Error ////');
-    block.insertLine(errorLoop, '// 不正なループ(non-natural loop)を検出しました。');
+    block.insertLine(errorLoop, '// 不正なループを検出しました。');
     block.insertLine(errorLoop, '// ループに複数の入り口が存在する可能性があります。');
     return block;
   };
@@ -1107,7 +1107,7 @@ JsGenerator = (function() {
     loopObj = this.findAllLoop(root, context);
     error = finder.verify(loopObj, context);
     this.loops = loopObj.loops;
-    code = error != null ? this.generateErrorCode(error).generateCode() : (headerBlock = this.generateHeaderCode(), block = this.generateCode(root, context), headerBlock.insertBlock(block), headerBlock.generateCode());
+    code = error != null ? this.generateErrorCode(error).generateCode() : (headerBlock = this.generateHeaderCode(), block = this.generateCode(root, context), block.generateCode());
     this.finalize(cpu);
     return code;
   };
