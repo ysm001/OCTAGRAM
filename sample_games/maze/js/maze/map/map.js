@@ -8,7 +8,7 @@ R = Config.R;
 MazeMap = (function(_super) {
   __extends(MazeMap, _super);
 
-  MazeMap.UNIT_SIZE = 16;
+  MazeMap.UNIT_SIZE = 48;
 
   MazeMap.prototype.properties = {
     startElement: {

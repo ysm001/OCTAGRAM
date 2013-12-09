@@ -1,7 +1,7 @@
 R = Config.R
 
 class MazeMap extends Map
-  @UNIT_SIZE : 16
+  @UNIT_SIZE : 48
 
   properties:
     startElement:
