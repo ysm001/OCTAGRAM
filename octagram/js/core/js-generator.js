@@ -451,11 +451,16 @@ LoopFinder = (function() {
         return _results;
       })());
     }
-    return loops;
+    return {
+      loops: loops,
+      backedges: backedges,
+      dominators: dom.dominators
+    };
   };
 
-  LoopFinder.prototype.verify = function(loops, context) {
-    var buf, graph, h, header, headers, lp, n, p, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref;
+  LoopFinder.prototype.verify = function(loopObj, context) {
+    var buf, e, error, graph, h, header, headers, loops, lp, n, p, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref;
+    loops = loopObj.loops;
     graph = new GraphSearcher();
     headers = (function() {
       var _i, _len, _results;
@@ -507,7 +512,79 @@ LoopFinder = (function() {
         }
       }
     }
-    return null;
+    graph = new GraphSearcher();
+    loops = [];
+    console.log('back edges');
+    console.log((function() {
+      var _len4, _m, _ref1, _results;
+      _ref1 = loopObj.backedges;
+      _results = [];
+      for (_m = 0, _len4 = _ref1.length; _m < _len4; _m++) {
+        e = _ref1[_m];
+        _results.push([e.src.order, e.dst.order]);
+      }
+      return _results;
+    })());
+    error = null;
+    graph.dfs(context.cpu.getStartTip(), context.cpu, function(obj) {
+      var bedge, childs, edge, edges, s, succ, _len4, _len5, _m, _n, _ref1;
+      childs = graph.getChilds(obj.node, context.cpu);
+      if (childs == null) {
+        return true;
+      }
+      succ = (function() {
+        var _len4, _m, _results;
+        _results = [];
+        for (_m = 0, _len4 = childs.length; _m < _len4; _m++) {
+          s = childs[_m];
+          if (graph.isVisited(s) && __indexOf.call(obj.stack, s) >= 0) {
+            _results.push(s);
+          }
+        }
+        return _results;
+      })();
+      if ((succ == null) || succ.length === 0) {
+        return true;
+      }
+      edges = (function() {
+        var _len4, _m, _results;
+        _results = [];
+        for (_m = 0, _len4 = succ.length; _m < _len4; _m++) {
+          s = succ[_m];
+          _results.push({
+            src: obj.node,
+            dst: s
+          });
+        }
+        return _results;
+      })();
+      for (_m = 0, _len4 = edges.length; _m < _len4; _m++) {
+        edge = edges[_m];
+        _ref1 = loopObj.backedges;
+        for (_n = 0, _len5 = _ref1.length; _n < _len5; _n++) {
+          bedge = _ref1[_n];
+          if ((edge.src === bedge.src) && (edge.dst === bedge.dst)) {
+            return true;
+          }
+        }
+      }
+      console.log('error edge');
+      console.log((function() {
+        var _len6, _o, _results;
+        _results = [];
+        for (_o = 0, _len6 = edges.length; _o < _len6; _o++) {
+          e = edges[_o];
+          _results.push([e.src.order, e.dst.order]);
+        }
+        return _results;
+      })());
+      error = {
+        loop: graph.findLoop(obj.node, context.cpu, obj.stack),
+        reason: 'nonNaturalLoop'
+      };
+      return false;
+    });
+    return error;
   };
 
   return LoopFinder;
@@ -999,6 +1076,8 @@ JsGenerator = (function() {
         return this.generateDuplicateHeaderErrorCode(error.loop);
       case 'multiEnterEdge':
         return this.generateNonNaturalLoopErrorCode(error.loop);
+      case 'nonNaturalLoop':
+        return this.generateNonNaturalLoopErrorCode(error.loop);
     }
   };
 
@@ -1014,8 +1093,18 @@ JsGenerator = (function() {
     var block;
     block = new JsPlainBlock();
     block.insertLine(errorLoop, '//// Error ////');
-    block.insertLine(errorLoop, '// ループに2つ以上の入り口が存在します。');
-    block.insertLine(errorLoop, '// Javascriptでは表現できない形式です。');
+    block.insertLine(errorLoop, '// 不正なループ(non-natural loop)を検出しました。');
+    block.insertLine(errorLoop, '// ループに複数の入り口が存在する可能性があります。');
+    return block;
+  };
+
+  JsGenerator.prototype.generateHeaderCode = function() {
+    var block;
+    block = new JsPlainBlock();
+    block.insertLine(null, '// OCTAGRAMに対応するJavascriptコードです。');
+    block.insertLine(null, '// ただし、non-natural loop(複数の入り口があるループなど)を含むプログラムの場合、');
+    block.insertLine(null, '// 正しいコードが生成されません。');
+    block.insertLine(null, '');
     return block;
   };
 
@@ -1039,15 +1128,16 @@ JsGenerator = (function() {
   };
 
   JsGenerator.prototype.generate = function(cpu) {
-    var block, code, context, error, finder, root;
+    var block, code, context, error, finder, headerBlock, loopObj, root;
     finder = new LoopFinder();
     root = cpu.getStartTip();
     context = {
       cpu: cpu
     };
-    this.loops = this.findAllLoop(root, context);
-    error = finder.verify(this.loops, context);
-    code = error != null ? this.generateErrorCode(error).generateCode() : (block = this.generateCode(root, context), block.generateCode());
+    loopObj = this.findAllLoop(root, context);
+    error = finder.verify(loopObj, context);
+    this.loops = loopObj.loops;
+    code = error != null ? this.generateErrorCode(error).generateCode() : (headerBlock = this.generateHeaderCode(), block = this.generateCode(root, context), headerBlock.insertBlock(block), headerBlock.generateCode());
     this.finalize(cpu);
     return code;
   };

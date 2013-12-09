@@ -277,24 +277,55 @@ class LoopFinder
 
       console.log (n.order for n in lp)
 
-    loops
+    {loops: loops, backedges: backedges, dominators: dom.dominators}
 
-  verify: (loops, context) ->
+  verify: (loopObj, context) ->
+    loops = loopObj.loops
+
     graph = new GraphSearcher()
 
+    # ループヘッダの共有を検査
     headers = (lp[0].order for lp in loops)
     buf = []
     for h in headers
       if buf[h]? then return {loop: (lp[0] for lp in loops when lp[0].order = h)[0], reason: 'duplicateHeader'}
       else buf[h] = true
 
+    # 一つのループに2つ以上の入り口が存在しないか検査 
     for lp in loops
       header = lp[0]
       for n in lp when n != header
         for p in graph.getImmediatePredecessors(n, context)
           if p.order? && !(p in lp) then return {loop: lp, reason: 'multiEnterEdge'}
 
-    null
+    # non-natural loopの検出(曖昧)
+    graph = new GraphSearcher()
+    loops = []
+
+    console.log('back edges')
+    console.log ([e.src.order, e.dst.order] for e in loopObj.backedges)
+
+    error = null
+    graph.dfs(context.cpu.getStartTip(), context.cpu, (obj) ->
+      childs = graph.getChilds(obj.node, context.cpu)
+      if !childs? then return true
+
+      succ = (s for s in childs when graph.isVisited(s) && s in obj.stack)
+      if !succ? || succ.length == 0 then return true
+
+      edges = ({src: obj.node, dst: s} for s in succ)
+      for edge in edges
+        for bedge in loopObj.backedges
+          if (edge.src == bedge.src) && (edge.dst == bedge.dst) then return true
+
+      console.log('error edge')
+      console.log ([e.src.order, e.dst.order] for e in edges)
+      error = {loop: graph.findLoop(obj.node, context.cpu, obj.stack), reason: 'nonNaturalLoop'}
+
+      return false
+    )
+    
+    error
 
 class JsConstant
   @indent = '  '
@@ -589,6 +620,7 @@ class JsGenerator
     switch error.reason
       when 'duplicateHeader' then @generateDuplicateHeaderErrorCode(error.loop)
       when 'multiEnterEdge'then @generateNonNaturalLoopErrorCode(error.loop)
+      when 'nonNaturalLoop'then @generateNonNaturalLoopErrorCode(error.loop)
     
   generateDuplicateHeaderErrorCode: (errorLoop) ->
     block = new JsPlainBlock()
@@ -600,9 +632,18 @@ class JsGenerator
   generateNonNaturalLoopErrorCode: (errorLoop) ->
     block = new JsPlainBlock()
     block.insertLine(errorLoop, '//// Error ////')
-    block.insertLine(errorLoop, '// ループに2つ以上の入り口が存在します。')
-    block.insertLine(errorLoop, '// Javascriptでは表現できない形式です。')
+    block.insertLine(errorLoop, '// 不正なループ(non-natural loop)を検出しました。')
+    block.insertLine(errorLoop, '// ループに複数の入り口が存在する可能性があります。')
 
+    block
+
+  generateHeaderCode: () ->
+    block = new JsPlainBlock()
+    block.insertLine(null, '// OCTAGRAMに対応するJavascriptコードです。')
+    block.insertLine(null, '// ただし、non-natural loop(複数の入り口があるループなど)を含むプログラムの場合、')
+    block.insertLine(null, '// 正しいコードが生成されません。')
+    block.insertLine(null, '')
+    
     block
 
   finalize: (cpu) ->
@@ -618,14 +659,18 @@ class JsGenerator
     root = cpu.getStartTip()
     context = {cpu: cpu}
 
-    @loops = @findAllLoop(root, context)
-    error = finder.verify(@loops, context)
+    loopObj = @findAllLoop(root, context)
+    error = finder.verify(loopObj, context)
+
+    @loops = loopObj.loops
 
     code = 
       if error? then @generateErrorCode(error).generateCode()
       else
+        headerBlock = @generateHeaderCode()
         block = @generateCode(root, context)
-        block.generateCode()
+        headerBlock.insertBlock(block)
+        headerBlock.generateCode()
 
     @finalize(cpu)
     code
