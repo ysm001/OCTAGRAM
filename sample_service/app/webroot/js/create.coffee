@@ -42,11 +42,11 @@ class JsCodeViewer
 
   highliteLine: (line) ->
     if line? && line.node?
-      for n in line.node then n.showExecutionEffect()
+      for n in line.node when n? then n.showExecutionEffect()
 
   unHighliteLine: (line) ->
     if line? && line.node? 
-      for n in line.node then n.hideExecutionEffect()
+      for n in line.node when n? then n.hideExecutionEffect()
 
 class Frontend 
   constructor: (@options) ->

@@ -313,6 +313,7 @@ LoopFinder = (function() {
       dom = dominators[node.order];
       idom = dom[dom.length - 2];
       idom.childs.push(node);
+      node.idom = idom;
     }
     return {
       tree: nodes,
@@ -394,13 +395,14 @@ LoopFinder = (function() {
     return backedges;
   };
 
-  LoopFinder.prototype.calcLoop = function(edge, context) {
+  LoopFinder.prototype.calcLoop = function(edge, dominators, context) {
     var graph, insert, lp, m, p, stack, _i, _len, _ref;
     graph = new GraphSearcher();
     stack = [];
     lp = [edge.dst];
     insert = function(m) {
-      if (!(__indexOf.call(lp, m) >= 0)) {
+      var _ref;
+      if (!(__indexOf.call(lp, m) >= 0) && (m.order != null) && (_ref = edge.dst, __indexOf.call(dominators[m.order], _ref) >= 0)) {
         lp.push(m);
         return stack.push(m);
       }
@@ -437,7 +439,7 @@ LoopFinder = (function() {
     loops = [];
     for (_i = 0, _len = backedges.length; _i < _len; _i++) {
       edge = backedges[_i];
-      lp = graph.findRoute(edge.dst, edge.src, cpu);
+      lp = this.calcLoop(edge, dominators, context);
       loops.push(lp);
       console.log((function() {
         var _j, _len1, _results;
@@ -453,19 +455,55 @@ LoopFinder = (function() {
   };
 
   LoopFinder.prototype.verify = function(loops, context) {
-    var graph, header, lp, n, p, _i, _j, _len, _len1;
+    var buf, graph, h, header, headers, lp, n, p, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref;
     graph = new GraphSearcher();
-    for (_i = 0, _len = loops.length; _i < _len; _i++) {
-      lp = loops[_i];
+    headers = (function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = loops.length; _i < _len; _i++) {
+        lp = loops[_i];
+        _results.push(lp[0].order);
+      }
+      return _results;
+    })();
+    buf = [];
+    for (_i = 0, _len = headers.length; _i < _len; _i++) {
+      h = headers[_i];
+      if (buf[h] != null) {
+        return {
+          loop: ((function() {
+            var _j, _len1, _results;
+            _results = [];
+            for (_j = 0, _len1 = loops.length; _j < _len1; _j++) {
+              lp = loops[_j];
+              if (lp[0].order = h) {
+                _results.push(lp[0]);
+              }
+            }
+            return _results;
+          })())[0],
+          reason: 'duplicateHeader'
+        };
+      } else {
+        buf[h] = true;
+      }
+    }
+    for (_j = 0, _len1 = loops.length; _j < _len1; _j++) {
+      lp = loops[_j];
       header = lp[0];
-      for (_j = 0, _len1 = lp.length; _j < _len1; _j++) {
-        n = lp[_j];
-        if (!(n !== header)) {
-          continue;
-        }
-        p = graph.getImmediatePredecessors(n, context);
-        if ((p != null) && p.length > 1) {
-          return lp;
+      for (_k = 0, _len2 = lp.length; _k < _len2; _k++) {
+        n = lp[_k];
+        if (n !== header) {
+          _ref = graph.getImmediatePredecessors(n, context);
+          for (_l = 0, _len3 = _ref.length; _l < _len3; _l++) {
+            p = _ref[_l];
+            if ((p.order != null) && !(__indexOf.call(lp, p) >= 0)) {
+              return {
+                loop: lp,
+                reason: 'multiEnterEdge'
+              };
+            }
+          }
         }
       }
     }
@@ -592,8 +630,9 @@ JsBlock = (function(_super) {
 JsWhileBlock = (function(_super) {
   __extends(JsWhileBlock, _super);
 
-  function JsWhileBlock(condition) {
+  function JsWhileBlock(condition, root) {
     this.condition = condition;
+    this.root = root;
     JsWhileBlock.__super__.constructor.call(this);
   }
 
@@ -605,6 +644,8 @@ JsWhileBlock = (function(_super) {
     var code;
     code = JsWhileBlock.__super__.generateCode.call(this);
     code[0].text = 'while( ' + this.createCondition() + ' ) ' + code[0].text;
+    code[0].node.unshift(this.root);
+    code[code.length - 1].node.unshift(this.root);
     return code;
   };
 
@@ -825,103 +866,43 @@ JsGenerator = (function() {
   };
 
   JsGenerator.prototype.generateWhileCode = function(root, context) {
-    var block, branch, breakBlock, childLoop, lp, node, ret, _i, _len, _ref1;
+    var block, child;
     block = new JsWhileBlock('true');
-    breakBlock = new JsPlainBlock();
-    childLoop = [];
-    _ref1 = context.loop[context.loop.length - 1];
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      node = _ref1[_i];
-      if (this.isChildLoopNode(node, childLoop)) {
-        continue;
+    if (this.isSingleTransitionTip(root)) {
+      block.insertLine(root, this.getOperationName(root) + '();');
+      child = (new GraphSearcher()).getChilds(root, context.cpu);
+      if (child != null) {
+        block.insertBlock(this.generateCode(child[0], context));
       }
-      lp = this.findLoopByEnterNode(node);
-      if (lp != null) {
-        if (!this.isTraversedLoopHeader(node, context)) {
-          childLoop.push(lp);
-          if (context.loop == null) {
-            context.loop = [];
-          }
-          context.loop.push(lp);
-          block.insertBlock(this.generateWhileCode(node, context));
-          context.loop.pop();
-        }
-      }
-      if (this.isBranchTransitionTip(node)) {
-        branch = this.generateBranchCode(node, context);
-        block.insertBlock(branch);
-        breakBlock.insertBlock(branch.breakBlock);
-        break;
-      } else if (this.isSingleTransitionTip(node)) {
-        block.insertLine(node, this.getOperationName(node) + '();');
-      }
+    } else if (this.isBranchTransitionTip(root)) {
+      block.insertBlock(this.generateBranchCode(root, context));
     }
-    ret = new JsPlainBlock();
-    ret.insertBlock(block);
-    ret.insertBlock(breakBlock);
-    return ret;
+    return block;
   };
 
   JsGenerator.prototype.findBreakNode = function(root, branchNodes, context) {
-    var lp, mergeNode, result, _ref1, _ref2;
+    var lp, result, _ref1, _ref2;
     result = {
       "if": false,
-      "else": false,
-      err: false
+      "else": false
     };
-    mergeNode = this.getMergeNode(root, context);
-    result.err = mergeNode == null;
-    if ((mergeNode == null) || !this.isOnLoop(mergeNode, context.loop[context.loop.length - 1])) {
-      lp = context.loop[context.loop.length - 1];
-      if (!(_ref1 = branchNodes.ifNext, __indexOf.call(lp, _ref1) >= 0)) {
-        result["if"] = true;
-        result["else"] = false;
-      } else if (!(_ref2 = branchNodes.elseNext, __indexOf.call(lp, _ref2) >= 0)) {
-        result["if"] = false;
-        result["else"] = true;
-      }
+    lp = this.getCurrentLoop(context);
+    if (!(_ref1 = branchNodes.ifNext, __indexOf.call(lp, _ref1) >= 0)) {
+      result["if"] = true;
+      result["else"] = false;
+    } else if (!(_ref2 = branchNodes.elseNext, __indexOf.call(lp, _ref2) >= 0)) {
+      result["if"] = false;
+      result["else"] = true;
     }
     return result;
   };
 
   JsGenerator.prototype.generateBranchCode = function(root, context) {
-    var block, nodes, printBreakError, result;
+    var block, nodes;
     block = new JsBranchBlock(this.getOperationName(root), root);
     nodes = this.getBranchNodes(root, context);
-    printBreakError = function(b) {
-      b.insertLine(root, '//// Warning ////');
-      b.insertLine(root, '// 現在、ループ外に出る条件分岐を含むコードのJavascript生成には対応していません。');
-      return b.insertLine(root, '// 誤ったコードが生成されている可能性があります。');
-    };
-    if ((context.loop != null) && context.loop.length > 0 && this.isOnLoop(root, context.loop[context.loop.length - 1])) {
-      if (context.loop.length > 1) {
-        block.headerBlock.insertLine(root, '//// Warning ////');
-        block.headerBlock.insertLine(root, '// 現在、多重ループを含むコードのJavascript生成には対応していません。');
-        block.headerBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。');
-      }
-      result = this.findBreakNode(root, nodes, context);
-      if (result["if"]) {
-        if (result.err) {
-          printBreakError(block.ifBlock);
-        }
-        block.ifBlock.insertLine(root, 'break;');
-        block.breakBlock.insertBlock(this.generateCode(nodes.ifNext, context));
-      } else {
-        block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
-      }
-      if (result["else"]) {
-        if (result.err) {
-          printBreakError(block.elseBlock);
-        }
-        block.elseBlock.insertLine(root, 'break;');
-        block.breakBlock.insertBlock(this.generateCode(nodes.elseNext, context));
-      } else {
-        block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));
-      }
-    } else {
-      block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
-      block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));
-    }
+    block.ifBlock.insertBlock(this.generateCode(nodes.ifNext, context));
+    block.elseBlock.insertBlock(this.generateCode(nodes.elseNext, context));
     return block;
   };
 
@@ -964,33 +945,67 @@ JsGenerator = (function() {
     return false;
   };
 
+  JsGenerator.prototype.getCurrentLoop = function(context) {
+    if ((context.loop != null) && context.loop.length > 0) {
+      return context.loop[context.loop.length - 1];
+    }
+  };
+
   JsGenerator.prototype.generateCode = function(root, context) {
-    var block, graph,
+    var block, currentLoop, graph,
       _this = this;
     graph = new GraphSearcher();
     block = new JsPlainBlock();
+    currentLoop = this.getCurrentLoop(context);
     graph.dfs(root, context.cpu, function(obj) {
       var lp, node;
       node = obj.node;
-      lp = _this.findLoopByEnterNode(node);
-      if (lp != null) {
-        if (!_this.isTraversedLoopHeader(node, context)) {
-          if (context.loop == null) {
-            context.loop = [];
+      if ((currentLoop != null) && !(__indexOf.call(currentLoop, node) >= 0)) {
+        block.insertLine(null, 'break;');
+        context["break"] = node;
+        return false;
+      } else {
+        lp = _this.findLoopByEnterNode(node);
+        if (lp != null) {
+          if (!_this.isTraversedLoopHeader(node, context)) {
+            if (context.loop == null) {
+              context.loop = [];
+            }
+            context.loop.push(lp);
+            block.insertBlock(_this.generateWhileCode(node, context));
+            context.loop.pop();
+            if (context["break"] != null) {
+              block.insertBlock(_this.generateCode(context["break"], context));
+              context["break"] = null;
+            }
           }
-          context.loop.push(lp);
-          block.insertBlock(_this.generateWhileCode(node, context));
-          context.loop.pop();
+          return false;
+        } else if (_this.isBranchTransitionTip(node)) {
+          block.insertBlock(_this.generateBranchCode(node, context));
+          return false;
+        } else if (_this.isSingleTransitionTip(node)) {
+          block.insertLine(node, _this.getOperationName(node) + '();');
+          return true;
         }
-        return false;
-      } else if (_this.isBranchTransitionTip(node)) {
-        block.insertBlock(_this.generateBranchCode(node, context));
-        return false;
-      } else if (_this.isSingleTransitionTip(node)) {
-        block.insertLine(node, _this.getOperationName(node) + '();');
-        return true;
       }
     });
+    return block;
+  };
+
+  JsGenerator.prototype.generateErrorCode = function(error) {
+    switch (error.reason) {
+      case 'duplicateHeader':
+        return this.generateDuplicateHeaderErrorCode(error.loop);
+      case 'multiEnterEdge':
+        return this.generateNonNaturalLoopErrorCode(error.loop);
+    }
+  };
+
+  JsGenerator.prototype.generateDuplicateHeaderErrorCode = function(errorLoop) {
+    var block;
+    block = new JsPlainBlock();
+    block.insertLine(errorLoop, '//// Error ////');
+    block.insertLine(errorLoop, '// ループの入り口は共有できません。');
     return block;
   };
 
@@ -1003,8 +1018,27 @@ JsGenerator = (function() {
     return block;
   };
 
+  JsGenerator.prototype.finalize = function(cpu) {
+    var node, x, y, _i, _results;
+    _results = [];
+    for (x = _i = -1; _i <= 8; x = ++_i) {
+      _results.push((function() {
+        var _j, _results1;
+        _results1 = [];
+        for (y = _j = -1; _j <= 8; y = ++_j) {
+          node = cpu.getTip(x, y);
+          node.childs = void 0;
+          node.idom = void 0;
+          _results1.push(node.order = void 0);
+        }
+        return _results1;
+      })());
+    }
+    return _results;
+  };
+
   JsGenerator.prototype.generate = function(cpu) {
-    var block, context, error, finder, root;
+    var block, code, context, error, finder, root;
     finder = new LoopFinder();
     root = cpu.getStartTip();
     context = {
@@ -1012,8 +1046,9 @@ JsGenerator = (function() {
     };
     this.loops = this.findAllLoop(root, context);
     error = finder.verify(this.loops, context);
-    block = this.generateCode(root, context);
-    return block.generateCode();
+    code = error != null ? this.generateErrorCode(error).generateCode() : (block = this.generateCode(root, context), block.generateCode());
+    this.finalize(cpu);
+    return code;
   };
 
   return JsGenerator;

@@ -72,7 +72,9 @@ JsCodeViewer = (function() {
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         n = _ref[_i];
-        _results.push(n.showExecutionEffect());
+        if (n != null) {
+          _results.push(n.showExecutionEffect());
+        }
       }
       return _results;
     }
@@ -85,7 +87,9 @@ JsCodeViewer = (function() {
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         n = _ref[_i];
-        _results.push(n.hideExecutionEffect());
+        if (n != null) {
+          _results.push(n.hideExecutionEffect());
+        }
       }
       return _results;
     }

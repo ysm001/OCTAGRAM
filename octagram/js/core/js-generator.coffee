@@ -182,6 +182,7 @@ class LoopFinder
       idom = dom[dom.length - 2]
 
       idom.childs.push(node)
+      node.idom = idom
 
     {tree: nodes, dominators: dominators}
 
@@ -233,13 +234,13 @@ class LoopFinder
 
     backedges
 
-  calcLoop: (edge, context) ->
+  calcLoop: (edge, dominators, context) ->
     graph = new GraphSearcher()
     stack = []
     lp = [edge.dst]
 
     insert = (m) ->
-      if !(m in lp)
+      if !(m in lp) && m.order? && (edge.dst in dominators[m.order])
         lp.push(m)
         stack.push(m)
 
@@ -270,8 +271,8 @@ class LoopFinder
 
     loops = []
     for edge in backedges
-      lp = graph.findRoute(edge.dst, edge.src, cpu)
-      # lp = @calcLoop(edge, context)
+      # lp = graph.findRoute(edge.dst, edge.src, cpu)
+      lp = @calcLoop(edge, dominators, context)
       loops.push(lp)
 
       console.log (n.order for n in lp)
@@ -281,11 +282,17 @@ class LoopFinder
   verify: (loops, context) ->
     graph = new GraphSearcher()
 
+    headers = (lp[0].order for lp in loops)
+    buf = []
+    for h in headers
+      if buf[h]? then return {loop: (lp[0] for lp in loops when lp[0].order = h)[0], reason: 'duplicateHeader'}
+      else buf[h] = true
+
     for lp in loops
       header = lp[0]
       for n in lp when n != header
-        p = graph.getImmediatePredecessors(n, context)
-        if p? && p.length > 1 then return lp
+        for p in graph.getImmediatePredecessors(n, context)
+          if p.order? && !(p in lp) then return {loop: lp, reason: 'multiEnterEdge'}
 
     null
 
@@ -329,13 +336,15 @@ class JsBlock extends JsPlainBlock
     block
 
 class JsWhileBlock extends JsBlock
-  constructor: (@condition) ->
+  constructor: (@condition, @root) ->
     super()
   createCondition: () -> @condition
 
   generateCode: () ->
     code = super()
     code[0].text = 'while( ' + @createCondition() + ' ) ' + code[0].text
+    code[0].node.unshift(@root)
+    code[code.length - 1].node.unshift(@root)
     code
 
 class JsForBlock extends JsBlock
@@ -483,50 +492,28 @@ class JsGenerator
 
   generateWhileCode: (root, context) ->
     block = new JsWhileBlock('true')
-    breakBlock = new JsPlainBlock()
-    childLoop = []
+    if @isSingleTransitionTip(root)
+      block.insertLine(root, @getOperationName(root) + '();')
+      child = (new GraphSearcher()).getChilds(root, context.cpu)
 
-    for node in context.loop[context.loop.length - 1]
-      # 子ループの要素はスキップ
-      if @isChildLoopNode(node, childLoop) then continue
+      if child?
+        block.insertBlock(@generateCode(child[0], context))
+    else if @isBranchTransitionTip(root)
+      block.insertBlock(@generateBranchCode(root, context))
 
-      lp = @findLoopByEnterNode(node)
-      if lp? 
-        if !@isTraversedLoopHeader(node, context)
-          childLoop.push(lp)
-          if !context.loop? then context.loop = []
-          context.loop.push(lp)
-          block.insertBlock(@generateWhileCode(node, context))
-          context.loop.pop()
-
-      if @isBranchTransitionTip(node)
-        branch = @generateBranchCode(node, context)
-        block.insertBlock(branch)
-        breakBlock.insertBlock(branch.breakBlock)
-        break
-      else if @isSingleTransitionTip(node)
-        block.insertLine(node, @getOperationName(node) + '();')
-
-    ret = new JsPlainBlock()
-    ret.insertBlock(block)
-    ret.insertBlock(breakBlock)
-    ret
+    block
    
   findBreakNode: (root, branchNodes, context) ->
-    result = {if: false, else: false, err: false}
+    result = {if: false, else: false}
 
-    mergeNode = @getMergeNode(root, context)
-    result.err = !mergeNode?
+    lp = @getCurrentLoop(context) 
 
-    if !mergeNode? || !@isOnLoop(mergeNode, context.loop[context.loop.length - 1])
-      lp = context.loop[context.loop.length - 1]
-
-      if !(branchNodes.ifNext in lp)
-        result.if = true
-        result.else = false
-      else if !(branchNodes.elseNext in lp)
-        result.if = false
-        result.else = true
+    if !(branchNodes.ifNext in lp)
+      result.if = true
+      result.else = false
+    else if !(branchNodes.elseNext in lp)
+      result.if = false
+      result.else = true
 
     result
 
@@ -534,36 +521,8 @@ class JsGenerator
     block = new JsBranchBlock(@getOperationName(root), root)
     nodes = @getBranchNodes(root, context)
 
-    printBreakError = (b) ->
-      b.insertLine(root, '//// Warning ////')
-      b.insertLine(root, '// 現在、ループ外に出る条件分岐を含むコードのJavascript生成には対応していません。')
-      b.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
-
-    # ループ中の分岐の場合
-    if context.loop? && context.loop.length > 0 && @isOnLoop(root, context.loop[context.loop.length - 1])
-      if context.loop.length > 1
-        block.headerBlock.insertLine(root, '//// Warning ////')
-        block.headerBlock.insertLine(root, '// 現在、多重ループを含むコードのJavascript生成には対応していません。')
-        block.headerBlock.insertLine(root, '// 誤ったコードが生成されている可能性があります。')
-
-      # ループ外に出る分岐を探索
-      result = @findBreakNode(root, nodes, context)
-
-      # ループ外に出る場合はbreakを出力
-      if result.if 
-        if result.err then printBreakError(block.ifBlock)
-        block.ifBlock.insertLine(root, 'break;')
-        block.breakBlock.insertBlock(@generateCode(nodes.ifNext, context))
-      else block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
-      if result.else 
-        if result.err then printBreakError(block.elseBlock)
-        block.elseBlock.insertLine(root, 'break;')
-        block.breakBlock.insertBlock(@generateCode(nodes.elseNext, context))
-      else block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
-    # 通常の分岐
-    else 
-      block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
-      block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
+    block.ifBlock.insertBlock(@generateCode(nodes.ifNext, context))
+    block.elseBlock.insertBlock(@generateCode(nodes.elseNext, context))
 
     block
 
@@ -587,27 +546,53 @@ class JsGenerator
 
     false
 
+  getCurrentLoop: (context) -> 
+    if context.loop? && context.loop.length > 0
+      context.loop[context.loop.length - 1]
+
   generateCode: (root, context) ->
     graph = new GraphSearcher()
     block = new JsPlainBlock()
 
+    currentLoop = @getCurrentLoop(context)
     graph.dfs(root, context.cpu, (obj) => 
       node = obj.node
-      lp = @findLoopByEnterNode(node)
-      if lp?
-        if !@isTraversedLoopHeader(node, context)
-          if !context.loop? then context.loop = []
-          context.loop.push(lp)
-          block.insertBlock(@generateWhileCode(node, context))
-          context.loop.pop()
+
+      if currentLoop? && !(node in currentLoop)
+        block.insertLine(null, 'break;')
+        context.break = node
         false
-      else if @isBranchTransitionTip(node)
-        block.insertBlock(@generateBranchCode(node, context))
-        false
-      else if @isSingleTransitionTip(node)
-        block.insertLine(node, @getOperationName(node) + '();')
-        true
+      else
+        lp = @findLoopByEnterNode(node)
+        if lp?
+          if !@isTraversedLoopHeader(node, context)
+            if !context.loop? then context.loop = []
+            context.loop.push(lp)
+            block.insertBlock(@generateWhileCode(node, context))
+            context.loop.pop()
+            if context.break?
+              block.insertBlock(@generateCode(context.break, context))
+              context.break = null
+          false
+        else if @isBranchTransitionTip(node)
+          block.insertBlock(@generateBranchCode(node, context))
+          false
+        else if @isSingleTransitionTip(node)
+          block.insertLine(node, @getOperationName(node) + '();')
+          true
     )
+
+    block
+
+  generateErrorCode: (error) ->
+    switch error.reason
+      when 'duplicateHeader' then @generateDuplicateHeaderErrorCode(error.loop)
+      when 'multiEnterEdge'then @generateNonNaturalLoopErrorCode(error.loop)
+    
+  generateDuplicateHeaderErrorCode: (errorLoop) ->
+    block = new JsPlainBlock()
+    block.insertLine(errorLoop, '//// Error ////')
+    block.insertLine(errorLoop, '// ループの入り口は共有できません。')
 
     block
 
@@ -619,6 +604,14 @@ class JsGenerator
 
     block
 
+  finalize: (cpu) ->
+    for x in [-1..8]
+      for y in [-1..8]
+        node = cpu.getTip(x, y)
+        node.childs = undefined
+        node.idom = undefined
+        node.order = undefined
+
   generate: (cpu) ->
     finder = new LoopFinder()
     root = cpu.getStartTip()
@@ -627,5 +620,11 @@ class JsGenerator
     @loops = @findAllLoop(root, context)
     error = finder.verify(@loops, context)
 
-    block = @generateCode(root, context)
-    block.generateCode()
+    code = 
+      if error? then @generateErrorCode(error).generateCode()
+      else
+        block = @generateCode(root, context)
+        block.generateCode()
+
+    @finalize(cpu)
+    code
