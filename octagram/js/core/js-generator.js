@@ -958,7 +958,7 @@ JsGenerator = (function() {
     block = new JsPlainBlock();
     currentLoop = this.getCurrentLoop(context);
     graph.dfs(root, context.cpu, function(obj) {
-      var lp, node;
+      var br, lp, node;
       node = obj.node;
       if ((currentLoop != null) && !(__indexOf.call(currentLoop, node) >= 0)) {
         block.insertLine(null, 'break;');
@@ -975,8 +975,9 @@ JsGenerator = (function() {
             block.insertBlock(_this.generateWhileCode(node, context));
             context.loop.pop();
             if (context["break"] != null) {
-              block.insertBlock(_this.generateCode(context["break"], context));
+              br = context["break"];
               context["break"] = null;
+              block.insertBlock(_this.generateCode(br, context));
             }
           }
           return false;

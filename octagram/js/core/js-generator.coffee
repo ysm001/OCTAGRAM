@@ -571,8 +571,9 @@ class JsGenerator
             block.insertBlock(@generateWhileCode(node, context))
             context.loop.pop()
             if context.break?
-              block.insertBlock(@generateCode(context.break, context))
+              br = context.break
               context.break = null
+              block.insertBlock(@generateCode(br, context))
           false
         else if @isBranchTransitionTip(node)
           block.insertBlock(@generateBranchCode(node, context))
