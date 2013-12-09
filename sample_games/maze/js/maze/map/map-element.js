@@ -30,11 +30,15 @@ MapElement = (function(_super) {
 
   MapElement.prototype.setItem = function(item) {
     this.item = item;
+    this.parentNode.addChild(this.item);
+    this.item.x = this.x;
+    return this.item.y = this.y;
   };
 
   MapElement.prototype.onride = function(player) {
     if (this.item) {
       player.addItem(this.item);
+      this.item.parentNode.removeChild(this.item);
       return this.item = null;
     }
   };

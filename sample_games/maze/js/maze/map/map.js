@@ -35,8 +35,14 @@ MazeMap = (function(_super) {
       elementLine = [];
       for (x = _j = 0, _ref1 = matrix[y].length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; x = 0 <= _ref1 ? ++_j : --_j) {
         id = matrix[y][x];
-        element = ElementFactory.create(id, x, y);
-        this.addChild(element);
+        if (id === TreasureElement.ID) {
+          element = ElementFactory.create(RoadElement.ID, x, y);
+          this.addChild(element);
+          element.setItem(new Key);
+        } else {
+          element = ElementFactory.create(id, x, y);
+          this.addChild(element);
+        }
         elementLine.push(element);
         if (element instanceof StartElement) {
           this._startElement = element;

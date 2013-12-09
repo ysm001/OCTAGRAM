@@ -16,11 +16,14 @@ class MapElement extends Sprite
   isImpassable: () -> 1
 
   setItem: (@item) ->
+    @parentNode.addChild @item
+    @item.x = @x
+    @item.y = @y
 
   onride: (player) ->
     if @item
       player.addItem(@item)
-      # @item.remove()
+      @item.parentNode.removeChild @item
       @item = null
 
 class BlockElement extends MapElement

@@ -3,20 +3,28 @@ var Item, Key,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Item = (function() {
+Item = (function(_super) {
+  __extends(Item, _super);
+
+  Item.WIDTH = 48;
+
+  Item.HEIGHT = 48;
+
   function Item(name) {
     this.name = name != null ? name : "item";
+    Item.__super__.constructor.call(this, Item.WIDTH, Item.HEIGHT);
   }
 
   return Item;
 
-})();
+})(Sprite);
 
 Key = (function(_super) {
   __extends(Key, _super);
 
   function Key() {
     Key.__super__.constructor.call(this, "key");
+    this.image = Game.instance.assets[R.CHAR.CHAR1];
   }
 
   return Key;

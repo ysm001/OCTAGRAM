@@ -37,12 +37,14 @@ class Player extends Sprite
       pos = @_items.indexOf(item)
       ret = @_items[pos]
       @_items.splice(pos, 1)
+    console.log "getItem", item, @_items
     ret
   
   addItem: (item) ->
     if !@_items?
       @_items = []
     @_items.push item
+    console.log "addItem", item, @_items
 
   move: () ->
     pos = @index.add(@direction)

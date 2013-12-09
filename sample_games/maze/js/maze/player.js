@@ -60,6 +60,7 @@ Player = (function(_super) {
       ret = this._items[pos];
       this._items.splice(pos, 1);
     }
+    console.log("getItem", item, this._items);
     return ret;
   };
 
@@ -67,7 +68,8 @@ Player = (function(_super) {
     if (this._items == null) {
       this._items = [];
     }
-    return this._items.push(item);
+    this._items.push(item);
+    return console.log("addItem", item, this._items);
   };
 
   Player.prototype.move = function() {

@@ -19,8 +19,15 @@ class MazeMap extends Group
       elementLine = []
       for x in [0...matrix[y].length]
         id = matrix[y][x]
-        element = ElementFactory.create(id, x, y)
-        @addChild(element)
+    
+        if id == TreasureElement.ID
+          element = ElementFactory.create(RoadElement.ID, x, y)
+          @addChild(element)
+          element.setItem(new Key)
+        else
+          element = ElementFactory.create(id, x, y)
+          @addChild(element)
+          
         elementLine.push(element)
         if element instanceof StartElement
           @_startElement = element
