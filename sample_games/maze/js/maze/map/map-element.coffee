@@ -51,13 +51,15 @@ class GoalElement extends MapElement
 
 
 class TreasureElement extends MapElement
-  @ID : 13
+  @ID : 25
 
   constructor: (x, y) ->
-    super GoalElement.ID, x, y
+    super TreasureElement.ID, x, y
 
   isImpassable: () -> 0
 
+  affect: (player) ->
+    player.addItem new Key
 
 class ElementFactory
 
@@ -71,4 +73,6 @@ class ElementFactory
         ret = new StartElement(x, y)
       when GoalElement.ID
         ret = new GoalElement(x, y)
+      when TreasureElement.ID
+        ret = new TreasureElement(x, y)
     ret

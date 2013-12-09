@@ -11,6 +11,7 @@
   "maze/map/map-element.js"
   "maze/map/map.js"
   "maze/player.js"
+  "maze/item.js"
   "octagram_instruction/common.js"
   "octagram_instruction/straight-move-instruction.js"
   "octagram_instruction/turn-instruction.js"
