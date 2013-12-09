@@ -74,6 +74,23 @@ Player = (function(_super) {
     return this.dispatchEvent(new MazeEvent('turnRight'));
   };
 
+  Player.prototype.isThrough = function(direction) {
+    var d, e, pos;
+    switch (direction) {
+      case Direction.LEFT:
+        d = Direction.prev(this.direction);
+        break;
+      case Direction.RIGHT:
+        d = Direction.next(this.direction);
+        break;
+      default:
+        d = this.direction;
+    }
+    pos = this.index.add(d);
+    e = this._map.getElement(pos.x, pos.y);
+    return e !== false && e.isImpassable() === 0;
+  };
+
   Player.prototype._isStart = function(e) {
     return (e != null) && e === this._map.startElement;
   };

@@ -12,7 +12,7 @@ MazeWorld = (function(_super) {
   function MazeWorld() {
     var map;
     MazeWorld.__super__.constructor.apply(this, arguments);
-    map = [[4, 4, 4, 4, 4, 13, 4], [4, 0, 4, 0, 0, 0, 4], [4, 0, 4, 0, 4, 4, 4], [4, 0, 4, 0, 4, 0, 4], [4, 0, 0, 0, 4, 0, 4], [4, 0, 4, 0, 0, 0, 4], [4, 14, 4, 4, 4, 4, 4]];
+    map = [[4, 4, 4, 4, 4, 4, 13, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 4, 0, 0, 0, 0, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 0, 0, 4, 4, 0, 4], [4, 0, 4, 0, 0, 0, 0, 4], [4, 14, 4, 4, 4, 4, 4, 4]];
     this.maze = new Maze({
       x: 64,
       y: 128,
@@ -32,6 +32,7 @@ MazeWorld = (function(_super) {
     this.enemyProgramId = enemyProgram.id;
     playerProgram.addInstruction(new StraightMoveInstruction(this.maze.player));
     playerProgram.addInstruction(new TurnInstruction(this.maze.player));
+    playerProgram.addInstruction(new CheckMapInstruction(this.maze.player));
     return this.octagram.showProgram(this.playerProgramId);
   };
 

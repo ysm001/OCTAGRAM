@@ -14,6 +14,7 @@
   "octagram_instruction/common.js"
   "octagram_instruction/straight-move-instruction.js"
   "octagram_instruction/turn-instruction.js"
+  "octagram_instruction/check-map-instruction.js"
   "main.js"
 )
 

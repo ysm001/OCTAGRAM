@@ -48,6 +48,18 @@ class Player extends Sprite
     @direction = Direction.next(@direction)
     @dispatchEvent(new MazeEvent('turnRight'))
 
+  isThrough: (direction) ->
+    switch direction
+      when Direction.LEFT
+        d = Direction.prev(@direction)
+      when Direction.RIGHT
+        d = Direction.next(@direction)
+      else
+        d = @direction
+    pos = @index.add(d)
+    e = @_map.getElement(pos.x, pos.y)
+    e != false and e.isImpassable() == 0
+
   _isStart: (e) ->
     e? and e == @_map.startElement
 
