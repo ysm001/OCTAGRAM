@@ -10,6 +10,9 @@ class MapElement extends Sprite
 
   isImpassable: () -> 1
 
+  affect: (player) ->
+  
+
 class BlockElement extends MapElement
   @ID : 4
 
@@ -34,6 +37,7 @@ class StartElement extends MapElement
 
   isImpassable: () -> 0
 
+
 class GoalElement extends MapElement
   @ID : 13
 
@@ -41,6 +45,19 @@ class GoalElement extends MapElement
     super GoalElement.ID, x, y
 
   isImpassable: () -> 0
+
+  affect: (player) ->
+    player.odispatchEvent(new MazeEvent('goal'))
+
+
+class TreasureElement extends MapElement
+  @ID : 13
+
+  constructor: (x, y) ->
+    super GoalElement.ID, x, y
+
+  isImpassable: () -> 0
+
 
 class ElementFactory
 

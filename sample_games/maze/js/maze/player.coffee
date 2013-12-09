@@ -30,14 +30,26 @@ class Player extends Sprite
             @frame = 0
           when Direction.LEFT
             @frame = 1
+      
+  getItem: (item) ->
+    ret = null
+    if item in @_items
+      pos = @_items.indexOf(item)
+        ret = @_items[pos]
+      @_items.splice(pos, 1)
+    ret
+  
+  addItem: (item) ->
+    if !@_items?
+      @_items = []
+    @_items.push item
 
   move: () ->
     pos = @index.add(@direction)
     e = @_map.getElement(pos.x, pos.y)
     if e != false and !e.isImpassable()
         @position = e
-        if @_isGoal(e)
-          @dispatchEvent(new MazeEvent('goal'))
+        e.affect(@)
     @dispatchEvent(new MazeEvent('move'))
 
   turnLeft: () ->
@@ -48,12 +60,6 @@ class Player extends Sprite
     @direction = Direction.next(@direction)
     @dispatchEvent(new MazeEvent('turnRight'))
 
-  _isStart: (e) ->
-    e? and e == @_map.startElement
-
-  _isGoal: (e) ->
-    e? and e == @_map.goalElement
-    
 
 class RobotPlayer extends Player
   @WIDTH  : 48
