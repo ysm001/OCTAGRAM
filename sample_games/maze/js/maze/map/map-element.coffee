@@ -11,12 +11,17 @@ class MapElement extends Sprite
       y: y
     @x = MapElement.WIDTH * x
     @y = MapElement.HEIGHT * y
+    @item = null
 
   isImpassable: () -> 1
 
-  setItem: (item) ->
+  setItem: (@item) ->
 
   onride: (player) ->
+    if @item
+      player.addItem(@item)
+      # @item.remove()
+      @item = null
 
 class BlockElement extends MapElement
   @ID : 4

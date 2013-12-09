@@ -21,15 +21,23 @@ MapElement = (function(_super) {
     };
     this.x = MapElement.WIDTH * x;
     this.y = MapElement.HEIGHT * y;
+    this.item = null;
   }
 
   MapElement.prototype.isImpassable = function() {
     return 1;
   };
 
-  MapElement.prototype.setItem = function(item) {};
+  MapElement.prototype.setItem = function(item) {
+    this.item = item;
+  };
 
-  MapElement.prototype.onride = function(player) {};
+  MapElement.prototype.onride = function(player) {
+    if (this.item) {
+      player.addItem(this.item);
+      return this.item = null;
+    }
+  };
 
   return MapElement;
 
