@@ -76,7 +76,7 @@ Player = (function(_super) {
     e = this._map.getElement(pos.x, pos.y);
     if (e !== false && !e.isImpassable()) {
       this.position = e;
-      e.affect(this);
+      e.onride(this);
     }
     return this.dispatchEvent(new MazeEvent('move'));
   };

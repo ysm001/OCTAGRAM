@@ -6,24 +6,30 @@ var BlockElement, ElementFactory, GoalElement, MapElement, RoadElement, StartEle
 MapElement = (function(_super) {
   __extends(MapElement, _super);
 
-  MapElement.WIDTH = 16;
+  MapElement.WIDTH = 48;
 
-  MapElement.HEIGHT = 16;
+  MapElement.HEIGHT = 48;
 
   function MapElement(id, x, y) {
     this.id = id != null ? id : 0;
     MapElement.__super__.constructor.call(this, MapElement.WIDTH, MapElement.HEIGHT);
+    this.image = Game.instance.assets[R.MAP.SRC];
+    this.frame = this.id;
     this.index = {
       x: x,
       y: y
     };
+    this.x = MapElement.WIDTH * x;
+    this.y = MapElement.HEIGHT * y;
   }
 
   MapElement.prototype.isImpassable = function() {
     return 1;
   };
 
-  MapElement.prototype.affect = function(player) {};
+  MapElement.prototype.setItem = function(item) {};
+
+  MapElement.prototype.onride = function(player) {};
 
   return MapElement;
 
@@ -93,8 +99,9 @@ GoalElement = (function(_super) {
     return 0;
   };
 
-  GoalElement.prototype.affect = function(player) {
-    return player.odispatchEvent(new MazeEvent('goal'));
+  GoalElement.prototype.onride = function(player) {
+    GoalElement.__super__.onride.apply(this, arguments);
+    return player.dispatchEvent(new MazeEvent('goal'));
   };
 
   return GoalElement;

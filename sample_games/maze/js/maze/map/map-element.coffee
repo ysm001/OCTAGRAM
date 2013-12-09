@@ -1,17 +1,22 @@
 class MapElement extends Sprite
-  @WIDTH  : 16
-  @HEIGHT : 16
+  @WIDTH  : 48
+  @HEIGHT : 48
 
   constructor: (@id = 0, x, y)->
     super MapElement.WIDTH, MapElement.HEIGHT
+    @image = Game.instance.assets[R.MAP.SRC]
+    @frame = @id
     @index =
       x: x
       y: y
+    @x = MapElement.WIDTH * x
+    @y = MapElement.HEIGHT * y
 
   isImpassable: () -> 1
 
-  affect: (player) ->
-  
+  setItem: (item) ->
+
+  onride: (player) ->
 
 class BlockElement extends MapElement
   @ID : 4
@@ -46,8 +51,10 @@ class GoalElement extends MapElement
 
   isImpassable: () -> 0
 
-  affect: (player) ->
-    player.odispatchEvent(new MazeEvent('goal'))
+  # override
+  onride: (player) ->
+    super
+    player.dispatchEvent(new MazeEvent('goal'))
 
 
 class TreasureElement extends MapElement

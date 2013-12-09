@@ -8,7 +8,9 @@ R = Config.R;
 MazeMap = (function(_super) {
   __extends(MazeMap, _super);
 
-  MazeMap.UNIT_SIZE = 48;
+  MazeMap.TILE_WIDTH = 48;
+
+  MazeMap.TILE_HEIGHT = 48;
 
   MazeMap.prototype.properties = {
     startElement: {
@@ -24,11 +26,9 @@ MazeMap = (function(_super) {
   };
 
   function MazeMap(matrix) {
-    var collisionData, collisionLine, element, elementLine, id, x, y, _i, _j, _ref, _ref1;
-    this.matrix = matrix;
+    var collisionLine, element, elementLine, id, x, y, _i, _j, _ref, _ref1;
     MazeMap.__super__.constructor.call(this, MazeMap.UNIT_SIZE, MazeMap.UNIT_SIZE);
     this.image = Game.instance.assets[R.MAP.SRC];
-    collisionData = [];
     this.elementData = [];
     for (y = _i = 0, _ref = matrix.length; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
       collisionLine = [];
@@ -36,7 +36,7 @@ MazeMap = (function(_super) {
       for (x = _j = 0, _ref1 = matrix[y].length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; x = 0 <= _ref1 ? ++_j : --_j) {
         id = matrix[y][x];
         element = ElementFactory.create(id, x, y);
-        collisionLine.push(element.isImpassable());
+        this.addChild(element);
         elementLine.push(element);
         if (element instanceof StartElement) {
           this._startElement = element;
@@ -44,11 +44,8 @@ MazeMap = (function(_super) {
           this._goalElement = element;
         }
       }
-      collisionData.push(collisionLine);
       this.elementData.push(elementLine);
     }
-    this.loadData(matrix);
-    this.collisionData = collisionData;
     Object.defineProperties(this, this.properties);
   }
 
@@ -61,9 +58,9 @@ MazeMap = (function(_super) {
   };
 
   MazeMap.prototype.toPoint = function(e) {
-    return new Point(this.x + this.tileWidth * e.index.x, this.x + this.tileHeight * e.index.y);
+    return new Point(this.x + MazeMap.TILE_WIDTH * e.index.x, this.y + MazeMap.TILE_HEIGHT * e.index.y);
   };
 
   return MazeMap;
 
-})(Map);
+})(Group);
