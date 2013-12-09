@@ -5,13 +5,14 @@ class MazeWorld extends Group
   constructor: () ->
     super
     map = [
-      [  4,  4,  4,  4,  4, 13,  4],
-      [  4,  0,  4,  0,  0,  0,  4],
-      [  4,  0,  4,  0,  4,  4,  4],
-      [  4,  0,  4,  0,  4,  0,  4],
-      [  4,  0,  0,  0,  4,  0,  4],
-      [  4,  0,  4,  0,  0,  0,  4],
-      [  4, 14,  4,  4,  4,  4,  4],
+      [  4,  4,  4,  4,  4,  4, 13,  4],
+      [  4,  0,  4,  0,  4,  4,  0,  4],
+      [  4,  0,  4,  0,  0,  0,  0,  4],
+      [  4,  0,  4,  0,  4,  4,  0,  4],
+      [  4,  0,  4,  0,  4,  4,  0,  4],
+      [  4,  0,  0,  0,  4,  4,  0,  4],
+      [  4,  0,  4,  0,  0,  0,  0,  4],
+      [  4, 14,  4,  4,  4,  4,  4,  4],
     ]
     @maze = new Maze {x:64, y:128, map:map}
     @addChild @maze
@@ -27,6 +28,7 @@ class MazeWorld extends Group
 
     playerProgram.addInstruction(new StraightMoveInstruction(@maze.player))
     playerProgram.addInstruction(new TurnInstruction(@maze.player))
+    playerProgram.addInstruction(new CheckMapInstruction(@maze.player))
     @octagram.showProgram(@playerProgramId)
 
 class MazeScene extends Scene

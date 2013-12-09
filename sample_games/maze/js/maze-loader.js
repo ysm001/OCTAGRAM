@@ -9,4 +9,4 @@
     _results.push(document.write('<script type="text/javascript" src="' + d + arg + '"></script>'));
   }
   return _results;
-})("utility.js", "config.js", "maze/maze.js", "maze/map/map-element.js", "maze/map/map.js", "maze/player.js", "octagram_instruction/common.js", "octagram_instruction/straight-move-instruction.js", "octagram_instruction/turn-instruction.js", "main.js");
+})("utility.js", "config.js", "maze/maze.js", "maze/map/map-element.js", "maze/map/map.js", "maze/player.js", "octagram_instruction/common.js", "octagram_instruction/straight-move-instruction.js", "octagram_instruction/turn-instruction.js", "octagram_instruction/check-map-instruction.js", "main.js");
