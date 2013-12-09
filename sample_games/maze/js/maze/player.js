@@ -45,7 +45,7 @@ Player = (function(_super) {
     var e, pos;
     pos = this.index.add(this.direction);
     e = this._map.getElement(pos.x, pos.y);
-    if (e !== false) {
+    if (e !== false && !e.isImpassable()) {
       this.position = e;
     }
     return this.dispatchEvent(new MazeEvent('move'));
@@ -57,6 +57,14 @@ Player = (function(_super) {
 
   Player.prototype.turnRight = function() {
     return this.direction = Direction.next(this.direction);
+  };
+
+  Player.prototype._isStart = function(e) {
+    return (e != null) && e === this._map.startElement;
+  };
+
+  Player.prototype._isGoal = function(e) {
+    return (e != null) && e === this._map.goalElement;
   };
 
   return Player;

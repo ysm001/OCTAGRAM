@@ -1,18 +1,11 @@
 class Maze extends Group
-  constructor: (x = 0, y = 0) ->
+  constructor: (data) ->
     super
-    @x = x
-    @y = y
-    map = [
-      [  4,  4,  4,  4,  4, 13,  4],
-      [  4,  0,  4,  0,  0,  0,  4],
-      [  4,  0,  4,  0,  4,  4,  4],
-      [  4,  0,  4,  0,  4,  0,  4],
-      [  4,  0,  0,  0,  4,  0,  4],
-      [  4,  0,  4,  0,  0,  0,  4],
-      [  4, 14,  4,  4,  4,  4,  4],
-    ]
-    @mazeMap = new MazeMap map
+    @x = if data.x? then data.x else 0
+    @y = if data.y? then data.y else 0
+    if !data.map?
+      data.map = map
+    @mazeMap = new MazeMap data.map
     @addChild @mazeMap
     @player = new RobotPlayer(@mazeMap)
     @addChild @player

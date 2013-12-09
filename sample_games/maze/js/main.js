@@ -10,8 +10,14 @@ MazeWorld = (function(_super) {
   __extends(MazeWorld, _super);
 
   function MazeWorld() {
+    var map;
     MazeWorld.__super__.constructor.apply(this, arguments);
-    this.maze = new Maze(64, 128);
+    map = [[4, 4, 4, 4, 4, 13, 4], [4, 0, 4, 0, 0, 0, 4], [4, 0, 4, 0, 4, 4, 4], [4, 0, 4, 0, 4, 0, 4], [4, 0, 0, 0, 4, 0, 4], [4, 0, 4, 0, 0, 0, 4], [4, 14, 4, 4, 4, 4, 4]];
+    this.maze = new Maze({
+      x: 64,
+      y: 128,
+      map: map
+    });
     this.addChild(this.maze);
   }
 
