@@ -13,7 +13,7 @@ class MapElement extends Sprite
     @y = MapElement.HEIGHT * y
     @item = null
 
-  isImpassable: () -> 1
+  isImpassable: 1
 
   setItem: (@item) ->
     @parentNode.addChild @item
@@ -25,14 +25,28 @@ class MapElement extends Sprite
       player.addItem(@item)
       @item.parentNode.removeChild @item
       @item = null
+  
+  requiredItems: () -> []
+  checkRequiredItems: (player) ->
+    checkAllRequiredItem = true
+    if @isImpassable
+      items = @requiredItems()
+      for item in items
+        checkAllRequiredItem = checkAllRequiredItem and player.hasItem(item)
+    checkAllRequiredItem
 
+  changePassable: (player) ->
+    items = @requiredItems()
+    player.getItem item for item in items
+    @isImpassable = 0
+    
 class BlockElement extends MapElement
   @ID : 4
 
   constructor: (x, y) ->
     super BlockElement.ID, x, y
 
-  isImpassable: () -> 1
+  isImpassable: 1
 
 class RoadElement extends MapElement
   @ID : 0
@@ -40,7 +54,7 @@ class RoadElement extends MapElement
   constructor: (x, y) ->
     super RoadElement.ID, x, y
 
-  isImpassable: () -> 0
+  isImpassable: 0
 
 class StartElement extends MapElement
   @ID : 14
@@ -48,7 +62,7 @@ class StartElement extends MapElement
   constructor: (x, y) ->
     super StartElement.ID, x, y
 
-  isImpassable: () -> 0
+  isImpassable: 0
 
 
 class GoalElement extends MapElement
@@ -57,7 +71,7 @@ class GoalElement extends MapElement
   constructor: (x, y) ->
     super GoalElement.ID, x, y
 
-  isImpassable: () -> 0
+  isImpassable: 0
 
   # override
   onride: (player) ->
@@ -71,10 +85,24 @@ class TreasureElement extends MapElement
   constructor: (x, y) ->
     super TreasureElement.ID, x, y
 
-  isImpassable: () -> 0
+  isImpassable: 0
 
   affect: (player) ->
     player.addItem new Key
+
+  requiredItems: () ->
+    [new Key, new Key]
+
+class GateElement extends MapElement
+  @ID : 17
+
+  constructor: (x, y) ->
+    super GateElement.ID, x, y
+
+  isImpassable: 1
+
+  requiredItems: () ->
+    [new Key]
 
 class ElementFactory
 
@@ -90,4 +118,6 @@ class ElementFactory
         ret = new GoalElement(x, y)
       when TreasureElement.ID
         ret = new TreasureElement(x, y)
+      when GateElement.ID
+        ret = new GateElement(x, y)
     ret

@@ -43,13 +43,16 @@ class Player extends Sprite
       onComplete()
       
   getItem: (item) ->
-    ret = null
-    if item in @_items
+    ret = null    
+    if @hasItem(item)
       pos = @_items.indexOf(item)
       ret = @_items[pos]
       @_items.splice(pos, 1)
     console.log "getItem", item, @_items
     ret
+
+  hasItem: (item) ->
+    @_items? and @_items.reduce ((ret,i) -> ret or item.name == i.name), true
   
   addItem: (item) ->
     if !@_items?
@@ -61,9 +64,12 @@ class Player extends Sprite
     ret = false
     pos = @index.add(@direction)
     e = @_map.getElement(pos.x, pos.y)
-    if e != false and !e.isImpassable()
-      @_move(e, onComplete)
-      ret = true
+    if e != false
+      if e.checkRequiredItems(@)
+        e.changePassable(@)
+      if !e.isImpassable
+        @_move(e, onComplete)
+        ret = true
     ret
 
   turnLeft: () ->
@@ -84,7 +90,7 @@ class Player extends Sprite
         d = @direction
     pos = @index.add(d)
     e = @_map.getElement(pos.x, pos.y)
-    e != false and e.isImpassable() == 0
+    e != false and e.isImpassable == 0
 
 class RobotPlayer extends Player
   @WIDTH  : 48
