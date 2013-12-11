@@ -15,55 +15,17 @@ MapElement = (function(_super) {
     MapElement.__super__.constructor.call(this, MapElement.WIDTH, MapElement.HEIGHT);
     this.image = Game.instance.assets[R.MAP.SRC];
     this.frame = this.id;
-    this.item = null;
+    this.enabled = true;
   }
 
-  MapElement.prototype.isImpassable = 1;
+  MapElement.prototype.isThrough = true;
 
-  MapElement.prototype.isThrough = function() {
-    return true;
-  };
+  MapElement.prototype.onride = function(player) {};
 
-  MapElement.prototype.setItem = function(item) {
-    this.item = item;
-    this.parentNode.addChild(this.item);
-    this.item.x = this.x;
-    return this.item.y = this.y;
-  };
-
-  MapElement.prototype.onride = function(player) {
-    if (this.item) {
-      player.addItem(this.item);
-      this.item.parentNode.removeChild(this.item);
-      return this.item = null;
-    }
-  };
+  MapElement.prototype.check = function(player) {};
 
   MapElement.prototype.requiredItems = function() {
     return [];
-  };
-
-  MapElement.prototype.checkRequiredItems = function(player) {
-    var checkAllRequiredItem, item, items, _i, _len;
-    checkAllRequiredItem = true;
-    if (this.isImpassable) {
-      items = this.requiredItems();
-      for (_i = 0, _len = items.length; _i < _len; _i++) {
-        item = items[_i];
-        checkAllRequiredItem = checkAllRequiredItem && player.hasItem(item);
-      }
-    }
-    return checkAllRequiredItem;
-  };
-
-  MapElement.prototype.changePassable = function(player) {
-    var item, items, _i, _len;
-    items = this.requiredItems();
-    for (_i = 0, _len = items.length; _i < _len; _i++) {
-      item = items[_i];
-      player.getItem(item);
-    }
-    return this.isImpassable = 0;
   };
 
   return MapElement;
@@ -79,11 +41,7 @@ BlockElement = (function(_super) {
     BlockElement.__super__.constructor.call(this, BlockElement.ID);
   }
 
-  BlockElement.prototype.isImpassable = 1;
-
-  BlockElement.prototype.isThrough = function() {
-    return false;
-  };
+  BlockElement.prototype.isThrough = false;
 
   return BlockElement;
 
@@ -98,11 +56,7 @@ StartElement = (function(_super) {
     StartElement.__super__.constructor.call(this, StartElement.ID);
   }
 
-  StartElement.prototype.isImpassable = 0;
-
-  StartElement.prototype.isThrough = function() {
-    return true;
-  };
+  StartElement.prototype.isThrough = true;
 
   return StartElement;
 
@@ -117,11 +71,7 @@ GoalElement = (function(_super) {
     GoalElement.__super__.constructor.call(this, GoalElement.ID);
   }
 
-  GoalElement.prototype.isImpassable = 0;
-
-  GoalElement.prototype.isThrough = function() {
-    return true;
-  };
+  GoalElement.prototype.isThrough = true;
 
   GoalElement.prototype.onride = function(player) {
     GoalElement.__super__.onride.apply(this, arguments);
@@ -141,18 +91,13 @@ TreasureElement = (function(_super) {
     TreasureElement.__super__.constructor.call(this, TreasureElement.ID);
   }
 
-  TreasureElement.prototype.isImpassable = 0;
-
-  TreasureElement.prototype.isThrough = function() {
-    return true;
-  };
+  TreasureElement.prototype.isThrough = true;
 
   TreasureElement.prototype.onride = function(player) {
+    TreasureElement.__super__.onride.call(this, player);
+    this.parentNode.removeChild(this);
+    this.enabled = false;
     return player.addItem(new Key);
-  };
-
-  TreasureElement.prototype.requiredItems = function() {
-    return [new Key, new Key];
   };
 
   return TreasureElement;
@@ -168,10 +113,32 @@ GateElement = (function(_super) {
     GateElement.__super__.constructor.call(this, GateElement.ID);
   }
 
-  GateElement.prototype.isImpassable = 1;
+  GateElement.prototype.isThrough = false;
 
-  GateElement.prototype.isThrough = function() {
-    return true;
+  GateElement.prototype._checkRequiredItems = function(player) {
+    var checkAllRequiredItem, item, items, _i, _len;
+    checkAllRequiredItem = true;
+    items = this.requiredItems();
+    for (_i = 0, _len = items.length; _i < _len; _i++) {
+      item = items[_i];
+      checkAllRequiredItem = checkAllRequiredItem && player.hasItem(item);
+    }
+    return checkAllRequiredItem;
+  };
+
+  GateElement.prototype.check = function(player) {
+    var item, items, _i, _len;
+    GateElement.__super__.check.call(this, player);
+    if (this._checkRequiredItems(player)) {
+      items = this.requiredItems();
+      for (_i = 0, _len = items.length; _i < _len; _i++) {
+        item = items[_i];
+        player.getItem(item);
+      }
+      this.parentNode.removeChild(this);
+      this.enabled = false;
+      return this.isThrough = true;
+    }
   };
 
   GateElement.prototype.requiredItems = function() {

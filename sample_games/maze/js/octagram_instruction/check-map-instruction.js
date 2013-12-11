@@ -31,11 +31,11 @@ CheckMapInstruction = (function(_super) {
     var ret;
     ret = false;
     if (this.directParam.value === 0) {
-      ret = this.player.isThrough(Direction.UP);
+      ret = this.player.canMove(Direction.UP);
     } else if (this.directParam.value === 1) {
-      ret = this.player.isThrough(Direction.RIGHT);
+      ret = this.player.canMove(Direction.RIGHT);
     } else if (this.directParam.value === 2) {
-      ret = this.player.isThrough(Direction.LEFT);
+      ret = this.player.canMove(Direction.LEFT);
     }
     return ret;
   };

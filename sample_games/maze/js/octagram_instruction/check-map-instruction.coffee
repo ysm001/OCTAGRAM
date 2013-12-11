@@ -20,11 +20,11 @@ class CheckMapInstruction extends BranchInstruction
   action : () ->
     ret = false
     if @directParam.value == 0
-      ret = @player.isThrough(Direction.UP)
+      ret = @player.canMove(Direction.UP)
     else if @directParam.value == 1
-      ret = @player.isThrough(Direction.RIGHT)
+      ret = @player.canMove(Direction.RIGHT)
     else if @directParam.value == 2
-      ret = @player.isThrough(Direction.LEFT)
+      ret = @player.canMove(Direction.LEFT)
     ret
     # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 

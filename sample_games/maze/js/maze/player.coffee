@@ -65,9 +65,9 @@ class Player extends Sprite
     pos = @index.add(@direction)
     tile = @_map.getTile(pos.x, pos.y)
     if tile != false
-      #if e.checkRequiredItems(@)
-      #  e.changePassable(@)
-      #if !e.isImpassable
+      #if tile.checkRequiredItems(@)
+      #  tile.changePassable(@)
+      tile.check(@)
       if tile.isThrough()
         @_move(tile, onComplete)
         ret = true
@@ -81,7 +81,7 @@ class Player extends Sprite
     @direction = Direction.next(@direction)
     @dispatchEvent(new MazeEvent('turnRight'))
 
-  isThrough: (direction) ->
+  canMove: (direction) ->
     switch direction
       when Direction.LEFT
         d = Direction.prev(@direction)
@@ -91,7 +91,10 @@ class Player extends Sprite
         d = @direction
     pos = @index.add(d)
     tile = @_map.getTile(pos.x, pos.y)
-    tile != false and tile.isThrough()
+    if tile != false
+      tile.check(@)
+      ret = tile.isThrough()
+    ret
 
 class RobotPlayer extends Player
   @WIDTH  : 48

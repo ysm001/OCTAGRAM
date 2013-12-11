@@ -23,7 +23,24 @@ class MapTile extends Group
     @addChild(element)
 
   onride: (player) ->
-    e.onride(player) for e in @elementData
+    target = null
+    for e in @elementData
+      e.onride(player)
+      target = e if e.enabled == false
+    
+    if target
+      @elementData.some (v, i) =>
+        @elementData.splice(i, 1) if v == target
 
-  isThrough: () -> @elementData.every (e) -> e.isThrough()
+  check: (player) ->
+    target = null
+    for e in @elementData
+      e.check(player)
+      target = e if e.enabled == false
+    
+    if target
+      @elementData.some (v, i) =>
+        @elementData.splice(i, 1) if v == target
+
+  isThrough: () -> @elementData.every (e) -> e.isThrough
 

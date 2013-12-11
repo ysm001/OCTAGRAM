@@ -6,37 +6,15 @@ class MapElement extends Sprite
     super MapElement.WIDTH, MapElement.HEIGHT
     @image = Game.instance.assets[R.MAP.SRC]
     @frame = @id
-    @item = null
+    @enabled = true
 
-  isImpassable: 1
-
-  isThrough: () -> true
-
-  setItem: (@item) ->
-    @parentNode.addChild @item
-    @item.x = @x
-    @item.y = @y
+  isThrough: true
 
   onride: (player) ->
-    if @item
-      player.addItem(@item)
-      @item.parentNode.removeChild @item
-      @item = null
+
+  check: (player) ->
   
   requiredItems: () -> []
-
-  checkRequiredItems: (player) ->
-    checkAllRequiredItem = true
-    if @isImpassable
-      items = @requiredItems()
-      for item in items
-        checkAllRequiredItem = checkAllRequiredItem and player.hasItem(item)
-    checkAllRequiredItem
-
-  changePassable: (player) ->
-    items = @requiredItems()
-    player.getItem item for item in items
-    @isImpassable = 0
     
 class BlockElement extends MapElement
   @ID : 4
@@ -44,9 +22,7 @@ class BlockElement extends MapElement
   constructor: () ->
     super BlockElement.ID
 
-  isImpassable: 1
-
-  isThrough: () -> false
+  isThrough: false
 
 class StartElement extends MapElement
   @ID : 14
@@ -54,10 +30,7 @@ class StartElement extends MapElement
   constructor: () ->
     super StartElement.ID
 
-  isImpassable: 0
-
-  isThrough: () -> true
-
+  isThrough: true
 
 class GoalElement extends MapElement
   @ID : 13
@@ -65,9 +38,7 @@ class GoalElement extends MapElement
   constructor: () ->
     super GoalElement.ID
 
-  isImpassable: 0
-
-  isThrough: () -> true
+  isThrough: true
 
   # override
   onride: (player) ->
@@ -81,15 +52,13 @@ class TreasureElement extends MapElement
   constructor: () ->
     super TreasureElement.ID
 
-  isImpassable: 0
-
-  isThrough: () -> true
+  isThrough: true
 
   onride: (player) ->
+    super player
+    @parentNode.removeChild @
+    @enabled = false
     player.addItem new Key
-
-  requiredItems: () ->
-    [new Key, new Key]
 
 class GateElement extends MapElement
   @ID : 17
@@ -97,12 +66,25 @@ class GateElement extends MapElement
   constructor: () ->
     super GateElement.ID
 
-  isImpassable: 1
+  isThrough: false
 
-  isThrough: () -> true
+  _checkRequiredItems: (player) ->
+    checkAllRequiredItem = true
+    items = @requiredItems()
+    for item in items
+      checkAllRequiredItem = checkAllRequiredItem and player.hasItem(item)
+    checkAllRequiredItem
 
-  requiredItems: () ->
-    [new Key]
+  check: (player) ->
+    super player
+    if @_checkRequiredItems(player)
+      items = @requiredItems()
+      player.getItem item for item in items
+      @parentNode.removeChild @
+      @enabled = false
+      @isThrough = true
+
+  requiredItems: () -> [new Key]
 
 class ElementFactory
 

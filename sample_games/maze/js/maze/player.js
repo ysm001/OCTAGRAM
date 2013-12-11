@@ -101,6 +101,7 @@ Player = (function(_super) {
     pos = this.index.add(this.direction);
     tile = this._map.getTile(pos.x, pos.y);
     if (tile !== false) {
+      tile.check(this);
       if (tile.isThrough()) {
         this._move(tile, onComplete);
         ret = true;
@@ -119,8 +120,8 @@ Player = (function(_super) {
     return this.dispatchEvent(new MazeEvent('turnRight'));
   };
 
-  Player.prototype.isThrough = function(direction) {
-    var d, pos, tile;
+  Player.prototype.canMove = function(direction) {
+    var d, pos, ret, tile;
     switch (direction) {
       case Direction.LEFT:
         d = Direction.prev(this.direction);
@@ -133,7 +134,11 @@ Player = (function(_super) {
     }
     pos = this.index.add(d);
     tile = this._map.getTile(pos.x, pos.y);
-    return tile !== false && tile.isThrough();
+    if (tile !== false) {
+      tile.check(this);
+      ret = tile.isThrough();
+    }
+    return ret;
   };
 
   return Player;

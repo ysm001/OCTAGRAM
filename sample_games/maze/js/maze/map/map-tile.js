@@ -43,19 +43,50 @@ MapTile = (function(_super) {
   };
 
   MapTile.prototype.onride = function(player) {
-    var e, _i, _len, _ref, _results;
+    var e, target, _i, _len, _ref,
+      _this = this;
+    target = null;
     _ref = this.elementData;
-    _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       e = _ref[_i];
-      _results.push(e.onride(player));
+      e.onride(player);
+      if (e.enabled === false) {
+        target = e;
+      }
     }
-    return _results;
+    if (target) {
+      return this.elementData.some(function(v, i) {
+        if (v === target) {
+          return _this.elementData.splice(i, 1);
+        }
+      });
+    }
+  };
+
+  MapTile.prototype.check = function(player) {
+    var e, target, _i, _len, _ref,
+      _this = this;
+    target = null;
+    _ref = this.elementData;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      e = _ref[_i];
+      e.check(player);
+      if (e.enabled === false) {
+        target = e;
+      }
+    }
+    if (target) {
+      return this.elementData.some(function(v, i) {
+        if (v === target) {
+          return _this.elementData.splice(i, 1);
+        }
+      });
+    }
   };
 
   MapTile.prototype.isThrough = function() {
     return this.elementData.every(function(e) {
-      return e.isThrough();
+      return e.isThrough;
     });
   };
 
