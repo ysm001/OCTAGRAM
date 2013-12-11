@@ -9,9 +9,6 @@ class Player extends Sprite
     @direction = Direction.UP
 
   properties:
-    position:
-      get: () -> null
-      set: (tile) ->
     direction:
       get: () -> @_direction
       set: (direction) ->
@@ -35,12 +32,15 @@ class Player extends Sprite
 
   _move: (tile, onComplete) ->
     point = @_map.toPoint(tile)
-    @tl.moveTo(point.x, point.y, 5).then () =>
+    @tl.moveTo(point.x, point.y, 0).then () =>
       @index.x = tile.index.x
       @index.y = tile.index.y
       tile.onride(@)
       @dispatchEvent(new MazeEvent('move'))
       onComplete()
+
+  initPosition: (@_map, tile) ->
+    @_moveDirect(tile)
       
   getItem: (item) ->
     ret = null

@@ -10,16 +10,41 @@ MazeWorld = (function(_super) {
   __extends(MazeWorld, _super);
 
   function MazeWorld() {
-    var map;
+    var map,
+      _this = this;
     MazeWorld.__super__.constructor.apply(this, arguments);
-    map = [[4, 4, 4, 4, 4, 4, 13, 4], [4, 25, 4, 0, 4, 4, 17, 4], [4, 0, 4, 0, 0, 0, 0, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 0, 0, 4, 4, 0, 4], [4, 0, 4, 0, 0, 0, 0, 4], [4, 14, 4, 4, 4, 4, 4, 4]];
-    this.maze = new Maze({
+    map = [[4, 4, 4, 4, 4, 4, 13, 4], [4, 25, 4, 0, 4, 4, 17, 4], [4, 0, 4, 0, 0, 0, 0, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 0, 0, 0, 0, 0, 4], [4, 14, 4, 4, 4, 4, 4, 4]];
+    this.maze = new GoalMaze({
       x: 64,
       y: 128,
       map: map
     });
     this.addChild(this.maze);
+    this.player = this.maze.createPlayer();
+    this.maze.setPlayer(this.player);
+    this.maze.addEventListener('complete', function() {
+      _this.octagram.getInstance(_this.playerProgramId).stop();
+      return _this.reloadNewMap();
+    });
   }
+
+  MazeWorld.prototype.reloadNewMap = function() {
+    var map,
+      _this = this;
+    console.log("reload map");
+    this.removeChild(this.maze);
+    map = [[4, 4, 4, 4, 4, 4, 13, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 4, 0, 0, 0, 0, 4], [4, 0, 4, 0, 4, 4, 4, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 0, 0, 4, 4, 0, 4], [4, 0, 4, 0, 0, 0, 0, 4], [4, 14, 4, 4, 4, 4, 4, 4]];
+    this.maze = new GoalMaze({
+      x: 64,
+      y: 128,
+      map: map
+    });
+    this.addChild(this.maze);
+    this.maze.setPlayer(this.player);
+    return this.maze.addEventListener('complete', function() {
+      return _this.reloadNewMap();
+    });
+  };
 
   MazeWorld.prototype.initInstructions = function(octagram) {
     var enemyProgram, playerProgram,

@@ -18,12 +18,6 @@ Player = (function(_super) {
   }
 
   Player.prototype.properties = {
-    position: {
-      get: function() {
-        return null;
-      },
-      set: function(tile) {}
-    },
     direction: {
       get: function() {
         return this._direction;
@@ -57,13 +51,18 @@ Player = (function(_super) {
     var point,
       _this = this;
     point = this._map.toPoint(tile);
-    return this.tl.moveTo(point.x, point.y, 5).then(function() {
+    return this.tl.moveTo(point.x, point.y, 0).then(function() {
       _this.index.x = tile.index.x;
       _this.index.y = tile.index.y;
       tile.onride(_this);
       _this.dispatchEvent(new MazeEvent('move'));
       return onComplete();
     });
+  };
+
+  Player.prototype.initPosition = function(_map, tile) {
+    this._map = _map;
+    return this._moveDirect(tile);
   };
 
   Player.prototype.getItem = function(item) {

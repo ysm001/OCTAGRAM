@@ -10,12 +10,36 @@ class MazeWorld extends Group
       [  4,  0,  4,  0,  0,  0,  0,  4],
       [  4,  0,  4,  0,  4,  4,  0,  4],
       [  4,  0,  4,  0,  4,  4,  0,  4],
+      [  4,  0,  4,  0,  4,  4,  0,  4],
+      [  4,  0,  0,  0,  0,  0,  0,  4],
+      [  4, 14,  4,  4,  4,  4,  4,  4],
+    ]
+    @maze = new GoalMaze {x:64, y:128, map:map}
+    @addChild @maze
+    @player = @maze.createPlayer()
+    @maze.setPlayer(@player)
+    @maze.addEventListener 'complete', () =>
+      @octagram.getInstance(@playerProgramId).stop()
+      @reloadNewMap()
+
+  reloadNewMap: () ->
+    console.log "reload map"
+    @removeChild @maze
+    map = [
+      [  4,  4,  4,  4,  4,  4, 13,  4],
+      [  4,  0,  4,  0,  4,  4,  0,  4],
+      [  4,  0,  4,  0,  0,  0,  0,  4],
+      [  4,  0,  4,  0,  4,  4,  4,  4],
+      [  4,  0,  4,  0,  4,  4,  0,  4],
       [  4,  0,  0,  0,  4,  4,  0,  4],
       [  4,  0,  4,  0,  0,  0,  0,  4],
       [  4, 14,  4,  4,  4,  4,  4,  4],
     ]
-    @maze = new Maze {x:64, y:128, map:map}
+    @maze = new GoalMaze {x:64, y:128, map:map}
     @addChild @maze
+    @maze.setPlayer(@player)
+    @maze.addEventListener 'complete', () =>
+      @reloadNewMap()
     
   initInstructions: (@octagram) ->
     playerProgram = @octagram.createProgramInstance()

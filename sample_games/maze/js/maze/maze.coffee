@@ -7,14 +7,21 @@ class Maze extends Group
       data.map = map
     @mazeMap = new MazeMap data.map
     @addChild @mazeMap
-    @player = new RobotPlayer(@mazeMap)
+
+  createPlayer: () -> new RobotPlayer(@mazeMap)
+
+  setPlayer: (@player) ->
+    @player.initPosition(@mazeMap, @mazeMap.startTile)
     @addChild @player
 
 class GoalMaze extends Maze
 
   constructor: (data) ->
     super data
-    @player.addEventListener 'goal', (evt) ->
+
+  setPlayer: (player) ->
+    super player
+    @player.addEventListener 'goal', (evt) =>
       @dispatchEvent(new MazeEvent("complete"))
       console.log "goal"
 
@@ -22,6 +29,9 @@ class DefeatMaze extends Maze
 
   constructor: (data) ->
     super data
+
+  setPlayer: (player) ->
+    super player
     @count = 0
     @player.addEventListener 'kill', (evt) =>
       @count += 1

@@ -15,9 +15,17 @@ Maze = (function(_super) {
     }
     this.mazeMap = new MazeMap(data.map);
     this.addChild(this.mazeMap);
-    this.player = new RobotPlayer(this.mazeMap);
-    this.addChild(this.player);
   }
+
+  Maze.prototype.createPlayer = function() {
+    return new RobotPlayer(this.mazeMap);
+  };
+
+  Maze.prototype.setPlayer = function(player) {
+    this.player = player;
+    this.player.initPosition(this.mazeMap, this.mazeMap.startTile);
+    return this.addChild(this.player);
+  };
 
   return Maze;
 
@@ -28,11 +36,16 @@ GoalMaze = (function(_super) {
 
   function GoalMaze(data) {
     GoalMaze.__super__.constructor.call(this, data);
-    this.player.addEventListener('goal', function(evt) {
-      this.dispatchEvent(new MazeEvent("complete"));
+  }
+
+  GoalMaze.prototype.setPlayer = function(player) {
+    var _this = this;
+    GoalMaze.__super__.setPlayer.call(this, player);
+    return this.player.addEventListener('goal', function(evt) {
+      _this.dispatchEvent(new MazeEvent("complete"));
       return console.log("goal");
     });
-  }
+  };
 
   return GoalMaze;
 
@@ -42,17 +55,21 @@ DefeatMaze = (function(_super) {
   __extends(DefeatMaze, _super);
 
   function DefeatMaze(data) {
-    var _this = this;
     DefeatMaze.__super__.constructor.call(this, data);
+  }
+
+  DefeatMaze.prototype.setPlayer = function(player) {
+    var _this = this;
+    DefeatMaze.__super__.setPlayer.call(this, player);
     this.count = 0;
-    this.player.addEventListener('kill', function(evt) {
+    return this.player.addEventListener('kill', function(evt) {
       _this.count += 1;
       if (data.count <= _this.count) {
         _this.dispatchEvent(new MazeEvent("complete"));
         return console.log("all defeat");
       }
     });
-  }
+  };
 
   return DefeatMaze;
 
