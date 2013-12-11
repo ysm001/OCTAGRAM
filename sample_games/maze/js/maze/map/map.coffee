@@ -5,42 +5,36 @@ class MazeMap extends Group
   @TILE_HEIGHT : 48
 
   properties:
-    startElement:
-      get: () -> @_startElement
-    goalElement:
-      get: () -> @_goalElement
+    startTile:
+      get: () -> @_startTile
+    goalTile:
+      get: () -> @_goalTile
 
   constructor: (matrix) ->
     super MazeMap.UNIT_SIZE, MazeMap.UNIT_SIZE
     @image = Game.instance.assets[R.MAP.SRC]
-    @elementData = []
+    @tileData = []
     for y in [0...matrix.length]
-      collisionLine = []
-      elementLine = []
+      tileLine = []
       for x in [0...matrix[y].length]
         id = matrix[y][x]
-    
-        if id == TreasureElement.ID
-          element = ElementFactory.create(RoadElement.ID, x, y)
-          @addChild(element)
-          element.setItem(new Key)
-        else
-          element = ElementFactory.create(id, x, y)
-          @addChild(element)
-          
-        elementLine.push(element)
-        if element instanceof StartElement
-          @_startElement = element
-        else if element instanceof GoalElement
-          @_goalElement = element
-      @elementData.push(elementLine)
+        tile = new MapTile(x, y)
+        @addChild(tile)
+        tileLine.push(tile)
+        if id != 0
+          element = ElementFactory.create(id)
+          tile.pushElement(element)
+          if element instanceof StartElement
+            @_startTile = tile
+          else if element instanceof GoalElement
+            @_goalTile = tile
+      @tileData.push(tileLine)
     Object.defineProperties @, @properties
 
-  getElement: (x, y) ->
-    if 0 <= x < @elementData[0].length and 0 <= y < @elementData.length
-      @elementData[y][x]
+  getTile: (x, y) ->
+    if 0 <= x < @tileData[0].length and 0 <= y < @tileData.length
+      @tileData[y][x]
     else
       false
 
-  toPoint: (e) -> new Point(@x + MazeMap.TILE_WIDTH * e.index.x, @y + MazeMap.TILE_HEIGHT * e.index.y)
-
+  toPoint: (tile) -> new Point(@x + MazeMap.TILE_WIDTH * tile.index.x, @y + MazeMap.TILE_HEIGHT * tile.index.y)

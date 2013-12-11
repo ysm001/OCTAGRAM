@@ -13,58 +13,55 @@ MazeMap = (function(_super) {
   MazeMap.TILE_HEIGHT = 48;
 
   MazeMap.prototype.properties = {
-    startElement: {
+    startTile: {
       get: function() {
-        return this._startElement;
+        return this._startTile;
       }
     },
-    goalElement: {
+    goalTile: {
       get: function() {
-        return this._goalElement;
+        return this._goalTile;
       }
     }
   };
 
   function MazeMap(matrix) {
-    var collisionLine, element, elementLine, id, x, y, _i, _j, _ref, _ref1;
+    var element, id, tile, tileLine, x, y, _i, _j, _ref, _ref1;
     MazeMap.__super__.constructor.call(this, MazeMap.UNIT_SIZE, MazeMap.UNIT_SIZE);
     this.image = Game.instance.assets[R.MAP.SRC];
-    this.elementData = [];
+    this.tileData = [];
     for (y = _i = 0, _ref = matrix.length; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
-      collisionLine = [];
-      elementLine = [];
+      tileLine = [];
       for (x = _j = 0, _ref1 = matrix[y].length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; x = 0 <= _ref1 ? ++_j : --_j) {
         id = matrix[y][x];
-        if (id === TreasureElement.ID) {
-          element = ElementFactory.create(RoadElement.ID, x, y);
-          this.addChild(element);
-          element.setItem(new Key);
-        } else {
-          element = ElementFactory.create(id, x, y);
-          this.addChild(element);
-        }
-        elementLine.push(element);
-        if (element instanceof StartElement) {
-          this._startElement = element;
-        } else if (element instanceof GoalElement) {
-          this._goalElement = element;
+        tile = new MapTile(x, y);
+        this.addChild(tile);
+        tileLine.push(tile);
+        if (id !== 0) {
+          element = ElementFactory.create(id);
+          tile.pushElement(element);
+          if (element instanceof StartElement) {
+            this._startTile = tile;
+          } else if (element instanceof GoalElement) {
+            this._goalTile = tile;
+          }
         }
       }
-      this.elementData.push(elementLine);
+      this.tileData.push(tileLine);
     }
     Object.defineProperties(this, this.properties);
   }
 
-  MazeMap.prototype.getElement = function(x, y) {
-    if ((0 <= x && x < this.elementData[0].length) && (0 <= y && y < this.elementData.length)) {
-      return this.elementData[y][x];
+  MazeMap.prototype.getTile = function(x, y) {
+    if ((0 <= x && x < this.tileData[0].length) && (0 <= y && y < this.tileData.length)) {
+      return this.tileData[y][x];
     } else {
       return false;
     }
   };
 
-  MazeMap.prototype.toPoint = function(e) {
-    return new Point(this.x + MazeMap.TILE_WIDTH * e.index.x, this.y + MazeMap.TILE_HEIGHT * e.index.y);
+  MazeMap.prototype.toPoint = function(tile) {
+    return new Point(this.x + MazeMap.TILE_WIDTH * tile.index.x, this.y + MazeMap.TILE_HEIGHT * tile.index.y);
   };
 
   return MazeMap;

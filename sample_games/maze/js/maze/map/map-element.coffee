@@ -2,18 +2,15 @@ class MapElement extends Sprite
   @WIDTH  : 48
   @HEIGHT : 48
 
-  constructor: (@id = 0, x, y)->
+  constructor: (@id = 0)->
     super MapElement.WIDTH, MapElement.HEIGHT
     @image = Game.instance.assets[R.MAP.SRC]
     @frame = @id
-    @index =
-      x: x
-      y: y
-    @x = MapElement.WIDTH * x
-    @y = MapElement.HEIGHT * y
     @item = null
 
   isImpassable: 1
+
+  isThrough: () -> true
 
   setItem: (@item) ->
     @parentNode.addChild @item
@@ -27,6 +24,7 @@ class MapElement extends Sprite
       @item = null
   
   requiredItems: () -> []
+
   checkRequiredItems: (player) ->
     checkAllRequiredItem = true
     if @isImpassable
@@ -43,35 +41,33 @@ class MapElement extends Sprite
 class BlockElement extends MapElement
   @ID : 4
 
-  constructor: (x, y) ->
-    super BlockElement.ID, x, y
+  constructor: () ->
+    super BlockElement.ID
 
   isImpassable: 1
 
-class RoadElement extends MapElement
-  @ID : 0
-
-  constructor: (x, y) ->
-    super RoadElement.ID, x, y
-
-  isImpassable: 0
+  isThrough: () -> false
 
 class StartElement extends MapElement
   @ID : 14
 
-  constructor: (x, y) ->
-    super StartElement.ID, x, y
+  constructor: () ->
+    super StartElement.ID
 
   isImpassable: 0
+
+  isThrough: () -> true
 
 
 class GoalElement extends MapElement
   @ID : 13
 
-  constructor: (x, y) ->
-    super GoalElement.ID, x, y
+  constructor: () ->
+    super GoalElement.ID
 
   isImpassable: 0
+
+  isThrough: () -> true
 
   # override
   onride: (player) ->
@@ -82,12 +78,14 @@ class GoalElement extends MapElement
 class TreasureElement extends MapElement
   @ID : 25
 
-  constructor: (x, y) ->
-    super TreasureElement.ID, x, y
+  constructor: () ->
+    super TreasureElement.ID
 
   isImpassable: 0
 
-  affect: (player) ->
+  isThrough: () -> true
+
+  onride: (player) ->
     player.addItem new Key
 
   requiredItems: () ->
@@ -96,28 +94,28 @@ class TreasureElement extends MapElement
 class GateElement extends MapElement
   @ID : 17
 
-  constructor: (x, y) ->
-    super GateElement.ID, x, y
+  constructor: () ->
+    super GateElement.ID
 
   isImpassable: 1
+
+  isThrough: () -> true
 
   requiredItems: () ->
     [new Key]
 
 class ElementFactory
 
-  @create: (id, x, y) ->
+  @create: (id) ->
     switch id
-      when RoadElement.ID
-        ret = new RoadElement(x, y)
       when BlockElement.ID
-        ret = new BlockElement(x, y)
+        ret = new BlockElement()
       when StartElement.ID
-        ret = new StartElement(x, y)
+        ret = new StartElement()
       when GoalElement.ID
-        ret = new GoalElement(x, y)
+        ret = new GoalElement()
       when TreasureElement.ID
-        ret = new TreasureElement(x, y)
+        ret = new TreasureElement()
       when GateElement.ID
-        ret = new GateElement(x, y)
+        ret = new GateElement()
     ret

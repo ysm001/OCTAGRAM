@@ -13,7 +13,7 @@ Player = (function(_super) {
     Player.__super__.constructor.call(this, width, height);
     Object.defineProperties(this, this.properties);
     this.index = new Point();
-    this._moveDirect(this._map.startElement);
+    this._moveDirect(this._map.startTile);
     this.direction = Direction.UP;
   }
 
@@ -22,7 +22,7 @@ Player = (function(_super) {
       get: function() {
         return null;
       },
-      set: function(e) {}
+      set: function(tile) {}
     },
     direction: {
       get: function() {
@@ -44,23 +44,23 @@ Player = (function(_super) {
     }
   };
 
-  Player.prototype._moveDirect = function(e) {
+  Player.prototype._moveDirect = function(tile) {
     var point;
-    point = this._map.toPoint(e);
+    point = this._map.toPoint(tile);
     this.x = point.x;
     this.y = point.y;
-    this.index.x = e.index.x;
-    return this.index.y = e.index.y;
+    this.index.x = tile.index.x;
+    return this.index.y = tile.index.y;
   };
 
-  Player.prototype._move = function(e, onComplete) {
+  Player.prototype._move = function(tile, onComplete) {
     var point,
       _this = this;
-    point = this._map.toPoint(e);
+    point = this._map.toPoint(tile);
     return this.tl.moveTo(point.x, point.y, 5).then(function() {
-      _this.index.x = e.index.x;
-      _this.index.y = e.index.y;
-      e.onride(_this);
+      _this.index.x = tile.index.x;
+      _this.index.y = tile.index.y;
+      tile.onride(_this);
       _this.dispatchEvent(new MazeEvent('move'));
       return onComplete();
     });
@@ -93,19 +93,16 @@ Player = (function(_super) {
   };
 
   Player.prototype.move = function(onComplete) {
-    var e, pos, ret;
+    var pos, ret, tile;
     if (onComplete == null) {
       onComplete = function() {};
     }
     ret = false;
     pos = this.index.add(this.direction);
-    e = this._map.getElement(pos.x, pos.y);
-    if (e !== false) {
-      if (e.checkRequiredItems(this)) {
-        e.changePassable(this);
-      }
-      if (!e.isImpassable) {
-        this._move(e, onComplete);
+    tile = this._map.getTile(pos.x, pos.y);
+    if (tile !== false) {
+      if (tile.isThrough()) {
+        this._move(tile, onComplete);
         ret = true;
       }
     }
@@ -123,7 +120,7 @@ Player = (function(_super) {
   };
 
   Player.prototype.isThrough = function(direction) {
-    var d, e, pos;
+    var d, pos, tile;
     switch (direction) {
       case Direction.LEFT:
         d = Direction.prev(this.direction);
@@ -135,8 +132,8 @@ Player = (function(_super) {
         d = this.direction;
     }
     pos = this.index.add(d);
-    e = this._map.getElement(pos.x, pos.y);
-    return e !== false && e.isImpassable === 0;
+    tile = this._map.getTile(pos.x, pos.y);
+    return tile !== false && tile.isThrough();
   };
 
   return Player;

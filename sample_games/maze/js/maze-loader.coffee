@@ -8,6 +8,7 @@
   "utility.js"
   "config.js"
   "maze/maze.js"
+  "maze/map/map-tile.js"
   "maze/map/map-element.js"
   "maze/map/map.js"
   "maze/player.js"

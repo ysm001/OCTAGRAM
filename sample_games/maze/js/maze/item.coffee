@@ -7,7 +7,6 @@ class Item extends Sprite
   constructor: (@name = "item") ->
     super Item.WIDTH, Item.HEIGHT
 
-
 class Key extends Item
   constructor: () ->
     super("key")

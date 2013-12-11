@@ -5,13 +5,13 @@ class Player extends Sprite
     super width, height
     Object.defineProperties @, @properties
     @index = new Point()
-    @_moveDirect(@_map.startElement)
+    @_moveDirect(@_map.startTile)
     @direction = Direction.UP
 
   properties:
     position:
       get: () -> null
-      set: (e) ->
+      set: (tile) ->
     direction:
       get: () -> @_direction
       set: (direction) ->
@@ -26,24 +26,24 @@ class Player extends Sprite
           when Direction.LEFT
             @frame = 1
 
-  _moveDirect: (e) ->
-    point = @_map.toPoint(e)
+  _moveDirect: (tile) ->
+    point = @_map.toPoint(tile)
     @x = point.x
     @y = point.y
-    @index.x = e.index.x
-    @index.y = e.index.y
+    @index.x = tile.index.x
+    @index.y = tile.index.y
 
-  _move: (e, onComplete) ->
-    point = @_map.toPoint(e)
+  _move: (tile, onComplete) ->
+    point = @_map.toPoint(tile)
     @tl.moveTo(point.x, point.y, 5).then () =>
-      @index.x = e.index.x
-      @index.y = e.index.y
-      e.onride(@)
+      @index.x = tile.index.x
+      @index.y = tile.index.y
+      tile.onride(@)
       @dispatchEvent(new MazeEvent('move'))
       onComplete()
       
   getItem: (item) ->
-    ret = null    
+    ret = null
     if @hasItem(item)
       pos = @_items.indexOf(item)
       ret = @_items[pos]
@@ -63,12 +63,13 @@ class Player extends Sprite
   move: (onComplete = () ->) ->
     ret = false
     pos = @index.add(@direction)
-    e = @_map.getElement(pos.x, pos.y)
-    if e != false
-      if e.checkRequiredItems(@)
-        e.changePassable(@)
-      if !e.isImpassable
-        @_move(e, onComplete)
+    tile = @_map.getTile(pos.x, pos.y)
+    if tile != false
+      #if e.checkRequiredItems(@)
+      #  e.changePassable(@)
+      #if !e.isImpassable
+      if tile.isThrough()
+        @_move(tile, onComplete)
         ret = true
     ret
 
@@ -89,8 +90,8 @@ class Player extends Sprite
       else
         d = @direction
     pos = @index.add(d)
-    e = @_map.getElement(pos.x, pos.y)
-    e != false and e.isImpassable == 0
+    tile = @_map.getTile(pos.x, pos.y)
+    tile != false and tile.isThrough()
 
 class RobotPlayer extends Player
   @WIDTH  : 48
