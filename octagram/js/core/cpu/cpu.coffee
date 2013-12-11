@@ -17,6 +17,7 @@ class Cpu extends Group
 
     if @replaceTip(newTip, sx, sy)
       newTip.setNext(dx, dy, @getTip(dx, dy)) 
+      @dispatchEvent(new Event('change'))
 
   putBranchTip : (sx, sy, conseqDir, alterDir, newTip) ->
     cdx = sx + conseqDir.x
@@ -27,8 +28,11 @@ class Cpu extends Group
     if @replaceTip(newTip, sx, sy)
       newTip.setConseq(cdx, cdy, @getTip(cdx, cdy))
       newTip.setAlter(adx, ady, @getTip(adx, ady))
+      @dispatchEvent(new Event('change'))
 
-  putSingleTip : (sx, sy, newTip) -> @replaceTip(newTip, sx, sy)
+  putSingleTip : (sx, sy, newTip) -> 
+    @replaceTip(newTip, sx, sy)
+    @dispatchEvent(new Event('change'))
 
   replaceTip : (newTip, xidx, yidx) ->
     if !@getTip(xidx, yidx).immutable
@@ -41,12 +45,15 @@ class Cpu extends Group
       newTip.show(this)
       if selected then newTip.select()
 
+      newTip.addEventListener('changeTransition', () => @dispatchEvent(new Event('change')))
       @setTip(xidx, yidx, newTip)
+
       true
     else false
 
   addTip : (sx, sy, dir, newTip) -> 
     @replaceTip(newTip, sx + dir.x, sy + dir.y)
+    @dispatchEvent(new Event('change'))
 
   putStartTip : (x, y) ->
     start = new SingleTransitionCodeTip(new StartTip)
@@ -54,6 +61,7 @@ class Cpu extends Group
     dir = Direction.down
     @putTip(x, y, dir, start)
     @replaceTip(returnTip, @sx + dir.x, @sy + dir.y)
+    @dispatchEvent(new Event('change'))
 
   createTips : (x, y) ->
     tip    = Resources.get("emptyTip")

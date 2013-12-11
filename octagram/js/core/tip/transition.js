@@ -88,13 +88,14 @@ TipTransition = (function(_super) {
       this.dst = dst;
       if (this.src.setConseq != null) {
         if (this instanceof AlterTransition) {
-          return this.src.setAlter(nx, ny, dst);
+          this.src.setAlter(nx, ny, dst);
         } else {
-          return this.src.setConseq(nx, ny, dst);
+          this.src.setConseq(nx, ny, dst);
         }
       } else {
-        return this.src.setNext(nx, ny, dst);
+        this.src.setNext(nx, ny, dst);
       }
+      return this.dispatchEvent(new Event('changeTransition'));
     }
   };
 

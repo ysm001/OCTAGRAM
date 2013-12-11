@@ -23,7 +23,8 @@ Cpu = (function(_super) {
     dx = sx + dir.x;
     dy = sy + dir.y;
     if (this.replaceTip(newTip, sx, sy)) {
-      return newTip.setNext(dx, dy, this.getTip(dx, dy));
+      newTip.setNext(dx, dy, this.getTip(dx, dy));
+      return this.dispatchEvent(new Event('change'));
     }
   };
 
@@ -35,16 +36,19 @@ Cpu = (function(_super) {
     ady = sy + alterDir.y;
     if (this.replaceTip(newTip, sx, sy)) {
       newTip.setConseq(cdx, cdy, this.getTip(cdx, cdy));
-      return newTip.setAlter(adx, ady, this.getTip(adx, ady));
+      newTip.setAlter(adx, ady, this.getTip(adx, ady));
+      return this.dispatchEvent(new Event('change'));
     }
   };
 
   Cpu.prototype.putSingleTip = function(sx, sy, newTip) {
-    return this.replaceTip(newTip, sx, sy);
+    this.replaceTip(newTip, sx, sy);
+    return this.dispatchEvent(new Event('change'));
   };
 
   Cpu.prototype.replaceTip = function(newTip, xidx, yidx) {
-    var oldTip, selected;
+    var oldTip, selected,
+      _this = this;
     if (!this.getTip(xidx, yidx).immutable) {
       oldTip = this.getTip(xidx, yidx);
       selected = oldTip.isSelected();
@@ -55,6 +59,9 @@ Cpu = (function(_super) {
       if (selected) {
         newTip.select();
       }
+      newTip.addEventListener('changeTransition', function() {
+        return _this.dispatchEvent(new Event('change'));
+      });
       this.setTip(xidx, yidx, newTip);
       return true;
     } else {
@@ -63,7 +70,8 @@ Cpu = (function(_super) {
   };
 
   Cpu.prototype.addTip = function(sx, sy, dir, newTip) {
-    return this.replaceTip(newTip, sx + dir.x, sy + dir.y);
+    this.replaceTip(newTip, sx + dir.x, sy + dir.y);
+    return this.dispatchEvent(new Event('change'));
   };
 
   Cpu.prototype.putStartTip = function(x, y) {
@@ -72,7 +80,8 @@ Cpu = (function(_super) {
     returnTip = TipFactory.createReturnTip(this.sx, this.sy);
     dir = Direction.down;
     this.putTip(x, y, dir, start);
-    return this.replaceTip(returnTip, this.sx + dir.x, this.sy + dir.y);
+    this.replaceTip(returnTip, this.sx + dir.x, this.sy + dir.y);
+    return this.dispatchEvent(new Event('change'));
   };
 
   Cpu.prototype.createTips = function(x, y) {

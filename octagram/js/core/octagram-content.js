@@ -101,13 +101,17 @@ OctagramContent = (function(_super) {
   __extends(OctagramContent, _super);
 
   function OctagramContent(x, y, xnum, ynum) {
-    var back, selector;
+    var back, selector,
+      _this = this;
     OctagramContent.__super__.constructor.call(this);
     this.id = uniqueID();
     this.tipSet = new TipSet();
     this.userInstructions = [];
     this.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX, this);
     this.executer = new Executer(this.cpu);
+    this.cpu.addEventListener('change', function() {
+      return _this.dispatchEvent(new Event('changeOctagram'));
+    });
     back = new TipBackground(x, y, xnum, ynum);
     this.ui = {};
     this.ui.frame = new Frame(0, 0);

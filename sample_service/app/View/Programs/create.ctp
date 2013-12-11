@@ -6,6 +6,8 @@
 <?php echo $this->Html->script(array('octagram/js/enchant.js/plugins/ui.enchant.js'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('octagram/js/enchant.js/plugins/widget.enchant.js'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('octagram/js/enchant.js/plugins/model.enchant.js'), false, array('inline'=>false)); ?>
+<?php echo $this->Html->script(array('ace'), false, array('inline'=>false)); ?>
+<?php echo $this->Html->script(array('mode-javascript'), false, array('inline'=>false)); ?>
 
 <?php $this->Html->scriptStart(array('inline'=>false)); ?>
   var VPL_JS_BASE = "./";
@@ -47,8 +49,9 @@
   <p>- 最強のAIを作ろう！-</p>
 </blockquote>
 <div id="program-container">
-  <div id="octagram" style="float:left"></div>
-  <div id="enchant-stage" style="float:left"></div>
+  <div id="octagram"></div>
+  <div id="enchant-stage"></div>
+  <div id="js-viewer"></div>
 </div>
 <div id="target-label-player" class="label label-success">プレイヤープログラムを編集中</div>
 <div id="target-label-enemy" class="label label-danger" style="display:none">敵プログラムを編集中 (保存はできません)</div>
@@ -67,6 +70,11 @@
   <div class='button-container'>
     <button type="button" class="btn btn-lg btn-success" id='edit-player-program' style="display: none">プレイヤープログラムを編集</button>
     <button type="button" class="btn btn-lg btn-danger"  id='edit-enemy-program'>敵プログラムを編集</button>
+  </div>
+
+  <div class='button-container-row'>
+    <button type="button" class="btn btn-lg btn-primary" id="show-js">Javascriptを表示</button>
+    <button type="button" class="btn btn-lg btn-danger" id="hide-js" disabled=disabled>Javascriptを隠す</button>
   </div>
 </div>
 </div>

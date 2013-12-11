@@ -96,7 +96,11 @@ class ProgramStorage
           type: 'success'
           text: '読み込み'
           handler: (data) => 
-            @loadProgramById(data.id)
+            @loadProgramById(data.id, () -> 
+              data.status = 'complete'
+              callback(data)
+            )
+            data.status = 'ready'
             callback(data)
         }
       ]

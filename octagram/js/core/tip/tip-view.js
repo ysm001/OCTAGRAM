@@ -294,14 +294,18 @@ SingleTransitionCodeTip = (function(_super) {
   }
 
   SingleTransitionCodeTip.prototype.setNext = function(x, y, dst) {
+    var _this = this;
     if (this.trans != null) {
       this.trans.hide();
     }
     this.trans = new NormalTransition(this, dst);
     this.trans.show(this);
-    return this.code.setNext({
+    this.code.setNext({
       x: x,
       y: y
+    });
+    return this.trans.addEventListener('changeTransition', function(e) {
+      return _this.dispatchEvent(e);
     });
   };
 
@@ -339,26 +343,34 @@ BranchTransitionCodeTip = (function(_super) {
   }
 
   BranchTransitionCodeTip.prototype.setConseq = function(x, y, dst) {
+    var _this = this;
     if (this.conseqTrans != null) {
       this.conseqTrans.hide();
     }
     this.conseqTrans = new NormalTransition(this, dst);
     this.conseqTrans.show(this);
-    return this.code.setConseq({
+    this.code.setConseq({
       x: x,
       y: y
+    });
+    return this.conseqTrans.addEventListener('changeTransition', function(e) {
+      return _this.dispatchEvent(e);
     });
   };
 
   BranchTransitionCodeTip.prototype.setAlter = function(x, y, dst) {
+    var _this = this;
     if (this.alterTrans != null) {
       this.alterTrans.hide();
     }
     this.alterTrans = new AlterTransition(this, dst);
     this.alterTrans.show(this);
-    return this.code.setAlter({
+    this.code.setAlter({
       x: x,
       y: y
+    });
+    return this.alterTrans.addEventListener('changeTransition', function(e) {
+      return _this.dispatchEvent(e);
     });
   };
 

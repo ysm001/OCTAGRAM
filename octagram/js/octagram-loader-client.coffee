@@ -9,6 +9,7 @@
   "core/test.js",
   "core/tip/tip-icon.js",
 	"core/tip/tip-parameter.js",
-  'core/octagram.js'
+  'core/octagram.js',
+	"core/js-generator.js"
 )
 
