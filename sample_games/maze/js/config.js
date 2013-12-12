@@ -83,6 +83,10 @@ Config.R = (function() {
     DISTANCE: "" + R.RESOURCE_DIR + "/tip/distance.png"
   };
 
+  R.EFFECT = {
+    SEARCH: "" + R.RESOURCE_DIR + "/effect/explosion_64x64.png"
+  };
+
   return R;
 
 })();

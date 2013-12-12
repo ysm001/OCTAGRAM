@@ -120,7 +120,7 @@ Player = (function(_super) {
   };
 
   Player.prototype.canMove = function(direction) {
-    var d, pos, ret, tile;
+    var d, pos, ret, search, tile;
     switch (direction) {
       case Direction.LEFT:
         d = Direction.prev(this.direction);
@@ -134,6 +134,8 @@ Player = (function(_super) {
     pos = this.index.add(d);
     tile = this._map.getTile(pos.x, pos.y);
     if (tile !== false) {
+      search = new SearchEffect(pos.x * MazeMap.TILE_WIDTH, pos.y * MazeMap.TILE_HEIGHT);
+      this.parentNode.addChild(search);
       tile.check(this);
       ret = tile.isThrough();
     }

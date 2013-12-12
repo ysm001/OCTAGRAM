@@ -46,7 +46,8 @@ class Config.R
     REST_ENERGY_PLAYER : "#{R.RESOURCE_DIR}/tip/rest_energy_player.png"
     REST_ENERGY_ENEMY : "#{R.RESOURCE_DIR}/tip/rest_energy_enemy.png"
     DISTANCE : "#{R.RESOURCE_DIR}/tip/distance.png"
+  @EFFECT :
+    SEARCH : "#{R.RESOURCE_DIR}/effect/explosion_64x64.png"
 
- 
 
 

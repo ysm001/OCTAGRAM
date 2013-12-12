@@ -92,6 +92,9 @@ class Player extends Sprite
     pos = @index.add(d)
     tile = @_map.getTile(pos.x, pos.y)
     if tile != false
+      search = new SearchEffect pos.x*MazeMap.TILE_WIDTH, pos.y*MazeMap.TILE_HEIGHT
+      @parentNode.addChild search
+  
       tile.check(@)
       ret = tile.isThrough()
     ret
@@ -103,3 +106,5 @@ class RobotPlayer extends Player
   constructor: (map) ->
     super RobotPlayer.WIDTH, RobotPlayer.HEIGHT, map
     @image = Game.instance.assets[R.CHAR.CHAR1]
+
+

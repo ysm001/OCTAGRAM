@@ -14,6 +14,7 @@ class MazeWorld extends Group
       [  4,  0,  0,  0,  0,  0,  0,  4],
       [  4, 14,  4,  4,  4,  4,  4,  4],
     ]
+  
     @maze = new GoalMaze {x:64, y:128, map:map}
     @addChild @maze
     @player = @maze.createPlayer()
@@ -82,11 +83,11 @@ class MazeGame extends Core
     load R.MAP
     load R.CHAR
     load R.TIP
+    load R.EFFECT
 
   onload: ->
     @scene = new MazeScene @
     @pushScene @scene
-
     @octagram = new Octagram(Config.OCTAGRAM_DIR)
     @octagram.onload = () =>
       @scene.world.initInstructions(@octagram)
@@ -102,3 +103,29 @@ class MazeGame extends Core
 runGame = (options) ->
   game = new MazeGame Config.GAME_WIDTH, Config.GAME_HEIGHT, options
   game.start()
+
+
+
+class Timer extends Sprite
+  constructor: (@startFrame=0, @limit=null) ->
+    super
+
+  getProgress: (g)->
+    progress = parseInt(g.frame/g.fps)
+    console.log progress, g.frame, g.fps
+    progress
+  
+  getTime: (g)->
+    time = if @limit? then @limit - @getProgress(g) else @getProgress(g)
+
+  onenterframe: ->
+    time = @getTime(Game.instance)
+    console.log @getTimeLabel(time)
+    if time <= 0 then @timeUp()
+
+  timeUp: () ->
+    # タイムアップ時の処理
+
+  getTimeLabel: (time)->
+    "リミット : " + time
+
