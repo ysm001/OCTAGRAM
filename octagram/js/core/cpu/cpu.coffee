@@ -156,6 +156,16 @@ class Cpu extends Group
   getStartPosition : () -> {x: @sx, y: @sy}
   getYnum : () -> @ynum
   getXnum : () -> @xnum
+  getTipCount: () ->
+    ret = {action: 0, branch: 0, others: 0}
+    for i in [-1...@ynum+1]
+      for j in [-1...@xnum+1]
+        tip = @getTip(j, i).code
+        if tip instanceof ActionTip then ret.action++
+        else if tip instanceof BranchTip then ret.branch++
+        else if !(tip instanceof EmptyTip || tip instanceof WallTip || tip instanceof StartTip) then ret.others++
+
+    ret
 
   isOuter : (x, y) -> (y == -1 || x == -1 || y == @ynum || x == @xnum)
   isStart : (x, y) -> (x == @sx && y == @sy)
