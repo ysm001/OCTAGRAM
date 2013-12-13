@@ -74,3 +74,26 @@ class MazeResultViewer
   disableInput : () ->
     $filter = $('<div></div>').attr('id', 'filter')
     $('#program-container').append($filter)
+
+$ ->
+  page = if window.location.hash.length > 0 then parseInt(window.location.hash.replace('#', '')) else 1
+  $('.question-number').click(() -> window.location.href = window.location.pathname + '#' + $(@).text())
+
+  highlitePagerButton = (num) ->
+    $pager = $('.question-number')
+
+    for btn,i in $pager
+      $btn = $(btn)
+      $btn.removeClass('btn-default')
+      $btn.removeClass('btn-primary')
+      $btn.removeAttr('disabled')
+
+      if i == (num - 1) 
+        $btn.addClass('btn-primary')
+        $btn.attr('disabled', 'disabled')
+      else $btn.addClass('btn-default')
+
+  highlitePagerButton(page)
+  tm.HashObserver.enable()
+
+  document.addEventListener("changehash", (e) -> highlitePagerButton(e.hash.replace('#', '')))

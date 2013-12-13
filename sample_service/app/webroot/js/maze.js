@@ -103,3 +103,35 @@ MazeResultViewer = (function() {
   return MazeResultViewer;
 
 })();
+
+$(function() {
+  var highlitePagerButton, page;
+  page = window.location.hash.length > 0 ? parseInt(window.location.hash.replace('#', '')) : 1;
+  $('.question-number').click(function() {
+    return window.location.href = window.location.pathname + '#' + $(this).text();
+  });
+  highlitePagerButton = function(num) {
+    var $btn, $pager, btn, i, _i, _len, _results;
+    $pager = $('.question-number');
+    _results = [];
+    for (i = _i = 0, _len = $pager.length; _i < _len; i = ++_i) {
+      btn = $pager[i];
+      $btn = $(btn);
+      $btn.removeClass('btn-default');
+      $btn.removeClass('btn-primary');
+      $btn.removeAttr('disabled');
+      if (i === (num - 1)) {
+        $btn.addClass('btn-primary');
+        _results.push($btn.attr('disabled', 'disabled'));
+      } else {
+        _results.push($btn.addClass('btn-default'));
+      }
+    }
+    return _results;
+  };
+  highlitePagerButton(page);
+  tm.HashObserver.enable();
+  return document.addEventListener("changehash", function(e) {
+    return highlitePagerButton(e.hash.replace('#', ''));
+  });
+});

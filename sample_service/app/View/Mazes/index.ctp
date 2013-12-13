@@ -9,6 +9,7 @@
 <?php echo $this->Html->script(array('octagram/js/enchant.js/plugins/model.enchant.js'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('ace'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('mode-javascript'), false, array('inline'=>false)); ?>
+<?php echo $this->Html->script(array('tm.hash-observer'), false, array('inline'=>false)); ?>
 
 <?php $this->Html->scriptStart(array('inline'=>false)); ?>
   var VPL_JS_BASE = "./";
@@ -71,6 +72,17 @@
   <div class='button-container'>
     <button type="button" class="btn btn-lg btn-primary" id="show-js">Javascriptを表示</button>
     <button type="button" class="btn btn-lg btn-danger" id="hide-js" disabled=disabled>Javascriptを隠す</button>
+  </div>
+  <div class='button-container' style='float:right'>
+    <div class="btn-toolbar" role="toolbar">
+      <div class="btn-group">
+        <button class="btn btn-lg btn-default question-number" type="button">1</button>
+        <button class="btn btn-lg btn-default question-number" type="button">2</button>
+        <button class="btn btn-lg btn-default question-number" type="button">3</button>
+        <button class="btn btn-lg btn-default question-number" type="button">4</button>
+        <button class="btn btn-lg btn-default question-number" type="button">5</button>
+      </div>
+    </div>
   </div>
 </div>
 </div>
