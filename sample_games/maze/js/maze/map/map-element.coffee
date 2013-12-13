@@ -275,3 +275,26 @@ class ElementFactory
         ret = new Wall9Element()
 
     ret
+
+WR = Wall1RightElement.ID
+WD = Wall1DownElement.ID
+WL = Wall1LeftElement.ID
+WU = Wall1UpElement.ID
+
+WA1 = Wall3TopElement.ID
+WA2 = Wall3RightElement.ID
+WA3 = Wall3BottomElement.ID
+WA4 = Wall3LeftElement.ID
+
+WC1 = Wall8UpLeftElement.ID
+WC2 = Wall8UpRightElement.ID
+WC3 = Wall8BottomRightElement.ID
+WC4 = Wall8BottomLeftElement.ID
+
+RO = RoadElement.ID
+WB = Wall5Element.ID
+
+WV = Wall2HorizontalElement.ID
+WH = Wall2VerticalElement.ID  
+
+WT = Wall9Element.ID

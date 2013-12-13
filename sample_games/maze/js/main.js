@@ -13,7 +13,7 @@ MazeWorld = (function(_super) {
     var map,
       _this = this;
     MazeWorld.__super__.constructor.apply(this, arguments);
-    map = [[37, 37, 37, 37, 37, 37, 37, 37, 37, 37], [37, 41, 35, 35, 35, 35, 35, 35, 42, 37], [37, 34, 30, 30, 30, 30, 30, 30, 36, 37], [37, 34, 30, 48, 30, 30, 48, 13, 36, 37], [37, 34, 30, 50, 30, 47, 38, 45, 36, 37], [37, 34, 30, 50, 30, 30, 46, 30, 36, 37], [37, 34, 30, 46, 30, 30, 30, 30, 36, 37], [37, 34, 14, 30, 30, 30, 30, 30, 36, 37], [37, 44, 33, 33, 33, 33, 33, 33, 43, 37], [37, 37, 37, 37, 37, 37, 37, 37, 37, 37]];
+    map = [[WT, WT, WT, WT, WT, WT, WT, WT, WT, WT], [WT, WC1, WA3, WA3, WA3, WA3, WA3, WA3, WC2, WT], [WT, WA2, RO, RO, RO, RO, RO, RO, WA4, WT], [WT, WA2, RO, 48, RO, RO, 48, 13, WA4, WT], [WT, WA2, RO, 50, RO, 47, 38, 45, WA4, WT], [WT, WA2, RO, 50, RO, RO, 46, RO, WA4, WT], [WT, WA2, RO, 46, RO, RO, RO, RO, WA4, WT], [WT, WA2, 14, RO, RO, RO, RO, RO, WA4, WT], [WT, WC2, WA1, WA1, WA1, WA1, WA1, WA1, WC3, WT], [WT, WT, WT, WT, WT, WT, WT, WT, WT, WT]];
     this.maze = new GoalMaze({
       x: 0,
       y: 0,
