@@ -16,7 +16,7 @@ class TurnInstruction extends ActionInstruction
     @addParameter(@directParam)
     @tipInfo = new TipInfo((labels) -> "#{labels[0]}に回転します")
     @tipInfo.addParameter(@directParam.id, column, labels, 0)
-    @icon = new Icon(Game.instance.assets[R.TIP.RANDOM_MOVE], 32, 32)
+    @icon = new Icon(Game.instance.assets[R.TIP.TURN], 32, 32)
 
   action : () ->
     ret = false
@@ -37,6 +37,11 @@ class TurnInstruction extends ActionInstruction
       @directParam = parameter
     @tipInfo.changeLabel(parameter.id, parameter.value)
 
+  generateCode: () ->
+    if @directParam.value == 0
+      "turnRight"
+    else
+      "turnLeft"
 
   mkDescription: () ->
     @tipInfo.getDescription()

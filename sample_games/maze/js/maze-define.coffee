@@ -47,13 +47,13 @@ window.MazeDefine =
     map: [
       [  WT,  WT,  WT,  WT,  WT,  WT, WT,  WT, WT, WT],
       [  WT,  WT,  WT,  WT,  WT,  WT, WT,  WT, WT, WT],
-      [  WT,  WC1,  WA3,  WA3,  WA3,  WA3, WA3,  WA3, WC2, WT],
-      [  WT,  WA2,  RO,  RO,  RO,  RO, RO,  RO, WA4, WT],
-      [  WT,  WA2,  RO,  WU3,  WV,  WR2, RO,  RO, WA4, WT],
-      [  WT,  WA2,  RO,  RO,  GL,  WH, RO,  RO, WA4, WT],
-      [  WT,  WX1,  WV,  WV,  WV,  WR3, RO,  RO, WA4, WT],
-      [  WT,  WA2,  ST,  RO,  RO,  RO, RO,  RO, WA4, WT],
-      [  WT,  WC4,  WA1,  WA1,  WA1,  WA1, WA1,  WA1, WC3, WT],
+      [  WT,  WC1,  WA3,  WA3,  WA3,  WA3, WA3,  WC2,  WT, WT],
+      [  WT,  WA2,  RO,  RO,  RO,  RO, RO,  WA4, WT, WT],
+      [  WT,  WA2,  RO,  WU3,  WV,  WR2, RO,  WA4, WT, WT],
+      [  WT,  WA2,  RO,  RO,  GL,  WH, RO,  WA4, WT, WT],
+      [  WT,  WX1,  WV,  WV,  WV,  WR3, RO,  WA4, WT, WT],
+      [  WT,  WA2,  ST,  RO,  RO,  RO, RO,  WA4, WT, WT],
+      [  WT,  WC4,  WA1,  WA1,  WA1,  WA1, WA1,  WC3, WT, WT],
       [  WT,  WT,  WT,  WT,  WT,  WT, WT,  WT, WT, WT],
     ]
     direction: Direction.RIGHT

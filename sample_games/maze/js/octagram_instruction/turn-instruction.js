@@ -25,7 +25,7 @@ TurnInstruction = (function(_super) {
       return "" + labels[0] + "に回転します";
     });
     this.tipInfo.addParameter(this.directParam.id, column, labels, 0);
-    this.icon = new Icon(Game.instance.assets[R.TIP.RANDOM_MOVE], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.TURN], 32, 32);
   }
 
   TurnInstruction.prototype.action = function() {
@@ -51,6 +51,14 @@ TurnInstruction = (function(_super) {
       this.directParam = parameter;
     }
     return this.tipInfo.changeLabel(parameter.id, parameter.value);
+  };
+
+  TurnInstruction.prototype.generateCode = function() {
+    if (this.directParam.value === 0) {
+      return "turnRight";
+    } else {
+      return "turnLeft";
+    }
   };
 
   TurnInstruction.prototype.mkDescription = function() {

@@ -19,9 +19,10 @@ class StraightMoveInstruction extends ActionInstruction
     obj = @copy(new StraightMoveInstruction(@player))
     return obj
 
+  generateCode: () -> "moveForward"
+
   mkDescription: () ->
     "現在向いている方の目の前のマスに移動します"
 
   getIcon: () ->
-    @icon.frame = 0
     return @icon

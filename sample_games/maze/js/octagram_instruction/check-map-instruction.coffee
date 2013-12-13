@@ -15,7 +15,7 @@ class CheckMapInstruction extends BranchInstruction
     @addParameter(@directParam)
     @tipInfo = new TipInfo((labels) -> "#{labels[0]}に進めるなら青い矢印に進みます。そうでなければ赤い矢印に進みます。")
     @tipInfo.addParameter(@directParam.id, column, labels, 0)
-    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32)
+    @icon = new Icon(Game.instance.assets[R.TIP.SEARCH], 32, 32)
     @setAsynchronous(true)
 
   action : () ->
@@ -39,6 +39,13 @@ class CheckMapInstruction extends BranchInstruction
       @directParam = parameter
     @tipInfo.changeLabel(parameter.id, parameter.value)
 
+  generateCode: () ->
+    if @directParam.value == 0
+      "searchForward"
+    else if @directParam.value == 1
+      "searchRight"
+    else if @directParam.value == 2
+      "searchLeft"
 
   mkDescription: () ->
     @tipInfo.getDescription()
@@ -47,7 +54,7 @@ class CheckMapInstruction extends BranchInstruction
     @tipInfo.getLabel(parameter.id)
 
   getIcon: () ->
-    @icon.frame = 0
+    @icon.frame = @directParam.value
     return @icon
         
 
