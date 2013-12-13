@@ -1,6 +1,7 @@
 <?php $this->start('bottom-content-after'); ?>
 <?php echo $this->Html->css(array('create'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->css(array('program'), false, array('inline'=>false)); ?>
+<?php echo $this->Html->css(array('maze'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('bootbox'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('octagram/js/enchant.js/enchant.js'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('octagram/js/enchant.js/plugins/ui.enchant.js'), false, array('inline'=>false)); ?>
@@ -27,6 +28,7 @@
 
 <?php echo $this->Html->script(array('program'), false, array('inline'=>false)); ?>
 <?php echo $this->Html->script(array('create'), false, array('inline'=>false)); ?>
+<?php echo $this->Html->script(array('maze'), false, array('inline'=>false)); ?>
 
 <style type="text/css">
   body {
@@ -37,7 +39,13 @@
 
 <?php $this->Html->scriptStart(array('inline'=>false)); ?>
   window.onload = function() {
-    runGame();
+    maze = new MazeResultViewer();
+
+    options = { 
+      onend: function(result) {maze.end(result);}
+    };
+
+    runGame(options);
   }
 <?php $this->Html->scriptEnd(); ?>
 <br>

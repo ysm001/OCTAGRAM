@@ -1,0 +1,81 @@
+#program-container {
+    background: #000;
+}
+
+#battle-result {
+    background: #1c1c1c;
+    float: left;
+    width: 640px;
+    height: 640px;
+}
+
+#player-result, #enemy-result {
+    float: left;
+    width: 240px;
+    text-align: center;
+    margin-top: 160px;
+}
+
+.result-label {
+    float: left;
+    width: 120px;
+    text-align: center;
+    margin-top: 340px;
+    color: #ddd;
+    font-size: 20px;
+}
+
+.result-text {
+    font-size: 24px;
+    line-height: 36px;
+    font-weight: bold;
+}
+
+.result-label-hp, .result-label-energy, .result-label-score, .result-label-rate {
+    font-size: 15px;
+}
+
+.result-btns {
+    text-align: center;
+    margin-top: 500px;
+}
+
+.result-btn {
+    width: 100px;
+    margin-right: 20px;
+}
+
+.program-name {
+    font-size: 32px;
+    height: 60px;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 15px;
+}
+
+#filter {
+    position: absolute;
+    width: 640px;
+    height: 640px;
+    position: 0 0 0 0;
+}
+
+.user-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+.container-margin {
+    padding-top: 100px;
+    padding-bottom: 100px;
+}
+
+.clear {
+    float: left;
+    width: 200px;
+    margin-left: 220px;
+    text-align: center;
+    margin-top: 140px;
+    font-size: 40px;
+}

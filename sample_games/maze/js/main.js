@@ -25,7 +25,7 @@ MazeWorld = (function(_super) {
     this.maze.setPlayer(this.player);
     this.maze.addEventListener('complete', function() {
       _this.octagram.getInstance(_this.playerProgramId).stop();
-      return alert("goal");
+      return _this.dispatchEvent(new MazeEvent('gameend'));
     });
   }
 
@@ -41,19 +41,7 @@ MazeWorld = (function(_super) {
     playerProgram.addInstruction(new StraightMoveInstruction(this.maze.player));
     playerProgram.addInstruction(new TurnInstruction(this.maze.player));
     playerProgram.addInstruction(new CheckMapInstruction(this.maze.player));
-    this.octagram.showProgram(this.playerProgramId);
-    this.maze = new GoalMaze({
-      x: 0,
-      y: 0,
-      map: map
-    });
-    this.addChild(this.maze);
-    this.player = this.maze.createPlayer();
-    this.maze.setPlayer(this.player);
-    return this.maze.addEventListener('complete', function() {
-      _this.octagram.getInstance(_this.playerProgramId).stop();
-      return alert("goal");
-    });
+    return this.octagram.showProgram(this.playerProgramId);
   };
 
   MazeWorld.prototype.reloadNewMap = function(hash) {
@@ -70,7 +58,8 @@ MazeWorld = (function(_super) {
     this.addChild(this.maze);
     this.maze.setPlayer(this.player);
     return this.maze.addEventListener('complete', function() {
-      return _this.reloadNewMap();
+      _this.octagram.getInstance(_this.playerProgramId).stop();
+      return _this.dispatchEvent(new MazeEvent('gameend'));
     });
   };
 
@@ -155,7 +144,7 @@ MazeGame = (function(_super) {
       if (_this.options && _this.options.onload) {
         _this.options.onload();
       }
-      return _this.scene.addEventListener("gameend", function(evt) {
+      return _this.scene.world.addEventListener("gameend", function(evt) {
         if (_this.options && _this.options.onend) {
           return _this.options.onend(evt.params);
         }

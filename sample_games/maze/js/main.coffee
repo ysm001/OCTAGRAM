@@ -1,7 +1,6 @@
 R = Config.R
 
 class MazeWorld extends Group
-
   constructor: () ->
     super
     maze = MazeDefine.get(window.location.hash)
@@ -12,7 +11,7 @@ class MazeWorld extends Group
     @maze.setPlayer(@player)
     @maze.addEventListener 'complete', () =>
       @octagram.getInstance(@playerProgramId).stop()
-      alert("goal")
+      @dispatchEvent(new MazeEvent('gameend'))
 
   initInstructions: (@octagram) ->
     playerProgram = @octagram.createProgramInstance()
@@ -28,15 +27,6 @@ class MazeWorld extends Group
     playerProgram.addInstruction(new CheckMapInstruction(@maze.player))
     @octagram.showProgram(@playerProgramId)
 
-  
-    @maze = new GoalMaze {x:0, y:0, map:map}
-    @addChild @maze
-    @player = @maze.createPlayer()
-    @maze.setPlayer(@player)
-    @maze.addEventListener 'complete', () =>
-      @octagram.getInstance(@playerProgramId).stop()
-      alert("goal")
-
   reloadNewMap: (hash) ->
     @removeChild @maze
     maze = MazeDefine.get(hash)
@@ -45,7 +35,8 @@ class MazeWorld extends Group
     @addChild @maze
     @maze.setPlayer(@player)
     @maze.addEventListener 'complete', () =>
-      @reloadNewMap()
+      @octagram.getInstance(@playerProgramId).stop()
+      @dispatchEvent(new MazeEvent('gameend'))
     
   initInstructions: (@octagram) ->
     playerProgram = @octagram.createProgramInstance()
@@ -98,7 +89,7 @@ class MazeGame extends Core
     @octagram.onload = () =>
       @scene.world.initInstructions(@octagram)
       if @options and @options.onload then @options.onload()
-      @scene.addEventListener "gameend", (evt) =>
+      @scene.world.addEventListener "gameend", (evt) =>
         if @options and @options.onend then @options.onend(evt.params)
 
     @assets["font0.png"] = @assets['resources/ui/font0.png']

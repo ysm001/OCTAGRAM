@@ -11,7 +11,7 @@ window.MazeDefine =
       [  WT, WT, WT, WT, WT, WT, WT, WA2, RO,  WA4],
       [  WT, WT, WT, WT, WT, WT, WT, WA2, RO,  WA4],
       [  WC1, WA3, WA3, WA3, WA3, WA3, WA3, WL3, RO,  WA4],
-      [  WA2, ST, RO, RO, RO, RO,  RO,  RO, RO,  WA4],
+      [  WA2, ST, GL, RO, RO, RO,  RO,  RO, RO,  WA4],
       [  WC4,  WA1,  WA1,  WA1,  WA1,  WA1,  WA1,  WA1, WA1, WC3],
     ]
     direction: Direction.RIGHT
