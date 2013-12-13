@@ -100,8 +100,8 @@ class Player extends Sprite
     ret
 
 class RobotPlayer extends Player
-  @WIDTH  : 48
-  @HEIGHT : 48
+  @WIDTH  : 64
+  @HEIGHT : 64
 
   constructor: (map) ->
     super RobotPlayer.WIDTH, RobotPlayer.HEIGHT, map

@@ -1,11 +1,12 @@
 class MapTile extends Group
-  @WIDTH  : 48
-  @HEIGHT : 48
+  @WIDTH  : 64
+  @HEIGHT : 64
 
   class TileSprite extends Sprite
     constructor: () ->
       super MapTile.WIDTH, MapTile.HEIGHT
-      @image = Game.instance.assets[R.MAP.SRC]
+      # @image = Game.instance.assets[R.MAP.SRC]
+      # @image = Game.instance.assets[R.MAP.WALL9]
 
   constructor: (x, y) ->
     super

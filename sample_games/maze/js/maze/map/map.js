@@ -8,9 +8,9 @@ R = Config.R;
 MazeMap = (function(_super) {
   __extends(MazeMap, _super);
 
-  MazeMap.TILE_WIDTH = 48;
+  MazeMap.TILE_WIDTH = 64;
 
-  MazeMap.TILE_HEIGHT = 48;
+  MazeMap.TILE_HEIGHT = 64;
 
   MazeMap.prototype.properties = {
     startTile: {

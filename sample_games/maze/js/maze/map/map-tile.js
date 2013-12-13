@@ -8,16 +8,15 @@ MapTile = (function(_super) {
 
   __extends(MapTile, _super);
 
-  MapTile.WIDTH = 48;
+  MapTile.WIDTH = 64;
 
-  MapTile.HEIGHT = 48;
+  MapTile.HEIGHT = 64;
 
   TileSprite = (function(_super1) {
     __extends(TileSprite, _super1);
 
     function TileSprite() {
       TileSprite.__super__.constructor.call(this, MapTile.WIDTH, MapTile.HEIGHT);
-      this.image = Game.instance.assets[R.MAP.SRC];
     }
 
     return TileSprite;

@@ -149,9 +149,9 @@ Player = (function(_super) {
 RobotPlayer = (function(_super) {
   __extends(RobotPlayer, _super);
 
-  RobotPlayer.WIDTH = 48;
+  RobotPlayer.WIDTH = 64;
 
-  RobotPlayer.HEIGHT = 48;
+  RobotPlayer.HEIGHT = 64;
 
   function RobotPlayer(map) {
     RobotPlayer.__super__.constructor.call(this, RobotPlayer.WIDTH, RobotPlayer.HEIGHT, map);
