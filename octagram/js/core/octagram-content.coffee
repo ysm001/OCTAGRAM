@@ -39,7 +39,11 @@ class OctagramContent extends Group
     @cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX, @)
     @executer = new Executer(@cpu)
 
-    @cpu.addEventListener('change', () => @dispatchEvent(new Event('changeOctagram')))
+    @cpu.addEventListener('change', () =>
+      e = new Event('changeOctagram')
+      e.cpu = @cpu
+      @dispatchEvent(e)
+    )
 
     back = new TipBackground(x, y, xnum, ynum)
     @ui = {}

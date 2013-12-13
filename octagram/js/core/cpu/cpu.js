@@ -217,6 +217,28 @@ Cpu = (function(_super) {
     return this.xnum;
   };
 
+  Cpu.prototype.getTipCount = function() {
+    var i, j, ret, tip, _i, _j, _ref, _ref1;
+    ret = {
+      action: 0,
+      branch: 0,
+      others: 0
+    };
+    for (i = _i = -1, _ref = this.ynum + 1; -1 <= _ref ? _i < _ref : _i > _ref; i = -1 <= _ref ? ++_i : --_i) {
+      for (j = _j = -1, _ref1 = this.xnum + 1; -1 <= _ref1 ? _j < _ref1 : _j > _ref1; j = -1 <= _ref1 ? ++_j : --_j) {
+        tip = this.getTip(j, i).code;
+        if (tip instanceof ActionTip) {
+          ret.action++;
+        } else if (tip instanceof BranchTip) {
+          ret.branch++;
+        } else if (!(tip instanceof EmptyTip || tip instanceof WallTip || tip instanceof StartTip)) {
+          ret.others++;
+        }
+      }
+    }
+    return ret;
+  };
+
   Cpu.prototype.isOuter = function(x, y) {
     return y === -1 || x === -1 || y === this.ynum || x === this.xnum;
   };
