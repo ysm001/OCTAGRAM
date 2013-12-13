@@ -107,7 +107,7 @@ Config.R = (function() {
   R.TIP = {
     ARROW: "" + R.RESOURCE_DIR + "/tip/arrow.png",
     SEARCH: "" + R.RESOURCE_DIR + "/tip/antena.png",
-    TURN: "" + R.RESOURCE_DIR + "/tip/antena.png"
+    TURN: "" + R.RESOURCE_DIR + "/tip/rotate.png"
   };
 
   R.EFFECT = {

@@ -70,7 +70,7 @@ TurnInstruction = (function(_super) {
   };
 
   TurnInstruction.prototype.getIcon = function() {
-    this.icon.frame = 0;
+    this.icon.frame = this.directParam.value;
     return this.icon;
   };
 

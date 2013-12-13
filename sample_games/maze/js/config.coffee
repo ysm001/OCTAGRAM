@@ -72,7 +72,7 @@ class Config.R
   @TIP :
     ARROW : "#{R.RESOURCE_DIR}/tip/arrow.png"
     SEARCH : "#{R.RESOURCE_DIR}/tip/antena.png"
-    TURN : "#{R.RESOURCE_DIR}/tip/antena.png"
+    TURN : "#{R.RESOURCE_DIR}/tip/rotate.png"
   @EFFECT :
     SEARCH : "#{R.RESOURCE_DIR}/effect/antena_anim.png"
 

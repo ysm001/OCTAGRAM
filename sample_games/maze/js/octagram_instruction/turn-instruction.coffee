@@ -50,5 +50,5 @@ class TurnInstruction extends ActionInstruction
     @tipInfo.getLabel(parameter.id)
 
   getIcon: () ->
-    @icon.frame = 0
+    @icon.frame = @directParam.value
     return @icon
