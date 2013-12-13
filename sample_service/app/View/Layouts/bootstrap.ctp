@@ -35,12 +35,21 @@
                 <li class="dropdown">
                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Document<b class="caret"></b></a>
                    <ul class="dropdown-menu">
-                   <li><?php echo $this->Html->link('ゲームルール', '/documents/game', array('id' => 'gamerule-link')); ?></li>
-                   <li><?php echo $this->Html->link('プログラムの作り方', '/documents/tutorial', array('id' => 'tutorial-link')); ?></li>
+                     <li><?php echo $this->Html->link('ゲームルール', '/documents/game', array('id' => 'gamerule-link')); ?></li>
+                     <li><?php echo $this->Html->link('プログラムの作り方', '/documents/tutorial', array('id' => 'tutorial-link')); ?></li>
                    </ul>
                  </li>
                  <li><?php echo $this->Html->link('Profile', '/users/profile'); ?></li>
+                 <!--
                  <li><?php echo $this->Html->link('Tutorial', 'javascript:void(0)', array('onclick' => 'new Tutorial().show()')); ?></li>
+                 -->
+                <li class="dropdown">
+                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tutorial<b class="caret"></b></a>
+                   <ul class="dropdown-menu">
+                     <li><?php echo $this->Html->link('チュートリアルを見る', 'javascript:void(0)', array('onclick' => 'new Tutorial().show()')); ?></li>
+                     <li><?php echo $this->Html->link('迷路を解いてOCTAGRAMを学ぶ', '/mazes'); ?></li>
+                   </ul>
+                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">
