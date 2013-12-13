@@ -1,6 +1,9 @@
 R = Config.R
 
 class Player extends Sprite
+  @SEARCH_FRAME : 12
+  @MOVE_FRAME : 16
+
   constructor: (width, height, @_map) ->
     super width, height
     Object.defineProperties @, @properties
@@ -32,7 +35,7 @@ class Player extends Sprite
 
   _move: (tile, onComplete) ->
     point = @_map.toPoint(tile)
-    @tl.moveTo(point.x, point.y, 0).then () =>
+    @tl.moveTo(point.x, point.y, Player.MOVE_FRAME/SPEED).then () =>
       @index.x = tile.index.x
       @index.y = tile.index.y
       tile.onride(@)
@@ -74,14 +77,16 @@ class Player extends Sprite
     ret
 
   turnLeft: () ->
+    @rotate(-90)
     @direction = Direction.prev(@direction)
     @dispatchEvent(new MazeEvent('turnLeft'))
 
   turnRight: () ->
+    @rotate(90)
     @direction = Direction.next(@direction)
     @dispatchEvent(new MazeEvent('turnRight'))
 
-  canMove: (direction) ->
+  canMove: (direction, onComplete = () ->) ->
     switch direction
       when Direction.LEFT
         d = Direction.prev(@direction)
@@ -91,13 +96,20 @@ class Player extends Sprite
         d = @direction
     pos = @index.add(d)
     tile = @_map.getTile(pos.x, pos.y)
-    if tile != false
-      search = new SearchEffect pos.x*MazeMap.TILE_WIDTH, pos.y*MazeMap.TILE_HEIGHT
-      @parentNode.addChild search
-  
-      tile.check(@)
-      ret = tile.isThrough()
-    ret
+    search = new SearchEffect(pos.x*MazeMap.TILE_WIDTH, pos.y*MazeMap.TILE_HEIGHT)
+    if d == Direction.RIGHT
+      search.rotate(90)
+    else if d == Direction.LEFT
+      search.rotate(-90)
+    else if d == Direction.DOWN
+      search.rotate(180)
+    @parentNode.addChild(search)
+    @tl.delay(Player.SEARCH_FRAME/SPEED).then () =>
+      ret = false
+      if tile != false
+        tile.check(@)
+        ret = tile.isThrough()
+      onComplete(ret)
 
 class RobotPlayer extends Player
   @WIDTH  : 64

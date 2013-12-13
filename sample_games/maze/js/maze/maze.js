@@ -78,7 +78,7 @@ DefeatMaze = (function(_super) {
 })(Maze);
 
 Background = (function(_super) {
-  var BackgroundColor, BackgroundTransparent;
+  var BackgroundColor, BackgroundEffect, BackgroundTransparent;
 
   __extends(Background, _super);
 
@@ -114,6 +114,34 @@ Background = (function(_super) {
 
   })(Sprite);
 
+  BackgroundEffect = (function(_super1) {
+    __extends(BackgroundEffect, _super1);
+
+    BackgroundEffect.WIDTH = 1280;
+
+    BackgroundEffect.HEIGHT = 640;
+
+    function BackgroundEffect() {
+      BackgroundEffect.__super__.constructor.call(this, BackgroundEffect.WIDTH, BackgroundEffect.HEIGHT);
+      this.image = Game.instance.assets[R.MAP.BACKGROUND_EFFECT];
+      this.reset();
+    }
+
+    BackgroundEffect.prototype.reset = function() {
+      return this.x = BackgroundEffect.WIDTH;
+    };
+
+    BackgroundEffect.prototype.onenterframe = function() {
+      this.x -= 20;
+      if (this.age % 120 === 0) {
+        return this.reset();
+      }
+    };
+
+    return BackgroundEffect;
+
+  })(Sprite);
+
   function Background(data) {
     var backgroundColor, backgroundTransparent;
     if (data == null) {
@@ -126,6 +154,7 @@ Background = (function(_super) {
     backgroundTransparent = new BackgroundTransparent;
     this.addChild(backgroundColor);
     this.addChild(backgroundTransparent);
+    this.addChild(new BackgroundEffect());
   }
 
   return Background;

@@ -53,6 +53,8 @@ StartElement = (function(_super) {
 
   function StartElement() {
     StartElement.__super__.constructor.call(this, StartElement.ID);
+    this.image = Game.instance.assets[R.MAP.START];
+    this.tl.scaleTo(0.1, 0.1, 0, enchant.Easing.CIRC_EASEOUT).scaleTo(1.2, 1.2, 30, enchant.Easing.CIRC_EASEOUT).loop();
   }
 
   StartElement.prototype.isThrough = true;
@@ -68,7 +70,8 @@ GoalElement = (function(_super) {
 
   function GoalElement() {
     GoalElement.__super__.constructor.call(this, GoalElement.ID);
-    this.image = Game.instance.assets[R.MAP.SRC];
+    this.image = Game.instance.assets[R.MAP.GOAL];
+    this.tl.scaleTo(0.1, 0.1, 0, enchant.Easing.CIRC_EASEOUT).scaleTo(1.2, 1.2, 30, enchant.Easing.CIRC_EASEOUT).loop();
   }
 
   GoalElement.prototype.isThrough = true;

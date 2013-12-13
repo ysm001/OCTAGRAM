@@ -8,6 +8,10 @@ R = Config.R;
 Player = (function(_super) {
   __extends(Player, _super);
 
+  Player.SEARCH_FRAME = 12;
+
+  Player.MOVE_FRAME = 16;
+
   function Player(width, height, _map) {
     this._map = _map;
     Player.__super__.constructor.call(this, width, height);
@@ -51,7 +55,7 @@ Player = (function(_super) {
     var point,
       _this = this;
     point = this._map.toPoint(tile);
-    return this.tl.moveTo(point.x, point.y, 0).then(function() {
+    return this.tl.moveTo(point.x, point.y, Player.MOVE_FRAME / SPEED).then(function() {
       _this.index.x = tile.index.x;
       _this.index.y = tile.index.y;
       tile.onride(_this);
@@ -110,17 +114,23 @@ Player = (function(_super) {
   };
 
   Player.prototype.turnLeft = function() {
+    this.rotate(-90);
     this.direction = Direction.prev(this.direction);
     return this.dispatchEvent(new MazeEvent('turnLeft'));
   };
 
   Player.prototype.turnRight = function() {
+    this.rotate(90);
     this.direction = Direction.next(this.direction);
     return this.dispatchEvent(new MazeEvent('turnRight'));
   };
 
-  Player.prototype.canMove = function(direction) {
-    var d, pos, ret, search, tile;
+  Player.prototype.canMove = function(direction, onComplete) {
+    var d, pos, search, tile,
+      _this = this;
+    if (onComplete == null) {
+      onComplete = function() {};
+    }
     switch (direction) {
       case Direction.LEFT:
         d = Direction.prev(this.direction);
@@ -133,13 +143,24 @@ Player = (function(_super) {
     }
     pos = this.index.add(d);
     tile = this._map.getTile(pos.x, pos.y);
-    if (tile !== false) {
-      search = new SearchEffect(pos.x * MazeMap.TILE_WIDTH, pos.y * MazeMap.TILE_HEIGHT);
-      this.parentNode.addChild(search);
-      tile.check(this);
-      ret = tile.isThrough();
+    search = new SearchEffect(pos.x * MazeMap.TILE_WIDTH, pos.y * MazeMap.TILE_HEIGHT);
+    if (d === Direction.RIGHT) {
+      search.rotate(90);
+    } else if (d === Direction.LEFT) {
+      search.rotate(-90);
+    } else if (d === Direction.DOWN) {
+      search.rotate(180);
     }
-    return ret;
+    this.parentNode.addChild(search);
+    return this.tl.delay(Player.SEARCH_FRAME / SPEED).then(function() {
+      var ret;
+      ret = false;
+      if (tile !== false) {
+        tile.check(_this);
+        ret = tile.isThrough();
+      }
+      return onComplete(ret);
+    });
   };
 
   return Player;

@@ -1,5 +1,7 @@
 if !IS_MOBILE? then IS_MOBILE = false else Environment.Mobile = true
 
+SPEED = 1
+
 (() ->
   classes = [ enchant.model.SpriteModel, enchant.model.GroupModel ]
   for cls in classes
@@ -31,6 +33,9 @@ class Config.R
     BACKGROUND1 : "#{R.RESOURCE_DIR}/map/background-1.png"
     BACKGROUND_TRANSPARENT : "#{R.RESOURCE_DIR}/map/background-transparent.png"
     BACKGROUND_MERGED : "#{R.RESOURCE_DIR}/map/background-merged.png"
+    BACKGROUND_EFFECT : "#{R.RESOURCE_DIR}/map/background-effect.png"
+    START : "#{R.RESOURCE_DIR}/map/start.png"
+    GOAL : "#{R.RESOURCE_DIR}/map/goal.png"
     ROAD  : "#{R.RESOURCE_DIR}/map/road.png"
     WALL1_1 : "#{R.RESOURCE_DIR}/map/wall1-1.png"
     WALL1_2 : "#{R.RESOURCE_DIR}/map/wall1-2.png"
@@ -53,7 +58,7 @@ class Config.R
     WALL9 : "#{R.RESOURCE_DIR}/map/wall9.png"
   @CHAR :
     CHAR0 : "#{R.RESOURCE_DIR}/chara0.png"
-    CHAR1 : "#{R.RESOURCE_DIR}/chara1.jpg"
+    CHAR1 : "#{R.RESOURCE_DIR}/chara1.png"
   @TIP :
     ARROW : "#{R.RESOURCE_DIR}/tip/arrow.png"
     LIFE : "#{R.RESOURCE_DIR}/tip/life.png"

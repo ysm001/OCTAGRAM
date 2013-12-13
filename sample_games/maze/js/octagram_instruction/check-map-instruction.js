@@ -25,17 +25,25 @@ CheckMapInstruction = (function(_super) {
     });
     this.tipInfo.addParameter(this.directParam.id, column, labels, 0);
     this.icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32);
+    this.setAsynchronous(true);
   }
 
   CheckMapInstruction.prototype.action = function() {
-    var ret;
+    var ret,
+      _this = this;
     ret = false;
     if (this.directParam.value === 0) {
-      ret = this.player.canMove(Direction.UP);
+      ret = this.player.canMove(Direction.UP, function(ret) {
+        return _this.onComplete(ret);
+      });
     } else if (this.directParam.value === 1) {
-      ret = this.player.canMove(Direction.RIGHT);
+      ret = this.player.canMove(Direction.RIGHT, function(ret) {
+        return _this.onComplete(ret);
+      });
     } else if (this.directParam.value === 2) {
-      ret = this.player.canMove(Direction.LEFT);
+      ret = this.player.canMove(Direction.LEFT, function(ret) {
+        return _this.onComplete(ret);
+      });
     }
     return ret;
   };

@@ -29,6 +29,10 @@ class StartElement extends MapElement
 
   constructor: () ->
     super StartElement.ID
+    @image = Game.instance.assets[R.MAP.START]
+    @tl.scaleTo(0.1, 0.1, 0, enchant.Easing.CIRC_EASEOUT).
+      scaleTo(1.2, 1.2, 30, enchant.Easing.CIRC_EASEOUT)
+      .loop()
 
   isThrough: true
 
@@ -37,7 +41,10 @@ class GoalElement extends MapElement
 
   constructor: () ->
     super GoalElement.ID
-    @image = Game.instance.assets[R.MAP.SRC]
+    @image = Game.instance.assets[R.MAP.GOAL]
+    @tl.scaleTo(0.1, 0.1, 0, enchant.Easing.CIRC_EASEOUT).
+      scaleTo(1.2, 1.2, 30, enchant.Easing.CIRC_EASEOUT)
+      .loop()
 
   isThrough: true
 

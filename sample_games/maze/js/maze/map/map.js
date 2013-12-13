@@ -38,6 +38,10 @@ MazeMap = (function(_super) {
         this.addChild(tile);
         tileLine.push(tile);
         if (id !== 0) {
+          if (id === StartElement.ID || id === GoalElement.ID) {
+            element = ElementFactory.create(RoadElement.ID);
+            tile.pushElement(element);
+          }
           element = ElementFactory.create(id);
           tile.pushElement(element);
           if (element instanceof StartElement) {

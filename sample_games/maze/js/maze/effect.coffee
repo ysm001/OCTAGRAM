@@ -11,11 +11,10 @@ class Effect extends Sprite
       if @frame > @endFrame
         @parentNode.removeChild @
 
-
 class SearchEffect extends Effect
-  @SIZE = 64
+  @SIZE : 64
   constructor: (x, y) ->
-    super SearchEffect.SIZE, SearchEffect.SIZE, 24, 1
+    super(SearchEffect.SIZE, SearchEffect.SIZE, 2, Player.SEARCH_FRAME / SPEED / 3)
     @image = Game.instance.assets[R.EFFECT.SEARCH]
     @x = x
     @y = y

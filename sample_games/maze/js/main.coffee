@@ -21,7 +21,7 @@ class MazeWorld extends Group
       [  37, 37, 37, 37, 37, 37, 37, 37, 37, 37],
       [  37, 41, 35, 35, 35, 35, 35, 35, 42, 37],
       [  37, 34, 30, 30, 30, 30, 30, 30, 36, 37],
-      [  37, 34, 30, 48, 30, 30, 48, 30, 36, 37],
+      [  37, 34, 30, 48, 30, 30, 48, 13, 36, 37],
       [  37, 34, 30, 50, 30, 47, 38, 45, 36, 37],
       [  37, 34, 30, 50, 30, 30, 46, 30, 36, 37],
       [  37, 34, 30, 46, 30, 30, 30, 30, 36, 37],
@@ -36,7 +36,7 @@ class MazeWorld extends Group
     @maze.setPlayer(@player)
     @maze.addEventListener 'complete', () =>
       @octagram.getInstance(@playerProgramId).stop()
-      @reloadNewMap()
+      alert("goal")
 
   reloadNewMap: () ->
     console.log "reload map"

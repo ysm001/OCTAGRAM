@@ -32,7 +32,7 @@ SearchEffect = (function(_super) {
   SearchEffect.SIZE = 64;
 
   function SearchEffect(x, y) {
-    SearchEffect.__super__.constructor.call(this, SearchEffect.SIZE, SearchEffect.SIZE, 24, 1);
+    SearchEffect.__super__.constructor.call(this, SearchEffect.SIZE, SearchEffect.SIZE, 2, Player.SEARCH_FRAME / SPEED / 3);
     this.image = Game.instance.assets[R.EFFECT.SEARCH];
     this.x = x;
     this.y = y;

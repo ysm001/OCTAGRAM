@@ -16,15 +16,16 @@ class CheckMapInstruction extends BranchInstruction
     @tipInfo = new TipInfo((labels) -> "#{labels[0]}に進めるなら青い矢印に進みます。そうでなければ赤い矢印に進みます。")
     @tipInfo.addParameter(@directParam.id, column, labels, 0)
     @icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32)
+    @setAsynchronous(true)
 
   action : () ->
     ret = false
     if @directParam.value == 0
-      ret = @player.canMove(Direction.UP)
+      ret = @player.canMove(Direction.UP, (ret) => @onComplete(ret))
     else if @directParam.value == 1
-      ret = @player.canMove(Direction.RIGHT)
+      ret = @player.canMove(Direction.RIGHT, (ret) => @onComplete(ret))
     else if @directParam.value == 2
-      ret = @player.canMove(Direction.LEFT)
+      ret = @player.canMove(Direction.LEFT, (ret) => @onComplete(ret))
     ret
     # @robot.onCmdComplete(RobotInstruction.MOVE, ret)
 

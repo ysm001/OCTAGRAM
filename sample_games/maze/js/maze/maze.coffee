@@ -57,6 +57,22 @@ class Background extends Group
       super BackgroundTransparent.WIDTH, BackgroundTransparent.HEIGHT
       @image = Game.instance.assets[R.MAP.BACKGROUND_TRANSPARENT]
 
+  class BackgroundEffect extends Sprite
+    @WIDTH  : 1280
+    @HEIGHT : 640
+    constructor: ()->
+      super BackgroundEffect.WIDTH, BackgroundEffect.HEIGHT
+      @image = Game.instance.assets[R.MAP.BACKGROUND_EFFECT]
+      @reset()
+    
+    reset: () ->
+      @x = BackgroundEffect.WIDTH
+    
+    onenterframe: () ->
+      @x -= 20
+      if @age % 120 == 0
+        @reset()
+
   constructor: (data = {}) ->
     super
     @x = if data.x? then data.x else 0
@@ -65,3 +81,4 @@ class Background extends Group
     backgroundTransparent = new BackgroundTransparent
     @addChild backgroundColor
     @addChild backgroundTransparent
+    @addChild new BackgroundEffect()
