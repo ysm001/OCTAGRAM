@@ -110,7 +110,10 @@ OctagramContent = (function(_super) {
     this.cpu = new Cpu(x + 12, y + 12, xnum, ynum, Environment.startX, this);
     this.executer = new Executer(this.cpu);
     this.cpu.addEventListener('change', function() {
-      return _this.dispatchEvent(new Event('changeOctagram'));
+      var e;
+      e = new Event('changeOctagram');
+      e.cpu = _this.cpu;
+      return _this.dispatchEvent(e);
     });
     back = new TipBackground(x, y, xnum, ynum);
     this.ui = {};
