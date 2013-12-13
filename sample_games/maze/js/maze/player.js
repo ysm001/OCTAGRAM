@@ -30,13 +30,13 @@ Player = (function(_super) {
         this._direction = direction;
         switch (direction) {
           case Direction.UP:
-            return this.frame = 3;
+            return this.rotation = 0;
           case Direction.RIGHT:
-            return this.frame = 2;
+            return this.rotation = 90;
           case Direction.DOWN:
-            return this.frame = 0;
+            return this.rotation = 180;
           case Direction.LEFT:
-            return this.frame = 1;
+            return this.rotation = -90;
         }
       }
     }

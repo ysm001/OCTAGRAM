@@ -18,6 +18,7 @@
   "octagram_instruction/straight-move-instruction.js"
   "octagram_instruction/turn-instruction.js"
   "octagram_instruction/check-map-instruction.js"
+  "maze-define.js"
   "main.js"
 )
 

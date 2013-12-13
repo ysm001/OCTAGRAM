@@ -18,13 +18,13 @@ class Player extends Sprite
         @_direction = direction
         switch direction
           when Direction.UP
-            @frame = 3
+            @rotation = 0
           when Direction.RIGHT
-            @frame = 2
+            @rotation = 90
           when Direction.DOWN
-            @frame = 0
+            @rotation = 180
           when Direction.LEFT
-            @frame = 1
+            @rotation = -90
 
   _moveDirect: (tile) ->
     point = @_map.toPoint(tile)

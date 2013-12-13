@@ -22,7 +22,7 @@ class MazeMap extends Group
         @addChild(tile)
         tileLine.push(tile)
         if id != 0
-          if id == StartElement.ID or id == GoalElement.ID
+          if id == GoalElement.ID
             element = ElementFactory.create(RoadElement.ID)
             tile.pushElement(element)
           element = ElementFactory.create(id)

@@ -4,44 +4,30 @@ class MazeWorld extends Group
 
   constructor: () ->
     super
-    # map = [
-    #   [  4,  4,  4,  4,  4,  4, 13,  4, 4, 4],
-    #   [  4, 25,  4,  0,  4,  4, 17,  4, 4, 4],
-    #   [  4,  0,  4,  0,  0,  0,  0,  4, 4, 4],
-    #   [  4,  0,  4,  0,  4,  4,  0,  4, 4, 4],
-    #   [  4,  0,  4,  0,  4,  4,  0,  4, 4, 4],
-    #   [  4,  0,  4,  0,  4,  4,  0,  4, 4, 4],
-    #   [  4,  0,  0,  0,  0,  0,  0,  4, 4, 4],
-    #   [  4, 14,  4,  4,  4,  4,  4,  4, 4, 4],
-    #   [  4, 14,  4,  4,  4,  4,  4,  4, 4, 4],
-    #   [  4, 14,  4,  4,  4,  4,  4,  4, 4, 4],
-    # ]
+    maze = MazeDefine.get(window.location.hash)
+    @maze = new GoalMaze {x:0, y:0, map:maze.map}
+    @addChild @maze
+    @player = @maze.createPlayer()
+    @player.direction = maze.direction
+    @maze.setPlayer(@player)
+    @maze.addEventListener 'complete', () =>
+      @octagram.getInstance(@playerProgramId).stop()
+      alert("goal")
 
-    map = [
-      [  WT,  WT,  WT,  WT,  WT,  WT,  WT, WT, WT, WT],
-      [  WT, WC1, WA3, WA3, WA3, WA3, WA3, WA3, WC2, WT],
-      [  WT, WA2,  RO,  RO, RO, RO, RO, RO, WA4, WT],
-      [  WT, WA2,  RO,  48, RO, RO, 48, 13, WA4, WT],
-      [  WT, WA2,  RO,  50, RO, 47, 38, 45, WA4, WT],
-      [  WT, WA2,  RO,  50, RO, RO, 46, RO, WA4, WT],
-      [  WT, WA2,  RO,  46, RO, RO, RO, RO, WA4, WT],
-      [  WT, WA2,  14,  RO, RO, RO, RO, RO, WA4, WT],
-      [  WT, WC2, WA1, WA1, WA1, WA1, WA1, WA1, WC3, WT],
-      [  WT, WT, WT, WT, WT, WT, WT, WT, WT, WT],
-    ]
+  initInstructions: (@octagram) ->
+    playerProgram = @octagram.createProgramInstance()
+    @playerProgramId = playerProgram.id
+    playerProgram.addEventListener 'onstart', () =>
 
-    # map = [
-    #   [  37, 37, 37, 37, 37, 37, 37, 37, 37, 37],
-    #   [  37, 41, 35, 35, 35, 35, 35, 35, 42, 37],
-    #   [  37, 34, 30, 30, 30, 30, 30, 30, 36, 37],
-    #   [  37, 34, 30, 48, 30, 30, 48, 13, 36, 37],
-    #   [  37, 34, 30, 50, 30, 47, 38, 45, 36, 37],
-    #   [  37, 34, 30, 50, 30, 30, 46, 30, 36, 37],
-    #   [  37, 34, 30, 46, 30, 30, 30, 30, 36, 37],
-    #   [  37, 34, 14, 30, 30, 30, 30, 30, 36, 37],
-    #   [  37, 44, 33, 33, 33, 33, 33, 33, 43, 37],
-    #   [  37, 37, 37, 37, 37, 37, 37, 37, 37, 37],
-    # ]
+    # dummy
+    enemyProgram = @octagram.createProgramInstance()
+    @enemyProgramId = enemyProgram.id
+
+    playerProgram.addInstruction(new StraightMoveInstruction(@maze.player))
+    playerProgram.addInstruction(new TurnInstruction(@maze.player))
+    playerProgram.addInstruction(new CheckMapInstruction(@maze.player))
+    @octagram.showProgram(@playerProgramId)
+
   
     @maze = new GoalMaze {x:0, y:0, map:map}
     @addChild @maze
@@ -51,20 +37,11 @@ class MazeWorld extends Group
       @octagram.getInstance(@playerProgramId).stop()
       alert("goal")
 
-  reloadNewMap: () ->
-    console.log "reload map"
+  reloadNewMap: (hash) ->
     @removeChild @maze
-    map = [
-      [  4,  4,  4,  4,  4,  4, 13,  4],
-      [  4,  0,  4,  0,  4,  4,  0,  4],
-      [  4,  0,  4,  0,  0,  0,  0,  4],
-      [  4,  0,  4,  0,  4,  4,  4,  4],
-      [  4,  0,  4,  0,  4,  4,  0,  4],
-      [  4,  0,  0,  0,  4,  4,  0,  4],
-      [  4,  0,  4,  0,  0,  0,  0,  4],
-      [  4, 14,  4,  4,  4,  4,  4,  4],
-    ]
-    @maze = new GoalMaze {x:64, y:128, map:map}
+    maze = MazeDefine.get(hash)
+    @player.direction = maze.direction
+    @maze = new GoalMaze {x:0, y:0, map:maze.map}
     @addChild @maze
     @maze.setPlayer(@player)
     @maze.addEventListener 'complete', () =>
@@ -94,6 +71,7 @@ class MazeScene extends Scene
     @update()
 
   restart: () =>
+    @world.reloadNewMap(window.location.hash)
 
   update: ->
 
@@ -127,6 +105,9 @@ class MazeGame extends Core
     @assets["apad.png"] = @assets['resources/ui/apad.png']
     @assets["icon0.png"] = @assets['resources/ui/icon0.png']
     @assets["pad.png"] = @assets['resources/ui/pad.png']
+
+    window.addEventListener "hashchange", () =>
+      @scene.world.reloadNewMap(window.location.hash)
 
 runGame = (options) ->
   game = new MazeGame Config.GAME_WIDTH, Config.GAME_HEIGHT, options

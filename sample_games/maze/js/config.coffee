@@ -1,6 +1,6 @@
 if !IS_MOBILE? then IS_MOBILE = false else Environment.Mobile = true
 
-SPEED = 1
+SPEED = 2
 
 (() ->
   classes = [ enchant.model.SpriteModel, enchant.model.GroupModel ]
@@ -49,13 +49,23 @@ class Config.R
     WALL3_LEFT   : "#{R.RESOURCE_DIR}/map/wall3-4.png"
     WALL4 : "#{R.RESOURCE_DIR}/map/wall4.png"
     WALL5 : "#{R.RESOURCE_DIR}/map/wall5.png"
-    WALL6 : "#{R.RESOURCE_DIR}/map/wall6.png"
-    WALL7 : "#{R.RESOURCE_DIR}/map/wall7.png"
+    WALL6_1 : "#{R.RESOURCE_DIR}/map/wall6-1.png"
+    WALL6_2 : "#{R.RESOURCE_DIR}/map/wall6-2.png"
+    WALL6_3 : "#{R.RESOURCE_DIR}/map/wall6-3.png"
+    WALL6_4 : "#{R.RESOURCE_DIR}/map/wall6-4.png"
+    WALL7_1 : "#{R.RESOURCE_DIR}/map/wall7-1.png"
+    WALL7_2 : "#{R.RESOURCE_DIR}/map/wall7-2.png"
+    WALL7_3 : "#{R.RESOURCE_DIR}/map/wall7-3.png"
+    WALL7_4 : "#{R.RESOURCE_DIR}/map/wall7-4.png"
     WALL8_1 : "#{R.RESOURCE_DIR}/map/wall8-1.png"
     WALL8_2 : "#{R.RESOURCE_DIR}/map/wall8-2.png"
     WALL8_3 : "#{R.RESOURCE_DIR}/map/wall8-3.png"
     WALL8_4 : "#{R.RESOURCE_DIR}/map/wall8-4.png"
     WALL9 : "#{R.RESOURCE_DIR}/map/wall9.png"
+    WALL10_1 : "#{R.RESOURCE_DIR}/map/wall10-1.png"
+    WALL10_2 : "#{R.RESOURCE_DIR}/map/wall10-2.png"
+    WALL10_3 : "#{R.RESOURCE_DIR}/map/wall10-3.png"
+    WALL10_4 : "#{R.RESOURCE_DIR}/map/wall10-4.png"
   @CHAR :
     CHAR0 : "#{R.RESOURCE_DIR}/chara0.png"
     CHAR1 : "#{R.RESOURCE_DIR}/chara1.png"

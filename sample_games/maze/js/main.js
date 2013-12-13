@@ -10,10 +10,38 @@ MazeWorld = (function(_super) {
   __extends(MazeWorld, _super);
 
   function MazeWorld() {
-    var map,
+    var maze,
       _this = this;
     MazeWorld.__super__.constructor.apply(this, arguments);
-    map = [[WT, WT, WT, WT, WT, WT, WT, WT, WT, WT], [WT, WC1, WA3, WA3, WA3, WA3, WA3, WA3, WC2, WT], [WT, WA2, RO, RO, RO, RO, RO, RO, WA4, WT], [WT, WA2, RO, 48, RO, RO, 48, 13, WA4, WT], [WT, WA2, RO, 50, RO, 47, 38, 45, WA4, WT], [WT, WA2, RO, 50, RO, RO, 46, RO, WA4, WT], [WT, WA2, RO, 46, RO, RO, RO, RO, WA4, WT], [WT, WA2, 14, RO, RO, RO, RO, RO, WA4, WT], [WT, WC2, WA1, WA1, WA1, WA1, WA1, WA1, WC3, WT], [WT, WT, WT, WT, WT, WT, WT, WT, WT, WT]];
+    maze = MazeDefine.get(window.location.hash);
+    this.maze = new GoalMaze({
+      x: 0,
+      y: 0,
+      map: maze.map
+    });
+    this.addChild(this.maze);
+    this.player = this.maze.createPlayer();
+    this.player.direction = maze.direction;
+    this.maze.setPlayer(this.player);
+    this.maze.addEventListener('complete', function() {
+      _this.octagram.getInstance(_this.playerProgramId).stop();
+      return alert("goal");
+    });
+  }
+
+  MazeWorld.prototype.initInstructions = function(octagram) {
+    var enemyProgram, playerProgram,
+      _this = this;
+    this.octagram = octagram;
+    playerProgram = this.octagram.createProgramInstance();
+    this.playerProgramId = playerProgram.id;
+    playerProgram.addEventListener('onstart', function() {});
+    enemyProgram = this.octagram.createProgramInstance();
+    this.enemyProgramId = enemyProgram.id;
+    playerProgram.addInstruction(new StraightMoveInstruction(this.maze.player));
+    playerProgram.addInstruction(new TurnInstruction(this.maze.player));
+    playerProgram.addInstruction(new CheckMapInstruction(this.maze.player));
+    this.octagram.showProgram(this.playerProgramId);
     this.maze = new GoalMaze({
       x: 0,
       y: 0,
@@ -22,22 +50,22 @@ MazeWorld = (function(_super) {
     this.addChild(this.maze);
     this.player = this.maze.createPlayer();
     this.maze.setPlayer(this.player);
-    this.maze.addEventListener('complete', function() {
+    return this.maze.addEventListener('complete', function() {
       _this.octagram.getInstance(_this.playerProgramId).stop();
       return alert("goal");
     });
-  }
+  };
 
-  MazeWorld.prototype.reloadNewMap = function() {
-    var map,
+  MazeWorld.prototype.reloadNewMap = function(hash) {
+    var maze,
       _this = this;
-    console.log("reload map");
     this.removeChild(this.maze);
-    map = [[4, 4, 4, 4, 4, 4, 13, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 4, 0, 0, 0, 0, 4], [4, 0, 4, 0, 4, 4, 4, 4], [4, 0, 4, 0, 4, 4, 0, 4], [4, 0, 0, 0, 4, 4, 0, 4], [4, 0, 4, 0, 0, 0, 0, 4], [4, 14, 4, 4, 4, 4, 4, 4]];
+    maze = MazeDefine.get(hash);
+    this.player.direction = maze.direction;
     this.maze = new GoalMaze({
-      x: 64,
-      y: 128,
-      map: map
+      x: 0,
+      y: 0,
+      map: maze.map
     });
     this.addChild(this.maze);
     this.maze.setPlayer(this.player);
@@ -80,7 +108,9 @@ MazeScene = (function(_super) {
     return this.update();
   };
 
-  MazeScene.prototype.restart = function() {};
+  MazeScene.prototype.restart = function() {
+    return this.world.reloadNewMap(window.location.hash);
+  };
 
   MazeScene.prototype.update = function() {};
 
@@ -134,7 +164,10 @@ MazeGame = (function(_super) {
     this.assets["font0.png"] = this.assets['resources/ui/font0.png'];
     this.assets["apad.png"] = this.assets['resources/ui/apad.png'];
     this.assets["icon0.png"] = this.assets['resources/ui/icon0.png'];
-    return this.assets["pad.png"] = this.assets['resources/ui/pad.png'];
+    this.assets["pad.png"] = this.assets['resources/ui/pad.png'];
+    return window.addEventListener("hashchange", function() {
+      return _this.scene.world.reloadNewMap(window.location.hash);
+    });
   };
 
   return MazeGame;
