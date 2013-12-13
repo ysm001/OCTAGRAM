@@ -39,6 +39,7 @@ class GraphSearcher
       if dirs?
         idx = node.getIndex()
         childs = (cpu.getTip(d.x + idx.x, d.y + idx.y) for d in dirs)
+        ((if @isRecursive(child) then cpu.getStartTip() else child) for child in childs)
 
   findUnvisitedChild: (node, cpu, expand) ->
     childs = @getChilds(node, cpu, expand)
@@ -139,6 +140,9 @@ class GraphSearcher
       obj.node.order = order++;
       true
     )
+
+  isRecursive: (node) ->
+    node.code? && (node.code.constructor.name == 'ReturnTip' || node.code.constructor.name == 'WallTip')
 
   dfs: (root, cpu, callback, expand) ->
     @init()
@@ -439,12 +443,33 @@ class JsGenerator
 
   isBranchTransitionTip: (node) -> node.getConseqDir? && node.getAlterDir?
   isSingleTransitionTip: (node) -> node.getNextDir?
+  isJumpTransitionTip: (node) -> node.constructor.name == 'JumpTransitionCodeTip'
+  isNopTip: (node) -> node.code && node.code.constructor.name == 'NopTip'
+  isStopTip: (node) -> node.code && node.code.constructor.name == 'StopTip'
+  isEmptyTip: (node) -> node.code && node.code.constructor.name == 'EmptyTip'
+  isValidCodeTip: (node) -> (@isNopTip(node) || @isStopTip(node) || @isEmptyTip(node))
 
   getOperationName: (node) ->
-    if node.code.instruction? then node.code.instruction.constructor.name else node.code.constructor.name
+    name = 
+      if @isNopTip(node) then '// do nothing'
+      else if @isStopTip(node) || @isEmptyTip(node) then 'return'
+      else if node.code.instruction? && node.code.instruction.generateCode?
+        node.code.instruction.generateCode() + '()'
+      else if node.code.instruction? 
+        node.code.instruction.constructor.name + '()'
+      else 
+        node.code.constructor.name + '()'
+
+    if name? && name.length > 0
+      name = name.replace('Tip', '')
+      name = name.replace('Instruction', '')
+      name = name.substring(0, 1).toLowerCase() + name.substring(1)
+      name += ';'
+
+    name
 
   insertToCurrentBlock: (node) ->
-    @currentBlock.insertLine(node, @getOperationName(node) + '();')
+    @currentBlock.insertLine(node, @getOperationName(node))
 
   registerLoop: (newLp) ->
     sort = (arr) -> arr.sort (a, b) -> a - b
@@ -511,8 +536,8 @@ class JsGenerator
 
   generateWhileCode: (root, context) ->
     block = new JsWhileBlock('true')
-    if @isSingleTransitionTip(root)
-      block.insertLine(root, @getOperationName(root) + '();')
+    if @isSingleTransitionTip(root) || @isJumpTransitionTip(node) || @isValidCodeTip(node)
+      block.insertLine(root, @getOperationName(root))
       child = (new GraphSearcher()).getChilds(root, context.cpu)
 
       if child?
@@ -597,8 +622,8 @@ class JsGenerator
         else if @isBranchTransitionTip(node)
           block.insertBlock(@generateBranchCode(node, context))
           false
-        else if @isSingleTransitionTip(node)
-          block.insertLine(node, @getOperationName(node) + '();')
+        else if @isSingleTransitionTip(node) || @isJumpTransitionTip(node) || @isValidCodeTip(node)
+          block.insertLine(node, @getOperationName(node))
           true
     )
 
