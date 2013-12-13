@@ -5,6 +5,8 @@ class Maze extends Group
     @y = if data.y? then data.y else 0
     if !data.map?
       data.map = map
+    @background = new Background
+    @addChild @background
     @mazeMap = new MazeMap data.map
     @addChild @mazeMap
 
@@ -39,4 +41,27 @@ class DefeatMaze extends Maze
         @dispatchEvent(new MazeEvent("complete"))
         console.log "all defeat"
 
+class Background extends Group
 
+  class BackgroundColor extends Sprite
+    @WIDTH  : 640
+    @HEIGHT : 640
+    constructor: ()->
+      super BackgroundColor.WIDTH, BackgroundColor.HEIGHT
+      @image = Game.instance.assets[R.MAP.BACKGROUND1]
+
+  class BackgroundTransparent extends Sprite
+    @WIDTH  : 640
+    @HEIGHT : 640
+    constructor: ()->
+      super BackgroundTransparent.WIDTH, BackgroundTransparent.HEIGHT
+      @image = Game.instance.assets[R.MAP.BACKGROUND_TRANSPARENT]
+
+  constructor: (data = {}) ->
+    super
+    @x = if data.x? then data.x else 0
+    @y = if data.y? then data.y else 0
+    backgroundColor = new BackgroundColor
+    backgroundTransparent = new BackgroundTransparent
+    @addChild backgroundColor
+    @addChild backgroundTransparent
