@@ -21,10 +21,10 @@ CheckMapInstruction = (function(_super) {
     this.directParam.id = "direct";
     this.addParameter(this.directParam);
     this.tipInfo = new TipInfo(function(labels) {
-      return "" + labels[0] + "に進めるなら青い矢印に進みます。そうでなければ赤い矢印に進みます。";
+      return "" + labels[0] + "に進める場合、青い矢印に進みます。<br>進めない場合、赤い矢印に進みます。";
     });
     this.tipInfo.addParameter(this.directParam.id, column, labels, 0);
-    this.icon = new Icon(Game.instance.assets[R.TIP.SEARCH_BARRIER], 32, 32);
+    this.icon = new Icon(Game.instance.assets[R.TIP.SEARCH], 32, 32);
     this.setAsynchronous(true);
   }
 
@@ -62,6 +62,16 @@ CheckMapInstruction = (function(_super) {
     return this.tipInfo.changeLabel(parameter.id, parameter.value);
   };
 
+  CheckMapInstruction.prototype.generateCode = function() {
+    if (this.directParam.value === 0) {
+      return "searchForward";
+    } else if (this.directParam.value === 1) {
+      return "searchRight";
+    } else if (this.directParam.value === 2) {
+      return "searchLeft";
+    }
+  };
+
   CheckMapInstruction.prototype.mkDescription = function() {
     return this.tipInfo.getDescription();
   };
@@ -71,7 +81,7 @@ CheckMapInstruction = (function(_super) {
   };
 
   CheckMapInstruction.prototype.getIcon = function() {
-    this.icon.frame = 0;
+    this.icon.frame = this.directParam.value;
     return this.icon;
   };
 

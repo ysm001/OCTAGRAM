@@ -34,12 +34,15 @@ StraightMoveInstruction = (function(_super) {
     return obj;
   };
 
+  StraightMoveInstruction.prototype.generateCode = function() {
+    return "moveForward";
+  };
+
   StraightMoveInstruction.prototype.mkDescription = function() {
-    return "現在向いている方の目の前のマスに移動します";
+    return "1マス直進します。";
   };
 
   StraightMoveInstruction.prototype.getIcon = function() {
-    this.icon.frame = 0;
     return this.icon;
   };
 

@@ -7,7 +7,7 @@ if (typeof IS_MOBILE === "undefined" || IS_MOBILE === null) {
   Environment.Mobile = true;
 }
 
-SPEED = 2;
+SPEED = 1;
 
 (function() {
   var classes, cls, _i, _len, _results;
@@ -106,20 +106,8 @@ Config.R = (function() {
 
   R.TIP = {
     ARROW: "" + R.RESOURCE_DIR + "/tip/arrow.png",
-    LIFE: "" + R.RESOURCE_DIR + "/tip/life.png",
-    PICKUP_BULLET: "" + R.RESOURCE_DIR + "/tip/plus_bullet.png",
-    SHOT_BULLET: "" + R.RESOURCE_DIR + "/tip/shot_bullet.png",
-    SEARCH_BARRIER: "" + R.RESOURCE_DIR + "/tip/search_barrier.png",
-    SEARCH_ENEMY: "" + R.RESOURCE_DIR + "/tip/search_enemy.png",
-    CURRENT_DIRECT: "" + R.RESOURCE_DIR + "/tip/arrow.png",
-    REST_BULLET: "" + R.RESOURCE_DIR + "/tip/rest_bullet.png",
-    RANDOM_MOVE: "" + R.RESOURCE_DIR + "/tip/random_move.png",
-    MOVE_TO_ENEMY: "" + R.RESOURCE_DIR + "/tip/move_to_enemy.png",
-    MOVE_FROM_ENEMY: "" + R.RESOURCE_DIR + "/tip/move_from_enemy.png",
-    ENERGY: "" + R.RESOURCE_DIR + "/tip/energy.png",
-    REST_ENERGY_PLAYER: "" + R.RESOURCE_DIR + "/tip/rest_energy_player.png",
-    REST_ENERGY_ENEMY: "" + R.RESOURCE_DIR + "/tip/rest_energy_enemy.png",
-    DISTANCE: "" + R.RESOURCE_DIR + "/tip/distance.png"
+    SEARCH: "" + R.RESOURCE_DIR + "/tip/antena.png",
+    TURN: "" + R.RESOURCE_DIR + "/tip/rotate.png"
   };
 
   R.EFFECT = {
