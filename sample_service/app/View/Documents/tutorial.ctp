@@ -46,6 +46,14 @@
 	      </li>
 	    </ul>
 	  </li>
+	  <li>
+	    <a href="#maze-tutorial"><i class="icon-chevron-right"></i> 迷路でOCTAGRAMを学ぶ</a>
+	    <ul class="nav">
+	      <li>
+		<a href="#solve-maze"><i class="icon-chevron-right"></i> OCTAGRAMで迷路を解いてみよう</a>
+	      </li>
+      </ul>
+    </li>
 	</ul>
 	</div>
       </div><!-- /span3 bs-docs-sidebar -->
@@ -218,6 +226,22 @@
 	 </section>
 	 <br><br><br>
 	</section>
+
+	<section id="maze-tutorial">
+	  <div class="page-header">
+	    <h2>迷路でOCTAGRAMを学ぶ</h2>
+	    <p>本章では、<a href='../mazes'>迷路</a>を解くOCTAGRAMプログラムを作成することによって、OCTAGRAMの使い方を学んで行きます。</p>
+	  </div>
+	  <section id="solve-maze">
+	    <h2>OCTAGRAMで迷路を解いてみよう</h2>
+	    <blockquote>
+        <p>OCTAGRAMでプレイヤーを操作して<a href='../mazes'>迷路</a>のゴールを目指しましょう。</p>
+	      <?php echo $this->Html->image('document/tutorial/maze.png', array('class' => 'document-image'));?>
+	    </blockquote>
+   </section>
+  </section>
+
+
 
 
       </div><!-- /span9 -->
