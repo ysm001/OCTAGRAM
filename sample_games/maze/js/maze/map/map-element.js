@@ -506,7 +506,7 @@ Wall9Element = (function(_super) {
 Wall10RightElement = (function(_super) {
   __extends(Wall10RightElement, _super);
 
-  Wall10RightElement.ID = 50;
+  Wall10RightElement.ID = 80;
 
   function Wall10RightElement() {
     Wall10RightElement.__super__.constructor.apply(this, arguments);
@@ -520,7 +520,7 @@ Wall10RightElement = (function(_super) {
 Wall10DownElement = (function(_super) {
   __extends(Wall10DownElement, _super);
 
-  Wall10DownElement.ID = 51;
+  Wall10DownElement.ID = 81;
 
   function Wall10DownElement() {
     Wall10DownElement.__super__.constructor.apply(this, arguments);
@@ -534,7 +534,7 @@ Wall10DownElement = (function(_super) {
 Wall10LeftElement = (function(_super) {
   __extends(Wall10LeftElement, _super);
 
-  Wall10LeftElement.ID = 52;
+  Wall10LeftElement.ID = 82;
 
   function Wall10LeftElement() {
     Wall10LeftElement.__super__.constructor.apply(this, arguments);
@@ -548,7 +548,7 @@ Wall10LeftElement = (function(_super) {
 Wall10UpElement = (function(_super) {
   __extends(Wall10UpElement, _super);
 
-  Wall10UpElement.ID = 53;
+  Wall10UpElement.ID = 83;
 
   function Wall10UpElement() {
     Wall10UpElement.__super__.constructor.apply(this, arguments);
@@ -635,7 +635,7 @@ ElementFactory = (function() {
         ret = new Wall7RightElement();
         break;
       case Wall7UpElement.ID:
-        ret = new Wall6LeftElement();
+        ret = new Wall7UpElement();
         break;
       case Wall7DownElement.ID:
         ret = new Wall7DownElement();
@@ -647,7 +647,7 @@ ElementFactory = (function() {
         ret = new Wall10RightElement();
         break;
       case Wall10UpElement.ID:
-        ret = new Wall10LeftElement();
+        ret = new Wall10UpElement();
         break;
       case Wall10DownElement.ID:
         ret = new Wall10DownElement();

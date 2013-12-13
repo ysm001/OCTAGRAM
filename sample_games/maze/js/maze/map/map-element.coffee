@@ -245,25 +245,25 @@ class Wall9Element extends BlockElement
     @image = Game.instance.assets[R.MAP.WALL9]
 
 class Wall10RightElement extends BlockElement
-  @ID : 50
+  @ID : 80
   constructor: () ->
     super
     @image = Game.instance.assets[R.MAP.WALL10_1]
 
 class Wall10DownElement extends BlockElement
-  @ID : 51
+  @ID : 81
   constructor: () ->
     super
     @image = Game.instance.assets[R.MAP.WALL10_2]
 
 class Wall10LeftElement extends BlockElement
-  @ID : 52
+  @ID : 82
   constructor: () ->
     super
     @image = Game.instance.assets[R.MAP.WALL10_3]
 
 class Wall10UpElement extends BlockElement
-  @ID : 53
+  @ID : 83
   constructor: () ->
     super
     @image = Game.instance.assets[R.MAP.WALL10_4]
@@ -326,7 +326,7 @@ class ElementFactory
       when Wall7RightElement.ID
         ret = new Wall7RightElement()
       when Wall7UpElement.ID
-        ret = new Wall6LeftElement()
+        ret = new Wall7UpElement()
       when Wall7DownElement.ID
         ret = new Wall7DownElement()
     
@@ -335,7 +335,7 @@ class ElementFactory
       when Wall10RightElement.ID
         ret = new Wall10RightElement()
       when Wall10UpElement.ID
-        ret = new Wall10LeftElement()
+        ret = new Wall10UpElement()
       when Wall10DownElement.ID
         ret = new Wall10DownElement()
     
