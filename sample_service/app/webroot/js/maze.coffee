@@ -38,7 +38,11 @@ class MazeResultViewer
     $('#battle-result').fadeOut('fast', () =>
       $('#battle-result').remove()
       $('#enchant-stage').fadeIn('fast', () =>
-        $('#filter').remove()
+        while true
+          $filter = $('#filter')
+          if  !$filter?  || $filter.length == 0 then break
+          $filter.remove()
+
         @hideResult()
         $('#stop').click()
         $('.question-number').removeAttr('disabled')
@@ -111,6 +115,10 @@ $ ->
   tm.HashObserver.enable()
 
   document.addEventListener("changehash", (e) -> 
-    $('#filter').remove()
+    while true
+      $filter = $('#filter')
+      if  !$filter?  || $filter.length == 0 then break
+      $filter.remove()
+
     highlitePagerButton(e.hash.replace('#', ''))
   )

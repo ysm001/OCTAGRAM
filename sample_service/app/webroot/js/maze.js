@@ -54,7 +54,14 @@ MazeResultViewer = (function() {
     return $('#battle-result').fadeOut('fast', function() {
       $('#battle-result').remove();
       return $('#enchant-stage').fadeIn('fast', function() {
-        $('#filter').remove();
+        var $filter;
+        while (true) {
+          $filter = $('#filter');
+          if (($filter == null) || $filter.length === 0) {
+            break;
+          }
+          $filter.remove();
+        }
         _this.hideResult();
         $('#stop').click();
         return $('.question-number').removeAttr('disabled');
@@ -153,7 +160,14 @@ $(function() {
   highlitePagerButton(page);
   tm.HashObserver.enable();
   return document.addEventListener("changehash", function(e) {
-    $('#filter').remove();
+    var $filter;
+    while (true) {
+      $filter = $('#filter');
+      if (($filter == null) || $filter.length === 0) {
+        break;
+      }
+      $filter.remove();
+    }
     return highlitePagerButton(e.hash.replace('#', ''));
   });
 });
