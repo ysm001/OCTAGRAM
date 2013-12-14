@@ -79,3 +79,21 @@
     margin-top: 140px;
     font-size: 40px;
 }
+
+.player-count, .desired-count {
+    float: left;
+    width: 200px;
+    margin-left: 220px;
+    text-align: center;
+    margin-top: 40px;
+    font-size: 20px;
+}
+
+.warn-text {
+    float: left;
+    width: 320px;
+    margin-left: 160px;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 10px;
+}

@@ -535,7 +535,7 @@ class JsGenerator
 
   generateWhileCode: (root, context) ->
     block = new JsWhileBlock('true')
-    if @isSingleTransitionTip(root) || @isJumpTransitionTip(node) || @isValidCodeTip(node)
+    if @isSingleTransitionTip(root) || @isJumpTransitionTip(root) || @isValidCodeTip(root)
       block.insertLine(root, @getOperationName(root) + ';')
       child = (new GraphSearcher()).getChilds(root, context.cpu)
 

@@ -90,7 +90,8 @@ class MazeGame extends Core
       @scene.world.initInstructions(@octagram)
       if @options and @options.onload then @options.onload()
       @scene.world.addEventListener "gameend", (evt) =>
-        if @options and @options.onend then @options.onend(evt.params)
+        tipCount = @octagram.getTipCount(@scene.world.playerProgramId)
+        if @options and @options.onend then @options.onend(evt.params || tipCount)
 
     @assets["font0.png"] = @assets['resources/ui/font0.png']
     @assets["apad.png"] = @assets['resources/ui/apad.png']

@@ -145,8 +145,10 @@ MazeGame = (function(_super) {
         _this.options.onload();
       }
       return _this.scene.world.addEventListener("gameend", function(evt) {
+        var tipCount;
+        tipCount = _this.octagram.getTipCount(_this.scene.world.playerProgramId);
         if (_this.options && _this.options.onend) {
-          return _this.options.onend(evt.params);
+          return _this.options.onend(evt.params || tipCount);
         }
       });
     };

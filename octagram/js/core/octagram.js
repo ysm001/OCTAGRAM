@@ -53,6 +53,10 @@ Octagram = (function() {
     return this.core.octagrams.getCurrentInstance();
   };
 
+  Octagram.prototype.getTipCount = function(id) {
+    return this.core.octagrams.getTipCount(id);
+  };
+
   Octagram.prototype.onload = function() {};
 
   return Octagram;

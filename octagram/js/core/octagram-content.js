@@ -85,6 +85,10 @@ OctagramContentSet = (function() {
     return this.currentInstance;
   };
 
+  OctagramContentSet.prototype.getTipCount = function(id) {
+    return this.octagrams[id].cpu.getTipCount();
+  };
+
   OctagramContentSet.prototype.show = function(id) {
     if (this.currentInstance) {
       this.currentInstance.hide();

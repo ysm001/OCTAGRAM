@@ -25,6 +25,8 @@ class OctagramContentSet
   getInstance : (id) -> @octagrams[id]
   getCurrentInstance : () -> return @currentInstance
 
+  getTipCount: (id) -> @octagrams[id].cpu.getTipCount()
+
   show : (id) -> 
     @currentInstance.hide() if @currentInstance
     @currentInstance = @octagrams[id]

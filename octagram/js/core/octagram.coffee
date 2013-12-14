@@ -27,6 +27,7 @@ class Octagram
   showProgram : (program) -> @core.octagrams.show(program)
   getInstance : (id) -> @core.octagrams.getInstance(id)
   getCurrentInstance : () -> @core.octagrams.getCurrentInstance()
+  getTipCount: (id) -> @core.octagrams.getTipCount(id)
    
   onload : () ->
 

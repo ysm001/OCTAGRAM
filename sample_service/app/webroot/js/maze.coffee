@@ -1,22 +1,32 @@
+getHash = () -> if window.location.hash.length > 0 then parseInt(window.location.hash.replace('#', '')) else 1
+
 class MazeResultViewer
   constructor: () ->
     @frontend = new Frontend()
     @$result = null
+    @desiredTipCount = [3, 1, 4, 3, 5]
 
   end : (result) -> 
     $('#stop').attr('disabled', 'disabled')
     $('.question-number').attr('disabled', 'disabled')
     @disableInput()
-    @showResult()
+    @showResult(result)
 
-  createResultView : () ->
+  createResultView : (playerCount, desiredCount) ->
     $result = $('<div></div>').attr('id', 'battle-result')
     $playerResult = $('<div></div>').attr('id', 'player-result')
     $enemyResult = $('<div></div>').attr('id', 'enemy-result')
 
-    _createResultView = ($parent) ->
-      $text = $('<div></div>').attr('class', 'result-text clear text-success').text('クリア！')
-      $parent.append($text)
+    _createResultView = ($parent) =>
+      cls = if playerCount > desiredCount then 'text-danger' else 'text-success'
+      $clearText = $('<div></div>').attr('class', 'result-text clear text-success').text('クリア！')
+      $playerCountText = $('<div></div>').attr('class', 'result-text player-count ' + cls).text('利用したチップ数: ' + playerCount)
+      $desiredCountText = $('<div></div>').attr('class', 'result-text desired-count text-primary').text('目標のチップ数: ' + desiredCount)
+      $warnCountText = $('<div></div>').attr('class', 'result-text warn-text text-warning').text('チップ数には動作命令と分岐命令のみ含まれます。')
+      $parent.append($clearText)
+      $parent.append($desiredCountText)
+      $parent.append($playerCountText)
+      $parent.append($warnCountText)
 
     _createResultView($result)
     $label = $('<div></div>').attr('class', 'result-label')
@@ -62,8 +72,8 @@ class MazeResultViewer
 
     $buttons
 
-  showResult : () ->
-    @$result = @createResultView()
+  showResult : (count) ->
+    @$result = @createResultView(count.action + count.branch, @desiredTipCount[getHash()])
     $('#enchant-stage').fadeOut('fast', () => 
       $(@).remove()
       $('#program-container').append(@$result)

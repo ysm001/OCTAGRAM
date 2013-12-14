@@ -948,7 +948,7 @@ JsGenerator = (function() {
   JsGenerator.prototype.generateWhileCode = function(root, context) {
     var block, child;
     block = new JsWhileBlock('true');
-    if (this.isSingleTransitionTip(root) || this.isJumpTransitionTip(node) || this.isValidCodeTip(node)) {
+    if (this.isSingleTransitionTip(root) || this.isJumpTransitionTip(root) || this.isValidCodeTip(root)) {
       block.insertLine(root, this.getOperationName(root) + ';');
       child = (new GraphSearcher()).getChilds(root, context.cpu);
       if (child != null) {
