@@ -96,4 +96,7 @@ $ ->
   highlitePagerButton(page)
   tm.HashObserver.enable()
 
-  document.addEventListener("changehash", (e) -> highlitePagerButton(e.hash.replace('#', '')))
+  document.addEventListener("changehash", (e) -> 
+    $('#filter').remove()
+    highlitePagerButton(e.hash.replace('#', ''))
+  )

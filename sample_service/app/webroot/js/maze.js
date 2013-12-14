@@ -132,6 +132,7 @@ $(function() {
   highlitePagerButton(page);
   tm.HashObserver.enable();
   return document.addEventListener("changehash", function(e) {
+    $('#filter').remove();
     return highlitePagerButton(e.hash.replace('#', ''));
   });
 });
