@@ -10,6 +10,8 @@ MazeResultViewer = (function() {
   }
 
   MazeResultViewer.prototype.end = function(result) {
+    $('#stop').attr('disabled', 'disabled');
+    $('.question-number').attr('disabled', 'disabled');
     this.disableInput();
     return this.showResult();
   };
@@ -36,7 +38,7 @@ MazeResultViewer = (function() {
       $('#battle-result').remove();
       return $('#enchant-stage').fadeIn('fast', function() {
         $('#filter').remove();
-        _this.frontend.resetProgram();
+        $('#stop').click();
         _this.hideResult();
         return $('#stop').click();
       });
@@ -110,6 +112,7 @@ $(function() {
   $('.question-number').click(function() {
     return window.location.href = window.location.pathname + '#' + $(this).text();
   });
+  $('.question-number').removeAttr('disabled');
   highlitePagerButton = function(num) {
     var $btn, $pager, btn, i, _i, _len, _results;
     $pager = $('.question-number');

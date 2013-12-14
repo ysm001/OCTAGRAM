@@ -314,12 +314,14 @@ $(function() {
   $('#run').click(function() {
     frontend.executeProgram();
     $('#run').attr('disabled', 'disabled');
+    $('#show-js').attr('disabled', 'disabled');
     $('#stop').removeAttr('disabled');
     return $('#restart').removeAttr('disabled');
   });
   $('#stop').click(function() {
     frontend.resetProgram();
     $('#run').removeAttr('disabled');
+    $('#show-js').removeAttr('disabled');
     $('#stop').attr('disabled', 'disabled');
     return $('#restart').attr('disabled', 'disabled');
   });
@@ -329,11 +331,13 @@ $(function() {
   $('#show-js').click(function() {
     $('#show-js').attr('disabled', 'disabled');
     $('#hide-js').removeAttr('disabled');
+    $('#run').attr('disabled', 'disabled');
     return frontend.showJs();
   });
   return $('#hide-js').click(function() {
     $('#hide-js').attr('disabled', 'disabled');
     $('#show-js').removeAttr('disabled');
+    $('#run').removeAttr('disabled');
     return frontend.hideJs();
   });
 });

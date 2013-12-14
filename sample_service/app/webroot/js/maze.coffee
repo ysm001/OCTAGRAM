@@ -4,6 +4,8 @@ class MazeResultViewer
     @$result = null
 
   end : (result) -> 
+    $('#stop').attr('disabled', 'disabled')
+    $('.question-number').attr('disabled', 'disabled')
     @disableInput()
     @showResult()
 
@@ -27,7 +29,7 @@ class MazeResultViewer
       $('#battle-result').remove()
       $('#enchant-stage').fadeIn('fast', () =>
         $('#filter').remove()
-        @frontend.resetProgram()
+        $('#stop').click()
         @hideResult()
         $('#stop').click()
       )
@@ -78,6 +80,7 @@ class MazeResultViewer
 $ ->
   page = if window.location.hash.length > 0 then parseInt(window.location.hash.replace('#', '')) else 1
   $('.question-number').click(() -> window.location.href = window.location.pathname + '#' + $(@).text())
+  $('.question-number').removeAttr('disabled')
 
   highlitePagerButton = (num) ->
     $pager = $('.question-number')

@@ -222,6 +222,7 @@ $ ->
   $('#run').click(() =>
     frontend.executeProgram()
     $('#run').attr('disabled', 'disabled')
+    $('#show-js').attr('disabled', 'disabled')
     $('#stop').removeAttr('disabled')
     $('#restart').removeAttr('disabled')
   )
@@ -229,6 +230,7 @@ $ ->
   $('#stop').click(() =>
     frontend.resetProgram()
     $('#run').removeAttr('disabled')
+    $('#show-js').removeAttr('disabled')
     $('#stop').attr('disabled', 'disabled')
     $('#restart').attr('disabled', 'disabled')
   )
@@ -238,10 +240,12 @@ $ ->
   $('#show-js').click(() => 
     $('#show-js').attr('disabled', 'disabled')
     $('#hide-js').removeAttr('disabled')
+    $('#run').attr('disabled', 'disabled')
     frontend.showJs()
   )
   $('#hide-js').click(() => 
     $('#hide-js').attr('disabled', 'disabled')
     $('#show-js').removeAttr('disabled')
+    $('#run').removeAttr('disabled')
     frontend.hideJs()
   )

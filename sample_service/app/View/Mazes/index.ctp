@@ -67,7 +67,6 @@
   <div class='button-container'>
     <button type="button" class="btn btn-lg btn-primary" id="run">実行</button>
     <button type="button" class="btn btn-lg btn-warning" id="stop" disabled=disabled>初期状態に戻す</button>
-    <button type="button" class="btn btn-lg btn-warning" id="restart" disabled=disabled>最初から実行</button>
   </div>
   <div class='button-container'>
     <button type="button" class="btn btn-lg btn-primary" id="show-js">Javascriptを表示</button>
