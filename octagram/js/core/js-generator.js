@@ -841,13 +841,12 @@ JsGenerator = (function() {
       name = name.replace('Tip', '');
       name = name.replace('Instruction', '');
       name = name.substring(0, 1).toLowerCase() + name.substring(1);
-      name += ';';
     }
     return name;
   };
 
   JsGenerator.prototype.insertToCurrentBlock = function(node) {
-    return this.currentBlock.insertLine(node, this.getOperationName(node));
+    return this.currentBlock.insertLine(node, this.getOperationName(node) + ';');
   };
 
   JsGenerator.prototype.registerLoop = function(newLp) {
@@ -950,7 +949,7 @@ JsGenerator = (function() {
     var block, child;
     block = new JsWhileBlock('true');
     if (this.isSingleTransitionTip(root) || this.isJumpTransitionTip(node) || this.isValidCodeTip(node)) {
-      block.insertLine(root, this.getOperationName(root));
+      block.insertLine(root, this.getOperationName(root) + ';');
       child = (new GraphSearcher()).getChilds(root, context.cpu);
       if (child != null) {
         block.insertBlock(this.generateCode(child[0], context));
@@ -1066,7 +1065,7 @@ JsGenerator = (function() {
           block.insertBlock(_this.generateBranchCode(node, context));
           return false;
         } else if (_this.isSingleTransitionTip(node) || _this.isJumpTransitionTip(node) || _this.isValidCodeTip(node)) {
-          block.insertLine(node, _this.getOperationName(node));
+          block.insertLine(node, _this.getOperationName(node) + ';');
           return true;
         }
       }
@@ -1090,6 +1089,8 @@ JsGenerator = (function() {
     block = new JsPlainBlock();
     block.insertLine(errorLoop, '//// Error ////');
     block.insertLine(errorLoop, '// ループの入り口は共有できません。');
+    block.insertLine(errorLoop, '// returnチップを複数枚利用したり、returnチップへ複数の入り口がある場合にも');
+    block.insertLine(errorLoop, '// このエラーが表示されます。');
     return block;
   };
 

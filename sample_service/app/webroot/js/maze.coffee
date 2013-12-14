@@ -29,14 +29,14 @@ class MazeResultViewer
       $('#battle-result').remove()
       $('#enchant-stage').fadeIn('fast', () =>
         $('#filter').remove()
-        $('#stop').click()
         @hideResult()
         $('#stop').click()
+        $('.question-number').removeAttr('disabled')
       )
     )
 
   createResultButton : () ->
-    page = if window.location.hash? then parseInt(window.location.hash.replace('#', '')) else 1
+    page = if window.location.hash.length > 0 then parseInt(window.location.hash.replace('#', '')) else 1
 
     $backButton = $('<a></a>').attr({id: 'back-btn', class: 'btn btn-lg btn-danger result-btn'}).text('Back')
     $retryButton = $('<div></div>').attr({id: 'retry-btn', class: 'btn btn-lg btn-primary result-btn'}).text('Retry').click(@retry)
@@ -55,6 +55,7 @@ class MazeResultViewer
 
     $buttons = $('<div></div>').attr('class', 'result-btns')
 
+    console.log page
     $buttons.append($backButton) if page > 1
     $buttons.append($retryButton)
     $buttons.append($nextButton) if page < 5

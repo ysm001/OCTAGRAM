@@ -38,9 +38,9 @@ MazeResultViewer = (function() {
       $('#battle-result').remove();
       return $('#enchant-stage').fadeIn('fast', function() {
         $('#filter').remove();
-        $('#stop').click();
         _this.hideResult();
-        return $('#stop').click();
+        $('#stop').click();
+        return $('.question-number').removeAttr('disabled');
       });
     });
   };
@@ -48,7 +48,7 @@ MazeResultViewer = (function() {
   MazeResultViewer.prototype.createResultButton = function() {
     var $backButton, $buttons, $nextButton, $retryButton, page,
       _this = this;
-    page = window.location.hash != null ? parseInt(window.location.hash.replace('#', '')) : 1;
+    page = window.location.hash.length > 0 ? parseInt(window.location.hash.replace('#', '')) : 1;
     $backButton = $('<a></a>').attr({
       id: 'back-btn',
       "class": 'btn btn-lg btn-danger result-btn'
@@ -70,6 +70,7 @@ MazeResultViewer = (function() {
       return _this.retry();
     });
     $buttons = $('<div></div>').attr('class', 'result-btns');
+    console.log(page);
     if (page > 1) {
       $buttons.append($backButton);
     }

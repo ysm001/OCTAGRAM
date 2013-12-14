@@ -464,12 +464,11 @@ class JsGenerator
       name = name.replace('Tip', '')
       name = name.replace('Instruction', '')
       name = name.substring(0, 1).toLowerCase() + name.substring(1)
-      name += ';'
 
     name
 
   insertToCurrentBlock: (node) ->
-    @currentBlock.insertLine(node, @getOperationName(node))
+    @currentBlock.insertLine(node, @getOperationName(node) + ';')
 
   registerLoop: (newLp) ->
     sort = (arr) -> arr.sort (a, b) -> a - b
@@ -537,7 +536,7 @@ class JsGenerator
   generateWhileCode: (root, context) ->
     block = new JsWhileBlock('true')
     if @isSingleTransitionTip(root) || @isJumpTransitionTip(node) || @isValidCodeTip(node)
-      block.insertLine(root, @getOperationName(root))
+      block.insertLine(root, @getOperationName(root) + ';')
       child = (new GraphSearcher()).getChilds(root, context.cpu)
 
       if child?
@@ -623,7 +622,7 @@ class JsGenerator
           block.insertBlock(@generateBranchCode(node, context))
           false
         else if @isSingleTransitionTip(node) || @isJumpTransitionTip(node) || @isValidCodeTip(node)
-          block.insertLine(node, @getOperationName(node))
+          block.insertLine(node, @getOperationName(node) + ';')
           true
     )
 
@@ -639,6 +638,8 @@ class JsGenerator
     block = new JsPlainBlock()
     block.insertLine(errorLoop, '//// Error ////')
     block.insertLine(errorLoop, '// ループの入り口は共有できません。')
+    block.insertLine(errorLoop, '// returnチップを複数枚利用したり、returnチップへ複数の入り口がある場合にも')
+    block.insertLine(errorLoop, '// このエラーが表示されます。')
 
     block
 
