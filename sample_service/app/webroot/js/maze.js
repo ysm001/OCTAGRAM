@@ -100,7 +100,7 @@ MazeResultViewer = (function() {
 
   MazeResultViewer.prototype.showResult = function(count) {
     var _this = this;
-    this.$result = this.createResultView(count.action + count.branch, this.desiredTipCount[getHash()]);
+    this.$result = this.createResultView(count.action + count.branch, this.desiredTipCount[getHash() - 1]);
     return $('#enchant-stage').fadeOut('fast', function() {
       $(_this).remove();
       return $('#program-container').append(_this.$result);

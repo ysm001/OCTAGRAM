@@ -73,7 +73,7 @@ class MazeResultViewer
     $buttons
 
   showResult : (count) ->
-    @$result = @createResultView(count.action + count.branch, @desiredTipCount[getHash()])
+    @$result = @createResultView(count.action + count.branch, @desiredTipCount[getHash() - 1])
     $('#enchant-stage').fadeOut('fast', () => 
       $(@).remove()
       $('#program-container').append(@$result)
