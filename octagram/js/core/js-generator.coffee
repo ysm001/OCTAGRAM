@@ -12,6 +12,8 @@ getUniqueArray = (ary) ->
 arrayEqual = (a, b) ->
     a.length is b.length and a.every (elem, i) -> elem is b[i]
 
+sort = (arr) -> arr.sort (a, b) -> a - b
+
 intersection = (arrA, arrB) ->
   exist = {}
   for a in arrA then exist[a.order] = true
@@ -317,6 +319,34 @@ class LoopFinder
       return false
     )
     
+    # non-natural loopの検出(厳密)
+    #graph = new GraphSearcher()
+    #loops = []
+
+    #error = null
+    #graph.dfs(context.cpu.getStartTip(), context.cpu, (obj) ->
+    #  pre = graph.getImmediatePredecessors(obj.node, context)
+    #  if pre.length >= 2
+    #    nestedGraph = new GraphSearcher()
+    #    nestedGraph.dfs(obj.node, context.cpu, (nestedObj) ->
+    #      childs = nestedGraph.getChilds(nestedObj.node, context.cpu)
+    #      if !childs? then return true
+
+    #      foundLoop = sort((n.order for n in nestedObj.stack))
+    #      naturalLoops = (sort((n.order for n in nlp)) for nlp in loopObj.loops)
+
+    #      if obj.node in childs 
+    #        for nlp in  naturalLoops
+    #          if arrayEqual(foundLoop, nlp) then return true
+
+    #        error = {loop: nestedObj.stack, reason: 'nonNaturalLoop'}
+    #        return false
+    #      true
+    #    )
+
+    #  return !error?
+    #)
+
     error
 
 class JsConstant
@@ -471,7 +501,6 @@ class JsGenerator
     @currentBlock.insertLine(node, @getOperationName(node) + ';')
 
   registerLoop: (newLp) ->
-    sort = (arr) -> arr.sort (a, b) -> a - b
     newOrder = sort((node.order for node in newLp))
     for lp in @loops
       order = sort((node.order for node in lp))
