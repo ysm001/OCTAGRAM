@@ -139,7 +139,7 @@ class GraphSearcher
     order = 0
 
     graph.dfs(root, context.cpu, (obj) => 
-      obj.node.order = order++;
+      obj.node.order = order++
       true
     )
 
@@ -475,6 +475,7 @@ class JsGenerator
   isSingleTransitionTip: (node) -> node.getNextDir?
   isJumpTransitionTip: (node) -> node.constructor.name == 'JumpTransitionCodeTip'
   isNopTip: (node) -> node.code && node.code.constructor.name == 'NopTip'
+  isStartTip: (node) -> node.code && node.code.constructor.name == 'StartTip'
   isStopTip: (node) -> node.code && node.code.constructor.name == 'StopTip'
   isEmptyTip: (node) -> node.code && node.code.constructor.name == 'EmptyTip'
   isValidCodeTip: (node) -> (@isNopTip(node) || @isStopTip(node) || @isEmptyTip(node))
@@ -483,6 +484,7 @@ class JsGenerator
     name = 
       if @isNopTip(node) then '// do nothing'
       else if @isStopTip(node) || @isEmptyTip(node) then 'return'
+      else if @isStartTip(node) then ''
       else if node.code.instruction? && node.code.instruction.generateCode?
         node.code.instruction.generateCode() + '()'
       else if node.code.instruction? 
@@ -498,7 +500,8 @@ class JsGenerator
     name
 
   insertToCurrentBlock: (node) ->
-    @currentBlock.insertLine(node, @getOperationName(node) + ';')
+    op = @getOperationName(node)
+    if op? && op.length > 0 then @currentBlock.insertLine(node,  op + ';')
 
   registerLoop: (newLp) ->
     newOrder = sort((node.order for node in newLp))
@@ -565,7 +568,8 @@ class JsGenerator
   generateWhileCode: (root, context) ->
     block = new JsWhileBlock('true')
     if @isSingleTransitionTip(root) || @isJumpTransitionTip(root) || @isValidCodeTip(root)
-      block.insertLine(root, @getOperationName(root) + ';')
+      op = @getOperationName(root)
+      if op? && op.length > 0 then block.insertLine(root, op + ';')
       child = (new GraphSearcher()).getChilds(root, context.cpu)
 
       if child?
@@ -651,7 +655,8 @@ class JsGenerator
           block.insertBlock(@generateBranchCode(node, context))
           false
         else if @isSingleTransitionTip(node) || @isJumpTransitionTip(node) || @isValidCodeTip(node)
-          block.insertLine(node, @getOperationName(node) + ';')
+          op = @getOperationName(node)
+          if op? && op.length > 0 then block.insertLine(node, op + ';')
           true
     )
 

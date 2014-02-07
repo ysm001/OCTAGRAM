@@ -828,6 +828,10 @@ JsGenerator = (function() {
     return node.code && node.code.constructor.name === 'NopTip';
   };
 
+  JsGenerator.prototype.isStartTip = function(node) {
+    return node.code && node.code.constructor.name === 'StartTip';
+  };
+
   JsGenerator.prototype.isStopTip = function(node) {
     return node.code && node.code.constructor.name === 'StopTip';
   };
@@ -842,7 +846,7 @@ JsGenerator = (function() {
 
   JsGenerator.prototype.getOperationName = function(node) {
     var name;
-    name = this.isNopTip(node) ? '// do nothing' : this.isStopTip(node) || this.isEmptyTip(node) ? 'return' : (node.code.instruction != null) && (node.code.instruction.generateCode != null) ? node.code.instruction.generateCode() + '()' : node.code.instruction != null ? node.code.instruction.constructor.name + '()' : node.code.constructor.name + '()';
+    name = this.isNopTip(node) ? '// do nothing' : this.isStopTip(node) || this.isEmptyTip(node) ? 'return' : this.isStartTip(node) ? '' : (node.code.instruction != null) && (node.code.instruction.generateCode != null) ? node.code.instruction.generateCode() + '()' : node.code.instruction != null ? node.code.instruction.constructor.name + '()' : node.code.constructor.name + '()';
     if ((name != null) && name.length > 0) {
       name = name.replace('Tip', '');
       name = name.replace('Instruction', '');
@@ -852,7 +856,11 @@ JsGenerator = (function() {
   };
 
   JsGenerator.prototype.insertToCurrentBlock = function(node) {
-    return this.currentBlock.insertLine(node, this.getOperationName(node) + ';');
+    var op;
+    op = this.getOperationName(node);
+    if ((op != null) && op.length > 0) {
+      return this.currentBlock.insertLine(node, op + ';');
+    }
   };
 
   JsGenerator.prototype.registerLoop = function(newLp) {
@@ -947,10 +955,13 @@ JsGenerator = (function() {
   };
 
   JsGenerator.prototype.generateWhileCode = function(root, context) {
-    var block, child;
+    var block, child, op;
     block = new JsWhileBlock('true');
     if (this.isSingleTransitionTip(root) || this.isJumpTransitionTip(root) || this.isValidCodeTip(root)) {
-      block.insertLine(root, this.getOperationName(root) + ';');
+      op = this.getOperationName(root);
+      if ((op != null) && op.length > 0) {
+        block.insertLine(root, op + ';');
+      }
       child = (new GraphSearcher()).getChilds(root, context.cpu);
       if (child != null) {
         block.insertBlock(this.generateCode(child[0], context));
@@ -1039,7 +1050,7 @@ JsGenerator = (function() {
     block = new JsPlainBlock();
     currentLoop = this.getCurrentLoop(context);
     graph.dfs(root, context.cpu, function(obj) {
-      var br, lp, node;
+      var br, lp, node, op;
       node = obj.node;
       if ((currentLoop != null) && !(__indexOf.call(currentLoop, node) >= 0)) {
         block.insertLine(null, 'break;');
@@ -1066,7 +1077,10 @@ JsGenerator = (function() {
           block.insertBlock(_this.generateBranchCode(node, context));
           return false;
         } else if (_this.isSingleTransitionTip(node) || _this.isJumpTransitionTip(node) || _this.isValidCodeTip(node)) {
-          block.insertLine(node, _this.getOperationName(node) + ';');
+          op = _this.getOperationName(node);
+          if ((op != null) && op.length > 0) {
+            block.insertLine(node, op + ';');
+          }
           return true;
         }
       }
